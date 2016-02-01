@@ -1,2 +1,0 @@
-# UdeskSDK-iOS
-UdeskSDK-iOS
