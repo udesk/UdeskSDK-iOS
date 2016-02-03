@@ -628,6 +628,8 @@
         self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
         self.navigationController.navigationBar.tintColor = Config.iMBackButtonColor;
     }
+    //设置客户在线
+    [UDManager setCustomerOnline];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -644,6 +646,9 @@
     
     //用过返回上级页面了，发送中的消息改为发送失败，如果有需求，开发者可自定义
     [UDManager updateTableWithSqlString:@"update Message set sendflag='1' where sendflag = '0'" params:nil];
+    
+    //返回上级页面，设置客户离线
+    [UDManager setCustomerOffline];
 }
 
 - (void)didReceiveMemoryWarning {

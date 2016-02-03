@@ -123,9 +123,14 @@
    receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
 
 /**
- *  退出Udesk
+ *  设置客户离线 (在用户点击home键后调用此方法)
  */
-+ (void)logoutUdesk;
++ (void)setCustomerOffline;
+
+/**
+ *  设置客户在线 (在用户将要进入app的时候调用此方法)
+ */
++ (void)setCustomerOnline;
 
 /**
  *  发送消息
