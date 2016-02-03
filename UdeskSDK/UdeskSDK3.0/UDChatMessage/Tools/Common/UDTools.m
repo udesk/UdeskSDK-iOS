@@ -285,6 +285,9 @@
         
         newImage = [UDTools scaleToSize:image size:imageSize];
     }
+    else {
+        newImage = image;
+    }
     
     return newImage;
 
