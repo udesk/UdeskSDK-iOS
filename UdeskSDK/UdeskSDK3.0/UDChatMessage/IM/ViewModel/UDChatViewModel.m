@@ -94,18 +94,6 @@
         NSString *newWidth = [NSString stringWithFormat:@"%f",[UDTools setImageSize:image].width];
         NSString *newHeight = [NSString stringWithFormat:@"%f",[UDTools setImageSize:image].height];
         
-//        UIImage *newImage;
-//        
-//        if (image.size.width>1000||image.size.height>1000) {
-//            
-//            newImage = [UDTools compressionImage:image];
-//        } else {
-//            newImage = image;
-//        }
-//        
-//        //压缩图片
-//        NSData *imageData = UIImageJPEGRepresentation(newImage, 0.5f);
-        
         NSDate *date = [NSDate date];
         
         UDMessage *photoMessage = [[UDMessage alloc] initWithPhoto:image timestamp:date];
@@ -246,9 +234,18 @@
 //排队Alert
 - (void)queueStatus {
     
-    PSTAlertController *leaveOrTicket = [PSTAlertController alertWithTitle:nil message:_viewModel.agentModel.message];
-    [leaveOrTicket addCloseActionWithTitle:@"确定" Handler:NULL];
-    [leaveOrTicket showWithSender:nil controller:nil animated:YES completion:NULL];
+    PSTAlertController *queueAlert = [PSTAlertController alertWithTitle:nil message:_viewModel.agentModel.message];
+    [queueAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+    [queueAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+    
+}
+
+//非法创建用户Alert
+- (void)notCustomer {
+    
+    PSTAlertController *notCustomerAlert = [PSTAlertController alertWithTitle:nil message:_viewModel.agentModel.message];
+    [notCustomerAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+    [notCustomerAlert showWithSender:nil controller:nil animated:YES completion:NULL];
     
 }
 
@@ -312,6 +309,9 @@
         [self netWorkDisconnectAlertView];
     } else if (self.viewModel.agentModel.code == 2001) {
         [self queueStatus];
+    } else if (self.viewModel.agentModel.code == 2004) {
+    
+        [self notCustomer];
     }
 
 }

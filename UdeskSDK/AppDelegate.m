@@ -25,7 +25,9 @@
     
 //    [UDManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
     
-    [UDManager initWithAppkey:@"6c37f775019907785d85c027e29dae4e" domianName:@"udesksdk.udesk.cn"];
+//    [UDManager initWithAppkey:@"6c37f775019907785d85c027e29dae4e" domianName:@"udesksdk.udesk.cn"];
+    
+        [UDManager initWithAppkey:@"3a4dc5e0cd39995448018c553048fdd4" domianName:@"reocar.udeskmonkey.com"];
     
     return YES;
 }

@@ -8,6 +8,26 @@
 
 #import <Foundation/Foundation.h>
 #import "Reachability.h"
+#import <AVFoundation/AVFoundation.h>
+
+#import "UDManager.h"
+#import "UDMessage.h"
+
+#import "UdeskUtils.h"
+#import "NSArray+UDUtils.h"
+#import "UDFoundationMacro.h"
+#import "NSDictionary+UDUtils.h"
+#import "UDKeywordRegularParser.h"
+#import "UDMessageBubbleFactory.h"
+#import "UDVoiceRecordHelper.h"
+#import "UDVoiceRecordHUD.h"
+#import "UDGeneral.h"
+#import "UDConfig.h"
+#import "UIViewExt.h"
+#import "PSTAlertController.h"
+#import "YYCache.h"
+
+#define  Config [UDConfig sharedUDConfig]
 
 @interface UDTools : NSObject
 
