@@ -50,6 +50,8 @@
  */
 @property (nonatomic, weak  ) UIImageView                          *photoImageView;
 
+@property (nonatomic, weak  ) UILabel                              *redirectTagLabel;
+
 /**
  *  初始化消息内容显示控件的方法
  *

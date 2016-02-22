@@ -24,4 +24,11 @@ typedef void (^UDAgentDataCallBack) (UDAgentModel *udAgent,NSError *error);
 
 - (void)requestAgentDataWithCallback:(UDAgentDataCallBack)callback;
 
+/**
+ *  请求转接客服信息
+ *
+ *  @param callback 客服数据
+ */
+- (void)requestRedirectAgentDataWithCallback:(UDAgentDataCallBack)callback;
+
 @end

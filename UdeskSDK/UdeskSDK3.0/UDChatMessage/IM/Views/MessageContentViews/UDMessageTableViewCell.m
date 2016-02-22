@@ -283,13 +283,19 @@ static CGFloat const kUDHeadImageSize = 40.0f;
         CGRect headButtonFrame;
         switch (message.messageFrom) {
             case UDMessageTypeSending:
+                
+                NSLog(@"kUDHeadShowX:%f",kUDHeadShowX);
                 headButtonFrame = CGRectMake(kUDHeadShowX,
                                              kUDHeadShowY + (self.displayTimestamp ? (kUDTimeStampLabelHeight + kUDLabelPadding * 2) : 0),
                                              kUDHeadImageSize,
                                              kUDHeadImageSize);
+                
+                NSLog(@"x:%f",headButtonFrame.origin.x);
+                
+                NSLog(@"=============================");
                 break;
             case UDMessageTypeReceiving:
-                headButtonFrame = CGRectMake(CGRectGetWidth(self.bounds) - kUDHeadImageSize - kUDHeadShowX,
+                headButtonFrame = CGRectMake(MDK_SCREEN_WIDTH - kUDHeadImageSize - kUDHeadShowX,
                                              kUDHeadShowY + (self.displayTimestamp ? (kUDTimeStampLabelHeight + kUDLabelPadding * 2) : 0),
                                              kUDHeadImageSize,
                                              kUDHeadImageSize);
@@ -299,12 +305,13 @@ static CGFloat const kUDHeadImageSize = 40.0f;
   
         }
         if (!_headImageView) {
-            
+                        
             // 初始化头像
             UIImageView *headImage = [[UIImageView alloc] initWithFrame:headButtonFrame];
             [self.contentView addSubview:headImage];
             [self.contentView sendSubviewToBack:headImage];
             self.headImageView = headImage;
+            
         }
         
         // 3、配置需要显示什么消息内容，比如语音、文字、图片
@@ -342,7 +349,14 @@ static CGFloat const kUDHeadImageSize = 40.0f;
     CGRect headImageViewFrame = self.headImageView.frame;
     headImageViewFrame.origin.y = layoutOriginY;
     
-    headImageViewFrame.origin.x = ([self bubbleMessageType] == UDMessageTypeReceiving) ? kUDHeadShowX : ((CGRectGetWidth(self.bounds) - kUDHeadShowX - kUDHeadImageSize));
+    if ([self bubbleMessageType] == UDMessageTypeReceiving) {
+        headImageViewFrame.origin.x = kUDHeadShowX;
+    }
+    else if ([self bubbleMessageType] == UDMessageTypeSending) {
+    
+        headImageViewFrame.origin.x = (CGRectGetWidth(self.bounds) - kUDHeadShowX - kUDHeadImageSize);
+    }
+
     self.headImageView.frame = headImageViewFrame;
     
     // 布局消息内容的View
@@ -350,7 +364,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
     CGFloat offsetX = 0.0f;
     if ([self bubbleMessageType] == UDMessageTypeReceiving) {
         bubbleX = kUDHeadImageSize + kUDHeadShowX * 2;
-    } else {
+    } else if ([self bubbleMessageType] == UDMessageTypeSending) {
         offsetX = kUDHeadImageSize + kUDHeadShowX * 2;
     }
     

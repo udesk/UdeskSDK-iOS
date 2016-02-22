@@ -10,6 +10,7 @@
 typedef NS_ENUM(NSInteger, UDMessageFromType) {
     UDMessageTypeSending = 0, // 发送
     UDMessageTypeReceiving = 1, // 接收
+    UDMessageTypeCenter = 2, //自定义
 };
 
 typedef NS_ENUM(NSUInteger, UDBubbleImageViewStyle) {
@@ -21,6 +22,7 @@ typedef NS_ENUM(NSInteger, UDMessageMediaType) {
     UDMessageMediaTypePhoto   = 1,
     UDMessageMediaTypeVoice   = 2,
     UDMessageMediaTypeProduct = 3,
+    UDMessageMediaTypeRedirect = 4,
 };
 
 typedef NS_ENUM(NSInteger,UDMessageSendStatus) {

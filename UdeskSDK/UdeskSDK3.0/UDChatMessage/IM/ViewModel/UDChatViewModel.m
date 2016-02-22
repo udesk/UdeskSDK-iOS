@@ -205,6 +205,12 @@
     //解析消息创建消息体并添加到数组
     [UDReceiveChatMsg.store resolveChatMsg:messageDic callbackMsg:^(UDMessage *message) {
         
+        if (message.messageType == UDMessageMediaTypeRedirect) {
+            if ([self.delegate respondsToSelector:@selector(notificationRedirect:)]) {
+                [self.delegate notificationRedirect:messageDic];
+            }
+        }
+
         [weakSelf.messageArray addObject:message];
         
         [self reloadChatTableView];
@@ -228,6 +234,55 @@
     if ([self.delegate respondsToSelector:@selector(receiveAgentPresence:)]) {
         [self.delegate receiveAgentPresence:statusType];
     }
+}
+
+//接收客服发送的满意度调查
+- (void)didReceiveSurvey:(NSString *)isSurvey withAgentId:(NSString *)agentId {
+    
+    //客服发送满意度调查
+    if ([isSurvey isEqualToString:@"true"]) {
+        
+        [UDManager getSurveyOptions:^(id responseObject, NSError *error) {
+            //解析数据
+            NSDictionary *result = [responseObject objectForKey:@"result"];
+            NSString *title = [result objectForKey:@"title"];
+            NSString *desc = [result objectForKey:@"desc"];
+            NSArray *options = [result objectForKey:@"options"];
+            
+            if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+                //根据返回的信息填充Alert数据
+                PSTAlertController *optionsAlert = [PSTAlertController alertWithTitle:title message:desc];
+                [optionsAlert addCloseActionWithTitle:@"关闭" Handler:NULL];
+                //遍历选项数组
+                for (NSDictionary *option in options) {
+                    //依次添加选项
+                    [optionsAlert addAction:[PSTAlertAction actionWithTitle:[option objectForKey:@"text"] handler:^(PSTAlertAction * _Nonnull action) {
+                        //根据点击的选项 提交到Udesk
+                        [UDManager survetVoteWithAgentId:agentId withOptionId:[option objectForKey:@"id"] completion:^(id responseObject, NSError *error) {
+                            
+                            //评价提交成功Alert
+                            [self surveyCompletion];
+
+                        }];
+                        
+                    }]];
+                }
+                //展示Alert
+                [optionsAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+            }
+            
+            
+        }];
+    }
+}
+//评价提交成功Alert
+- (void)surveyCompletion {
+
+    PSTAlertController *completionAlert = [PSTAlertController alertWithTitle:nil message:@"感谢您的评价"];
+    [completionAlert addCloseActionWithTitle:@"关闭" Handler:NULL];
+    
+    [completionAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+
 }
 
 #pragma mark - Alert

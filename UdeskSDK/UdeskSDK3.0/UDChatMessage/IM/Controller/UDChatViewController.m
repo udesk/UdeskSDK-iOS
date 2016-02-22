@@ -273,6 +273,11 @@
     }
     
 }
+#pragma mark - 客户被转接了
+- (void)notificationRedirect:(NSDictionary *)agentMsg {
+
+    
+}
 
 #pragma mark - 刷新TableView
 - (void)reloadChatTableView {

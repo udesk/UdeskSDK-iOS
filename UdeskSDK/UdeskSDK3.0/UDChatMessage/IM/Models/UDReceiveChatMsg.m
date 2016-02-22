@@ -121,6 +121,31 @@
             block(message);
         }
     }
+    else if ([type isEqualToString:@"redirect"]) {
+    
+        message.messageType = UDMessageMediaTypeRedirect;
+        message.messageFrom = UDMessageTypeCenter;
+        
+        [UDManager getRedirectAgentInformation:messageDic completion:^(id responseObject, NSError *error) {
+
+            
+            if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+                
+                NSString *nick = [[[responseObject objectForKey:@"result"] objectForKey:@"agent"] objectForKey:@"nick"];
+                
+                message.text = [NSString stringWithFormat:@"客服转接成功，%@ 为你服务",nick];
+            }
+            
+            NSArray *textDBArray = @[message.text,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeCenter],[NSString stringWithFormat:@"4"]];
+            
+            [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
+            
+            if (block) {
+                block(message);
+            }
+            
+        }];
+    }
 
     
 }

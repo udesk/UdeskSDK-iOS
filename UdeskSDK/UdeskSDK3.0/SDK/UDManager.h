@@ -21,6 +21,8 @@
 
 #define InsertPhotoMsg [NSString stringWithFormat:@"insert into %@ ('content','replied_at','msgid','sendflag','direction','mesType','width','height') values(?,?,?,?,?,?,?,?)",MessageDB]
 
+#define InsertRedirectMsg [NSString stringWithFormat:@"insert into %@ ('content','replied_at','msgid','sendflag','direction','mesType') values(?,?,?,?,?,?)",MessageDB]
+
 //DBSelect
 #define QueryMessage [NSString stringWithFormat:@"select *from %@",MessageDB]
 //DBDelete
@@ -55,6 +57,12 @@ typedef NS_ENUM(NSInteger, UDNetworkStatus) {
  *  @param presence 接收的状态
  */
 - (void)didReceivePresence:(NSDictionary *)presence;
+/**
+ *  接收客服发送的满意度调查
+ *
+ *  @param isSurvey 是否调查满意度
+ */
+- (void)didReceiveSurvey:(NSString *)isSurvey withAgentId:(NSString *)agentId;
 
 @end
 
@@ -107,6 +115,13 @@ typedef NS_ENUM(NSInteger, UDNetworkStatus) {
  */
 + (void)getAgentInformation:(NSString *)customerId
                  completion:(void (^)(id responseObject,NSError *error))completion;
+/**
+ *  获取转接后客服的信息
+ *
+ *  @param completion 回调客服信息
+ */
++ (void)getRedirectAgentInformation:(NSDictionary *)agentId
+                         completion:(void (^)(id responseObject,NSError *error))completion;
 
 /**
  *  登录Udesk
@@ -131,17 +146,17 @@ typedef NS_ENUM(NSInteger, UDNetworkStatus) {
    receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
 
 /**
- *  退出Udesk
+ *  退出Udesk (切换用户，需要调用此接口)
  */
 + (void)logoutUdesk;
 
 /**
- *  设置客户离线
+ *  设置客户离线 (在用户点击home键后调用此方法)
  */
 + (void)setCustomerOffline;
 
 /**
- *  设置客户在线
+ *  设置客户在线 (用户点击app进入页面时调用此方法)
  */
 + (void)setCustomerOnline;
 
@@ -296,5 +311,23 @@ typedef NS_ENUM(NSInteger, UDNetworkStatus) {
  *  @param completion call back网络状态
  */
 + (void)receiveNetwork:(void(^)(UDNetworkStatus reachability))completion;
+
+/**
+ *  获取满意度调查选项
+ *
+ *  @param completion 回调选项内容
+ */
++ (void)getSurveyOptions:(void (^)(id responseObject, NSError *error))completion;
+
+/**
+ *  满意度调查投票
+ *
+ *  @param agentId    满意度调查的客服
+ *  @param optionId   满意度选项ID
+ *  @param completion 回调结果
+ */
++ (void)survetVoteWithAgentId:(NSString *)agentId
+                 withOptionId:(NSString *)optionId
+                   completion:(void (^)(id responseObject, NSError *error))completion;
 
 @end
