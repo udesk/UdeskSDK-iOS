@@ -20,22 +20,6 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UdeskSDK/UdeskSDK3.0/UDChatMessage/IM/Views/MessageInputView/UDMessageInputView.m"
-            timestampString = "477456974.509484"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "408"
-            endingLineNumber = "408"
-            landmarkName = "-textViewDidBeginEditing:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "UdeskSDK/UdeskSDK3.0/UDChatMessage/IM/Views/MessageInputView/UDMessageInputView.m"
             timestampString = "477456989.222575"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"

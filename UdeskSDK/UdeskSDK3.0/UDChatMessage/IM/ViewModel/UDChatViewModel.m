@@ -234,8 +234,16 @@
 //排队Alert
 - (void)queueStatus {
     
-    PSTAlertController *queueAlert = [PSTAlertController alertWithTitle:nil message:_viewModel.agentModel.message];
-    [queueAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+    NSString *ticketButtonTitle = NSLocalizedString(@"留言",@"");
+    PSTAlertController *queueAlert = [PSTAlertController alertWithTitle:nil message:@"当前客服正繁忙，如需留言请点击按钮进入表单留言"];
+    [queueAlert addCloseActionWithTitle:@"取消" Handler:NULL];
+    [queueAlert addAction:[PSTAlertAction actionWithTitle:ticketButtonTitle handler:^(PSTAlertAction * _Nonnull action) {
+        
+        if ([self.delegate respondsToSelector:@selector(clickSendOffLineTicket)]) {
+            [self.delegate clickSendOffLineTicket];
+        }
+    }]];
+    
     [queueAlert showWithSender:nil controller:nil animated:YES completion:NULL];
     
 }
@@ -254,8 +262,8 @@
     
     NSString *title = NSLocalizedString(@"客服不在线",@"");
     NSString *message = NSLocalizedString(@"您可以选择提交表单来描述您的问题，稍后我们会和您联系。",@"");
-    NSString *cancelButtonTitle = NSLocalizedString(@"关闭", @"");
-    NSString *ticketButtonTitle = NSLocalizedString(@"发送表单",@"");
+    NSString *cancelButtonTitle = NSLocalizedString(@"取消", @"");
+    NSString *ticketButtonTitle = NSLocalizedString(@"留言",@"");
     
     PSTAlertController *leaveOrTicket = [PSTAlertController alertWithTitle:title message:message];
     [leaveOrTicket addCloseActionWithTitle:cancelButtonTitle Handler:NULL];
@@ -266,7 +274,6 @@
             [self.delegate clickSendOffLineTicket];
         }
     }]];
-    
     
     [leaveOrTicket showWithSender:nil controller:nil animated:YES completion:NULL];
     

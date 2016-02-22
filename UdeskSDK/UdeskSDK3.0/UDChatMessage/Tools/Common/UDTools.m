@@ -7,7 +7,6 @@
 //
 
 #import "UDTools.h"
-#import "Reachability.h"
 
 #define MAXIMAGESIZE    300
 
@@ -141,55 +140,6 @@
     [[NSScanner scannerWithString:bString] scanHexInt:&b];
     
     return [UIColor colorWithRed:((float) r / 255.0f) green:((float) g / 255.0f) blue:((float) b / 255.0f) alpha:1.0f];
-}
-
-//同步获取网络状态
-+ (NSString *)internetStatus {
-    
-    Reachability *reachability   = [Reachability reachabilityWithHostName:@"www.baidu.com"];
-    NetworkStatus internetStatus = [reachability currentReachabilityStatus];
-    
-    NSString *net = nil;
-    switch (internetStatus) {
-        case ReachableViaWiFi:
-            net = @"wifi";
-            break;
-            
-        case ReachableViaWWAN:
-            net = @"WWAN";
-            break;
-            
-        case NotReachable:
-            net = @"notReachable";
-            
-        default:
-            break;
-    }
-    
-    return net;
-}
-
-+ (void)receiveNetwork:(void(^)(Reachability *reachability))completion {
-
-    Reachability *networkReach = [Reachability reachabilityWithHostname:@"www.baidu.com"];
-    
-    networkReach.reachableBlock = ^(Reachability *reachability)
-    {
-        
-        if (completion) {
-            completion(reachability);
-        }
-        
-    };
-    
-    networkReach.unreachableBlock = ^(Reachability *reachability)
-    {
-        if (completion) {
-            completion(reachability);
-        }
-    };
-    
-    [networkReach startNotifier];
 }
 
 //随机生成唯一标示

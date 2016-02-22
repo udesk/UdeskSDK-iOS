@@ -189,9 +189,9 @@
 #pragma makr - 根据网络状态变化做事
 - (void)networkStatusChange {
     
-    [UDTools receiveNetwork:^(Reachability *reachability) {
+    [UDManager receiveNetwork:^(UDNetworkStatus reachability) {
         
-        if (reachability.currentReachabilityStatus == NotReachable) {
+        if (reachability == UDNotReachable) {
             
             networkSwitch = YES;
             [self setNetWorkStatusChangeUI:NO];
@@ -203,7 +203,7 @@
                 [self setNetWorkStatusChangeUI:YES];
             }
         }
-        
+
     }];
     
 }

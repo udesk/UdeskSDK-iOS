@@ -18,7 +18,6 @@
 		4426E9541C5B143D005A5011 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4426E9531C5B143D005A5011 /* libxml2.tbd */; };
 		4426E9561C5B1442005A5011 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4426E9551C5B1442005A5011 /* libz.tbd */; };
 		4426EA111C5B1714005A5011 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4426EA101C5B1714005A5011 /* JavaScriptCore.framework */; };
-		44891F301C75699000557D2E /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44891F2F1C75699000557D2E /* libUdesk.a */; };
 		44891F381C7569BA00557D2E /* UDOneScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F331C7569BA00557D2E /* UDOneScrollView.m */; };
 		44891F391C7569BA00557D2E /* UDPhotoManeger.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F351C7569BA00557D2E /* UDPhotoManeger.m */; };
 		44891F3A1C7569BA00557D2E /* UDPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F371C7569BA00557D2E /* UDPhotoView.m */; };
@@ -66,11 +65,11 @@
 		449354FE1C5F40F300236FC7 /* UDMessageBubbleFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354B91C5F40F300236FC7 /* UDMessageBubbleFactory.m */; };
 		449354FF1C5F40F300236FC7 /* UDMessageVoiceFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354BB1C5F40F300236FC7 /* UDMessageVoiceFactory.m */; };
 		449355031C5F40F300236FC7 /* PSTAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354C61C5F40F300236FC7 /* PSTAlertController.m */; };
-		449355041C5F40F300236FC7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354C91C5F40F300236FC7 /* Reachability.m */; };
 		449355051C5F40F300236FC7 /* YYCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354CC1C5F40F300236FC7 /* YYCache.m */; };
 		449355061C5F40F300236FC7 /* YYDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354CE1C5F40F300236FC7 /* YYDiskCache.m */; };
 		449355071C5F40F300236FC7 /* YYKVStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354D01C5F40F300236FC7 /* YYKVStorage.m */; };
 		449355081C5F40F300236FC7 /* YYMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354D21C5F40F300236FC7 /* YYMemoryCache.m */; };
+		44BA16061C7718E000D3EE2E /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44BA16051C7718E000D3EE2E /* libUdesk.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,7 +89,6 @@
 		4426E9551C5B1442005A5011 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		4426E9571C5B148C005A5011 /* UdeskPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UdeskPrefixHeader.pch; sourceTree = "<group>"; };
 		4426EA101C5B1714005A5011 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		44891F2F1C75699000557D2E /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
 		44891F321C7569BA00557D2E /* UDOneScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDOneScrollView.h; sourceTree = "<group>"; };
 		44891F331C7569BA00557D2E /* UDOneScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDOneScrollView.m; sourceTree = "<group>"; };
 		44891F341C7569BA00557D2E /* UDPhotoManeger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPhotoManeger.h; sourceTree = "<group>"; };
@@ -185,8 +183,6 @@
 		449354BB1C5F40F300236FC7 /* UDMessageVoiceFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDMessageVoiceFactory.m; sourceTree = "<group>"; };
 		449354C51C5F40F300236FC7 /* PSTAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSTAlertController.h; sourceTree = "<group>"; };
 		449354C61C5F40F300236FC7 /* PSTAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTAlertController.m; sourceTree = "<group>"; };
-		449354C81C5F40F300236FC7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
-		449354C91C5F40F300236FC7 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		449354CB1C5F40F300236FC7 /* YYCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYCache.h; sourceTree = "<group>"; };
 		449354CC1C5F40F300236FC7 /* YYCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYCache.m; sourceTree = "<group>"; };
 		449354CD1C5F40F300236FC7 /* YYDiskCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYDiskCache.h; sourceTree = "<group>"; };
@@ -195,6 +191,7 @@
 		449354D01C5F40F300236FC7 /* YYKVStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYKVStorage.m; sourceTree = "<group>"; };
 		449354D11C5F40F300236FC7 /* YYMemoryCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYMemoryCache.h; sourceTree = "<group>"; };
 		449354D21C5F40F300236FC7 /* YYMemoryCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYMemoryCache.m; sourceTree = "<group>"; };
+		44BA16051C7718E000D3EE2E /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,7 +203,7 @@
 				4426E9561C5B1442005A5011 /* libz.tbd in Frameworks */,
 				4426E9541C5B143D005A5011 /* libxml2.tbd in Frameworks */,
 				4426E9521C5B1437005A5011 /* libresolv.tbd in Frameworks */,
-				44891F301C75699000557D2E /* libUdesk.a in Frameworks */,
+				44BA16061C7718E000D3EE2E /* libUdesk.a in Frameworks */,
 				4426E9501C5B1410005A5011 /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -287,6 +284,7 @@
 		4493544D1C5F40F300236FC7 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				44BA16051C7718E000D3EE2E /* libUdesk.a */,
 				4493544E1C5F40F300236FC7 /* Localizable.strings */,
 				4493544F1C5F40F300236FC7 /* UDEmojiList.plist */,
 				449354501C5F40F300236FC7 /* UdeskBundle.bundle */,
@@ -297,7 +295,6 @@
 		449354521C5F40F300236FC7 /* SDK */ = {
 			isa = PBXGroup;
 			children = (
-				44891F2F1C75699000557D2E /* libUdesk.a */,
 				449354541C5F40F300236FC7 /* UDManager.h */,
 				449354551C5F40F300236FC7 /* UDMessage.h */,
 			);
@@ -558,7 +555,6 @@
 			children = (
 				44891F311C7569BA00557D2E /* UDPhotoViewer */,
 				449354C41C5F40F300236FC7 /* PSTAlertController */,
-				449354C71C5F40F300236FC7 /* Reachability */,
 				449354CA1C5F40F300236FC7 /* YYCache */,
 			);
 			path = Vendor;
@@ -571,15 +567,6 @@
 				449354C61C5F40F300236FC7 /* PSTAlertController.m */,
 			);
 			path = PSTAlertController;
-			sourceTree = "<group>";
-		};
-		449354C71C5F40F300236FC7 /* Reachability */ = {
-			isa = PBXGroup;
-			children = (
-				449354C81C5F40F300236FC7 /* Reachability.h */,
-				449354C91C5F40F300236FC7 /* Reachability.m */,
-			);
-			path = Reachability;
 			sourceTree = "<group>";
 		};
 		449354CA1C5F40F300236FC7 /* YYCache */ = {
@@ -680,7 +667,6 @@
 				449354DB1C5F40F300236FC7 /* UDProblemModel.m in Sources */,
 				449354FA1C5F40F300236FC7 /* UDTools.m in Sources */,
 				44891F381C7569BA00557D2E /* UDOneScrollView.m in Sources */,
-				449355041C5F40F300236FC7 /* Reachability.m in Sources */,
 				449354DC1C5F40F300236FC7 /* UDChatViewController.m in Sources */,
 				449355031C5F40F300236FC7 /* PSTAlertController.m in Sources */,
 				449354E31C5F40F300236FC7 /* UDAgentViewModel.m in Sources */,
@@ -789,7 +775,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "2c08ecb0-9ec5-4f49-b6f2-d43f853d1b59";
+				PROVISIONING_PROFILE = "d080b49d-83bf-4131-800f-8e20c899fb40";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -830,7 +816,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "2c08ecb0-9ec5-4f49-b6f2-d43f853d1b59";
+				PROVISIONING_PROFILE = "d080b49d-83bf-4131-800f-8e20c899fb40";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -842,6 +828,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PREFIX_HEADER = UdeskSDK/UdeskPrefixHeader.pch;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
@@ -850,10 +838,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/UdeskSDK/SDK3.0",
-					"$(PROJECT_DIR)/UdeskSDK/Udesk/SDK3.0",
-					"$(PROJECT_DIR)/UdeskSDK/UDSDK/SDK3.0",
 					"$(PROJECT_DIR)/UdeskSDK/UdeskSDK3.0/SDK",
+					"$(PROJECT_DIR)/UdeskSDK/UdeskSDK3.0/Resource",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -861,7 +847,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.UdeskSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2c08ecb0-9ec5-4f49-b6f2-d43f853d1b59";
+				PROVISIONING_PROFILE = "d080b49d-83bf-4131-800f-8e20c899fb40";
 			};
 			name = Debug;
 		};
@@ -871,6 +857,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PREFIX_HEADER = UdeskSDK/UdeskPrefixHeader.pch;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
@@ -879,10 +867,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/UdeskSDK/SDK3.0",
-					"$(PROJECT_DIR)/UdeskSDK/Udesk/SDK3.0",
-					"$(PROJECT_DIR)/UdeskSDK/UDSDK/SDK3.0",
 					"$(PROJECT_DIR)/UdeskSDK/UdeskSDK3.0/SDK",
+					"$(PROJECT_DIR)/UdeskSDK/UdeskSDK3.0/Resource",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -890,7 +876,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.UdeskSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2c08ecb0-9ec5-4f49-b6f2-d43f853d1b59";
+				PROVISIONING_PROFILE = "d080b49d-83bf-4131-800f-8e20c899fb40";
 			};
 			name = Release;
 		};

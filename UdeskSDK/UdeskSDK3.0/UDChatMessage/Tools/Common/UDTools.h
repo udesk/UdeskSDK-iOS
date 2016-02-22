@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Reachability.h"
 #import <AVFoundation/AVFoundation.h>
 
 #import "UDManager.h"
@@ -39,11 +38,6 @@
 
 //判断字符串是否为空
 + (BOOL)isBlankString:(NSString *)string;
-
-//获取网络状态
-+ (NSString *)internetStatus;
-
-+ (void)receiveNetwork:(void(^)(Reachability *reachability))completion;
 
 //16进制换算颜色
 + (UIColor *)colorWithHexString: (NSString *)color;

@@ -377,7 +377,7 @@
     [againMsgController addCloseActionWithTitle:@"取消" Handler:NULL];
     [againMsgController addAction:[PSTAlertAction actionWithTitle:@"确定" handler:^(PSTAlertAction * _Nonnull action) {
         
-        if (![[UDTools internetStatus] isEqualToString:@"notReachable"]) {
+        if (![[UDManager internetStatus] isEqualToString:@"notReachable"]) {
             
             self.messageAgainButton.hidden = YES;
             self.indicatorView.hidden = NO;

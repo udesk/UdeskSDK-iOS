@@ -32,6 +32,14 @@
 //语音最大时长
 #define kVoiceRecorderTotalTime 60.0
 
+
+typedef NS_ENUM(NSInteger, UDNetworkStatus) {
+    // Apple NetworkStatus Compatible Names.
+    UDNotReachable = 0,
+    UDReachableViaWiFi = 2,
+    UDReachableViaWWAN = 1
+};
+
 @protocol UDManagerDelegate <NSObject>
 
 /**
@@ -123,12 +131,17 @@
    receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
 
 /**
- *  设置客户离线 (在用户点击home键后调用此方法)
+ *  退出Udesk
+ */
++ (void)logoutUdesk;
+
+/**
+ *  设置客户离线
  */
 + (void)setCustomerOffline;
 
 /**
- *  设置客户在线 (在用户将要进入app的时候调用此方法)
+ *  设置客户在线
  */
 + (void)setCustomerOnline;
 
@@ -161,7 +174,7 @@
  *  @param completion 回调提交状态
  */
 + (void)submitCustomerDevicesInfo:(NSString *)customerId
-                        completion:(void (^)(id responseObject, NSError *error))completion;
+                       completion:(void (^)(id responseObject, NSError *error))completion;
 
 /**
  *  获取公司帮助中心文章
@@ -186,7 +199,7 @@
  *  @param completion 回调搜索信息
  */
 + (void)searchFaqArticles:(NSString *)content
-                   completion:(void (^)(id responseObject, NSError *error))completion;
+               completion:(void (^)(id responseObject, NSError *error))completion;
 
 /**
  *  获取提交工单URL
@@ -269,5 +282,19 @@
  *  @return 是否支持转移
  */
 + (BOOL)supportTransfer;
+
+/**
+ *  同步获取网络状态
+ *
+ *  @return 返回网络状态
+ */
++ (NSString *)internetStatus;
+
+/**
+ *  异步获取网络状态
+ *
+ *  @param completion call back网络状态
+ */
++ (void)receiveNetwork:(void(^)(UDNetworkStatus reachability))completion;
 
 @end
