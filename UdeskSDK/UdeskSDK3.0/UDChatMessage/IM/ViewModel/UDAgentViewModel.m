@@ -27,11 +27,6 @@
         agentModel.message = describeTieleStr;
         
     }
-    
-    if (code!=2000 && code != 2001 && code != 2002) {
-    
-        agentModel.message = @"客服不在线！";
-    }
 
     self.agentModel = agentModel;
     

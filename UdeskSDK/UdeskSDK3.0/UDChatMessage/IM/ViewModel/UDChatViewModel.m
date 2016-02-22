@@ -199,18 +199,21 @@
 #pragma mark - UDManagerDelegate
 - (void)didReceiveMessages:(NSDictionary *)message {
     
+    UDReceiveChatMsg *receiveMessage = UDReceiveChatMsg.store;
+    WEAKSELF
+    //消息类型为转移的回调，代理传给VC
+    receiveMessage.udAgentBlock = ^(UDAgentModel *agentModel){
+        
+        if ([self.delegate respondsToSelector:@selector(notificationRedirect:)]) {
+            [self.delegate notificationRedirect:agentModel];
+        }
+    };
+    
     NSDictionary *messageDic = [UDTools dictionaryWithJsonString:[message objectForKey:@"strContent"]];
     
-    WEAKSELF
     //解析消息创建消息体并添加到数组
-    [UDReceiveChatMsg.store resolveChatMsg:messageDic callbackMsg:^(UDMessage *message) {
+    [receiveMessage resolveChatMsg:messageDic callbackMsg:^(UDMessage *message) {
         
-        if (message.messageType == UDMessageMediaTypeRedirect) {
-            if ([self.delegate respondsToSelector:@selector(notificationRedirect:)]) {
-                [self.delegate notificationRedirect:messageDic];
-            }
-        }
-
         [weakSelf.messageArray addObject:message];
         
         [self reloadChatTableView];

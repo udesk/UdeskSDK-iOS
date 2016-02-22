@@ -13,6 +13,7 @@
 @class UDMessageTableView;
 @class UDMessageInputView;
 @class UDEmotionManagerView;
+@class UDAgentModel;
 
 @protocol UDChatViewModelDelegate <NSObject>
 
@@ -35,7 +36,7 @@
  *
  *  @param agentMsg 转接客服信息
  */
-- (void)notificationRedirect:(NSDictionary *)agentMsg;
+- (void)notificationRedirect:(UDAgentModel *)agentModel;
 
 @end
 
