@@ -105,7 +105,7 @@
 - (void)resaueRecord {
     [self configRecoding:NO];
     
-    self.remindLabel.backgroundColor = RGBACOLOR(1.0f, 0.0f, 0.0f, 0.630);
+    self.remindLabel.backgroundColor = UDRGBACOLOR(1.0f, 0.0f, 0.0f, 0.630);
     self.remindLabel.text = @"松开手指，取消发送";
 }
 

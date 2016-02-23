@@ -265,7 +265,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
         // 1、是否显示Time Line的label
         if (!_timestampLabel) {
             
-            UILabel *timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kUDLabelPadding, MDK_SCREEN_WIDTH, kUDTimeStampLabelHeight)];
+            UILabel *timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kUDLabelPadding, UD_SCREEN_WIDTH, kUDTimeStampLabelHeight)];
             timestampLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin;
             timestampLabel.textColor = Config.chatTimeColor;
             timestampLabel.font = [UIFont systemFontOfSize:Config.timeFontSize];

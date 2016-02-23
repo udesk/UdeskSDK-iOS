@@ -97,7 +97,7 @@
     multiMediaSendButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     [multiMediaSendButton addTarget:self action:@selector(messageStyleButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     multiMediaSendButton.tag = 22;
-    multiMediaSendButton.frame = CGRectMake(MDK_SCREEN_WIDTH-7-ViewHeight, (self.frame.size.height-ViewHeight)/2, ViewHeight, ViewHeight);
+    multiMediaSendButton.frame = CGRectMake(UD_SCREEN_WIDTH-7-ViewHeight, (self.frame.size.height-ViewHeight)/2, ViewHeight, ViewHeight);
     [self addSubview:multiMediaSendButton];
     
     self.multiMediaSendButton = multiMediaSendButton;
@@ -139,7 +139,7 @@
     
     // 如果是可以发送语音的，那就需要一个按钮录音的按钮，事件可以在外部添加
     UIEdgeInsets edgeInsets = UIEdgeInsetsMake(9, 9, 9, 9);
-    UIButton *holdDownButton = [self createButtonWithImage:XH_STRETCH_IMAGE([UIImage imageWithContentsOfFile:getMyBundlePath(@"chat_message_back.png")], edgeInsets) HLImage:XH_STRETCH_IMAGE([UIImage imageWithContentsOfFile:getMyBundlePath(@"chat_message_backH.png")], edgeInsets)];
+    UIButton *holdDownButton = [self createButtonWithImage:UD_STRETCH_IMAGE([UIImage imageWithContentsOfFile:getMyBundlePath(@"chat_message_back.png")], edgeInsets) HLImage:UD_STRETCH_IMAGE([UIImage imageWithContentsOfFile:getMyBundlePath(@"chat_message_backH.png")], edgeInsets)];
     [holdDownButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
     [holdDownButton setTitle:@"按住 说话" forState:UIControlStateNormal];
     [holdDownButton setTitle:@"松开 结束"  forState:UIControlStateHighlighted];
@@ -277,10 +277,10 @@
     self.isCancelled = NO;
     self.isRecording = NO;
     if ([self.delegate respondsToSelector:@selector(prepareRecordingVoiceActionWithCompletion:)]) {
-        WEAKSELF
+        UDWEAKSELF
         //这边回调 return 的 YES, 或 NO, 可以让底层知道该次录音是否成功, 今儿处理无用的 record 对象
         [self.delegate prepareRecordingVoiceActionWithCompletion:^BOOL{
-            STRONGSELF
+            UDSTRONGSELF
             //这边要判断回调回来的时候, 使用者是不是已经早就松开手了
             if (strongSelf && !strongSelf.isCancelled) {
                 strongSelf.isRecording = YES;

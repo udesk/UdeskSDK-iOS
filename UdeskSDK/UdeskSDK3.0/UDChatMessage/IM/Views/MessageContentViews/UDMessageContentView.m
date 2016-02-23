@@ -34,7 +34,7 @@
 // 计算文本实际的大小
 + (CGSize)neededSizeForText:(NSString *)text {
     
-    CGSize textSize = [UDGeneral.store textSize:text fontOfSize:[UIFont systemFontOfSize:Config.contentFontSize] ToSize:CGSizeMake(MDK_SCREEN_WIDTH>320?235:180, CGFLOAT_MAX)];
+    CGSize textSize = [UDGeneral.store textSize:text fontOfSize:[UIFont systemFontOfSize:Config.contentFontSize] ToSize:CGSizeMake(UD_SCREEN_WIDTH>320?235:180, CGFLOAT_MAX)];
 
     return CGSizeMake(textSize.width, textSize.height);
 }
@@ -373,9 +373,9 @@
 //消息重发
 - (void)againButtonAction {
     
-    PSTAlertController *againMsgController = [PSTAlertController alertWithTitle:nil message:NSLocalizedString(@"重发该消息？", @"")];
+    UDAlertController *againMsgController = [UDAlertController alertWithTitle:nil message:NSLocalizedString(@"重发该消息？", @"")];
     [againMsgController addCloseActionWithTitle:@"取消" Handler:NULL];
-    [againMsgController addAction:[PSTAlertAction actionWithTitle:@"确定" handler:^(PSTAlertAction * _Nonnull action) {
+    [againMsgController addAction:[UDAlertAction actionWithTitle:@"确定" handler:^(UDAlertAction * _Nonnull action) {
         
         if (![[UDManager internetStatus] isEqualToString:@"notReachable"]) {
             
@@ -388,7 +388,7 @@
         }
         else {
             
-            PSTAlertController *notNetWork = [PSTAlertController alertWithTitle:nil message:NSLocalizedString(@"没有网络连接！", @"")];
+            UDAlertController *notNetWork = [UDAlertController alertWithTitle:nil message:NSLocalizedString(@"没有网络连接！", @"")];
             [notNetWork addCloseActionWithTitle:@"取消" Handler:NULL];
             [notNetWork showWithSender:nil controller:nil animated:YES completion:NULL];
             

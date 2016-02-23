@@ -23,7 +23,7 @@
 #import "UDGeneral.h"
 #import "UDConfig.h"
 #import "UIViewExt.h"
-#import "PSTAlertController.h"
+#import "UDAlertController.h"
 #import "YYCache.h"
 
 #define  Config [UDConfig sharedUDConfig]

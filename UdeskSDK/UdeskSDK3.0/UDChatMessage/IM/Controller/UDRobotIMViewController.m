@@ -30,7 +30,7 @@
         
         if (robotUrl) {
             
-            UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, MDK_SCREEN_WIDTH, MDK_SCREEN_HEIGHT-64)];
+            UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64)];
             intelligenceWeb.backgroundColor=[UIColor whiteColor];
             
             NSURL *ticketURL = robotUrl;
@@ -43,8 +43,8 @@
             
         } else {
             
-            PSTAlertController *leaveOrTicket = [PSTAlertController alertWithTitle:nil message:@"没有开通机器人"];
-            [leaveOrTicket addCloseActionWithTitle:@"确定" Handler:^(PSTAlertAction * _Nonnull action) {
+            UDAlertController *leaveOrTicket = [UDAlertController alertWithTitle:nil message:@"没有开通机器人"];
+            [leaveOrTicket addCloseActionWithTitle:@"确定" Handler:^(UDAlertAction * _Nonnull action) {
                 
                 [self.navigationController popViewControllerAnimated:YES];
             }];

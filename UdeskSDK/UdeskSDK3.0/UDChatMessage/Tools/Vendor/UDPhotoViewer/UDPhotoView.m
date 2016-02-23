@@ -38,7 +38,7 @@
     oneScroll.mydelegate = self;
     //自己是数组中第几个图
     //设置位置并添加
-    oneScroll.frame = CGRectMake(Gap , 0 ,MDK_SCREEN_WIDTH, MDK_SCREEN_HEIGHT);
+    oneScroll.frame = CGRectMake(Gap , 0 ,UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT);
     [self addSubview:oneScroll];
     
     [oneScroll setLocalImage:photoImageView withImageMessage:message];

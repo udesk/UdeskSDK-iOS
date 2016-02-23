@@ -43,7 +43,7 @@
     if (_viewModel.agentModel.code == 2000) {
         
         if ([UDTools isBlankString:text]) {
-            PSTAlertController *notOnline = [PSTAlertController alertWithTitle:nil message:@"不能发送空白消息"];
+            UDAlertController *notOnline = [UDAlertController alertWithTitle:nil message:@"不能发送空白消息"];
             [notOnline addCloseActionWithTitle:@"确定" Handler:nil];
             [notOnline showWithSender:nil controller:nil animated:YES completion:NULL];
             
@@ -201,7 +201,7 @@
     
     NSDictionary *messageDic = [UDTools dictionaryWithJsonString:[message objectForKey:@"strContent"]];
     
-    WEAKSELF
+    UDWEAKSELF
     //解析消息创建消息体并添加到数组
     [UDReceiveChatMsg.store resolveChatMsg:messageDic callbackMsg:^(UDMessage *message) {
         
@@ -235,9 +235,9 @@
 - (void)queueStatus {
     
     NSString *ticketButtonTitle = NSLocalizedString(@"留言",@"");
-    PSTAlertController *queueAlert = [PSTAlertController alertWithTitle:nil message:@"当前客服正繁忙，如需留言请点击按钮进入表单留言"];
+    UDAlertController *queueAlert = [UDAlertController alertWithTitle:nil message:@"当前客服正繁忙，如需留言请点击按钮进入表单留言"];
     [queueAlert addCloseActionWithTitle:@"取消" Handler:NULL];
-    [queueAlert addAction:[PSTAlertAction actionWithTitle:ticketButtonTitle handler:^(PSTAlertAction * _Nonnull action) {
+    [queueAlert addAction:[UDAlertAction actionWithTitle:ticketButtonTitle handler:^(UDAlertAction * _Nonnull action) {
         
         if ([self.delegate respondsToSelector:@selector(clickSendOffLineTicket)]) {
             [self.delegate clickSendOffLineTicket];
@@ -251,7 +251,7 @@
 //非法创建用户Alert
 - (void)notCustomer {
     
-    PSTAlertController *notCustomerAlert = [PSTAlertController alertWithTitle:nil message:_viewModel.agentModel.message];
+    UDAlertController *notCustomerAlert = [UDAlertController alertWithTitle:nil message:_viewModel.agentModel.message];
     [notCustomerAlert addCloseActionWithTitle:@"确定" Handler:NULL];
     [notCustomerAlert showWithSender:nil controller:nil animated:YES completion:NULL];
     
@@ -265,10 +265,10 @@
     NSString *cancelButtonTitle = NSLocalizedString(@"取消", @"");
     NSString *ticketButtonTitle = NSLocalizedString(@"留言",@"");
     
-    PSTAlertController *leaveOrTicket = [PSTAlertController alertWithTitle:title message:message];
+    UDAlertController *leaveOrTicket = [UDAlertController alertWithTitle:title message:message];
     [leaveOrTicket addCloseActionWithTitle:cancelButtonTitle Handler:NULL];
     
-    [leaveOrTicket addAction:[PSTAlertAction actionWithTitle:ticketButtonTitle handler:^(PSTAlertAction * _Nonnull action) {
+    [leaveOrTicket addAction:[UDAlertAction actionWithTitle:ticketButtonTitle handler:^(UDAlertAction * _Nonnull action) {
         
         if ([self.delegate respondsToSelector:@selector(clickSendOffLineTicket)]) {
             [self.delegate clickSendOffLineTicket];
@@ -282,7 +282,7 @@
 //无网络Alert
 - (void)netWorkDisconnectAlertView {
     
-    PSTAlertController *leaveOrTicket = [PSTAlertController alertWithTitle:nil message:@"网络断开连接，请先连接网络"];
+    UDAlertController *leaveOrTicket = [UDAlertController alertWithTitle:nil message:@"网络断开连接，请先连接网络"];
     [leaveOrTicket addCloseActionWithTitle:@"确定" Handler:NULL];
     [leaveOrTicket showWithSender:nil controller:nil animated:YES completion:NULL];
 }

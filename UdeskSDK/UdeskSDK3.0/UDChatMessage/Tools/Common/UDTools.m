@@ -157,7 +157,7 @@
     CGSize imageSize;
     
     CGFloat fixedSize;
-    if (MDK_SCREEN_WIDTH>320) {
+    if (UD_SCREEN_WIDTH>320) {
         fixedSize = 130;
     }
     else {

@@ -32,7 +32,7 @@
         [self addGestureRecognizer:tap];
         
         
-        UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, MDK_SCREEN_WIDTH, 25)];
+        UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 25)];
         headView.backgroundColor = [UIColor clearColor];
         
         UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

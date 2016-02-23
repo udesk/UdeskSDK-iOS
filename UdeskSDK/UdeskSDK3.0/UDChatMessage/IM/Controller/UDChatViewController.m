@@ -27,7 +27,7 @@
 #import "UDChatCellViewModel.h"
 #import "UIViewController+KeyboardAnimation.h"
 
-#define UDTitleLength  MDK_SCREEN_WIDTH>320?200:170
+#define UDTitleLength  UD_SCREEN_WIDTH>320?200:170
 
 #define AGENTONLINE @"客服上线了!"
 #define AGENTNOTONLINE @"客服下线了!"
@@ -119,7 +119,7 @@
     
     _messageInputView = inputView;
     
-    UDAgentStatusView *agentStatusView = [[UDAgentStatusView alloc] initWithFrame:CGRectMake((MDK_SCREEN_WIDTH-UDTitleLength)/2, 0, UDTitleLength, 44)];
+    UDAgentStatusView *agentStatusView = [[UDAgentStatusView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-UDTitleLength)/2, 0, UDTitleLength, 44)];
     self.navigationItem.titleView = agentStatusView;
     _agentStatusView = agentStatusView;
     
@@ -298,7 +298,7 @@
     if (!_voiceRecordHelper) {
         _isMaxTimeStop = NO;
         
-        WEAKSELF
+        UDWEAKSELF
         _voiceRecordHelper = [[UDVoiceRecordHelper alloc] init];
         _voiceRecordHelper.maxTimeStopRecorderCompletion = ^{
             
@@ -327,7 +327,7 @@
 - (UDEmotionManagerView *)emotionManagerView {
     
     if (!_emotionManagerView) {
-        UDEmotionManagerView *emotionManagerView = [[UDEmotionManagerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds), CGRectGetWidth(self.view.bounds), MDK_SCREEN_WIDTH<375?200:216)];
+        UDEmotionManagerView *emotionManagerView = [[UDEmotionManagerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds), CGRectGetWidth(self.view.bounds), UD_SCREEN_WIDTH<375?200:216)];
         emotionManagerView.delegate = self;
         emotionManagerView.backgroundColor = [UIColor colorWithWhite:0.961 alpha:1.000];
         emotionManagerView.alpha = 0.0;
@@ -490,7 +490,7 @@
 - (void)sendImageWithSourceType:(UIImagePickerControllerSourceType)sourceType {
 
     //打开图片选择器
-    WEAKSELF
+    UDWEAKSELF
     void (^PickerMediaBlock)(UIImage *image) = ^(UIImage *image) {
         if (image) {
             [weakSelf didSendMessageWithPhoto:image];
@@ -510,7 +510,7 @@
 //取消录音
 - (void)didCancelRecordingVoiceAction {
 
-    WEAKSELF
+    UDWEAKSELF
     [self.voiceRecordHUD cancelRecordCompled:^(BOOL fnished) {
         weakSelf.voiceRecordHUD = nil;
     }];
@@ -542,7 +542,7 @@
 }
 //录音完成
 - (void)finishRecorded {
-    WEAKSELF
+    UDWEAKSELF
     [self.voiceRecordHUD stopRecordCompled:^(BOOL fnished) {
         weakSelf.voiceRecordHUD = nil;
     }];
@@ -581,7 +581,7 @@
     
     [self an_subscribeKeyboardWithBeforeAnimations:nil animations:^(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing) {
         
-        WEAKSELF
+        UDWEAKSELF
         if (self.textViewInputViewType == UDInputViewTypeText) {
             //计算键盘的Y
             CGFloat keyboardY = [weakSelf.view convertRect:keyboardRect fromView:nil].origin.y;

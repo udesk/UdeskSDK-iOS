@@ -25,7 +25,7 @@ static CGFloat EmojiFontSize;
 #pragma mark - Life cycle
 
 - (void)setup {
-    if (MDK_SCREEN_WIDTH<375) {
+    if (UD_SCREEN_WIDTH<375) {
         
         EmojiWidth = 45;
         EmojiHeight = 45;
@@ -102,8 +102,8 @@ static CGFloat EmojiFontSize;
     
     UIButton *sendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [sendBtn setTitle:NSLocalizedString(@"发送", @"") forState:UIControlStateNormal];
-    sendBtn.frame = CGRectMake(MDK_SCREEN_WIDTH-90, MDK_SCREEN_WIDTH<375?150:166, 75, 38);;
-    sendBtn.backgroundColor = RGBACOLOR(8, 125, 253, 1);
+    sendBtn.frame = CGRectMake(UD_SCREEN_WIDTH-90, UD_SCREEN_WIDTH<375?150:166, 75, 38);;
+    sendBtn.backgroundColor = UDRGBACOLOR(8, 125, 253, 1);
     ViewRadius(sendBtn, 4);
     [sendBtn addTarget:self action:@selector(sendAction:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:sendBtn];
@@ -111,7 +111,7 @@ static CGFloat EmojiFontSize;
     
     UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    deleteButton.frame = CGRectMake(sendBtn.frame.origin.x-50, MDK_SCREEN_WIDTH<375?153:169, 36, 33);
+    deleteButton.frame = CGRectMake(sendBtn.frame.origin.x-50, UD_SCREEN_WIDTH<375?153:169, 36, 33);
     deleteButton.titleLabel.font = [UIFont systemFontOfSize:12];
     UIImage *deleteImage = [UIImage imageWithContentsOfFile:getMyBundlePath(@"DeleteEmoticonBtn@2x.png")];
     UIImage *deleteImageh = [UIImage imageWithContentsOfFile:getMyBundlePath(@"DeleteEmoticonBtnHL@2x.png")];

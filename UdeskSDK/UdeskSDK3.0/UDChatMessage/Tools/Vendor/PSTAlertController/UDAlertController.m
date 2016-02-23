@@ -9,29 +9,29 @@
 //  This notice may not be removed from this file.
 //
 
-#import "PSTAlertController.h"
+#import "UDAlertController.h"
 #import <objc/runtime.h>
 
 #define PROPERTY(property) NSStringFromSelector(@selector(property))
 
-@interface PSTAlertAction ()
+@interface UDAlertAction ()
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, assign) PSTAlertActionStyle style;
-@property (nonatomic, copy) void (^handler)(PSTAlertAction *action);
+@property (nonatomic, assign) UDAlertActionStyle style;
+@property (nonatomic, copy) void (^handler)(UDAlertAction *action);
 - (void)performAction;
 @end
 
-@implementation PSTAlertAction
+@implementation UDAlertAction
 
-+ (instancetype)actionWithTitle:(NSString *)title style:(PSTAlertActionStyle)style handler:(void (^)(PSTAlertAction *action))handler {
++ (instancetype)actionWithTitle:(NSString *)title style:(UDAlertActionStyle)style handler:(void (^)(UDAlertAction *action))handler {
     return [[self alloc] initWithTitle:title style:style handler:handler];
 }
 
-+ (instancetype)actionWithTitle:(NSString *)title handler:(void (^)(PSTAlertAction *action))handler {
-    return [[self alloc] initWithTitle:title style:PSTAlertActionStyleDefault handler:handler];
++ (instancetype)actionWithTitle:(NSString *)title handler:(void (^)(UDAlertAction *action))handler {
+    return [[self alloc] initWithTitle:title style:UDAlertActionStyleDefault handler:handler];
 }
 
-- (instancetype)initWithTitle:(NSString *)title style:(PSTAlertActionStyle)style handler:(void (^)(PSTAlertAction *action))handler {
+- (instancetype)initWithTitle:(NSString *)title style:(UDAlertActionStyle)style handler:(void (^)(UDAlertAction *action))handler {
     if ((self = [super init])) {
         _title = [title copy];
         _style = style;
@@ -68,12 +68,12 @@
 
 @end
 
-@interface PSTAlertController () <UIActionSheetDelegate, UIAlertViewDelegate> {
+@interface UDAlertController () <UIActionSheetDelegate, UIAlertViewDelegate> {
     struct {
         unsigned int isShowingAlert:1;
     } _flags;
 }
-- (instancetype)initWithTitle:(NSString *)title message:(NSString *)message preferredStyle:(PSTAlertControllerStyle)preferredStyle NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithTitle:(NSString *)title message:(NSString *)message preferredStyle:(UDAlertControllerStyle)preferredStyle NS_DESIGNATED_INITIALIZER;
 
 @property (nonatomic, copy) NSArray *willDismissBlocks;
 @property (nonatomic, copy) NSArray *didDismissBlocks;
@@ -82,7 +82,7 @@
 @property (nonatomic, strong) PSTExtendedAlertController *alertController;
 
 // Universal
-@property (nonatomic, weak) PSTAlertAction *executedAlertAction;
+@property (nonatomic, weak) UDAlertAction *executedAlertAction;
 
 // iOS 7
 @property (nonatomic, copy) NSArray *actions;
@@ -95,7 +95,7 @@
 @property (nonatomic, weak) UIView *weakSheetStorage;
 @end
 
-@implementation PSTAlertController
+@implementation UDAlertController
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Initialization
@@ -104,7 +104,7 @@
     return [UIAlertController class] != nil; // iOS 8 and later.
 }
 
-+ (instancetype)alertControllerWithTitle:(NSString *)title message:(NSString *)message preferredStyle:(PSTAlertControllerStyle)preferredStyle {
++ (instancetype)alertControllerWithTitle:(NSString *)title message:(NSString *)message preferredStyle:(UDAlertControllerStyle)preferredStyle {
     return [[self alloc] initWithTitle:title message:message preferredStyle:preferredStyle];
 }
 
@@ -112,7 +112,7 @@
     assert(0);
 }
 
-- (instancetype)initWithTitle:(NSString *)title message:(NSString *)message preferredStyle:(PSTAlertControllerStyle)preferredStyle {
+- (instancetype)initWithTitle:(NSString *)title message:(NSString *)message preferredStyle:(UDAlertControllerStyle)preferredStyle {
     if ((self = [super init])) {
         _title = [title copy];
         _message = [message copy];
@@ -122,7 +122,7 @@
             _alertController = [PSTExtendedAlertController alertControllerWithTitle:title message:message preferredStyle:(UIAlertControllerStyle)preferredStyle];
         } else {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 80000
-            if (preferredStyle == PSTAlertControllerStyleActionSheet) {
+            if (preferredStyle == UDAlertControllerStyleActionSheet) {
                 NSString *titleAndMessage = title;
                 if (title && message) {
                     titleAndMessage = [NSString stringWithFormat:@"%@\n%@", title, message];
@@ -187,8 +187,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Adding Actions
 
-- (void)addAction:(PSTAlertAction *)action {
-    NSAssert([action isKindOfClass:PSTAlertAction.class], @"Must be of type PSTAlertAction");
+- (void)addAction:(UDAlertAction *)action {
+    NSAssert([action isKindOfClass:UDAlertAction.class], @"Must be of type PSTAlertAction");
 
     action.alertController = self; // weakly connect
 
@@ -202,19 +202,19 @@
         }];
         [self.alertController addAction:alertAction];
     } else {
-        if (self.preferredStyle == PSTAlertControllerStyleActionSheet) {
+        if (self.preferredStyle == UDAlertControllerStyleActionSheet) {
             NSUInteger currentButtonIndex = [self.actionSheet addButtonWithTitle:action.title];
 
-            if (action.style == PSTAlertActionStyleDestructive) {
+            if (action.style == UDAlertActionStyleDestructive) {
                 self.actionSheet.destructiveButtonIndex = currentButtonIndex;
-            } else if (action.style == PSTAlertActionStyleCancel) {
+            } else if (action.style == UDAlertActionStyleCancel) {
                 self.actionSheet.cancelButtonIndex = currentButtonIndex;
             }
         } else {
             NSUInteger currentButtonIndex = [self.alertView addButtonWithTitle:action.title];
 
             // UIAlertView doesn't support destructive buttons.
-            if (action.style == PSTAlertActionStyleCancel) {
+            if (action.style == UDAlertActionStyleCancel) {
                 self.alertView.cancelButtonIndex = currentButtonIndex;
             }
         }
@@ -237,7 +237,7 @@
 - (NSArray *)textFields {
     if ([self alertControllerAvailable]) {
         return self.alertController.textFields;
-    } else if (self.preferredStyle == PSTAlertControllerStyleAlert) {
+    } else if (self.preferredStyle == UDAlertControllerStyleAlert) {
         switch (self.alertView.alertViewStyle) {
             case UIAlertViewStyleSecureTextInput:
             case UIAlertViewStylePlainTextInput:
@@ -268,7 +268,7 @@ static NSUInteger PSTVisibleAlertsCount = 0;
     if ([self alertControllerAvailable]) {
         return self.alertController.view.window != nil;
     } else {
-        if (self.preferredStyle == PSTAlertControllerStyleActionSheet) {
+        if (self.preferredStyle == UDAlertControllerStyleActionSheet) {
             return self.actionSheet.isVisible;
         } else {
             return self.alertView.isVisible;
@@ -283,7 +283,7 @@ static NSUInteger PSTVisibleAlertsCount = 0;
 - (void)showWithSender:(id)sender arrowDirection:(UIPopoverArrowDirection)arrowDirection controller:(UIViewController *)controller animated:(BOOL)animated completion:(void (^)(void))completion {
     if ([self alertControllerAvailable]) {
         // As a convenience, allow automatic root view controller fetching if we show an alert.
-        if (self.preferredStyle == PSTAlertControllerStyleAlert) {
+        if (self.preferredStyle == UDAlertControllerStyleAlert) {
             if (!controller) {
                 // sharedApplication is unavailable for extensions, but required for things like preferredContentSizeCategory.
                 UIApplication *sharedApplication = [UIApplication performSelector:NSSelectorFromString(PROPERTY(sharedApplication))];
@@ -363,7 +363,7 @@ static NSUInteger PSTVisibleAlertsCount = 0;
         }];
 
     } else {
-        if (self.preferredStyle == PSTAlertControllerStyleActionSheet) {
+        if (self.preferredStyle == UDAlertControllerStyleActionSheet) {
             [self showActionSheetWithSender:sender fallbackView:controller.view animated:animated];
             [self moveSheetToWeakStorage];
         } else {
@@ -417,9 +417,9 @@ static NSUInteger PSTVisibleAlertsCount = 0;
     } else {
         // Make sure the completion block is called.
         if (completion) {
-            [self addDidDismissBlock:^(PSTAlertAction *action) { completion(); }];
+            [self addDidDismissBlock:^(UDAlertAction *action) { completion(); }];
         }
-        if (self.preferredStyle == PSTAlertControllerStyleActionSheet) {
+        if (self.preferredStyle == UDAlertControllerStyleActionSheet) {
             [self.actionSheet dismissWithClickedButtonIndex:self.actionSheet.cancelButtonIndex animated:animated];
         } else {
             [self.alertView dismissWithClickedButtonIndex:self.alertView.cancelButtonIndex animated:animated];
@@ -431,7 +431,7 @@ static NSUInteger PSTVisibleAlertsCount = 0;
     if ([self alertControllerAvailable]) {
         return self.alertController;
     } else {
-        if (self.preferredStyle == PSTAlertControllerStyleActionSheet) {
+        if (self.preferredStyle == UDAlertControllerStyleActionSheet) {
             return self.actionSheet;
         } else {
             return self.alertView;
@@ -442,12 +442,12 @@ static NSUInteger PSTVisibleAlertsCount = 0;
 ///////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Will/Did Dismiss Observers
 
-- (void)addWillDismissBlock:(void (^)(PSTAlertAction *action))willDismissBlock {
+- (void)addWillDismissBlock:(void (^)(UDAlertAction *action))willDismissBlock {
     NSParameterAssert(willDismissBlock);
     self.willDismissBlocks = [[NSArray arrayWithArray:self.willDismissBlocks] arrayByAddingObject:willDismissBlock];
 }
 
-- (void)addDidDismissBlock:(void (^)(PSTAlertAction *action))didDismissBlock {
+- (void)addDidDismissBlock:(void (^)(UDAlertAction *action))didDismissBlock {
     NSParameterAssert(didDismissBlock);
     self.didDismissBlocks = [[NSArray arrayWithArray:self.didDismissBlocks] arrayByAddingObject:didDismissBlock];
 }
@@ -466,22 +466,22 @@ static NSUInteger PSTVisibleAlertsCount = 0;
 ///////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Execute Actions
 
-- (PSTAlertAction *)actionForButtonIndex:(NSInteger)index {
+- (UDAlertAction *)actionForButtonIndex:(NSInteger)index {
     return index >= 0 ? self.actions[index] : nil;
 }
 
-- (void)performBlocks:(NSString *)blocksStorageName withAction:(PSTAlertAction *)alertAction {
+- (void)performBlocks:(NSString *)blocksStorageName withAction:(UDAlertAction *)alertAction {
     // Load variable and nil out.
     NSArray *blocks = [self valueForKey:blocksStorageName];
     [self setValue:nil forKey:blocksStorageName];
 
-    for (void (^block)(PSTAlertAction *action) in blocks) {
+    for (void (^block)(UDAlertAction *action) in blocks) {
         block(alertAction);
     }
 }
 
 - (void)viewWillDismissWithButtonIndex:(NSInteger)buttonIndex {
-    PSTAlertAction *action = [self actionForButtonIndex:buttonIndex];
+    UDAlertAction *action = [self actionForButtonIndex:buttonIndex];
     self.executedAlertAction = action;
 
     [self performBlocks:PROPERTY(willDismissBlocks) withAction:action];
@@ -491,7 +491,7 @@ static NSUInteger PSTVisibleAlertsCount = 0;
 }
 
 - (void)viewDidDismissWithButtonIndex:(NSInteger)buttonIndex {
-    PSTAlertAction *action = [self actionForButtonIndex:buttonIndex];
+    UDAlertAction *action = [self actionForButtonIndex:buttonIndex];
     [action performAction];
 
     [self performBlocks:PROPERTY(didDismissBlocks) withAction:action];
@@ -522,23 +522,23 @@ static NSUInteger PSTVisibleAlertsCount = 0;
 
 @end
 
-@implementation PSTAlertController (Convenience)
+@implementation UDAlertController (Convenience)
 
-+ (instancetype)actionWithTitle:(NSString *)title handler:(void (^)(PSTAlertAction *action))handler {
-    return [[self alloc] initWithTitle:title style:PSTAlertActionStyleDefault handler:handler];
++ (instancetype)actionWithTitle:(NSString *)title handler:(void (^)(UDAlertAction *action))handler {
+    return [[self alloc] initWithTitle:title style:UDAlertActionStyleDefault handler:handler];
 }
 
 + (instancetype)alertWithTitle:(NSString *)title message:(NSString *)message {
-    return [[self alloc] initWithTitle:title message:message preferredStyle:PSTAlertControllerStyleAlert];
+    return [[self alloc] initWithTitle:title message:message preferredStyle:UDAlertControllerStyleAlert];
 }
 
 + (instancetype)actionSheetWithTitle:(NSString *)title {
-    return [[self alloc] initWithTitle:title message:nil preferredStyle:PSTAlertControllerStyleActionSheet];
+    return [[self alloc] initWithTitle:title message:nil preferredStyle:UDAlertControllerStyleActionSheet];
 }
 
 + (instancetype)presentDismissableAlertWithTitle:(NSString *)title message:(NSString *)message controller:(UIViewController *)controller {
-    PSTAlertController *alertController = [self alertWithTitle:title message:message];
-    [alertController addAction:[PSTAlertAction actionWithTitle:NSLocalizedString(@"Dismiss", @"") style:PSTAlertActionStyleCancel handler:NULL]];
+    UDAlertController *alertController = [self alertWithTitle:title message:message];
+    [alertController addAction:[UDAlertAction actionWithTitle:NSLocalizedString(@"Dismiss", @"") style:UDAlertActionStyleCancel handler:NULL]];
     [alertController showWithSender:nil controller:controller animated:YES completion:NULL];
     return alertController;
 }
@@ -552,8 +552,8 @@ static NSUInteger PSTVisibleAlertsCount = 0;
     return [self presentDismissableAlertWithTitle:title message:message controller:controller];
 }
 
-- (void)addCloseActionWithTitle:(NSString *)title Handler:(void (^ __nullable)(PSTAlertAction *action))handler {
-    [self addAction:[PSTAlertAction actionWithTitle:NSLocalizedString(title, @"") style:PSTAlertActionStyleCancel handler:handler]];
+- (void)addCloseActionWithTitle:(NSString *)title Handler:(void (^ __nullable)(UDAlertAction *action))handler {
+    [self addAction:[UDAlertAction actionWithTitle:NSLocalizedString(title, @"") style:UDAlertActionStyleCancel handler:handler]];
 }
 
 @end

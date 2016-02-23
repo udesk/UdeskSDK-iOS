@@ -64,7 +64,7 @@
 		449354FD1C5F40F300236FC7 /* UIViewExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354B61C5F40F300236FC7 /* UIViewExt.m */; };
 		449354FE1C5F40F300236FC7 /* UDMessageBubbleFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354B91C5F40F300236FC7 /* UDMessageBubbleFactory.m */; };
 		449354FF1C5F40F300236FC7 /* UDMessageVoiceFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354BB1C5F40F300236FC7 /* UDMessageVoiceFactory.m */; };
-		449355031C5F40F300236FC7 /* PSTAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354C61C5F40F300236FC7 /* PSTAlertController.m */; };
+		449355031C5F40F300236FC7 /* UDAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354C61C5F40F300236FC7 /* UDAlertController.m */; };
 		449355051C5F40F300236FC7 /* YYCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354CC1C5F40F300236FC7 /* YYCache.m */; };
 		449355061C5F40F300236FC7 /* YYDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354CE1C5F40F300236FC7 /* YYDiskCache.m */; };
 		449355071C5F40F300236FC7 /* YYKVStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354D01C5F40F300236FC7 /* YYKVStorage.m */; };
@@ -181,8 +181,8 @@
 		449354B91C5F40F300236FC7 /* UDMessageBubbleFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDMessageBubbleFactory.m; sourceTree = "<group>"; };
 		449354BA1C5F40F300236FC7 /* UDMessageVoiceFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDMessageVoiceFactory.h; sourceTree = "<group>"; };
 		449354BB1C5F40F300236FC7 /* UDMessageVoiceFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDMessageVoiceFactory.m; sourceTree = "<group>"; };
-		449354C51C5F40F300236FC7 /* PSTAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSTAlertController.h; sourceTree = "<group>"; };
-		449354C61C5F40F300236FC7 /* PSTAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTAlertController.m; sourceTree = "<group>"; };
+		449354C51C5F40F300236FC7 /* UDAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDAlertController.h; sourceTree = "<group>"; };
+		449354C61C5F40F300236FC7 /* UDAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDAlertController.m; sourceTree = "<group>"; };
 		449354CB1C5F40F300236FC7 /* YYCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYCache.h; sourceTree = "<group>"; };
 		449354CC1C5F40F300236FC7 /* YYCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYCache.m; sourceTree = "<group>"; };
 		449354CD1C5F40F300236FC7 /* YYDiskCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYDiskCache.h; sourceTree = "<group>"; };
@@ -563,8 +563,8 @@
 		449354C41C5F40F300236FC7 /* PSTAlertController */ = {
 			isa = PBXGroup;
 			children = (
-				449354C51C5F40F300236FC7 /* PSTAlertController.h */,
-				449354C61C5F40F300236FC7 /* PSTAlertController.m */,
+				449354C51C5F40F300236FC7 /* UDAlertController.h */,
+				449354C61C5F40F300236FC7 /* UDAlertController.m */,
 			);
 			path = PSTAlertController;
 			sourceTree = "<group>";
@@ -668,7 +668,7 @@
 				449354FA1C5F40F300236FC7 /* UDTools.m in Sources */,
 				44891F381C7569BA00557D2E /* UDOneScrollView.m in Sources */,
 				449354DC1C5F40F300236FC7 /* UDChatViewController.m in Sources */,
-				449355031C5F40F300236FC7 /* PSTAlertController.m in Sources */,
+				449355031C5F40F300236FC7 /* UDAlertController.m in Sources */,
 				449354E31C5F40F300236FC7 /* UDAgentViewModel.m in Sources */,
 				44891F3A1C7569BA00557D2E /* UDPhotoView.m in Sources */,
 				449354EE1C5F40F300236FC7 /* NSArray+UDUtils.m in Sources */,

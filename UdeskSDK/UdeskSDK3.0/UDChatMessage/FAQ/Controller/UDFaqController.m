@@ -46,7 +46,7 @@
 #pragma mark - 设置标题
 - (void)setNavigationTitleName {
 
-    UILabel *faqLabel = [[UILabel alloc] initWithFrame:CGRectMake((MDK_SCREEN_WIDTH-100)/2, 0, 100, 44)];
+    UILabel *faqLabel = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 0, 100, 44)];
     faqLabel.text = NSLocalizedString(@"常见问题", @"");
     faqLabel.backgroundColor = [UIColor clearColor];
     faqLabel.textAlignment = NSTextAlignmentCenter;
@@ -56,15 +56,15 @@
 #pragma mark - 添加帮助中心TableView和搜索
 - (void)faqTableViewAndSearch {
     
-    _faqTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, MDK_SCREEN_WIDTH, MDK_SCREEN_HEIGHT-44-kStatusBarHeight) style:UITableViewStylePlain];
+    _faqTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-44-kUDStatusBarHeight) style:UITableViewStylePlain];
     _faqTableView.backgroundColor = [UIColor whiteColor];
     _faqTableView.dataSource = self;
     _faqTableView.delegate = self;
     [self.view addSubview:_faqTableView];
     
     
-    UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.f, 0.f,MDK_SCREEN_WIDTH, 44)];
-    searchBar.tintColor = RGBCOLOR(33, 40, 42);
+    UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.f, 0.f,UD_SCREEN_WIDTH, 44)];
+    searchBar.tintColor = UDRGBCOLOR(33, 40, 42);
     
     _faqTableView.tableHeaderView = searchBar;
     

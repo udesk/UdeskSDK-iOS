@@ -41,7 +41,7 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     
-    UILabel *faqLabel = [[UILabel alloc] initWithFrame:CGRectMake((MDK_SCREEN_WIDTH-100)/2, 0, 100, 44)];
+    UILabel *faqLabel = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 0, 100, 44)];
     faqLabel.text = NSLocalizedString(@"问题详情", @"");
     faqLabel.backgroundColor = [UIColor clearColor];
     faqLabel.textAlignment = NSTextAlignmentCenter;
@@ -50,9 +50,9 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    CGSize contentTitleSize = [UDGeneral.store textSize:self.ArticlesTitle fontOfSize:[UIFont systemFontOfSize:17] ToSize:CGSizeMake(MDK_SCREEN_WIDTH, MAXFLOAT)];
+    CGSize contentTitleSize = [UDGeneral.store textSize:self.ArticlesTitle fontOfSize:[UIFont systemFontOfSize:17] ToSize:CGSizeMake(UD_SCREEN_WIDTH, MAXFLOAT)];
     
-    _labelTitle = [[UILabel alloc] initWithFrame:CGRectMake(10, 12, MDK_SCREEN_WIDTH-30, contentTitleSize.height)];
+    _labelTitle = [[UILabel alloc] initWithFrame:CGRectMake(10, 12, UD_SCREEN_WIDTH-30, contentTitleSize.height)];
     _labelTitle.text = self.ArticlesTitle;
     _labelTitle.hidden = YES;
     _labelTitle.textColor = [UIColor blackColor];
@@ -123,7 +123,7 @@
 - (void)loadHtmlContent:(NSString *)htmlString baseUrl:(NSString *)baseUrl {
     
     CGFloat webY = _labelTitle.frame.origin.y+_labelTitle.frame.size.height+5;
-    htmlWebView=[[UIWebView alloc] initWithFrame:CGRectMake(7, webY, MDK_SCREEN_WIDTH-14, self.view.frame.size.height-webY)];
+    htmlWebView=[[UIWebView alloc] initWithFrame:CGRectMake(7, webY, UD_SCREEN_WIDTH-14, self.view.frame.size.height-webY)];
     [htmlWebView setScalesPageToFit:YES];
     htmlWebView.backgroundColor = [UIColor whiteColor];
     htmlWebView.delegate = self;

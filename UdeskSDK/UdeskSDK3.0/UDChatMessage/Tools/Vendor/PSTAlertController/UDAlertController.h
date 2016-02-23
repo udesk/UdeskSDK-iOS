@@ -28,47 +28,47 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSInteger, PSTAlertControllerStyle) {
-    PSTAlertControllerStyleActionSheet = 0,
-    PSTAlertControllerStyleAlert
+typedef NS_ENUM(NSInteger, UDAlertControllerStyle) {
+    UDAlertControllerStyleActionSheet = 0,
+    UDAlertControllerStyleAlert
 };
 
-typedef NS_ENUM(NSInteger, PSTAlertActionStyle) {
-    PSTAlertActionStyleDefault = 0,
-    PSTAlertActionStyleCancel,
-    PSTAlertActionStyleDestructive
+typedef NS_ENUM(NSInteger, UDAlertActionStyle) {
+    UDAlertActionStyleDefault = 0,
+    UDAlertActionStyleCancel,
+    UDAlertActionStyleDestructive
 };
 
-@class PSTAlertController;
+@class UDAlertController;
 
 // Defines a single button/action.
-@interface PSTAlertAction : NSObject
-+ (instancetype)actionWithTitle:(NSString *)title style:(PSTAlertActionStyle)style handler:(void (^ __nullable)(PSTAlertAction *action))handler;
-+ (instancetype)actionWithTitle:(NSString *)title handler:(void (^ __nullable)(PSTAlertAction *action))handler;
-@property (nonatomic, readonly) PSTAlertActionStyle style;
+@interface UDAlertAction : NSObject
++ (instancetype)actionWithTitle:(NSString *)title style:(UDAlertActionStyle)style handler:(void (^ __nullable)(UDAlertAction *action))handler;
++ (instancetype)actionWithTitle:(NSString *)title handler:(void (^ __nullable)(UDAlertAction *action))handler;
+@property (nonatomic, readonly) UDAlertActionStyle style;
 
-@property (nonatomic, weak) PSTAlertController *alertController; // weak connection
+@property (nonatomic, weak) UDAlertController *alertController; // weak connection
 
 @end
 
 // Mashup of UIAlertController with fallback methods for iOS 7.
 // @note Blocks are generally executed after the dismiss animation is completed.
-@interface PSTAlertController : NSObject
+@interface UDAlertController : NSObject
 
 // Generic initializer
-+ (instancetype)alertControllerWithTitle:(nullable NSString *)title message:(nullable NSString *)message preferredStyle:(PSTAlertControllerStyle)preferredStyle;
++ (instancetype)alertControllerWithTitle:(nullable NSString *)title message:(nullable NSString *)message preferredStyle:(UDAlertControllerStyle)preferredStyle;
 - (instancetype)init NS_UNAVAILABLE;
 
 // Add action.
-- (void)addAction:(PSTAlertAction *)action;
+- (void)addAction:(UDAlertAction *)action;
 
 // Add block that is called after the alert controller will be dismissed (before animation).
-- (void)addWillDismissBlock:(void (^)(PSTAlertAction *action))willDismissBlock;
+- (void)addWillDismissBlock:(void (^)(UDAlertAction *action))willDismissBlock;
 
 // Add block that is called after the alert view has been dismissed (after animation).
-- (void)addDidDismissBlock:(void (^)(PSTAlertAction *action))didDismissBlock;
+- (void)addDidDismissBlock:(void (^)(UDAlertAction *action))didDismissBlock;
 
-@property (nullable, nonatomic, copy, readonly) NSArray<PSTAlertAction *> *actions;
+@property (nullable, nonatomic, copy, readonly) NSArray<UDAlertAction *> *actions;
 
 // Text field support
 - (void)addTextFieldWithConfigurationHandler:(void (^ __nullable)(UITextField *textField))configurationHandler;
@@ -77,7 +77,7 @@ typedef NS_ENUM(NSInteger, PSTAlertActionStyle) {
 @property (nullable, nonatomic, copy) NSString *title;
 @property (nullable, nonatomic, copy) NSString *message;
 
-@property (nonatomic, readonly) PSTAlertControllerStyle preferredStyle;
+@property (nonatomic, readonly) UDAlertControllerStyle preferredStyle;
 
 // Presentation and dismissal
 - (void)showWithSender:(nullable id)sender controller:(nullable UIViewController *)controller animated:(BOOL)animated completion:(void (^ __nullable)(void))completion;
@@ -89,7 +89,7 @@ typedef NS_ENUM(NSInteger, PSTAlertActionStyle) {
 
 @end
 
-@interface PSTAlertController (Convenience)
+@interface UDAlertController (Convenience)
 
 // Convenience initializers
 + (instancetype)actionSheetWithTitle:(nullable NSString *)title;
@@ -105,14 +105,14 @@ typedef NS_ENUM(NSInteger, PSTAlertActionStyle) {
 // From Apple's HIG:
 // In a two-button alert that proposes a potentially risky action, the button that cancels the action should be on the right (and light-colored).
 // In a two-button alert that proposes a benign action that people are likely to want, the button that cancels the action should be on the left (and dark-colored).
-- (void)addCloseActionWithTitle:(NSString *)title Handler:(void (^ __nullable)(PSTAlertAction *action))handler;
+- (void)addCloseActionWithTitle:(NSString *)title Handler:(void (^ __nullable)(UDAlertAction *action))handler;
 
 @property (nullable, nonatomic, readonly) UITextField *textField;
 
 @end
 
 
-@interface PSTAlertController (Internal)
+@interface UDAlertController (Internal)
 
 @property (nullable, nonatomic, strong, readonly) UIAlertController *alertController;
 

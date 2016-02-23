@@ -133,7 +133,7 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
     textLabel.backgroundColor = [UIColor clearColor];
     [textLabel setTextColor:[UIColor whiteColor]];
     textLabel.textAlignment = NSTextAlignmentCenter;
-    textLabel.font = [UIFont systemFontOfSize:MDK_SCREEN_WIDTH<375?16:18];
+    textLabel.font = [UIFont systemFontOfSize:UD_SCREEN_WIDTH<375?16:18];
     textLabel.text = text;
     [self addSubview:textLabel];
 

@@ -86,7 +86,7 @@
 }
 //录音准备工作，配置录音
 - (void)prepareRecordingCompletion:(UDPrepareRecorderCompletion)completion {
-    WEAKSELF
+    UDWEAKSELF
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         _isPause = NO;
         
@@ -109,7 +109,7 @@
         [recordSetting setValue:[NSNumber numberWithInt: 1] forKey:AVNumberOfChannelsKey];
         
         if (weakSelf) {
-            STRONGSELF
+            UDSTRONGSELF
             strongSelf.recordPath = [self getRecorderPath];
             error = nil;
             
