@@ -129,5 +129,4 @@
 #define isPad                   (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 
 
-
 #endif

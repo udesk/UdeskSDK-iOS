@@ -27,9 +27,9 @@
     
 //    [UDManager initWithAppkey:@"6c37f775019907785d85c027e29dae4e" domianName:@"udesksdk.udesk.cn"];
     
-    [UDManager initWithAppkey:@"3a4dc5e0cd39995448018c553048fdd4" domianName:@"reocar.udeskmonkey.com"];
+//    [UDManager initWithAppkey:@"3a4dc5e0cd39995448018c553048fdd4" domianName:@"reocar.udeskmonkey.com"];
     
-//[UDManager initWithAppkey:@"2f04e99ff44ec68165c585a209efdd6d" domianName:@"reocar.tiyanudesk.com"];
+    [UDManager initWithAppkey:@"2f04e99ff44ec68165c585a209efdd6d" domianName:@"reocar.tiyanudesk.com"];
     
     return YES;
 }
