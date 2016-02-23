@@ -135,7 +135,7 @@
                 
                 NSString *nick = [[[responseObject objectForKey:@"result"] objectForKey:@"agent"] objectForKey:@"nick"];
                 
-                message.text = [NSString stringWithFormat:@"客服转接成功，%@ 为你服务",nick];
+                message.text = [NSString stringWithFormat:@"客服转接成功，%@ 为您服务",nick];
             }
             
             //存储转移信息
