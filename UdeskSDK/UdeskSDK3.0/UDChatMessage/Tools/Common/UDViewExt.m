@@ -4,7 +4,7 @@
  BSD License, Use at your own risk
  */
 
-#import "UIViewExt.h"
+#import "UDViewExt.h"
 
 CGPoint CGRectGetCenter(CGRect rect)
 {
@@ -23,52 +23,54 @@ CGRect CGRectMoveToCenter(CGRect rect, CGPoint center)
     return newrect;
 }
 
-@implementation UIView (ViewGeometry)
+@implementation UIView (UDViewGeometry)
 
 // Retrieve and set the origin
-- (CGPoint) origin
+
+- (CGPoint)ud_origin
 {
 	return self.frame.origin;
 }
 
-- (void) setOrigin: (CGPoint) aPoint
-{
+- (void)setUd_origin:(CGPoint)ud_origin {
+
 	CGRect newframe = self.frame;
-	newframe.origin = aPoint;
+	newframe.origin = ud_origin;
 	self.frame = newframe;
 }
 
 
 // Retrieve and set the size
-- (CGSize) size
+- (CGSize) ud_size
 {
 	return self.frame.size;
 }
 
-- (void) setSize: (CGSize) aSize
-{
+- (void)setUd_size:(CGSize)ud_size {
+
 	CGRect newframe = self.frame;
-	newframe.size = aSize;
+	newframe.size = ud_size;
 	self.frame = newframe;
 }
 
 // Query other frame locations
-- (CGPoint) bottomRight
-{
+
+- (CGPoint) ud_bottomRight {
+
 	CGFloat x = self.frame.origin.x + self.frame.size.width;
 	CGFloat y = self.frame.origin.y + self.frame.size.height;
 	return CGPointMake(x, y);
 }
 
-- (CGPoint) bottomLeft
-{
+- (CGPoint) ud_bottomLeft {
+
 	CGFloat x = self.frame.origin.x;
 	CGFloat y = self.frame.origin.y + self.frame.size.height;
 	return CGPointMake(x, y);
 }
 
-- (CGPoint) topRight
-{
+- (CGPoint) ud_topRight {
+
 	CGFloat x = self.frame.origin.x + self.frame.size.width;
 	CGFloat y = self.frame.origin.y;
 	return CGPointMake(x, y);
@@ -76,74 +78,74 @@ CGRect CGRectMoveToCenter(CGRect rect, CGPoint center)
 
 
 // Retrieve and set height, width, top, bottom, left, right
-- (CGFloat) height
+- (CGFloat) ud_height
 {
 	return self.frame.size.height;
 }
 
-- (void) setHeight: (CGFloat) newheight
-{
+- (void)setUd_height:(CGFloat)ud_height {
+
 	CGRect newframe = self.frame;
-	newframe.size.height = newheight;
+	newframe.size.height = ud_height;
 	self.frame = newframe;
 }
 
-- (CGFloat) width
+- (CGFloat) ud_width
 {
 	return self.frame.size.width;
 }
 
-- (void) setWidth: (CGFloat) newwidth
+- (void) setUd_width: (CGFloat) ud_width
 {
 	CGRect newframe = self.frame;
-	newframe.size.width = newwidth;
+	newframe.size.width = ud_width;
 	self.frame = newframe;
 }
 
-- (CGFloat) top
+- (CGFloat) ud_top
 {
 	return self.frame.origin.y;
 }
 
-- (void) setTop: (CGFloat) newtop
+- (void) setUd_top: (CGFloat) ud_top
 {
 	CGRect newframe = self.frame;
-	newframe.origin.y = newtop;
+	newframe.origin.y = ud_top;
 	self.frame = newframe;
 }
 
-- (CGFloat) left
+- (CGFloat) ud_left
 {
 	return self.frame.origin.x;
 }
 
-- (void) setLeft: (CGFloat) newleft
+- (void) setUd_left: (CGFloat) ud_left
 {
 	CGRect newframe = self.frame;
-	newframe.origin.x = newleft;
+	newframe.origin.x = ud_left;
 	self.frame = newframe;
 }
 
-- (CGFloat) bottom
+- (CGFloat) ud_bottom
 {
 	return self.frame.origin.y + self.frame.size.height;
 }
 
-- (void) setBottom: (CGFloat) newbottom
+- (void) setUd_bottom: (CGFloat) ud_bottom
 {
 	CGRect newframe = self.frame;
-	newframe.origin.y = newbottom - self.frame.size.height;
+	newframe.origin.y = ud_bottom - self.frame.size.height;
 	self.frame = newframe;
 }
 
-- (CGFloat) right
+- (CGFloat) ud_right
 {
 	return self.frame.origin.x + self.frame.size.width;
 }
 
-- (void) setRight: (CGFloat) newright
+- (void) setUd_right: (CGFloat) ud_right
 {
-	CGFloat delta = newright - (self.frame.origin.x + self.frame.size.width);
+	CGFloat delta = ud_right - (self.frame.origin.x + self.frame.size.width);
 	CGRect newframe = self.frame;
 	newframe.origin.x += delta ;
 	self.frame = newframe;

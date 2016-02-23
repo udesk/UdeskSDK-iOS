@@ -442,7 +442,7 @@
 #pragma mark - UITextView Helper Method
 - (CGFloat)getTextViewContentH:(UITextView *)textView {
     //返回文字高度
-    if (isIOS7) {
+    if (ud_isIOS7) {
         return ceilf([textView sizeThatFits:textView.frame.size].height);
     } else {
         return textView.contentSize.height;
@@ -480,7 +480,7 @@
                              [_messageTableView scrollToBottomAnimated:NO];
                              
                              if (isShrinking) {
-                                 if (isIOS6) {
+                                 if (ud_isIOS6) {
                                      self.textViewHeight = MIN(contentH, maxHeight);
                                  }
                                  // 改变textView的frame
@@ -494,7 +494,7 @@
                                                                       inputViewFrame.size.height + changeInHeight);
                              
                              if (!isShrinking) {
-                                 if (isIOS6) {
+                                 if (ud_isIOS6) {
                                      self.textViewHeight = MIN(contentH, maxHeight);
                                  }
                                  // 改变textView的frame

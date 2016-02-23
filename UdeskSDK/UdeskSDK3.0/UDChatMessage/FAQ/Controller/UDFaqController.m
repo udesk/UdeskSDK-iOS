@@ -153,7 +153,7 @@
     
     self.navigationController.navigationBarHidden = _navigationBarHidden;
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
         self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
@@ -165,7 +165,7 @@
     
     [super viewWillAppear:animated];
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.faqNavigationColor;
     } else {
         self.navigationController.navigationBar.barTintColor = Config.faqNavigationColor;

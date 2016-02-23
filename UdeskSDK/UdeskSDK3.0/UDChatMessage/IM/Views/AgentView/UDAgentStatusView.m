@@ -35,9 +35,9 @@
     
     UILabel *titleLabel = [[UILabel alloc] init];
     
-    CGSize titleSize = [UDGeneral.store textSize:NSLocalizedString(@"反馈", @"") fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.width, 44)];
+    CGSize titleSize = [UDGeneral.store textSize:NSLocalizedString(@"反馈", @"") fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
     
-    titleLabel.frame = CGRectMake((self.width-titleSize.width)/2, 0, titleSize.width, 44);
+    titleLabel.frame = CGRectMake((self.ud_width-titleSize.width)/2, 0, titleSize.width, 44);
     
     titleLabel.text = NSLocalizedString(@"反馈", @"");
     titleLabel.font = [UIFont systemFontOfSize:18];
@@ -65,18 +65,18 @@
     
         NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",_nick];
         
-        CGSize describeSize = [UDGeneral.store textSize:describeTieleStr fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.width, 44)];
+        CGSize describeSize = [UDGeneral.store textSize:describeTieleStr fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
-        _describeTitle.frame = CGRectMake((self.width-describeSize.width)/2, 27, describeSize.width, 14);;
+        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);;
         _describeTitle.text = describeTieleStr;
         
     } else if ([statusType isEqualToString:@"unavailable"]) {
         
         NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 离线了",_nick];
         
-        CGSize describeSize = [UDGeneral.store textSize:describeTieleStr fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.width, 44)];
+        CGSize describeSize = [UDGeneral.store textSize:describeTieleStr fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
-        _describeTitle.frame = CGRectMake((self.width-describeSize.width)/2, 27, describeSize.width, 14);
+        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
         
         _describeTitle.text = describeTieleStr;
 
@@ -84,9 +84,9 @@
     
         NSString *describeTieleStr = @"网络断开链接了";
         
-        CGSize describeSize = [UDGeneral.store textSize:describeTieleStr fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.width, 44)];
+        CGSize describeSize = [UDGeneral.store textSize:describeTieleStr fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
-        _describeTitle.frame = CGRectMake((self.width-describeSize.width)/2, 27, describeSize.width, 14);
+        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
         
         _describeTitle.text = describeTieleStr;
     }
@@ -112,9 +112,9 @@
         
         //显示在线状态
         _describeTitle.hidden = NO;
-        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.width, 44)];
+        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
         
-        CGRect describeFrame = CGRectMake((self.width-describeSize.width)/2, 27, describeSize.width, 14);
+        CGRect describeFrame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
         
         _describeTitle.frame = describeFrame;
         
@@ -125,9 +125,9 @@
     else if (viewModel.agentModel.code == 2001) {
         
         _describeTitle.hidden = NO;
-        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.width, 44)];
+        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
-        _describeTitle.frame = CGRectMake((self.width-describeSize.width)/2, 27, describeSize.width, 14);
+        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
         
         _describeTitle.text = viewModel.agentModel.message;
         
@@ -135,9 +135,9 @@
     else {
         
         _describeTitle.hidden = NO;
-        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.width, 44)];
+        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
-        _describeTitle.frame = CGRectMake((self.width-describeSize.width)/2, 27, describeSize.width, 14);
+        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
         
         _describeTitle.text = viewModel.agentModel.message;
         

@@ -22,7 +22,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIViewController (KeyboardAnimation)
+@interface UIViewController (UDKeyboardAnimation)
 
 /**
  *  Block which contains user defined animations
@@ -31,7 +31,7 @@
  *  @param duration     Duration for keyboard showing animation
  *  @param isShowing    If isShowing is YES we handle keyboard showing, if NO we process keyboard dismissing
  */
-typedef void(^ANAnimationsWithKeyboardBlock)(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing);
+typedef void(^UDAnimationsWithKeyboardBlock)(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing);
 
 /**
  *  Block to handle a start point of animation, could be used for simultaneous animations OR for setting some flags for internal usage.
@@ -40,14 +40,14 @@ typedef void(^ANAnimationsWithKeyboardBlock)(CGRect keyboardRect, NSTimeInterval
  *  @param duration     Duration for keyboard showing animation
  *  @param isShowing    If isShowing is YES we handle keyboard showing, if NO we process keyboard dismissing
  */
-typedef void(^ANBeforeAnimationsWithKeyboardBlock)(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing);
+typedef void(^UDBeforeAnimationsWithKeyboardBlock)(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing);
 
 /**
  *  Block to handle completion of keyboard animation
  *
  *  @param finished If NO animation was canceled during performing
  */
-typedef void(^ANCompletionKeyboardAnimations)(BOOL finished);
+typedef void(^UDCompletionKeyboardAnimations)(BOOL finished);
 
 /**
  *  Animation block will be called inside [UIView animateWithDuration:::::]
@@ -59,8 +59,8 @@ typedef void(^ANCompletionKeyboardAnimations)(BOOL finished);
  *
  *  @warning These blocks will he holding inside UIViewController which calls it, so as with any block-style API avoid a retain cycle
  */
-- (void)an_subscribeKeyboardWithAnimations:(ANAnimationsWithKeyboardBlock)animations
-                                completion:(ANCompletionKeyboardAnimations)completion;
+- (void)ud_subscribeKeyboardWithAnimations:(UDAnimationsWithKeyboardBlock)animations
+                                completion:(UDCompletionKeyboardAnimations)completion;
 
 /**
  *  Animation block will be called inside [UIView animateWithDuration:::::]
@@ -73,9 +73,9 @@ typedef void(^ANCompletionKeyboardAnimations)(BOOL finished);
  *
  *  @warning These blocks will he holding inside UIViewController which calls it, so as with any block-style API avoid a retain cycle
  */
-- (void)an_subscribeKeyboardWithBeforeAnimations:(ANBeforeAnimationsWithKeyboardBlock)beforeAnimations
-                                      animations:(ANAnimationsWithKeyboardBlock)animations
-                                completion:(ANCompletionKeyboardAnimations)completion;
+- (void)ud_subscribeKeyboardWithBeforeAnimations:(UDBeforeAnimationsWithKeyboardBlock)beforeAnimations
+                                      animations:(UDAnimationsWithKeyboardBlock)animations
+                                completion:(UDCompletionKeyboardAnimations)completion;
 
 /**
  *  
@@ -85,6 +85,6 @@ typedef void(^ANCompletionKeyboardAnimations)(BOOL finished);
  *
  *  @warning If you will not call it when current view disappeared, subscribed view controller will handle keyboard events on other screens
  */
-- (void)an_unsubscribeKeyboard;
+- (void)ud_unsubscribeKeyboard;
 
 @end

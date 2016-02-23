@@ -28,7 +28,7 @@
 
     CGSize size;
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         size = [text sizeWithFont:font constrainedToSize:toSize];
     } else {
         size = [text boundingRectWithSize:toSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;

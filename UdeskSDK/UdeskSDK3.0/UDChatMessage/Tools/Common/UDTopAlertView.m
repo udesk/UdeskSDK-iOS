@@ -142,7 +142,7 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
 - (void)show{
     dispatch_block_t showBlock = ^{
         
-        if (isIOS6) {
+        if (ud_isIOS6) {
             
             [UIView animateWithDuration:0.65f delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
                 self.layer.position = CGPointMake(self.layer.position.x, self.layer.position.y + 60);

@@ -49,7 +49,7 @@
         
         [_ticketWebView stringByEvaluatingJavaScriptFromString:@"ticketCallBack()"];
         
-        if (isIOS7) {
+        if (ud_isIOS7) {
             JSContext *ticketContext = [self.ticketWebView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
             
             ticketContext[@"ticketCallBack"] = ^() {
@@ -89,7 +89,7 @@
     
     self.navigationController.navigationBarHidden = NO;
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
         self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
@@ -104,7 +104,7 @@
         self.navigationController.navigationBarHidden = NO;
     }
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.ticketNavigationColor;
     } else {
         self.navigationController.navigationBar.barTintColor = Config.ticketNavigationColor;

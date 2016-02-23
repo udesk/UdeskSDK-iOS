@@ -104,7 +104,7 @@ static CGFloat EmojiFontSize;
     [sendBtn setTitle:NSLocalizedString(@"发送", @"") forState:UIControlStateNormal];
     sendBtn.frame = CGRectMake(UD_SCREEN_WIDTH-90, UD_SCREEN_WIDTH<375?150:166, 75, 38);;
     sendBtn.backgroundColor = UDRGBACOLOR(8, 125, 253, 1);
-    ViewRadius(sendBtn, 4);
+    UDViewRadius(sendBtn, 4);
     [sendBtn addTarget:self action:@selector(sendAction:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:sendBtn];
     

@@ -22,7 +22,7 @@
 #import "UDVoiceRecordHUD.h"
 #import "UDGeneral.h"
 #import "UDConfig.h"
-#import "UIViewExt.h"
+#import "UDViewExt.h"
 #import "UDAlertController.h"
 #import "YYCache.h"
 

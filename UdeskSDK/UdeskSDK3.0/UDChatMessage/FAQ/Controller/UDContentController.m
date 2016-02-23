@@ -67,7 +67,7 @@
     
     [super viewWillAppear:animated];
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.articleContentNavigationColor;
     } else {
         self.navigationController.navigationBar.barTintColor = Config.articleContentNavigationColor;
@@ -84,7 +84,7 @@
     
     [super viewDidDisappear:animated];
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
         self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;

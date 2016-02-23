@@ -48,7 +48,7 @@
 		449354ED1C5F40F300236FC7 /* UDVoiceRecordHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493548F1C5F40F300236FC7 /* UDVoiceRecordHUD.m */; };
 		449354EE1C5F40F300236FC7 /* NSArray+UDUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354941C5F40F300236FC7 /* NSArray+UDUtils.m */; };
 		449354EF1C5F40F300236FC7 /* NSDictionary+UDUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354971C5F40F300236FC7 /* NSDictionary+UDUtils.m */; };
-		449354F01C5F40F300236FC7 /* UIViewController+KeyboardAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493549A1C5F40F300236FC7 /* UIViewController+KeyboardAnimation.m */; };
+		449354F01C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493549A1C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.m */; };
 		449354F11C5F40F300236FC7 /* UDAudioPlayerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493549D1C5F40F300236FC7 /* UDAudioPlayerHelper.m */; };
 		449354F21C5F40F300236FC7 /* UDBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493549F1C5F40F300236FC7 /* UDBaseModel.m */; };
 		449354F31C5F40F300236FC7 /* UDConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354A11C5F40F300236FC7 /* UDConfig.m */; };
@@ -61,7 +61,7 @@
 		449354FA1C5F40F300236FC7 /* UDTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354B01C5F40F300236FC7 /* UDTools.m */; };
 		449354FB1C5F40F300236FC7 /* UDTopAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354B21C5F40F300236FC7 /* UDTopAlertView.m */; };
 		449354FC1C5F40F300236FC7 /* UDVoiceRecordHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354B41C5F40F300236FC7 /* UDVoiceRecordHelper.m */; };
-		449354FD1C5F40F300236FC7 /* UIViewExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354B61C5F40F300236FC7 /* UIViewExt.m */; };
+		449354FD1C5F40F300236FC7 /* UDViewExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354B61C5F40F300236FC7 /* UDViewExt.m */; };
 		449354FE1C5F40F300236FC7 /* UDMessageBubbleFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354B91C5F40F300236FC7 /* UDMessageBubbleFactory.m */; };
 		449354FF1C5F40F300236FC7 /* UDMessageVoiceFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354BB1C5F40F300236FC7 /* UDMessageVoiceFactory.m */; };
 		449355031C5F40F300236FC7 /* UDAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354C61C5F40F300236FC7 /* UDAlertController.m */; };
@@ -148,8 +148,8 @@
 		449354941C5F40F300236FC7 /* NSArray+UDUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+UDUtils.m"; sourceTree = "<group>"; };
 		449354961C5F40F300236FC7 /* NSDictionary+UDUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+UDUtils.h"; sourceTree = "<group>"; };
 		449354971C5F40F300236FC7 /* NSDictionary+UDUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+UDUtils.m"; sourceTree = "<group>"; };
-		449354991C5F40F300236FC7 /* UIViewController+KeyboardAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+KeyboardAnimation.h"; sourceTree = "<group>"; };
-		4493549A1C5F40F300236FC7 /* UIViewController+KeyboardAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+KeyboardAnimation.m"; sourceTree = "<group>"; };
+		449354991C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+UDKeyboardAnimation.h"; sourceTree = "<group>"; };
+		4493549A1C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+UDKeyboardAnimation.m"; sourceTree = "<group>"; };
 		4493549C1C5F40F300236FC7 /* UDAudioPlayerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDAudioPlayerHelper.h; sourceTree = "<group>"; };
 		4493549D1C5F40F300236FC7 /* UDAudioPlayerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDAudioPlayerHelper.m; sourceTree = "<group>"; };
 		4493549E1C5F40F300236FC7 /* UDBaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDBaseModel.h; sourceTree = "<group>"; };
@@ -175,8 +175,8 @@
 		449354B21C5F40F300236FC7 /* UDTopAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDTopAlertView.m; sourceTree = "<group>"; };
 		449354B31C5F40F300236FC7 /* UDVoiceRecordHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDVoiceRecordHelper.h; sourceTree = "<group>"; };
 		449354B41C5F40F300236FC7 /* UDVoiceRecordHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDVoiceRecordHelper.m; sourceTree = "<group>"; };
-		449354B51C5F40F300236FC7 /* UIViewExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIViewExt.h; sourceTree = "<group>"; };
-		449354B61C5F40F300236FC7 /* UIViewExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIViewExt.m; sourceTree = "<group>"; };
+		449354B51C5F40F300236FC7 /* UDViewExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDViewExt.h; sourceTree = "<group>"; };
+		449354B61C5F40F300236FC7 /* UDViewExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDViewExt.m; sourceTree = "<group>"; };
 		449354B81C5F40F300236FC7 /* UDMessageBubbleFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDMessageBubbleFactory.h; sourceTree = "<group>"; };
 		449354B91C5F40F300236FC7 /* UDMessageBubbleFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDMessageBubbleFactory.m; sourceTree = "<group>"; };
 		449354BA1C5F40F300236FC7 /* UDMessageVoiceFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDMessageVoiceFactory.h; sourceTree = "<group>"; };
@@ -499,8 +499,8 @@
 		449354981C5F40F300236FC7 /* UIViewController */ = {
 			isa = PBXGroup;
 			children = (
-				449354991C5F40F300236FC7 /* UIViewController+KeyboardAnimation.h */,
-				4493549A1C5F40F300236FC7 /* UIViewController+KeyboardAnimation.m */,
+				449354991C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.h */,
+				4493549A1C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.m */,
 			);
 			path = UIViewController;
 			sourceTree = "<group>";
@@ -533,8 +533,8 @@
 				449354B21C5F40F300236FC7 /* UDTopAlertView.m */,
 				449354B31C5F40F300236FC7 /* UDVoiceRecordHelper.h */,
 				449354B41C5F40F300236FC7 /* UDVoiceRecordHelper.m */,
-				449354B51C5F40F300236FC7 /* UIViewExt.h */,
-				449354B61C5F40F300236FC7 /* UIViewExt.m */,
+				449354B51C5F40F300236FC7 /* UDViewExt.h */,
+				449354B61C5F40F300236FC7 /* UDViewExt.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -662,7 +662,7 @@
 				449354E91C5F40F300236FC7 /* UDMessageTableViewCell.m in Sources */,
 				449354EB1C5F40F300236FC7 /* UDMessageInputView.m in Sources */,
 				449355051C5F40F300236FC7 /* YYCache.m in Sources */,
-				449354FD1C5F40F300236FC7 /* UIViewExt.m in Sources */,
+				449354FD1C5F40F300236FC7 /* UDViewExt.m in Sources */,
 				449354F41C5F40F300236FC7 /* UDConfigurationHelper.m in Sources */,
 				449354DB1C5F40F300236FC7 /* UDProblemModel.m in Sources */,
 				449354FA1C5F40F300236FC7 /* UDTools.m in Sources */,
@@ -690,7 +690,7 @@
 				449354EC1C5F40F300236FC7 /* UDMessageTextView.m in Sources */,
 				449354FB1C5F40F300236FC7 /* UDTopAlertView.m in Sources */,
 				449354E01C5F40F300236FC7 /* UDChatDataController.m in Sources */,
-				449354F01C5F40F300236FC7 /* UIViewController+KeyboardAnimation.m in Sources */,
+				449354F01C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.m in Sources */,
 				449354E61C5F40F300236FC7 /* UDAgentStatusView.m in Sources */,
 				449354EA1C5F40F300236FC7 /* UDEmotionManagerView.m in Sources */,
 				449354ED1C5F40F300236FC7 /* UDVoiceRecordHUD.m in Sources */,

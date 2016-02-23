@@ -44,7 +44,7 @@
 - (void)setup {
     self.backgroundColor = [UIColor blackColor];
     self.alpha = .6f;
-    ViewRadius(self, 5);
+    UDViewRadius(self, 5);
     
     if (!_remindLabel) {
         UILabel *remindLabel= [[UILabel alloc] initWithFrame:CGRectMake(14.0, 117.0, 120.0, 21.0)];

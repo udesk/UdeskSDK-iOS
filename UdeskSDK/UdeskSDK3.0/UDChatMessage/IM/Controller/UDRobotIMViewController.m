@@ -85,7 +85,7 @@
                                        target:nil action:nil];
     
     // 调整 leftBarButtonItem 在 iOS7 下面的位置
-    if((FSystemVersion>=7.0)){
+    if((FUDSystemVersion>=7.0)){
         
         negativeSpacer.width = -20;
         self.navigationItem.rightBarButtonItems = @[negativeSpacer,otherNavigationItem];
@@ -108,7 +108,7 @@
         self.navigationController.navigationBarHidden = !_navigationBarHidden;
     }
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.robotNavigationColor;
     } else {
         self.navigationController.navigationBar.barTintColor = Config.robotNavigationColor;
@@ -121,7 +121,7 @@
     [super viewWillDisappear:animated];
     self.navigationController.navigationBarHidden = _navigationBarHidden;
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
         self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;

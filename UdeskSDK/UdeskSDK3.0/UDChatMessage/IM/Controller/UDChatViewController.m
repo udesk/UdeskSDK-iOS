@@ -25,7 +25,7 @@
 #import "UDChatDataController.h"
 #import "UDChatViewModel.h"
 #import "UDChatCellViewModel.h"
-#import "UIViewController+KeyboardAnimation.h"
+#import "UIViewController+UDKeyboardAnimation.h"
 
 #define UDTitleLength  UD_SCREEN_WIDTH>320?200:170
 
@@ -83,7 +83,7 @@
     }
     
     //提示用户允许访问麦克风
-    if (isIOS7) {
+    if (ud_isIOS7) {
         [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
             
         }];
@@ -107,8 +107,8 @@
     
     // 输入工具条的frame
     CGRect inputFrame = CGRectMake(0.0f,
-                                   self.view.height - inputViewHeight,
-                                   self.view.width,
+                                   self.view.ud_height - inputViewHeight,
+                                   self.view.ud_width,
                                    inputViewHeight);
     
     // 初始化输入工具条
@@ -579,7 +579,7 @@
 #pragma mark - 监听键盘通知做出相应的操作
 - (void)subscribeToKeyboard {
     
-    [self an_subscribeKeyboardWithBeforeAnimations:nil animations:^(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing) {
+    [self ud_subscribeKeyboardWithBeforeAnimations:nil animations:^(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing) {
         
         UDWEAKSELF
         if (self.textViewInputViewType == UDInputViewTypeText) {
@@ -622,7 +622,7 @@
     //监听键盘
     [self subscribeToKeyboard];
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.iMNavigationColor;
     } else {
         self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
@@ -636,9 +636,9 @@
     [super viewWillDisappear:animated];
     
     // remove键盘通知或者手势
-    [self an_unsubscribeKeyboard];
+    [self ud_unsubscribeKeyboard];
     
-    if (isIOS6) {
+    if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
         self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
