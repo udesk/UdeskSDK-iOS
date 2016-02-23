@@ -284,15 +284,11 @@ static CGFloat const kUDHeadImageSize = 40.0f;
         switch (message.messageFrom) {
             case UDMessageTypeSending:
                 
-                NSLog(@"kUDHeadShowX:%f",kUDHeadShowX);
                 headButtonFrame = CGRectMake(kUDHeadShowX,
                                              kUDHeadShowY + (self.displayTimestamp ? (kUDTimeStampLabelHeight + kUDLabelPadding * 2) : 0),
                                              kUDHeadImageSize,
                                              kUDHeadImageSize);
                 
-                NSLog(@"x:%f",headButtonFrame.origin.x);
-                
-                NSLog(@"=============================");
                 break;
             case UDMessageTypeReceiving:
                 headButtonFrame = CGRectMake(MDK_SCREEN_WIDTH - kUDHeadImageSize - kUDHeadShowX,
