@@ -237,39 +237,53 @@
     }
     else if (message.messageType == UDMessageMediaTypePhoto) {
         
-        [[YYCache sharedCache] objectForKey:message.contentId withBlock:^(NSString *key, id<NSCoding> object) {
+        [[SDImageCache sharedImageCache] queryDiskCacheForKey:message.contentId done:^(UIImage *image, SDImageCacheType cacheType) {
             
-            if (object) {
-                //开子线程压缩图片
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    
-                    UIImage *image = [UDTools compressionImage:(UIImage *)object];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        _photoImageView.image = image;
-                    });
+            //开子线程压缩图片
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                
+                UIImage *newImage = [UDTools compressionImage:image];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    _photoImageView.image = newImage;
                 });
-             
-                return;
-            }
+            });
             
-            NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:message.photoUrl]];
-            
-            NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                
-                if (data) {
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        _photoImageView.image = [UIImage imageWithData:data];
-                    });
-                    
-                    [[YYCache sharedCache] setObject:_photoImageView.image forKey:message.contentId withBlock:nil];
-                }
-                
-            }];
-            
-            [dataTask resume];
-            
+            return;
         }];
+        
+//        [[YYCache sharedCache] objectForKey:message.contentId withBlock:^(NSString *key, id<NSCoding> object) {
+//            
+//            if (object) {
+//                //开子线程压缩图片
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//                    
+//                    UIImage *image = [UDTools compressionImage:(UIImage *)object];
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        _photoImageView.image = image;
+//                    });
+//                });
+//             
+//                return;
+//            }
+//            
+//            NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:message.photoUrl]];
+//            
+//            NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//                
+//                if (data) {
+//                    
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        _photoImageView.image = [UIImage imageWithData:data];
+//                    });
+//                    
+//                    [[YYCache sharedCache] setObject:_photoImageView.image forKey:message.contentId withBlock:nil];
+//                }
+//                
+//            }];
+//            
+//            [dataTask resume];
+//            
+//        }];
     
     }
     else if (message.messageType == UDMessageMediaTypeVoice) {

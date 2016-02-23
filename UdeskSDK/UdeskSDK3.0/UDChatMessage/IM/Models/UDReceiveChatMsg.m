@@ -76,7 +76,9 @@
             message.photo  = image;
 
             //缓存图片
-            [[YYCache sharedCache] setObject:image forKey:message.contentId withBlock:nil];
+//            [[YYCache sharedCache] setObject:image forKey:message.contentId withBlock:nil];
+            
+            [[SDImageCache sharedImageCache] storeImage:image forKey:message.contentId];
             
             message.messageType = UDMessageMediaTypePhoto;
             message.photoUrl = content;
@@ -110,8 +112,8 @@
         message.voiceDuration = [NSString stringWithFormat:@"%.f",pl.duration];
         
         message.messageType = UDMessageMediaTypeVoice;
-        //Udesk SDK 使用的第三方缓存框架
-        [[YYCache sharedCache] setObject:audioData forKey:message.contentId];
+        //缓存语音
+        [[SDImageCache sharedImageCache] storeData:audioData forKey:message.contentId];
         
         NSArray *audioDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"2"],[NSString stringWithFormat:@"%.f",pl.duration]];
         

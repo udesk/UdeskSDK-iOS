@@ -24,7 +24,7 @@
 #import "UDConfig.h"
 #import "UDViewExt.h"
 #import "UDAlertController.h"
-#import "YYCache.h"
+#import "SDImageCache.h"
 
 #define  Config [UDConfig sharedUDConfig]
 

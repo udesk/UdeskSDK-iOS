@@ -65,10 +65,10 @@
 		449354FE1C5F40F300236FC7 /* UDMessageBubbleFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354B91C5F40F300236FC7 /* UDMessageBubbleFactory.m */; };
 		449354FF1C5F40F300236FC7 /* UDMessageVoiceFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354BB1C5F40F300236FC7 /* UDMessageVoiceFactory.m */; };
 		449355031C5F40F300236FC7 /* UDAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354C61C5F40F300236FC7 /* UDAlertController.m */; };
-		449355051C5F40F300236FC7 /* YYCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354CC1C5F40F300236FC7 /* YYCache.m */; };
-		449355061C5F40F300236FC7 /* YYDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354CE1C5F40F300236FC7 /* YYDiskCache.m */; };
-		449355071C5F40F300236FC7 /* YYKVStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354D01C5F40F300236FC7 /* YYKVStorage.m */; };
-		449355081C5F40F300236FC7 /* YYMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354D21C5F40F300236FC7 /* YYMemoryCache.m */; };
+		449C26AE1C7C32440017F7DB /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 449C26A71C7C32440017F7DB /* SDImageCache.m */; };
+		449C26AF1C7C32440017F7DB /* SDWebImageCompat.m in Sources */ = {isa = PBXBuildFile; fileRef = 449C26A91C7C32440017F7DB /* SDWebImageCompat.m */; };
+		449C26B01C7C32440017F7DB /* SDWebImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 449C26AB1C7C32440017F7DB /* SDWebImageDecoder.m */; };
+		449C26B11C7C32440017F7DB /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 449C26AD1C7C32440017F7DB /* UIImage+MultiFormat.m */; };
 		44BA16061C7718E000D3EE2E /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44BA16051C7718E000D3EE2E /* libUdesk.a */; };
 /* End PBXBuildFile section */
 
@@ -183,14 +183,14 @@
 		449354BB1C5F40F300236FC7 /* UDMessageVoiceFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDMessageVoiceFactory.m; sourceTree = "<group>"; };
 		449354C51C5F40F300236FC7 /* UDAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDAlertController.h; sourceTree = "<group>"; };
 		449354C61C5F40F300236FC7 /* UDAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDAlertController.m; sourceTree = "<group>"; };
-		449354CB1C5F40F300236FC7 /* YYCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYCache.h; sourceTree = "<group>"; };
-		449354CC1C5F40F300236FC7 /* YYCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYCache.m; sourceTree = "<group>"; };
-		449354CD1C5F40F300236FC7 /* YYDiskCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYDiskCache.h; sourceTree = "<group>"; };
-		449354CE1C5F40F300236FC7 /* YYDiskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYDiskCache.m; sourceTree = "<group>"; };
-		449354CF1C5F40F300236FC7 /* YYKVStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYKVStorage.h; sourceTree = "<group>"; };
-		449354D01C5F40F300236FC7 /* YYKVStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYKVStorage.m; sourceTree = "<group>"; };
-		449354D11C5F40F300236FC7 /* YYMemoryCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYMemoryCache.h; sourceTree = "<group>"; };
-		449354D21C5F40F300236FC7 /* YYMemoryCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYMemoryCache.m; sourceTree = "<group>"; };
+		449C26A61C7C32440017F7DB /* SDImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDImageCache.h; sourceTree = "<group>"; };
+		449C26A71C7C32440017F7DB /* SDImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDImageCache.m; sourceTree = "<group>"; };
+		449C26A81C7C32440017F7DB /* SDWebImageCompat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebImageCompat.h; sourceTree = "<group>"; };
+		449C26A91C7C32440017F7DB /* SDWebImageCompat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebImageCompat.m; sourceTree = "<group>"; };
+		449C26AA1C7C32440017F7DB /* SDWebImageDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebImageDecoder.h; sourceTree = "<group>"; };
+		449C26AB1C7C32440017F7DB /* SDWebImageDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebImageDecoder.m; sourceTree = "<group>"; };
+		449C26AC1C7C32440017F7DB /* UIImage+MultiFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+MultiFormat.h"; sourceTree = "<group>"; };
+		449C26AD1C7C32440017F7DB /* UIImage+MultiFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MultiFormat.m"; sourceTree = "<group>"; };
 		44BA16051C7718E000D3EE2E /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -553,9 +553,16 @@
 		449354BC1C5F40F300236FC7 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				449C26A61C7C32440017F7DB /* SDImageCache.h */,
+				449C26A71C7C32440017F7DB /* SDImageCache.m */,
+				449C26A81C7C32440017F7DB /* SDWebImageCompat.h */,
+				449C26A91C7C32440017F7DB /* SDWebImageCompat.m */,
+				449C26AA1C7C32440017F7DB /* SDWebImageDecoder.h */,
+				449C26AB1C7C32440017F7DB /* SDWebImageDecoder.m */,
+				449C26AC1C7C32440017F7DB /* UIImage+MultiFormat.h */,
+				449C26AD1C7C32440017F7DB /* UIImage+MultiFormat.m */,
 				44891F311C7569BA00557D2E /* UDPhotoViewer */,
 				449354C41C5F40F300236FC7 /* PSTAlertController */,
-				449354CA1C5F40F300236FC7 /* YYCache */,
 			);
 			path = Vendor;
 			sourceTree = "<group>";
@@ -567,21 +574,6 @@
 				449354C61C5F40F300236FC7 /* UDAlertController.m */,
 			);
 			path = PSTAlertController;
-			sourceTree = "<group>";
-		};
-		449354CA1C5F40F300236FC7 /* YYCache */ = {
-			isa = PBXGroup;
-			children = (
-				449354CB1C5F40F300236FC7 /* YYCache.h */,
-				449354CC1C5F40F300236FC7 /* YYCache.m */,
-				449354CD1C5F40F300236FC7 /* YYDiskCache.h */,
-				449354CE1C5F40F300236FC7 /* YYDiskCache.m */,
-				449354CF1C5F40F300236FC7 /* YYKVStorage.h */,
-				449354D01C5F40F300236FC7 /* YYKVStorage.m */,
-				449354D11C5F40F300236FC7 /* YYMemoryCache.h */,
-				449354D21C5F40F300236FC7 /* YYMemoryCache.m */,
-			);
-			path = YYCache;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -661,7 +653,6 @@
 				449354F11C5F40F300236FC7 /* UDAudioPlayerHelper.m in Sources */,
 				449354E91C5F40F300236FC7 /* UDMessageTableViewCell.m in Sources */,
 				449354EB1C5F40F300236FC7 /* UDMessageInputView.m in Sources */,
-				449355051C5F40F300236FC7 /* YYCache.m in Sources */,
 				449354FD1C5F40F300236FC7 /* UDViewExt.m in Sources */,
 				449354F41C5F40F300236FC7 /* UDConfigurationHelper.m in Sources */,
 				449354DB1C5F40F300236FC7 /* UDProblemModel.m in Sources */,
@@ -674,22 +665,23 @@
 				449354EE1C5F40F300236FC7 /* NSArray+UDUtils.m in Sources */,
 				449354F21C5F40F300236FC7 /* UDBaseModel.m in Sources */,
 				449354F61C5F40F300236FC7 /* UDGeneral.m in Sources */,
-				449355071C5F40F300236FC7 /* YYKVStorage.m in Sources */,
 				449354F51C5F40F300236FC7 /* UdeskUtils.m in Sources */,
 				449354E71C5F40F300236FC7 /* UDMessageContentView.m in Sources */,
 				449354E81C5F40F300236FC7 /* UDMessageTableView.m in Sources */,
 				449354E21C5F40F300236FC7 /* UDReceiveChatMsg.m in Sources */,
 				449354FE1C5F40F300236FC7 /* UDMessageBubbleFactory.m in Sources */,
+				449C26AE1C7C32440017F7DB /* SDImageCache.m in Sources */,
 				449354F91C5F40F300236FC7 /* UDPhotographyHelper.m in Sources */,
 				449354EF1C5F40F300236FC7 /* NSDictionary+UDUtils.m in Sources */,
 				449354E11C5F40F300236FC7 /* UDAgentModel.m in Sources */,
 				449354E41C5F40F300236FC7 /* UDChatCellViewModel.m in Sources */,
 				449354DA1C5F40F300236FC7 /* UDSearchController.m in Sources */,
-				449355081C5F40F300236FC7 /* YYMemoryCache.m in Sources */,
 				449354D81C5F40F300236FC7 /* UDContentController.m in Sources */,
 				449354EC1C5F40F300236FC7 /* UDMessageTextView.m in Sources */,
+				449C26B11C7C32440017F7DB /* UIImage+MultiFormat.m in Sources */,
 				449354FB1C5F40F300236FC7 /* UDTopAlertView.m in Sources */,
 				449354E01C5F40F300236FC7 /* UDChatDataController.m in Sources */,
+				449C26B01C7C32440017F7DB /* SDWebImageDecoder.m in Sources */,
 				449354F01C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.m in Sources */,
 				449354E61C5F40F300236FC7 /* UDAgentStatusView.m in Sources */,
 				449354EA1C5F40F300236FC7 /* UDEmotionManagerView.m in Sources */,
@@ -704,10 +696,10 @@
 				449354DF1C5F40F300236FC7 /* UDAgentDataController.m in Sources */,
 				4426E7F51C5B13A0005A5011 /* AppDelegate.m in Sources */,
 				449354F31C5F40F300236FC7 /* UDConfig.m in Sources */,
-				449355061C5F40F300236FC7 /* YYDiskCache.m in Sources */,
 				44891F391C7569BA00557D2E /* UDPhotoManeger.m in Sources */,
 				449354FF1C5F40F300236FC7 /* UDMessageVoiceFactory.m in Sources */,
 				4426E7F21C5B13A0005A5011 /* main.m in Sources */,
+				449C26AF1C7C32440017F7DB /* SDWebImageCompat.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

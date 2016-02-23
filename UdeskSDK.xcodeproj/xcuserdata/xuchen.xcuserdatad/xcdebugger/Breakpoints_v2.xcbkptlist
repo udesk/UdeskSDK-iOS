@@ -19,13 +19,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "UdeskSDK/UdeskSDK3.0/UDChatMessage/IM/Views/MessageInputView/UDMessageInputView.m"
-            timestampString = "477456989.222575"
+            filePath = "UdeskSDK/UdeskSDK3.0/UDChatMessage/Tools/Vendor/UIImage+GIF.m"
+            timestampString = "477902034.201384"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
-            landmarkName = "-messageStyleButtonClicked:"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
+            landmarkName = "+sd_animatedGIFWithData:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

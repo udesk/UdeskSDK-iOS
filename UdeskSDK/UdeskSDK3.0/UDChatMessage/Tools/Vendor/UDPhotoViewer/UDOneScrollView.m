@@ -112,7 +112,7 @@
         imageW  = imageView.image.size.width;
         imageH = imageView.image.size.height;
         //放大的图片 显示原图片 不缩小
-        self.mainImageView.image = (UIImage *)[[YYCache sharedCache] objectForKey:message.contentId];
+        self.mainImageView.image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:message.contentId];
     }
     
     //设置主图片Frame 与缩小比例

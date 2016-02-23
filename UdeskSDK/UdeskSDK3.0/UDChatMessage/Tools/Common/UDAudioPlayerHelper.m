@@ -64,14 +64,13 @@
                 [_player stop];
                 self.player = nil;
             }
+    
+            NSData *audioData = [[SDImageCache sharedImageCache] dataFromDiskCacheForKey:message.contentId];
             
-            //Udesk SDK 使用的第三方缓存框架
-            [[YYCache sharedCache] objectForKey:message.contentId withBlock:^(NSString *key, id<NSCoding> object) {
-                
-                if (object) {
-                    [self playAudio:(NSData *)object];
-                    return;
-                }
+            if (audioData) {
+                [self playAudio:audioData];
+            }
+            else {
                 
                 NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:message.photoUrl]];
                 
@@ -81,14 +80,15 @@
                         
                         [self playAudio:data];
                         
-                        [[YYCache sharedCache] setObject:data forKey:message.contentId withBlock:nil];
+                        [[SDImageCache sharedImageCache] storeData:data forKey:message.contentId];
                     }
                     
                 }];
                 
                 [dataTask resume];
                 
-            }];
+            }
+            
             
         }
         self.playingFileName = message.contentId;
