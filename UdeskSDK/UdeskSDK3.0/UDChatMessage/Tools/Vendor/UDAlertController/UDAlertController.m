@@ -228,7 +228,7 @@
     if ([self alertControllerAvailable]) {
         [self.alertController addTextFieldWithConfigurationHandler:configurationHandler];
     } else {
-        NSAssert(self.preferredStyle == PSTAlertControllerStyleAlert, @"Text fields are only supported for alerts.");
+        NSAssert(self.preferredStyle == UDAlertControllerStyleAlert, @"Text fields are only supported for alerts.");
         self.textFieldHandlers = [[NSArray arrayWithArray:self.textFieldHandlers] arrayByAddingObject:configurationHandler ?: ^(UITextField *textField){}];
         self.alertView.alertViewStyle = self.textFieldHandlers.count > 1 ? UIAlertViewStyleLoginAndPasswordInput : UIAlertViewStylePlainTextInput;
     }
@@ -259,9 +259,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Presentation
 
-static NSUInteger PSTVisibleAlertsCount = 0;
+static NSUInteger UDVisibleAlertsCount = 0;
 + (BOOL)hasVisibleAlertController {
-    return PSTVisibleAlertsCount > 0;
+    return UDVisibleAlertsCount > 0;
 }
 
 - (BOOL)isVisible {
@@ -382,9 +382,9 @@ static NSUInteger PSTVisibleAlertsCount = 0;
     if (_flags.isShowingAlert != isShowing) {
         _flags.isShowingAlert = isShowing;
         if (isShowing) {
-            PSTVisibleAlertsCount++;
+            UDVisibleAlertsCount++;
         } else {
-            PSTVisibleAlertsCount--;
+            UDVisibleAlertsCount--;
         }
     }
 }

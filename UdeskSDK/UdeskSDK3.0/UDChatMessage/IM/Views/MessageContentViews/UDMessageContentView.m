@@ -239,18 +239,9 @@
         
         [[UDCache sharedImageCache] queryDiskCacheForKey:message.contentId done:^(UIImage *image, UDImageCacheType cacheType) {
             
-            //开子线程压缩图片
-//            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//                
-//                UIImage *newImage = [UDTools compressionImage:image];
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    
-//                    NSLog(@"%@",newImage);
-//                    _photoImageView.image = newImage;
-//                });
-//            });
-            
-                    _photoImageView.image = image;
+            if (image) {
+                _photoImageView.image = image;
+            }
          
             return;
         }];

@@ -69,7 +69,7 @@
 		449C275F1C7C53340017F7DB /* UDImageCompat.m in Sources */ = {isa = PBXBuildFile; fileRef = 449C27581C7C53340017F7DB /* UDImageCompat.m */; };
 		449C27601C7C53340017F7DB /* UDImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 449C275A1C7C53340017F7DB /* UDImageDecoder.m */; };
 		449C27611C7C53340017F7DB /* UIImage+UDMultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 449C275C1C7C53340017F7DB /* UIImage+UDMultiFormat.m */; };
-		44BA16061C7718E000D3EE2E /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44BA16051C7718E000D3EE2E /* libUdesk.a */; };
+		449C276D1C7C64F70017F7DB /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 449C276C1C7C64F70017F7DB /* libUdesk.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -191,7 +191,7 @@
 		449C275A1C7C53340017F7DB /* UDImageDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDImageDecoder.m; sourceTree = "<group>"; };
 		449C275B1C7C53340017F7DB /* UIImage+UDMultiFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+UDMultiFormat.h"; sourceTree = "<group>"; };
 		449C275C1C7C53340017F7DB /* UIImage+UDMultiFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+UDMultiFormat.m"; sourceTree = "<group>"; };
-		44BA16051C7718E000D3EE2E /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
+		449C276C1C7C64F70017F7DB /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,7 +203,7 @@
 				4426E9561C5B1442005A5011 /* libz.tbd in Frameworks */,
 				4426E9541C5B143D005A5011 /* libxml2.tbd in Frameworks */,
 				4426E9521C5B1437005A5011 /* libresolv.tbd in Frameworks */,
-				44BA16061C7718E000D3EE2E /* libUdesk.a in Frameworks */,
+				449C276D1C7C64F70017F7DB /* libUdesk.a in Frameworks */,
 				4426E9501C5B1410005A5011 /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -284,7 +284,6 @@
 		4493544D1C5F40F300236FC7 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				44BA16051C7718E000D3EE2E /* libUdesk.a */,
 				4493544E1C5F40F300236FC7 /* Localizable.strings */,
 				4493544F1C5F40F300236FC7 /* UDEmojiList.plist */,
 				449354501C5F40F300236FC7 /* UdeskBundle.bundle */,
@@ -295,6 +294,7 @@
 		449354521C5F40F300236FC7 /* SDK */ = {
 			isa = PBXGroup;
 			children = (
+				449C276C1C7C64F70017F7DB /* libUdesk.a */,
 				449354541C5F40F300236FC7 /* UDManager.h */,
 				449354551C5F40F300236FC7 /* UDMessage.h */,
 			);
