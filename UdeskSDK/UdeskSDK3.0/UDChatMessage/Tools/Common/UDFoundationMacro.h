@@ -63,28 +63,11 @@
 
 #define UDHSB(h,s,b) [UIColor colorWithHue:h/360.0f saturation:s/100.0f brightness:b/100.0f alpha:1.0]
 
-//number转String
-#define IntTranslateStr(int_str) [NSString stringWithFormat:@"%d",int_str];
-#define FloatTranslateStr(float_str) [NSString stringWithFormat:@"%.2d",float_str];
-
-// View 圆角和加边框
-#define ViewBorderRadius(View, Radius, Width, Color)\
-                                \
-                                [View.layer setCornerRadius:(Radius)];\
-                                [View.layer setMasksToBounds:YES];\
-                                [View.layer setBorderWidth:(Width)];\
-                                [View.layer setBorderColor:[Color CGColor]]
-
-// View 圆角
-#define ViewRadius(View, Radius)\
-                                \
-                                [View.layer setCornerRadius:(Radius)];\
-                                [View.layer setMasksToBounds:YES]
 
 // 当前版本
-#define FSystemVersion          ([[[UIDevice currentDevice] systemVersion] floatValue])
-#define DSystemVersion          ([[[UIDevice currentDevice] systemVersion] doubleValue])
-#define SSystemVersion          ([[UIDevice currentDevice] systemVersion])
+//#define FSystemVersion          ([[[UIDevice currentDevice] systemVersion] floatValue])
+//#define DSystemVersion          ([[[UIDevice currentDevice] systemVersion] doubleValue])
+//#define SSystemVersion          ([[UIDevice currentDevice] systemVersion])
 
 // 当前语言
 #define CURRENTLANGUAGE         ([[NSLocale preferredLanguages] objectAtIndex:0])

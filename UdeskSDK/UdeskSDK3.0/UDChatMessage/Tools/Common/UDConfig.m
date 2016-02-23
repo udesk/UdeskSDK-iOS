@@ -47,20 +47,20 @@
     self.iMTitleColor = [UIColor whiteColor];
     self.faqNavigationColor = [UIColor whiteColor];
     self.faqTitleColor = [UIColor blackColor];
-    self.faqBackButtonColor = RGBCOLOR(32, 104, 235);
+    self.faqBackButtonColor = UDRGBCOLOR(32, 104, 235);
     self.articleContentNavigationColor = [UIColor whiteColor];
-    self.articleBackButtonColor = RGBCOLOR(32, 104, 235);
+    self.articleBackButtonColor = UDRGBCOLOR(32, 104, 235);
     self.articleContentTitleColor = [UIColor blackColor];
-    self.searchCancleButtonColor = RGBCOLOR(32, 104, 235);
-    self.searchContactUsColor = RGBCOLOR(32, 104, 235);
-    self.contactUsBorderColor = RGBCOLOR(32, 104, 235);
+    self.searchCancleButtonColor = UDRGBCOLOR(32, 104, 235);
+    self.searchContactUsColor = UDRGBCOLOR(32, 104, 235);
+    self.contactUsBorderColor = UDRGBCOLOR(32, 104, 235);
     self.promptTextColor = [UIColor darkGrayColor];
     self.ticketNavigationColor = [UIColor whiteColor];
-    self.ticketBackButtonColor = RGBCOLOR(32, 104, 235);
+    self.ticketBackButtonColor = UDRGBCOLOR(32, 104, 235);
     self.ticketTitleColor = [UIColor whiteColor];
     self.agentStatusTitleColor = [UIColor whiteColor];
     self.robotNavigationColor = [UIColor whiteColor];
-    self.robotBackButtonColor = RGBCOLOR(32, 104, 235);
+    self.robotBackButtonColor = UDRGBCOLOR(32, 104, 235);
     self.robotTitleColor = [UIColor blackColor];
     
 //    NSString *imageUrl = @"http://img5.duitang.com/uploads/item/201409/15/20140915205358_tz8Y3.jpeg";
