@@ -50,6 +50,9 @@
  */
 @property (nonatomic, weak  ) UIImageView                          *photoImageView;
 
+/**
+ *  转移tag
+ */
 @property (nonatomic, weak  ) UILabel                              *redirectTagLabel;
 
 /**
