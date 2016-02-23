@@ -10,12 +10,12 @@
 
 @interface UdeskUtils : NSObject
 
-#define MYBUNDLE_NAME @ "UdeskBundle.bundle"
+#define UDBUNDLE_NAME @ "UdeskBundle.bundle"
 
-#define MYBUNDLE_PATH [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: MYBUNDLE_NAME]
+#define UDBUNDLE_PATH [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: UDBUNDLE_NAME]
 
-#define MYBUNDLE [NSBundle bundleWithPath: MYBUNDLE_PATH]
+#define UDBUNDLE [NSBundle bundleWithPath: UDBUNDLE_PATH]
 
-NSString * getMyBundlePath( NSString * filename);
+NSString * getUDBundlePath( NSString * filename);
 
 @end

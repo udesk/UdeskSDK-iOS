@@ -49,12 +49,12 @@
 
 @end
 
-@interface PSTExtendedAlertController : UIAlertController
+@interface UDExtendedAlertController : UIAlertController
 @property (nonatomic, copy) void (^viewWillDisappearBlock)(void);
 @property (nonatomic, copy) void (^viewDidDisappearBlock)(void);
 @end
 
-@implementation PSTExtendedAlertController
+@implementation UDExtendedAlertController
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -79,7 +79,7 @@
 @property (nonatomic, copy) NSArray *didDismissBlocks;
 
 // iOS 8
-@property (nonatomic, strong) PSTExtendedAlertController *alertController;
+@property (nonatomic, strong) UDExtendedAlertController *alertController;
 
 // Universal
 @property (nonatomic, weak) UDAlertAction *executedAlertAction;
@@ -119,7 +119,7 @@
         _preferredStyle = preferredStyle;
 
         if ([self alertControllerAvailable]) {
-            _alertController = [PSTExtendedAlertController alertControllerWithTitle:title message:message preferredStyle:(UIAlertControllerStyle)preferredStyle];
+            _alertController = [UDExtendedAlertController alertControllerWithTitle:title message:message preferredStyle:(UIAlertControllerStyle)preferredStyle];
         } else {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 80000
             if (preferredStyle == UDAlertControllerStyleActionSheet) {
@@ -304,7 +304,7 @@ static NSUInteger PSTVisibleAlertsCount = 0;
         // We absolutely need a controller going forward.
         NSParameterAssert(controller);
 
-        PSTExtendedAlertController *alertController = self.alertController;
+        UDExtendedAlertController *alertController = self.alertController;
         UIPopoverPresentationController *popoverPresentation = alertController.popoverPresentationController;
         if (popoverPresentation) { // nil on iPhone
             if ([sender isKindOfClass:UIBarButtonItem.class]) {

@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 Dailymotion. All rights reserved.
 //
 
-#import "UIImage+MultiFormat.h"
+#import "UIImage+UDMultiFormat.h"
 #import <ImageIO/ImageIO.h>
 
-@implementation UIImage (MultiFormat)
+@implementation UIImage (UDMultiFormat)
 
 + (UIImage *)sd_imageWithData:(NSData *)data {
     if (!data) {

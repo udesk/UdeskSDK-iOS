@@ -10,10 +10,10 @@
 
 @implementation UdeskUtils
 
-NSString* getMyBundlePath( NSString * filename)
+NSString* getUDBundlePath( NSString * filename)
 {
     
-    NSBundle * libBundle = MYBUNDLE ;
+    NSBundle * libBundle = UDBUNDLE ;
     
     if ( libBundle && filename ){
         

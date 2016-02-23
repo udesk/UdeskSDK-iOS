@@ -65,7 +65,7 @@
                 self.player = nil;
             }
     
-            NSData *audioData = [[SDImageCache sharedImageCache] dataFromDiskCacheForKey:message.contentId];
+            NSData *audioData = [[UDCache sharedImageCache] dataFromDiskCacheForKey:message.contentId];
             
             if (audioData) {
                 [self playAudio:audioData];
@@ -80,7 +80,7 @@
                         
                         [self playAudio:data];
                         
-                        [[SDImageCache sharedImageCache] storeData:data forKey:message.contentId];
+                        [[UDCache sharedImageCache] storeData:data forKey:message.contentId];
                     }
                     
                 }];

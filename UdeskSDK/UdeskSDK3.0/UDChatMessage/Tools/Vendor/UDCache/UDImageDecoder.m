@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-#import "SDWebImageDecoder.h"
+#import "UDImageDecoder.h"
 
-@implementation UIImage (ForceDecode)
+@implementation UIImage (UDForceDecode)
 
 + (UIImage *)decodedImageWithImage:(UIImage *)image {
     // while downloading huge amount of images

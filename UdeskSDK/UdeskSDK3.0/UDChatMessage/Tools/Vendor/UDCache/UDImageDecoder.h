@@ -9,9 +9,9 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "SDWebImageCompat.h"
+#import "UDImageCompat.h"
 
-@interface UIImage (ForceDecode)
+@interface UIImage (UDForceDecode)
 
 + (UIImage *)decodedImageWithImage:(UIImage *)image;
 

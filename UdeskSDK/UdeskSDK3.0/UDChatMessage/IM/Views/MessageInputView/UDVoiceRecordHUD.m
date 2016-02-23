@@ -62,7 +62,7 @@
     
     if (!_microPhoneImageView) {
         UIImageView *microPhoneImageView = [[UIImageView alloc] initWithFrame:CGRectMake(11.0, 28.0, 80, 80)];
-        microPhoneImageView.image = [UIImage imageWithContentsOfFile:getMyBundlePath(@"speak.png")];
+        microPhoneImageView.image = [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_speak_Button.png")];
         microPhoneImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
         microPhoneImageView.contentMode = UIViewContentModeScaleToFill;
         [self addSubview:microPhoneImageView];
@@ -71,7 +71,7 @@
     
     if (!_recordingHUDImageView) {
         UIImageView *recordHUDImageView = [[UIImageView alloc] initWithFrame:CGRectMake(97.0, 14.0, 38, 100)];
-        recordHUDImageView.image = [UIImage imageWithContentsOfFile:getMyBundlePath(@"UDRecordingSignal001.png")];
+        recordHUDImageView.image = [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_Recording_Signal001.png")];
         recordHUDImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
         recordHUDImageView.contentMode = UIViewContentModeScaleToFill;
         [self addSubview:recordHUDImageView];
@@ -80,7 +80,7 @@
     
     if (!_cancelRecordImageView) {
         UIImageView *cancelRecordImageView = [[UIImageView alloc] initWithFrame:CGRectMake(30.0, 20.0, 80, 80)];
-        cancelRecordImageView.image = [UIImage imageWithContentsOfFile:getMyBundlePath(@"revoke.png")];
+        cancelRecordImageView.image = [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voice_revoke.png")];
         cancelRecordImageView.hidden = YES;
         cancelRecordImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
         cancelRecordImageView.contentMode = UIViewContentModeScaleToFill;
@@ -133,37 +133,37 @@
 }
 
 - (void)configRecordingHUDImageWithPeakPower:(CGFloat)peakPower {
-    NSString *imageName = @"UDRecordingSignal002.png";
+    NSString *imageName = @"ud_Recording_Signal002.png";
     
     if (peakPower>0&&peakPower<=10) {
         
-        imageName = @"UDRecordingSignal001.png";
+        imageName = @"ud_Recording_Signal001.png";
     } else if (peakPower>10&&peakPower<=35){
         
-        imageName = @"UDRecordingSignal002.png";
+        imageName = @"ud_Recording_Signal002.png";
     } else if (peakPower>35&&peakPower<=50){
         
-        imageName = @"UDRecordingSignal003.png";
+        imageName = @"ud_Recording_Signal003.png";
     } else if (peakPower>50&&peakPower<=60){
         
-        imageName = @"UDRecordingSignal004.png";
+        imageName = @"ud_Recording_Signal004.png";
     } else if (peakPower>60&&peakPower<=70){
         
-        imageName = @"UDRecordingSignal005.png";
+        imageName = @"ud_Recording_Signal005.png";
     } else if (peakPower>70&&peakPower<=75){
         
-        imageName = @"UDRecordingSignal006.png";
+        imageName = @"ud_Recording_Signal006.png";
     } else if (peakPower>75&&peakPower<=80){
         
-        imageName = @"UDRecordingSignal007.png";
+        imageName = @"ud_Recording_Signal007.png";
     } else if (peakPower>80&&peakPower<=90){
         
-        imageName = @"UDRecordingSignal008.png";
+        imageName = @"ud_Recording_Signal008.png";
     } else{
-        imageName = @"UDRecordingSignal008.png";
+        imageName = @"ud_Recording_Signal008.png";
     }
     
-    self.recordingHUDImageView.image = [UIImage imageWithContentsOfFile:getMyBundlePath(imageName)];
+    self.recordingHUDImageView.image = [UIImage imageWithContentsOfFile:getUDBundlePath(imageName)];
 }
 
 - (void)setPeakPower:(CGFloat)peakPower {

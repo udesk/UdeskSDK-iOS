@@ -51,11 +51,11 @@
 #define SDDispatchQueueSetterSementics assign
 #endif
 
-extern UIImage *SDScaledImageForKey(NSString *key, UIImage *image);
+extern UIImage *UDScaledImageForKey(NSString *key, UIImage *image);
 
-typedef void(^SDWebImageNoParamsBlock)();
+typedef void(^UDImageNoParamsBlock)();
 
-extern NSString *const SDWebImageErrorDomain;
+extern NSString *const UDImageErrorDomain;
 
 #define dispatch_main_sync_safe(block)\
     if ([NSThread isMainThread]) {\

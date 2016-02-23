@@ -105,9 +105,7 @@
         //通知刷新UI
         [self reloadChatTableView];
         //缓存图片
-//        [[YYCache sharedCache] setObject:image forKey:photoMessage.contentId withBlock:nil];
-        
-        [[SDImageCache sharedImageCache] storeImage:photoMessage.photo forKey:photoMessage.contentId];
+        [[UDCache sharedImageCache] storeImage:photoMessage.photo forKey:photoMessage.contentId];
         
         //存储
         NSArray *array = @[@"image",[UDTools stringFromDate:date],photoMessage.contentId,@"0",@"0",@"1",newWidth,newHeight];
@@ -156,7 +154,7 @@
         NSData *voiceData = [NSData dataWithContentsOfFile:audioPath];
         
         //缓存语音
-        [[SDImageCache sharedImageCache] storeData:voiceData forKey:voiceMessage.contentId];
+        [[UDCache sharedImageCache] storeData:voiceData forKey:voiceMessage.contentId];
         
         //发送消息 callback发送状态和消息体
         [UDManager sendMessage:voiceMessage completion:^(UDMessage *message,BOOL sendStatus) {

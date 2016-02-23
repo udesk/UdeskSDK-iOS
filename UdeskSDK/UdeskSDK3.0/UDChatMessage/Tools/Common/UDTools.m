@@ -8,8 +8,6 @@
 
 #import "UDTools.h"
 
-#define MAXIMAGESIZE    300
-
 @implementation UDTools
 
 //获取当前时间字符串
@@ -195,65 +193,6 @@
     
     return imageSize;
     
-}
-
-+ (UIImage *)compressionImage:(UIImage *)image {
-
-    UIImage *newImage;
-    
-    if (image.size.width>MAXIMAGESIZE||image.size.height>MAXIMAGESIZE) {
-        
-        CGSize imageSize;
-        
-        if (image.size.height > image.size.width) {
-            
-            CGFloat scale = image.size.height/MAXIMAGESIZE;
-            if (scale!=0) {
-                
-                CGFloat newWidth = (image.size.width)/scale;
-                
-                imageSize = CGSizeMake(newWidth<60.0f?60:newWidth, MAXIMAGESIZE);
-                
-            }
-            
-        }
-        else if (image.size.height < image.size.width) {
-            
-            CGFloat scale = image.size.width/MAXIMAGESIZE;
-            
-            if (scale!=0) {
-                
-                CGFloat newHeight = (image.size.height)/scale;
-                imageSize = CGSizeMake(MAXIMAGESIZE, newHeight);
-            }
-            
-        }
-        else if (image.size.height == image.size.width) {
-            
-            imageSize = CGSizeMake(MAXIMAGESIZE, MAXIMAGESIZE);
-        }
-        
-        newImage = [UDTools scaleToSize:image size:imageSize];
-    }
-    else {
-        newImage = image;
-    }
-    
-    return newImage;
-
-}
-
-+ (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size{
-    // 创建一个bitmap的context， 并把它设置成为当前正在使用的context
-    UIGraphicsBeginImageContext(size);
-    // 绘制改变大小的图片
-    [img drawInRect:CGRectMake(0, 0, size.width, size.height)];
-    // 从当前context中创建一个改变大小后的图片
-    UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
-    // 使当前的context出堆栈
-    UIGraphicsEndImageContext();
-    // 返回新的改变大小后的图片
-    return scaledImage;
 }
 
 + (NSString *)sendTextEmoji:(NSString *)text {

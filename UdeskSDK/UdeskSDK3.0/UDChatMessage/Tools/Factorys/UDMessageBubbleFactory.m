@@ -17,7 +17,7 @@
     
     switch (style) {
         case UDBubbleImageViewStyleUDChat:
-            messageTypeString = @"uDChatBubble";
+            messageTypeString = @"ud_ChatBubble";
             break;
         default:
             break;
@@ -46,7 +46,7 @@
             break;
     }
     
-    UIImage *bublleImage = [UIImage imageWithContentsOfFile:getMyBundlePath(messageTypeString)];
+    UIImage *bublleImage = [UIImage imageWithContentsOfFile:getUDBundlePath(messageTypeString)];
     UIImage *edgeBubbleImage = [bublleImage stretchableImageWithLeftCapWidth:bublleImage.size.width / 2 topCapHeight:bublleImage.size.height / 2];
     return edgeBubbleImage;
 }

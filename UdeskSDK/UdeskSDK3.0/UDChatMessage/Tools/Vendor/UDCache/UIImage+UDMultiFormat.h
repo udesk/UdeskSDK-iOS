@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIImage (MultiFormat)
+@interface UIImage (UDMultiFormat)
 
 + (UIImage *)sd_imageWithData:(NSData *)data;
 

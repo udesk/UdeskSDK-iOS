@@ -24,7 +24,7 @@
 #import "UDConfig.h"
 #import "UDViewExt.h"
 #import "UDAlertController.h"
-#import "SDImageCache.h"
+#import "UDCache.h"
 
 #define  Config [UDConfig sharedUDConfig]
 
@@ -56,7 +56,5 @@
 + (NSDate *)dateFromString:(NSString *)string;
 //NSDate转NSString
 + (NSString *)stringFromDate:(NSDate *)date;
-//压缩图片
-+ (UIImage *)compressionImage:(UIImage *)image;
 
 @end

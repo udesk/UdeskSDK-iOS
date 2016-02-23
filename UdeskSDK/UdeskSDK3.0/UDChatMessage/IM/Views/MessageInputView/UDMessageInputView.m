@@ -82,10 +82,10 @@
 #pragma mark - 配置输入工具条的样式和布局
 - (void)setupMessageInputViewBarWithStyle {
     //语音按钮
-    UIButton *voiceChangeButton = [self createButtonWithImage:[UIImage imageWithContentsOfFile:getMyBundlePath(@"voice.png")] HLImage:[UIImage imageWithContentsOfFile:getMyBundlePath(@"voice_h.png")]];
+    UIButton *voiceChangeButton = [self createButtonWithImage:[UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voice_Button.png")] HLImage:[UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voice_ButtonH.png")]];
     [voiceChangeButton addTarget:self action:@selector(messageStyleButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     voiceChangeButton.tag = 21;
-    [voiceChangeButton setBackgroundImage:[UIImage imageWithContentsOfFile:getMyBundlePath(@"keyboard.png")] forState:UIControlStateSelected];
+    [voiceChangeButton setBackgroundImage:[UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_keyboard_Button.png")] forState:UIControlStateSelected];
     voiceChangeButton.frame = CGRectMake(7, (self.frame.size.height-ViewHeight)/2, ViewHeight, ViewHeight);
     
     [self addSubview:voiceChangeButton];
@@ -93,7 +93,7 @@
     self.voiceChangeButton = voiceChangeButton;
     
     //图片按钮
-    UIButton *multiMediaSendButton = [self createButtonWithImage:[UIImage imageWithContentsOfFile:getMyBundlePath(@"photo.png")] HLImage:[UIImage imageWithContentsOfFile:getMyBundlePath(@"photo_h.png")]];
+    UIButton *multiMediaSendButton = [self createButtonWithImage:[UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_photo_Button.png")] HLImage:[UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_photo_ButtonH.png")]];
     multiMediaSendButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     [multiMediaSendButton addTarget:self action:@selector(messageStyleButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     multiMediaSendButton.tag = 22;
@@ -103,9 +103,9 @@
     self.multiMediaSendButton = multiMediaSendButton;
     
     // 表情按钮
-    UIButton *faceSendButton = [self createButtonWithImage:[UIImage imageWithContentsOfFile:getMyBundlePath(@"smile.png")] HLImage:[UIImage imageWithContentsOfFile:getMyBundlePath(@"smile_h.png")]];
+    UIButton *faceSendButton = [self createButtonWithImage:[UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_smile_Button.png")] HLImage:[UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_smile_ButtonH.png")]];
     faceSendButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-    [faceSendButton setBackgroundImage:[UIImage imageWithContentsOfFile:getMyBundlePath(@"keyboard.png")] forState:UIControlStateSelected];
+    [faceSendButton setBackgroundImage:[UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_keyboard_Button.png")] forState:UIControlStateSelected];
     [faceSendButton addTarget:self action:@selector(messageStyleButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     faceSendButton.tag = 23;
     faceSendButton.frame = CGRectMake(multiMediaSendButton.frame.origin.x-ViewHeight-6, (self.frame.size.height-ViewHeight)/2, ViewHeight, ViewHeight);
@@ -139,7 +139,7 @@
     
     // 如果是可以发送语音的，那就需要一个按钮录音的按钮，事件可以在外部添加
     UIEdgeInsets edgeInsets = UIEdgeInsetsMake(9, 9, 9, 9);
-    UIButton *holdDownButton = [self createButtonWithImage:UD_STRETCH_IMAGE([UIImage imageWithContentsOfFile:getMyBundlePath(@"chat_message_back.png")], edgeInsets) HLImage:UD_STRETCH_IMAGE([UIImage imageWithContentsOfFile:getMyBundlePath(@"chat_message_backH.png")], edgeInsets)];
+    UIButton *holdDownButton = [self createButtonWithImage:UD_STRETCH_IMAGE([UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voice_background.png")], edgeInsets) HLImage:UD_STRETCH_IMAGE([UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voice_backgroundH.png")], edgeInsets)];
     [holdDownButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
     [holdDownButton setTitle:@"按住 说话" forState:UIControlStateNormal];
     [holdDownButton setTitle:@"松开 结束"  forState:UIControlStateHighlighted];

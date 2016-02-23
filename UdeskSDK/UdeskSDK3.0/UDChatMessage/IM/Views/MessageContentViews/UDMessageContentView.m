@@ -237,53 +237,40 @@
     }
     else if (message.messageType == UDMessageMediaTypePhoto) {
         
-        [[SDImageCache sharedImageCache] queryDiskCacheForKey:message.contentId done:^(UIImage *image, SDImageCacheType cacheType) {
+        [[UDCache sharedImageCache] queryDiskCacheForKey:message.contentId done:^(UIImage *image, UDImageCacheType cacheType) {
             
             //开子线程压缩图片
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                
-                UIImage *newImage = [UDTools compressionImage:image];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    _photoImageView.image = newImage;
-                });
-            });
+//            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//                
+//                UIImage *newImage = [UDTools compressionImage:image];
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    
+//                    NSLog(@"%@",newImage);
+//                    _photoImageView.image = newImage;
+//                });
+//            });
             
+                    _photoImageView.image = image;
+         
             return;
         }];
         
-//        [[YYCache sharedCache] objectForKey:message.contentId withBlock:^(NSString *key, id<NSCoding> object) {
-//            
-//            if (object) {
-//                //开子线程压缩图片
-//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//                    
-//                    UIImage *image = [UDTools compressionImage:(UIImage *)object];
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        _photoImageView.image = image;
-//                    });
-//                });
-//             
-//                return;
-//            }
-//            
-//            NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:message.photoUrl]];
-//            
-//            NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//                
-//                if (data) {
-//                    
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        _photoImageView.image = [UIImage imageWithData:data];
-//                    });
-//                    
-//                    [[YYCache sharedCache] setObject:_photoImageView.image forKey:message.contentId withBlock:nil];
-//                }
-//                
-//            }];
-//            
-//            [dataTask resume];
-//            
-//        }];
+        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:message.photoUrl]];
+        
+        NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            
+            if (data) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    _photoImageView.image = [UIImage imageWithData:data];
+                });
+                
+                [[UDCache sharedImageCache] storeImage:_photoImageView.image forKey:message.contentId];
+            }
+            
+        }];
+        
+        [dataTask resume];
     
     }
     else if (message.messageType == UDMessageMediaTypeVoice) {
@@ -372,7 +359,7 @@
         if (!_messageAgainButton) {
             
             UIButton *againButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            [againButton setImage:[UIImage imageWithContentsOfFile:getMyBundlePath(@"refresh.png")] forState:UIControlStateNormal];
+            [againButton setImage:[UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_refresh_Button.png")] forState:UIControlStateNormal];
             [againButton addTarget:self action:@selector(againButtonAction) forControlEvents:UIControlEventTouchUpInside];
             againButton.frame = CGRectZero;
             againButton.hidden = YES;
