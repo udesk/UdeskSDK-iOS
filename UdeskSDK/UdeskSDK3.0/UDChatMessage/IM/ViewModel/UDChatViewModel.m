@@ -95,6 +95,11 @@
         NSString *newHeight = [NSString stringWithFormat:@"%f",[UDTools setImageSize:image].height];
         
         NSDate *date = [NSDate date];
+        //大于1M的照片需要压缩
+        NSData *data = UIImageJPEGRepresentation(image, 1);
+        if (data.length/1024 > 1024) {
+            image = [UDTools compressImageWith:image];
+        }
         
         UDMessage *photoMessage = [[UDMessage alloc] initWithPhoto:image timestamp:date];
         photoMessage.agent_jid = _viewModel.agentModel.jid;
@@ -105,7 +110,7 @@
         //通知刷新UI
         [self reloadChatTableView];
         //缓存图片
-        [[UDCache sharedImageCache] storeImage:photoMessage.photo forKey:photoMessage.contentId];
+        [[UDCache sharedUDCache] storeImage:photoMessage.photo forKey:photoMessage.contentId];
         
         //存储
         NSArray *array = @[@"image",[UDTools stringFromDate:date],photoMessage.contentId,@"0",@"0",@"1",newWidth,newHeight];
@@ -154,7 +159,7 @@
         NSData *voiceData = [NSData dataWithContentsOfFile:audioPath];
         
         //缓存语音
-        [[UDCache sharedImageCache] storeData:voiceData forKey:voiceMessage.contentId];
+        [[UDCache sharedUDCache] storeData:voiceData forKey:voiceMessage.contentId];
         
         //发送消息 callback发送状态和消息体
         [UDManager sendMessage:voiceMessage completion:^(UDMessage *message,BOOL sendStatus) {

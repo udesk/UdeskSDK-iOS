@@ -75,10 +75,8 @@
             UIImage *image = [UIImage imageWithData:data];
             message.photo  = image;
 
-            //缓存图片
-//            [[YYCache sharedCache] setObject:image forKey:message.contentId withBlock:nil];
-            
-            [[UDCache sharedImageCache] storeImage:image forKey:message.contentId];
+            //缓存图片            
+            [[UDCache sharedUDCache] storeImage:image forKey:message.contentId];
             
             message.messageType = UDMessageMediaTypePhoto;
             message.photoUrl = content;
@@ -113,7 +111,7 @@
         
         message.messageType = UDMessageMediaTypeVoice;
         //缓存语音
-        [[UDCache sharedImageCache] storeData:audioData forKey:message.contentId];
+        [[UDCache sharedUDCache] storeData:audioData forKey:message.contentId];
         
         NSArray *audioDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"2"],[NSString stringWithFormat:@"%.f",pl.duration]];
         

@@ -56,5 +56,7 @@
 + (NSDate *)dateFromString:(NSString *)string;
 //NSDate转NSString
 + (NSString *)stringFromDate:(NSDate *)date;
+//压缩图片
++(UIImage *)compressImageWith:(UIImage *)image;
 
 @end

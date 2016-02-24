@@ -54,7 +54,7 @@ BOOL UDImageDataHasPNGPreffix(NSData *data) {
     return NO;
 }
 
-FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
+FOUNDATION_STATIC_INLINE NSUInteger UDCacheCostForImage(UIImage *image) {
     return image.size.height * image.size.width * image.scale * image.scale;
 }
 
@@ -63,7 +63,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 @property (strong, nonatomic) NSCache *memCache;
 @property (strong, nonatomic) NSString *diskCachePath;
 @property (strong, nonatomic) NSMutableArray *customPaths;
-@property (SDDispatchQueueSetterSementics, nonatomic) dispatch_queue_t ioQueue;
+@property (UDDispatchQueueSetterSementics, nonatomic) dispatch_queue_t ioQueue;
 
 @end
 
@@ -72,7 +72,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     NSFileManager *_fileManager;
 }
 
-+ (UDCache *)sharedImageCache {
++ (UDCache *)sharedUDCache {
     static dispatch_once_t once;
     static id instance;
     dispatch_once(&once, ^{
@@ -92,13 +92,13 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 
 - (id)initWithNamespace:(NSString *)ns diskCacheDirectory:(NSString *)directory {
     if ((self = [super init])) {
-        NSString *fullNamespace = [@"com.hackemist.SDWebImageCache." stringByAppendingString:ns];
+        NSString *fullNamespace = [@"com.hackemist.UDCache." stringByAppendingString:ns];
 
         // initialise PNG signature data
         kPNGSignatureData = [NSData dataWithBytes:kPNGSignatureBytes length:8];
 
         // Create IO serial queue
-        _ioQueue = dispatch_queue_create("com.hackemist.SDWebImageCache", DISPATCH_QUEUE_SERIAL);
+        _ioQueue = dispatch_queue_create("com.hackemist.UDCache", DISPATCH_QUEUE_SERIAL);
 
         // Init default values
         _maxCacheAge = kDefaultCacheMaxCacheAge;
@@ -152,7 +152,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    SDDispatchQueueRelease(_ioQueue);
+    UDDispatchQueueRelease(_ioQueue);
 }
 
 - (void)addReadOnlyCachePath:(NSString *)path {
@@ -204,7 +204,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     }
     // if memory cache is enabled
     if (self.shouldCacheImagesInMemory) {
-        NSUInteger cost = SDCacheCostForImage(image);
+        NSUInteger cost = UDCacheCostForImage(image);
         [self.memCache setObject:image forKey:key cost:cost];
     }
 
@@ -331,7 +331,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 
 - (UIImage *)imageFromMemoryCacheForKey:(NSString *)key {
     
-    UIImage *image = [self compressionImage:[self.memCache objectForKey:key]];
+    UIImage *image = [self.memCache objectForKey:key];
     
     return image;
 }
@@ -347,7 +347,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     // Second check the disk cache...
     UIImage *diskImage = [self diskImageForKey:key];
     if (diskImage && self.shouldCacheImagesInMemory) {
-        NSUInteger cost = SDCacheCostForImage(diskImage);
+        NSUInteger cost = UDCacheCostForImage(diskImage);
         [self.memCache setObject:diskImage forKey:key cost:cost];
     }
 
@@ -401,13 +401,11 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 - (UIImage *)diskImageForKey:(NSString *)key {
     NSData *data = [self diskImageDataBySearchingAllPathsForKey:key];
     if (data) {
-        UIImage *image = [UIImage sd_imageWithData:data];
+        UIImage *image = [UIImage ud_imageWithData:data];
         image = [self scaledImageForKey:key image:image];
         if (self.shouldDecompressImages) {
             image = [UIImage decodedImageWithImage:image];
         }
-        
-        image = [self compressionImage:image];
         
         return image;
     }
@@ -447,7 +445,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         @autoreleasepool {
             UIImage *diskImage = [self diskImageForKey:key];
             if (diskImage && self.shouldCacheImagesInMemory) {
-                NSUInteger cost = SDCacheCostForImage(diskImage);
+                NSUInteger cost = UDCacheCostForImage(diskImage);
                 [self.memCache setObject:diskImage forKey:key cost:cost];
             }
 
@@ -689,65 +687,5 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         }
     });
 }
-
-- (UIImage *)compressionImage:(UIImage *)image {
-    
-    UIImage *newImage;
-    
-    if (image.size.width>MAXIMAGESIZE||image.size.height>MAXIMAGESIZE) {
-        
-        CGSize imageSize;
-        
-        if (image.size.height > image.size.width) {
-            
-            CGFloat scale = image.size.height/MAXIMAGESIZE;
-            if (scale!=0) {
-                
-                CGFloat newWidth = (image.size.width)/scale;
-                
-                imageSize = CGSizeMake(newWidth<60.0f?60:newWidth, MAXIMAGESIZE);
-                
-            }
-            
-        }
-        else if (image.size.height < image.size.width) {
-            
-            CGFloat scale = image.size.width/MAXIMAGESIZE;
-            
-            if (scale!=0) {
-                
-                CGFloat newHeight = (image.size.height)/scale;
-                imageSize = CGSizeMake(MAXIMAGESIZE, newHeight);
-            }
-            
-        }
-        else if (image.size.height == image.size.width) {
-            
-            imageSize = CGSizeMake(MAXIMAGESIZE, MAXIMAGESIZE);
-        }
-        
-        newImage = [self scaleToSize:image size:imageSize];
-    }
-    else {
-        newImage = image;
-    }
-    
-    return newImage;
-    
-}
-
-- (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size{
-    // 创建一个bitmap的context， 并把它设置成为当前正在使用的context
-    UIGraphicsBeginImageContext(size);
-    // 绘制改变大小的图片
-    [img drawInRect:CGRectMake(0, 0, size.width, size.height)];
-    // 从当前context中创建一个改变大小后的图片
-    UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
-    // 使当前的context出堆栈
-    UIGraphicsEndImageContext();
-    // 返回新的改变大小后的图片
-    return scaledImage;
-}
-
 
 @end

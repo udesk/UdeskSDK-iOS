@@ -237,31 +237,35 @@
     }
     else if (message.messageType == UDMessageMediaTypePhoto) {
         
-        [[UDCache sharedImageCache] queryDiskCacheForKey:message.contentId done:^(UIImage *image, UDImageCacheType cacheType) {
+        [[UDCache sharedUDCache] queryDiskCacheForKey:message.contentId done:^(UIImage *image, UDImageCacheType cacheType) {
             
             if (image) {
+                
                 _photoImageView.image = image;
             }
-         
-            return;
-        }];
-        
-        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:message.photoUrl]];
-        
-        NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            else {
             
-            if (data) {
+                NSString *newURL = [message.photoUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:newURL]];
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    _photoImageView.image = [UIImage imageWithData:data];
-                });
+                NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                    
+                    if (data) {
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            _photoImageView.image = [UIImage imageWithData:data];
+                            
+                        });
+                        
+                        [[UDCache sharedUDCache] storeImage:_photoImageView.image forKey:message.contentId];
+                    }
+                    
+                }];
                 
-                [[UDCache sharedImageCache] storeImage:_photoImageView.image forKey:message.contentId];
+                [dataTask resume];
             }
-            
+         
         }];
-        
-        [dataTask resume];
     
     }
     else if (message.messageType == UDMessageMediaTypeVoice) {

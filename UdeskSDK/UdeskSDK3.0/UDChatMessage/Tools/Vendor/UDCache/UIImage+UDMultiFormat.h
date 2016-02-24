@@ -10,6 +10,6 @@
 
 @interface UIImage (UDMultiFormat)
 
-+ (UIImage *)sd_imageWithData:(NSData *)data;
++ (UIImage *)ud_imageWithData:(NSData *)data;
 
 @end

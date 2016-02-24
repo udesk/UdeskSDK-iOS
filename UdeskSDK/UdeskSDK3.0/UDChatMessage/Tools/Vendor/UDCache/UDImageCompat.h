@@ -40,15 +40,15 @@
 #endif
 
 #if OS_OBJECT_USE_OBJC
-    #undef SDDispatchQueueRelease
-    #undef SDDispatchQueueSetterSementics
-    #define SDDispatchQueueRelease(q)
-    #define SDDispatchQueueSetterSementics strong
+    #undef UDDispatchQueueRelease
+    #undef UDDispatchQueueSetterSementics
+    #define UDDispatchQueueRelease(q)
+    #define UDDispatchQueueSetterSementics strong
 #else
-#undef SDDispatchQueueRelease
-#undef SDDispatchQueueSetterSementics
-#define SDDispatchQueueRelease(q) (dispatch_release(q))
-#define SDDispatchQueueSetterSementics assign
+#undef UDDispatchQueueRelease
+#undef UDDispatchQueueSetterSementics
+#define UDDispatchQueueRelease(q) (dispatch_release(q))
+#define UDDispatchQueueSetterSementics assign
 #endif
 
 extern UIImage *UDScaledImageForKey(NSString *key, UIImage *image);

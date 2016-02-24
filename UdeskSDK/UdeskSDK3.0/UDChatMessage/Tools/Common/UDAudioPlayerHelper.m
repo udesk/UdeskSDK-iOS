@@ -65,14 +65,15 @@
                 self.player = nil;
             }
     
-            NSData *audioData = [[UDCache sharedImageCache] dataFromDiskCacheForKey:message.contentId];
+            NSData *audioData = [[UDCache sharedUDCache] dataFromDiskCacheForKey:message.contentId];
             
             if (audioData) {
                 [self playAudio:audioData];
             }
             else {
                 
-                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:message.photoUrl]];
+                NSString *newURL = [message.voiceUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:newURL]];
                 
                 NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                     
@@ -80,7 +81,7 @@
                         
                         [self playAudio:data];
                         
-                        [[UDCache sharedImageCache] storeData:data forKey:message.contentId];
+                        [[UDCache sharedUDCache] storeData:data forKey:message.contentId];
                     }
                     
                 }];

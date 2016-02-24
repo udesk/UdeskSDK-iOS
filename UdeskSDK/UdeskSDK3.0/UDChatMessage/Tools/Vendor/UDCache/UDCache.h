@@ -77,7 +77,7 @@ typedef void(^UDImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger totalS
  *
  * @return SDImageCache global instance
  */
-+ (UDCache *)sharedImageCache;
++ (UDCache *)sharedUDCache;
 
 /**
  * Init a new cache store with a specific namespace
