@@ -47,6 +47,7 @@
             [notOnline addCloseActionWithTitle:@"确定" Handler:nil];
             [notOnline showWithSender:nil controller:nil animated:YES completion:NULL];
             
+            return;
         }
         
         NSDate *date = [NSDate date];
