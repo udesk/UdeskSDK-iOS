@@ -11,7 +11,7 @@ UdeskSDK-iOS
 
 Udesk-SDK的工作流程如下图所示。
 
-![udesk](ios-new-1.png)
+![udesk](http://7xr0de.com2.z0.glb.qiniucdn.com/ios-new-1.png)
 
 
 ## 2、导入SDK依赖的框架
@@ -26,6 +26,8 @@ JavaScriptCore.framework
 把SDK文件夹中的Udesk文件夹拖到你的工程里
 点击的你工程targets->Build Settings 搜索Other Linker Flags 加入 –lxml2 -ObjC
 
+.pch 引入 UDTools.h
+
 文件介绍
 
 |Demo中的文件 |说明 |
@@ -37,7 +39,7 @@ JavaScriptCore.framework
 ## 4、快速集成SDK
 
 ### 1）、初始化Udesk，获取密钥和公司域名。
-![udesk](ios3.png)
+![udesk](http://7xr0de.com2.z0.glb.qiniucdn.com/ios3.png)
 ```
 //初始化Udesk
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -82,7 +84,7 @@ NSDictionary *parameters = @{
 
 用户自定义字段：
 用户自定义字段需要登录Udesk后台，进入“管理中心-用户字段”添加用户自定义字段。
-![udesk](ios4.png)
+![udesk](http://7xr0de.com2.z0.glb.qiniucdn.com/ios4.png)
 
 调用用户自定义字段函数：
 ```
