@@ -25,6 +25,7 @@ JavaScriptCore.framework
 
 把SDK文件夹中的Udesk文件夹拖到你的工程里
 点击的你工程targets->Build Settings 搜索Other Linker Flags 加入 –lxml2 -ObjC
+.pch文件引入 UDTools.h
 
 文件介绍
 
