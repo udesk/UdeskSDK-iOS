@@ -84,6 +84,12 @@
             
             break;
         }
+        case UDMessageMediaTypeRedirect: {
+            
+            bubbleSize = CGSizeMake(UD_SCREEN_WIDTH, 20);
+            
+            break;
+        }
             
         default:
             break;
@@ -104,7 +110,7 @@
     CGFloat paddingX = 0.0f;
     if (self.message.messageFrom == UDMessageTypeSending) {
         paddingX = CGRectGetWidth(self.bounds) - bubbleSize.width+kUDArrowMarginWidth;
-    } else {
+    } else if (self.message.messageFrom == UDMessageTypeReceiving) {
         paddingX = -kUDArrowMarginWidth;
     }
     
@@ -156,11 +162,13 @@
             //设置语音时长颜色
             if (message.messageFrom == UDMessageTypeSending) {
                 _voiceDurationLabel.textColor = [UIColor whiteColor];
-            } else {
+            } else if (message.messageFrom == UDMessageTypeReceiving) {
                 _voiceDurationLabel.textColor = [UIColor blackColor];
             }
             //显示语音时间
             _voiceDurationLabel.hidden = NO;
+            //隐藏转接tag
+            _redirectTagLabel.hidden = YES;
             
         }
         case UDMessageMediaTypeText: {
@@ -178,6 +186,8 @@
                 _animationVoiceImageView.hidden = YES;
                 // 隐藏语音
                 _voiceDurationLabel.hidden = YES;
+                //隐藏转接tag
+                _redirectTagLabel.hidden = YES;
                 
             } else {
                 //隐藏文本消息的控件
@@ -197,6 +207,9 @@
                     _bubbleImageView.hidden = YES;
                     _animationVoiceImageView.hidden = YES;
                 }
+                
+                //隐藏转接tag
+                _redirectTagLabel.hidden = YES;
 
             }
             
@@ -213,6 +226,29 @@
             _bubbleImageView.hidden = NO;
             //隐藏语音播放动画
             _animationVoiceImageView.hidden = YES;
+            
+            //隐藏转接tag
+            _redirectTagLabel.hidden = YES;
+            
+            break;
+        }
+        case UDMessageMediaTypeRedirect: {
+        
+            // 显示图片
+            _photoImageView.hidden = YES;
+            //隐藏其它控件
+            _textLabel.hidden = YES;
+            //显示图片气泡
+            _bubbleImageView.hidden = YES;
+            //隐藏语音播放动画
+            _animationVoiceImageView.hidden = YES;
+            
+            //隐藏转接tag
+            _redirectTagLabel.hidden = YES;
+            
+            //隐藏转接tag
+            _redirectTagLabel.hidden = NO;
+            
             break;
         }
             
@@ -270,6 +306,10 @@
     }
     else if (message.messageType == UDMessageMediaTypeVoice) {
         _voiceDurationLabel.text = [NSString stringWithFormat:@"%@\'\'", message.voiceDuration];
+    }
+    else if (message.messageType == UDMessageMediaTypeRedirect) {
+    
+        _redirectTagLabel.text = message.text;
     }
     
     [self setNeedsLayout];
@@ -362,6 +402,16 @@
             _messageAgainButton = againButton;
             
         }
+        
+        if (!_redirectTagLabel) {
+            UILabel *redirectTagLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            redirectTagLabel.textColor = [UIColor lightGrayColor];
+            redirectTagLabel.textAlignment = NSTextAlignmentCenter;
+            redirectTagLabel.font = [UIFont systemFontOfSize:13];
+            redirectTagLabel.hidden = YES;
+            [self addSubview:redirectTagLabel];
+            _redirectTagLabel = redirectTagLabel;
+        }
 
     }
     return self;
@@ -446,7 +496,7 @@
             CGFloat paddingX = 0.0f;
             if (self.message.messageFrom == UDMessageTypeSending) {
                 paddingX = CGRectGetWidth(self.bounds) - needPhotoSize.width-kUDImageHorizontalBubblePadding-1;
-            } else {
+            } else if (self.message.messageFrom == UDMessageTypeReceiving) {
                 paddingX = kUDImageHorizontalBubblePadding+1;
             }
             CGRect photoImageViewFrame = CGRectMake(paddingX, kUDHaveBubbleMargin+kUDImageHorizontalBubblePadding-1,needPhotoSize.width, needPhotoSize.height);
@@ -455,6 +505,12 @@
             
             [self configureMessageSendLoadingFrame:bubbleFrame];
 
+            break;
+        }
+        case UDMessageMediaTypeRedirect: {
+        
+            _redirectTagLabel.frame = [self bubbleFrame];
+            
             break;
         }
             

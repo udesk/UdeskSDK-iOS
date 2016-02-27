@@ -70,5 +70,4 @@
                                 \
                                 [View.layer setCornerRadius:(Radius)];\
                                 [View.layer setMasksToBounds:YES]
-
 #endif

@@ -8,8 +8,13 @@
 
 #import <Foundation/Foundation.h>
 @class UDMessage;
+@class UDAgentModel;
+
+typedef void (^UDAgentDataCallBack) (UDAgentModel *udAgent);
 
 @interface UDReceiveChatMsg : NSObject
+
+@property (nonatomic, copy) UDAgentDataCallBack udAgentBlock;
 
 + (instancetype)store;
 

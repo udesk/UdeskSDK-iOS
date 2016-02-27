@@ -51,6 +51,11 @@
 @property (nonatomic, weak  ) UIImageView                          *photoImageView;
 
 /**
+ *  转移tag
+ */
+@property (nonatomic, weak  ) UILabel                              *redirectTagLabel;
+
+/**
  *  初始化消息内容显示控件的方法
  *
  *  @param frame   目标Frame

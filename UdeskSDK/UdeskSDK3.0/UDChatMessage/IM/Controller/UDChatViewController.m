@@ -171,18 +171,24 @@
 - (void)requestAgentData {
     
     [self.dataController requestAgentDataWithCallback:^(UDAgentModel *agentModel, NSError *error) {
-        
-        UDAgentViewModel *viewModel = [UDAgentViewModel.store viewModelWithAgent:agentModel];
-        //更新客服状态文字
-        [self.agentStatusView bindDataWithAgentModel:viewModel];
-        //登录Udesk
-        [self.chatViewModel loginUdeskWithAgent:viewModel];
-        //客服viewModel
-        self.chatViewModel.viewModel = viewModel;
-        //底部功能栏根据客服状态code做操作
-        self.messageInputView.agentCode = agentModel.code;
+        //装载客服数据
+        [self loadAgentDataReload:agentModel];
         
     }];
+    
+}
+//装载客服数据
+- (void)loadAgentDataReload:(UDAgentModel *)agentModel {
+
+    UDAgentViewModel *viewModel = [UDAgentViewModel.store viewModelWithAgent:agentModel];
+    //更新客服状态文字
+    [self.agentStatusView bindDataWithAgentModel:viewModel];
+    //登录Udesk
+    [self.chatViewModel loginUdeskWithAgent:viewModel];
+    //客服viewModel
+    self.chatViewModel.viewModel = viewModel;
+    //底部功能栏根据客服状态code做操作
+    self.messageInputView.agentCode = agentModel.code;
     
 }
 
@@ -272,6 +278,12 @@
         [UDTopAlertView showWithType:UDAlertTypeOffline text:AGENTNOTONLINE parentView:self.view];
     }
     
+}
+#pragma mark - 客户被转接了
+- (void)notificationRedirect:(UDAgentModel *)agentModel {
+
+    //装载客服数据
+    [self loadAgentDataReload:agentModel];
 }
 
 #pragma mark - 刷新TableView

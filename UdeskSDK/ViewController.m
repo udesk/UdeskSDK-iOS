@@ -86,6 +86,7 @@
     
     NSDictionary *parameters = @{
                                  @"user": @{
+
                                          @"nick_name": @"test1",
                                          @"sdk_token":@"test11234"
                                          }

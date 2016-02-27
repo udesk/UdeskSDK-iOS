@@ -106,6 +106,12 @@ static NSInteger const UDChatGetHistoreMessageNumber = 20;
             
             
             break;
+        case UDMessageMediaTypeRedirect:{
+        
+            message.text = [dbMessage objectForKey:@"content"];
+            
+            break;
+        }
             
         default:
             break;

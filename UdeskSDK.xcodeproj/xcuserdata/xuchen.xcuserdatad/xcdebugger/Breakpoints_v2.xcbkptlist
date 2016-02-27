@@ -19,8 +19,10 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
+
             filePath = "UdeskSDK/UdeskSDK3.0/UDChatMessage/Tools/Vendor/UIImage+GIF.m"
             timestampString = "477902034.201384"
+
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "15"

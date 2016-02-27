@@ -13,6 +13,7 @@
 @class UDMessageTableView;
 @class UDMessageInputView;
 @class UDEmotionManagerView;
+@class UDAgentModel;
 
 @protocol UDChatViewModelDelegate <NSObject>
 
@@ -30,6 +31,12 @@
  *  点击发送离线表单
  */
 - (void)clickSendOffLineTicket;
+/**
+ *  通知VC客户被转接
+ *
+ *  @param agentMsg 转接客服信息
+ */
+- (void)notificationRedirect:(UDAgentModel *)agentModel;
 
 @end
 

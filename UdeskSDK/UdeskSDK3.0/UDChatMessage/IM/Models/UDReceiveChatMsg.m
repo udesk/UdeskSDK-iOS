@@ -7,6 +7,7 @@
 //
 
 #import "UDReceiveChatMsg.h"
+#import "UDAgentModel.h"
 
 @implementation UDReceiveChatMsg
 
@@ -120,6 +121,41 @@
         if (block) {
             block(message);
         }
+    }
+    else if ([type isEqualToString:@"redirect"]) {
+    
+        message.messageType = UDMessageMediaTypeRedirect;
+        message.messageFrom = UDMessageTypeCenter;
+        
+        //请求被转移的客服
+        [UDManager getRedirectAgentInformation:messageDic completion:^(id responseObject, NSError *error) {
+            
+            //解析数据
+            if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+                
+                NSString *nick = [[[responseObject objectForKey:@"result"] objectForKey:@"agent"] objectForKey:@"nick"];
+                
+                message.text = [NSString stringWithFormat:@"客服转接成功，%@ 为您服务",nick];
+            }
+            
+            //存储转移信息
+            NSArray *textDBArray = @[message.text,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeCenter],[NSString stringWithFormat:@"4"]];
+            
+            [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
+            //block传出
+            if (block) {
+                block(message);
+            }
+            //解析客服数据
+            NSDictionary *result = [responseObject objectForKey:@"result"];
+            UDAgentModel *agentModel = [[UDAgentModel alloc] initWithContentsOfDic:[result objectForKey:@"agent"]];
+            agentModel.code = [[result objectForKey:@"code"] integerValue];
+            
+            if (_udAgentBlock) {
+                _udAgentBlock(agentModel);
+            }
+            
+        }];
     }
 
     

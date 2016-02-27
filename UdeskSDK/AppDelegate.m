@@ -29,7 +29,6 @@
     
 //    [UDManager initWithAppkey:@"3a4dc5e0cd39995448018c553048fdd4" domianName:@"reocar.udeskmonkey.com"];
     
-//    [UDManager initWithAppkey:@"9f7cb6193f001a5465d28ba5703b59ab" domianName:@"reocar.udesk11.com"];
     
     [UDManager initWithAppkey:@"226a45c59ac9fb4d4ec963cdca382b71" domianName:@"reocar.udeskcat.com"];
     
