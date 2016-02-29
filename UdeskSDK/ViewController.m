@@ -114,34 +114,9 @@
 
 - (void)buttonAction1 {
     
-//    UDFaqController *faq = [[UDFaqController alloc] init];
-//    
-//    [self.navigationController pushViewController:faq animated:YES];
-    [UDManager logoutUdesk];
-    NSDictionary *parameters = @{
-                                 @"user": @{
-                                         @"nick_name": @"test1",
-                                         @"sdk_token":@"test11234"
-                                         }
-                                 };
+    UDFaqController *faq = [[UDFaqController alloc] init];
     
-    //创建用户
-    [UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {
-        
-        NSLog(@"用户ID:%@",customerId);
-        
-        [UDManager submitCustomerDevicesInfo:^(id responseObject, NSError *error) {
-            
-            NSLog(@"提交设备信息:%@",responseObject);
-        }];
-        
-        //获取用户信息
-        [UDManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
-            
-            NSLog(@"用户登录信息:%@",loginInfoDic);
-        }];
-        
-    }];
+    [self.navigationController pushViewController:faq animated:YES];
     
 }
 
@@ -155,34 +130,9 @@
 
 - (void)buttonAction3 {
     
-//    UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
-//    
-//    [self.navigationController pushViewController:robot animated:YES];
-    [UDManager logoutUdesk];
-    NSDictionary *parameters = @{
-                                 @"user": @{
-                                         @"nick_name": @"test21234",
-                                         @"sdk_token":@"test21234"
-                                         }
-                                 };
+    UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
     
-    //创建用户
-    [UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {
-        
-        NSLog(@"用户ID:%@",customerId);
-        
-        [UDManager submitCustomerDevicesInfo:^(id responseObject, NSError *error) {
-            
-            NSLog(@"提交设备信息:%@",responseObject);
-        }];
-        
-        //获取用户信息
-        [UDManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
-            
-            NSLog(@"用户登录信息:%@",loginInfoDic);
-        }];
-        
-    }];
+    [self.navigationController pushViewController:robot animated:YES];
     
 }
 
