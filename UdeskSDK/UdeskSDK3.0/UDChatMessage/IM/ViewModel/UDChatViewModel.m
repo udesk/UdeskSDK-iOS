@@ -287,8 +287,8 @@
 //评价提交成功Alert
 - (void)surveyCompletion {
 
-    UDAlertController *completionAlert = [UDAlertController alertWithTitle:nil message:@"感谢您的评价"];
-    [completionAlert addCloseActionWithTitle:@"关闭" Handler:NULL];
+    UDAlertController *completionAlert = [UDAlertController alertWithTitle:nil message:getUDLocalizedString(@"感谢您的评价")];
+    [completionAlert addCloseActionWithTitle:getUDLocalizedString(@"关闭") Handler:NULL];
     
     [completionAlert showWithSender:nil controller:nil animated:YES completion:NULL];
 
@@ -298,9 +298,9 @@
 //排队Alert
 - (void)queueStatus {
     
-    NSString *ticketButtonTitle = NSLocalizedString(@"留言",@"");
-    UDAlertController *queueAlert = [UDAlertController alertWithTitle:nil message:@"当前客服正繁忙，如需留言请点击按钮进入表单留言"];
-    [queueAlert addCloseActionWithTitle:@"取消" Handler:NULL];
+    NSString *ticketButtonTitle = getUDLocalizedString(@"留言");
+    UDAlertController *queueAlert = [UDAlertController alertWithTitle:nil message:getUDLocalizedString(@"当前客服正繁忙，如需留言请点击按钮进入表单留言")];
+    [queueAlert addCloseActionWithTitle:getUDLocalizedString(@"取消") Handler:NULL];
     [queueAlert addAction:[UDAlertAction actionWithTitle:ticketButtonTitle handler:^(UDAlertAction * _Nonnull action) {
         
         if ([self.delegate respondsToSelector:@selector(clickSendOffLineTicket)]) {
@@ -316,7 +316,7 @@
 - (void)notCustomer {
     
     UDAlertController *notCustomerAlert = [UDAlertController alertWithTitle:nil message:_viewModel.agentModel.message];
-    [notCustomerAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+    [notCustomerAlert addCloseActionWithTitle:getUDLocalizedString(@"确定") Handler:NULL];
     [notCustomerAlert showWithSender:nil controller:nil animated:YES completion:NULL];
     
 }
@@ -324,10 +324,10 @@
 //客服不在线Alert
 - (void)agentNotOnline {
     
-    NSString *title = NSLocalizedString(@"客服不在线",@"");
-    NSString *message = NSLocalizedString(@"您可以选择提交表单来描述您的问题，稍后我们会和您联系。",@"");
-    NSString *cancelButtonTitle = NSLocalizedString(@"取消", @"");
-    NSString *ticketButtonTitle = NSLocalizedString(@"留言",@"");
+    NSString *title = getUDLocalizedString(@"客服不在线");
+    NSString *message = getUDLocalizedString(@"您可以选择提交表单来描述您的问题，稍后我们会和您联系。");
+    NSString *cancelButtonTitle = getUDLocalizedString(@"取消");
+    NSString *ticketButtonTitle = getUDLocalizedString(@"留言");
     
     UDAlertController *leaveOrTicket = [UDAlertController alertWithTitle:title message:message];
     [leaveOrTicket addCloseActionWithTitle:cancelButtonTitle Handler:NULL];

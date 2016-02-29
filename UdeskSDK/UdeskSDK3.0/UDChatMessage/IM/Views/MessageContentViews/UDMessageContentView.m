@@ -419,9 +419,9 @@
 //消息重发
 - (void)againButtonAction {
     
-    UDAlertController *againMsgController = [UDAlertController alertWithTitle:nil message:NSLocalizedString(@"重发该消息？", @"")];
-    [againMsgController addCloseActionWithTitle:@"取消" Handler:NULL];
-    [againMsgController addAction:[UDAlertAction actionWithTitle:@"确定" handler:^(UDAlertAction * _Nonnull action) {
+    UDAlertController *againMsgController = [UDAlertController alertWithTitle:nil message:getUDLocalizedString(@"重发该消息？")];
+    [againMsgController addCloseActionWithTitle:getUDLocalizedString(@"取消") Handler:NULL];
+    [againMsgController addAction:[UDAlertAction actionWithTitle:getUDLocalizedString(@"确定") handler:^(UDAlertAction * _Nonnull action) {
         
         if (![[UDManager internetStatus] isEqualToString:@"notReachable"]) {
             
@@ -434,8 +434,8 @@
         }
         else {
             
-            UDAlertController *notNetWork = [UDAlertController alertWithTitle:nil message:NSLocalizedString(@"没有网络连接！", @"")];
-            [notNetWork addCloseActionWithTitle:@"取消" Handler:NULL];
+            UDAlertController *notNetWork = [UDAlertController alertWithTitle:nil message:getUDLocalizedString(@"网络断开链接了！")];
+            [notNetWork addCloseActionWithTitle:getUDLocalizedString(@"取消") Handler:NULL];
             [notNetWork showWithSender:nil controller:nil animated:YES completion:NULL];
             
         }

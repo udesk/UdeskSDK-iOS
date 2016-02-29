@@ -22,8 +22,6 @@
 		44891F381C7569BA00557D2E /* UDOneScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F331C7569BA00557D2E /* UDOneScrollView.m */; };
 		44891F391C7569BA00557D2E /* UDPhotoManeger.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F351C7569BA00557D2E /* UDPhotoManeger.m */; };
 		44891F3A1C7569BA00557D2E /* UDPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F371C7569BA00557D2E /* UDPhotoView.m */; };
-		449354D31C5F40F300236FC7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4493544E1C5F40F300236FC7 /* Localizable.strings */; };
-		449354D41C5F40F300236FC7 /* UDEmojiList.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4493544F1C5F40F300236FC7 /* UDEmojiList.plist */; };
 		449354D51C5F40F300236FC7 /* UdeskBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 449354501C5F40F300236FC7 /* UdeskBundle.bundle */; };
 		449354D81C5F40F300236FC7 /* UDContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493545A1C5F40F300236FC7 /* UDContentController.m */; };
 		449354D91C5F40F300236FC7 /* UDFaqController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493545C1C5F40F300236FC7 /* UDFaqController.m */; };
@@ -96,8 +94,6 @@
 		44891F351C7569BA00557D2E /* UDPhotoManeger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDPhotoManeger.m; sourceTree = "<group>"; };
 		44891F361C7569BA00557D2E /* UDPhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPhotoView.h; sourceTree = "<group>"; };
 		44891F371C7569BA00557D2E /* UDPhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDPhotoView.m; sourceTree = "<group>"; };
-		4493544E1C5F40F300236FC7 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		4493544F1C5F40F300236FC7 /* UDEmojiList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UDEmojiList.plist; sourceTree = "<group>"; };
 		449354501C5F40F300236FC7 /* UdeskBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UdeskBundle.bundle; sourceTree = "<group>"; };
 		449354541C5F40F300236FC7 /* UDManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDManager.h; sourceTree = "<group>"; };
 		449354551C5F40F300236FC7 /* UDMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDMessage.h; sourceTree = "<group>"; };
@@ -284,8 +280,6 @@
 		4493544D1C5F40F300236FC7 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				4493544E1C5F40F300236FC7 /* Localizable.strings */,
-				4493544F1C5F40F300236FC7 /* UDEmojiList.plist */,
 				449354501C5F40F300236FC7 /* UdeskBundle.bundle */,
 			);
 			path = Resource;
@@ -643,8 +637,6 @@
 			files = (
 				449354D51C5F40F300236FC7 /* UdeskBundle.bundle in Resources */,
 				4426E8001C5B13A0005A5011 /* LaunchScreen.storyboard in Resources */,
-				449354D31C5F40F300236FC7 /* Localizable.strings in Resources */,
-				449354D41C5F40F300236FC7 /* UDEmojiList.plist in Resources */,
 				4426E7FD1C5B13A0005A5011 /* Assets.xcassets in Resources */,
 				4426E7FB1C5B13A0005A5011 /* Main.storyboard in Resources */,
 			);

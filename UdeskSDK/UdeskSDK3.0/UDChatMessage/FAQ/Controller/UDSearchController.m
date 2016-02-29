@@ -27,14 +27,14 @@
     self = [super init];
     if (self) {
         
-        [searchBar setPlaceholder:NSLocalizedString(@"搜索", @"")];
+        [searchBar setPlaceholder:getUDLocalizedString(@"搜索")];
         
         searchBar.tintColor = Config.searchCancleButtonColor;
         
         UIButton *contactUs = [UIButton buttonWithType:UIButtonTypeCustom];
         contactUs.frame = CGRectMake((UD_SCREEN_WIDTH-250)/2, 50, 250, 40);
         [contactUs setTitleColor:Config.searchContactUsColor forState:0];
-        [contactUs setTitle:NSLocalizedString(@"联系我们", @"") forState:0];
+        [contactUs setTitle:getUDLocalizedString(@"联系我们") forState:0];
         [contactUs addTarget:self action:@selector(contactUsButton) forControlEvents:UIControlEventTouchUpInside];
         
         [contactUs.layer setMasksToBounds:YES];
@@ -48,7 +48,7 @@
         notFound.textAlignment = NSTextAlignmentCenter;
         notFound.font = [UIFont systemFontOfSize:17];
         notFound.textColor = Config.promptTextColor;
-        notFound.text = NSLocalizedString(@"无法找到你搜索的内容吗?", @"");
+        notFound.text = getUDLocalizedString(@"无法找到你搜索的内容吗?");
         
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-69)];
         [view insertSubview:notFound aboveSubview:view];

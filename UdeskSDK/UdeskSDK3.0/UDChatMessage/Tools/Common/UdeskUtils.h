@@ -18,4 +18,6 @@
 
 NSString * getUDBundlePath( NSString * filename);
 
+NSString * getUDLocalizedString( NSString * key);
+
 @end

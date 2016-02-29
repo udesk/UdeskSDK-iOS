@@ -42,7 +42,7 @@
     }
     
     UILabel *faqLabel = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 0, 100, 44)];
-    faqLabel.text = NSLocalizedString(@"问题详情", @"");
+    faqLabel.text = getUDLocalizedString(@"问题详情");
     faqLabel.backgroundColor = [UIColor clearColor];
     faqLabel.textAlignment = NSTextAlignmentCenter;
     faqLabel.textColor = Config.articleContentTitleColor;

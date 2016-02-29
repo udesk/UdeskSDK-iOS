@@ -26,4 +26,20 @@ NSString* getUDBundlePath( NSString * filename)
     return nil ;
 }
 
+NSString * getUDLocalizedString( NSString * key) {
+
+    
+    NSBundle *libBundle = UDBUNDLE;
+    
+    if ( libBundle && key ){
+    
+         NSString *value = [libBundle localizedStringForKey:key value:@"" table:nil];
+        
+        return value;
+        
+    }
+
+    return nil;
+}
+
 @end

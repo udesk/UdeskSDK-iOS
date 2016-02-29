@@ -225,9 +225,9 @@
                     [self.delegate didSelectedMultipleMediaAction];
                 }
                 
-                NSString *cancelTitle = NSLocalizedString(@"取消", @"");
-                NSString *albumTitle = NSLocalizedString(@"从相册选取",@"");
-                NSString *cameraTitle = NSLocalizedString(@"拍照",@"");                
+                NSString *cancelTitle = getUDLocalizedString(@"取消");
+                NSString *albumTitle = getUDLocalizedString(@"从相册选取");
+                NSString *cameraTitle = getUDLocalizedString(@"拍照");
                 
                 UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:cancelTitle destructiveButtonTitle:nil otherButtonTitles:cameraTitle,albumTitle , nil];
                 [sheet showInView:self.superview];

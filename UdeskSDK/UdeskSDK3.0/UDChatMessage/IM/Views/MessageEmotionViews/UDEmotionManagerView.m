@@ -40,8 +40,8 @@ static CGFloat EmojiFontSize;
     }
     
     // init emojis
-    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"UDEmojiList" ofType:@"plist"];
-    self.emojis = [NSArray arrayWithContentsOfFile:plistPath];
+    self.emojis = [NSArray arrayWithContentsOfFile:getUDBundlePath(@"UDEmojiList.plist")];
+
     //
     NSInteger rowNum = (CGRectGetHeight(self.bounds) / EmojiHeight);
     NSInteger colNum = (CGRectGetWidth(self.bounds) / EmojiWidth);
@@ -101,7 +101,7 @@ static CGFloat EmojiFontSize;
     }
     
     UIButton *sendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [sendBtn setTitle:NSLocalizedString(@"发送", @"") forState:UIControlStateNormal];
+    [sendBtn setTitle:getUDLocalizedString(@"发送") forState:UIControlStateNormal];
     sendBtn.frame = CGRectMake(UD_SCREEN_WIDTH-90, UD_SCREEN_WIDTH<375?150:166, 75, 38);;
     sendBtn.backgroundColor = UDRGBACOLOR(8, 125, 253, 1);
     UDViewRadius(sendBtn, 4);

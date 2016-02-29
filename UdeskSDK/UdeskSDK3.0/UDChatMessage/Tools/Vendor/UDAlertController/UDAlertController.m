@@ -538,7 +538,7 @@ static NSUInteger UDVisibleAlertsCount = 0;
 
 + (instancetype)presentDismissableAlertWithTitle:(NSString *)title message:(NSString *)message controller:(UIViewController *)controller {
     UDAlertController *alertController = [self alertWithTitle:title message:message];
-    [alertController addAction:[UDAlertAction actionWithTitle:NSLocalizedString(@"Dismiss", @"") style:UDAlertActionStyleCancel handler:NULL]];
+    [alertController addAction:[UDAlertAction actionWithTitle:getUDLocalizedString(@"Dismiss") style:UDAlertActionStyleCancel handler:NULL]];
     [alertController showWithSender:nil controller:controller animated:YES completion:NULL];
     return alertController;
 }
@@ -553,7 +553,7 @@ static NSUInteger UDVisibleAlertsCount = 0;
 }
 
 - (void)addCloseActionWithTitle:(NSString *)title Handler:(void (^ __nullable)(UDAlertAction *action))handler {
-    [self addAction:[UDAlertAction actionWithTitle:NSLocalizedString(title, @"") style:UDAlertActionStyleCancel handler:handler]];
+    [self addAction:[UDAlertAction actionWithTitle:getUDLocalizedString(title) style:UDAlertActionStyleCancel handler:handler]];
 }
 
 @end

@@ -35,11 +35,11 @@
     
     UILabel *titleLabel = [[UILabel alloc] init];
     
-    CGSize titleSize = [UDGeneral.store textSize:NSLocalizedString(@"反馈", @"") fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
+    CGSize titleSize = [UDGeneral.store textSize:getUDLocalizedString(@"反馈") fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
     
     titleLabel.frame = CGRectMake((self.ud_width-titleSize.width)/2, 0, titleSize.width, 44);
     
-    titleLabel.text = NSLocalizedString(@"反馈", @"");
+    titleLabel.text = getUDLocalizedString(@"反馈");
     titleLabel.font = [UIFont systemFontOfSize:18];
     titleLabel.textColor = Config.iMTitleColor;
     titleLabel.textAlignment = NSTextAlignmentCenter;

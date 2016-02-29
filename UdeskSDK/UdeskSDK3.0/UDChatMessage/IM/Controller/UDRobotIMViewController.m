@@ -21,7 +21,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     UILabel *robotTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-    robotTitle.text = NSLocalizedString(@"智能机器人对话", @"");
+    robotTitle.text = getUDLocalizedString(@"智能机器人对话");
     robotTitle.backgroundColor = [UIColor clearColor];
     robotTitle.textColor = Config.robotTitleColor;
     self.navigationItem.titleView = robotTitle;
@@ -74,7 +74,7 @@
     informationButton.frame = CGRectMake(0, 0, 80, 40);
     informationButton.hidden = !transfer;
     informationButton.titleLabel.font = [UIFont systemFontOfSize:16];
-    [informationButton setTitle:NSLocalizedString(@"转人工", @"") forState:UIControlStateNormal];
+    [informationButton setTitle:getUDLocalizedString(@"转人工") forState:UIControlStateNormal];
     [informationButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [informationButton addTarget:self action:@selector(transferButtonAction) forControlEvents:UIControlEventTouchUpInside];
     

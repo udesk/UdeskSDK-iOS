@@ -29,10 +29,6 @@
 
 #define UDTitleLength  UD_SCREEN_WIDTH>320?200:170
 
-#define AGENTONLINE @"客服上线了!"
-#define AGENTNOTONLINE @"客服下线了!"
-#define NOTNETWORK @"网络断开链接了！"
-
 @interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDChatTableViewDelegate,UDEmotionManagerViewDelegate,UDChatViewModelDelegate>
 
 @property (nonatomic, assign) UDInputViewType textViewInputViewType;
@@ -220,7 +216,7 @@
         
         self.chatViewModel.viewModel.agentModel.code = isNetwork?2000:2003;
         self.messageInputView.agentCode = isNetwork?2000:2003;
-        [UDTopAlertView showWithType:isNetwork?UDAlertTypeOnline:UDAlertTypeError text:isNetwork?AGENTONLINE:NOTNETWORK parentView:self.view];
+        [UDTopAlertView showWithType:isNetwork?UDAlertTypeOnline:UDAlertTypeError text:isNetwork?getUDLocalizedString(@"客服上线了！"):getUDLocalizedString(@"网络断开链接了！") parentView:self.view];
         [self.agentStatusView agentOnlineOrNotOnline:isNetwork?@"available":@"notNetwork"];
         
     }];
@@ -271,10 +267,10 @@
     
     if ([presence isEqualToString:@"available"]) {
 
-        [UDTopAlertView showWithType:UDAlertTypeOnline text:AGENTONLINE parentView:self.view];
+        [UDTopAlertView showWithType:UDAlertTypeOnline text:getUDLocalizedString(@"客服上线了！") parentView:self.view];
     } else {
         
-        [UDTopAlertView showWithType:UDAlertTypeOffline text:AGENTNOTONLINE parentView:self.view];
+        [UDTopAlertView showWithType:UDAlertTypeOffline text:getUDLocalizedString(@"客服下线了！") parentView:self.view];
     }
     
 }

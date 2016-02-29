@@ -30,7 +30,7 @@
 
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.title = NSLocalizedString(@"提交问题", @"");
+    self.title = getUDLocalizedString(@"提交问题");
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:Config.ticketTitleColor}];
     
     NSString *key = [UDManager key];
