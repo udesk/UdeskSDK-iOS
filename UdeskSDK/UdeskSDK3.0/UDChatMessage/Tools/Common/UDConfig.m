@@ -72,8 +72,8 @@
 //    NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 //        
 //        self.headImage = [UIImage imageWithData:data];
-//        //Udesk 使用的缓存框架
-//        [[EGOCache globalCache] setImage:self.headImage forKey:imageUrl];
+//        //缓存头像
+//        [[UDCache sharedUDCache] storeImage:self.headImage forKey:imageUrl];
 //    }];
 //    
 //    [dataTask resume];

@@ -18,11 +18,9 @@
 #define UDWEAKSELF typeof(self) __weak weakSelf = self;
 #define UDSTRONGSELF typeof(weakSelf) __strong strongSelf = weakSelf;
 
-
 // Size
 #define UD_SCREEN_WIDTH  [[UIScreen mainScreen] bounds].size.width
 #define UD_SCREEN_HEIGHT [[UIScreen mainScreen] bounds].size.height
-
 
 // 系统控件默认高度
 #define kUDStatusBarHeight        [[UIApplication sharedApplication] statusBarFrame].size.height

@@ -33,12 +33,11 @@
 #define AGENTNOTONLINE @"客服下线了!"
 #define NOTNETWORK @"网络断开链接了！"
 
-@interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDChatTableViewDelegate,UDEmotionManagerViewDelegate,UDChatViewModelDelegate> {
-
-    BOOL networkSwitch;
-}
+@interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDChatTableViewDelegate,UDEmotionManagerViewDelegate,UDChatViewModelDelegate>
 
 @property (nonatomic, assign) UDInputViewType textViewInputViewType;
+
+@property (nonatomic, assign) BOOL networkSwitch;
 
 @end
 
@@ -169,7 +168,7 @@
 
 #pragma mark - 请求客服数据
 - (void)requestAgentData {
-    
+
     [self.dataController requestAgentDataWithCallback:^(UDAgentModel *agentModel, NSError *error) {
         //装载客服数据
         [self loadAgentDataReload:agentModel];
@@ -195,18 +194,19 @@
 #pragma makr - 根据网络状态变化做事
 - (void)networkStatusChange {
     
+    UDWEAKSELF
     [UDManager receiveNetwork:^(UDNetworkStatus reachability) {
         
         if (reachability == UDNotReachable) {
             
-            networkSwitch = YES;
-            [self setNetWorkStatusChangeUI:NO];
+            weakSelf.networkSwitch = YES;
+            [weakSelf setNetWorkStatusChangeUI:NO];
             
         } else {
             
-            if (networkSwitch) {
-                networkSwitch = NO;
-                [self setNetWorkStatusChangeUI:YES];
+            if (weakSelf.networkSwitch) {
+                weakSelf.networkSwitch = NO;
+                [weakSelf setNetWorkStatusChangeUI:YES];
             }
         }
 
@@ -256,7 +256,6 @@
                 [self.messageTableView reloadData];
                 
             });
-            
             
         }];
         
@@ -363,6 +362,7 @@
 #pragma mark - 显示功能面板
 - (void)layoutOtherMenuViewHiden:(BOOL)hide {
     //根据textViewInputViewType切换功能面板
+
     [self.chatViewModel layoutOtherMenuViewHiden:hide
                                         ViewType:self.textViewInputViewType
                                         chatView:self.view
@@ -399,7 +399,7 @@
 
 #pragma mark - 发送文字
 - (void)didSendTextAction:(NSString *)text {
-    
+
     [self.chatViewModel sendTextMessage:text completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI
         [self sendMessageStatus:sendStatus message:message];
@@ -410,30 +410,30 @@
 
 #pragma mark - 发送图片
 - (void)didSendMessageWithPhoto:(UIImage *)photo {
-    
+    UDWEAKSELF
     [self.chatViewModel sendImageMessage:photo completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI
-        [self sendMessageStatus:sendStatus message:message];
+        [weakSelf sendMessageStatus:sendStatus message:message];
     }];
     
 }
 #pragma mark - 发送语音
 - (void)didSendMessageWithAudio:(NSString *)audioPath audioDuration:(NSString*)audioDuration {
-    
+    UDWEAKSELF
     [self.chatViewModel sendAudioMessage:audioPath audioDuration:audioDuration completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI
-        [self sendMessageStatus:sendStatus message:message];
+        [weakSelf sendMessageStatus:sendStatus message:message];
     }];
     
 }
 #pragma mark - 发送用户点击的失败消息
 - (void)resendClickFailedMessage:(NSNotification *)notif {
-
+    UDWEAKSELF
     UDMessage *failedMessage = [notif.userInfo objectForKey:@"failedMessage"];
     
     [UDManager sendMessage:failedMessage completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI
-        [self sendMessageStatus:sendStatus message:message];
+        [weakSelf sendMessageStatus:sendStatus message:message];
     }];
 }
 
@@ -445,12 +445,12 @@
         [self sendStatusConfigUI:sendStatus message:message];
         
     } else {
-    
+        UDWEAKSELF
         [self.chatViewModel.failedMessageArray addObject:message];
         //开启重发
         [self.chatViewModel resendFailedMessage:^(UDMessage *failedMessage, BOOL sendStatus) {
             //根据发送状态更新UI
-            [self sendStatusConfigUI:sendStatus message:message];
+            [weakSelf sendStatusConfigUI:sendStatus message:message];
         }];
         
     }
@@ -502,10 +502,9 @@
 - (void)sendImageWithSourceType:(UIImagePickerControllerSourceType)sourceType {
 
     //打开图片选择器
-    UDWEAKSELF
     void (^PickerMediaBlock)(UIImage *image) = ^(UIImage *image) {
         if (image) {
-            [weakSelf didSendMessageWithPhoto:image];
+            [self didSendMessageWithPhoto:image];
         }
     };
     
@@ -590,11 +589,10 @@
 
 #pragma mark - 监听键盘通知做出相应的操作
 - (void)subscribeToKeyboard {
-    
+    UDWEAKSELF
     [self ud_subscribeKeyboardWithBeforeAnimations:nil animations:^(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing) {
         
-        UDWEAKSELF
-        if (self.textViewInputViewType == UDInputViewTypeText) {
+        if (weakSelf.textViewInputViewType == UDInputViewTypeText) {
             //计算键盘的Y
             CGFloat keyboardY = [weakSelf.view convertRect:keyboardRect fromView:nil].origin.y;
             CGRect inputViewFrame = weakSelf.messageInputView.frame;
