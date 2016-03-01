@@ -37,7 +37,7 @@
 /**
  *  自定义多媒体消息内容View
  */
-@property (nonatomic, weak  ) UDMessageContentView                *messageBubbleView;
+@property (nonatomic, weak  ) UDMessageContentView               *messageContentView;
 
 /**
  *  头像按钮
@@ -71,6 +71,7 @@
  *  @return 返回消息Cell对象
  */
 - (instancetype)initWithMessage:(UDMessage *)message
+              displaysTimestamp:(BOOL)displayTimestamp
                 reuseIdentifier:(NSString *)cellIdentifier;
 
 /**

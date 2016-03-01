@@ -226,7 +226,7 @@
 #pragma mark - 加载db数据
 - (void)loadDatabaseMessage {
 
-    [self.dataController getDatabaseHistoryMessage:^(NSMutableArray *dbMessageArray) {
+    [self.dataController getDatabaseHistoryMessage:^(NSArray *dbMessageArray) {
         //更新数据
         [self.chatViewModel viewModelWithDatabase:dbMessageArray];
         //判断db数据条数是否需要下拉刷新
@@ -241,7 +241,7 @@
         //开始刷新
         [self.messageTableView startLoadingMoreMessages];
         //获取更多数据
-        [self.dataController getDatabaseHistoryMessage:^(NSMutableArray *dbMessageArray) {
+        [self.dataController getDatabaseHistoryMessage:^(NSArray *dbMessageArray) {
             //配置更多数据
             [self.chatViewModel viewModelWithMoreMessage:dbMessageArray];
             //延迟0.5，提高用户体验
@@ -427,6 +427,8 @@
     UDWEAKSELF
     UDMessage *failedMessage = [notif.userInfo objectForKey:@"failedMessage"];
     
+    failedMessage.agent_jid = self.chatViewModel.viewModel.agentModel.jid;
+    
     [UDManager sendMessage:failedMessage completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI
         [weakSelf sendMessageStatus:sendStatus message:message];
@@ -445,6 +447,10 @@
         [self.chatViewModel.failedMessageArray addObject:message];
         //开启重发
         [self.chatViewModel resendFailedMessage:^(UDMessage *failedMessage, BOOL sendStatus) {
+            //发送成功删除失败消息数组里的消息
+            if (sendStatus) {
+                [weakSelf.chatViewModel.failedMessageArray removeObject:failedMessage];
+            }
             //根据发送状态更新UI
             [weakSelf sendStatusConfigUI:sendStatus message:message];
         }];
@@ -455,17 +461,18 @@
 //根据发送状态更新UI
 - (void)sendStatusConfigUI:(BOOL)sendStatus message:(UDMessage *)message {
 
+    UDWEAKSELF
     [self.chatViewModel.messageArray ud_each:^(UDMessage *oldMessage){
     
         if ([oldMessage.contentId isEqualToString:message.contentId]) {
             
             message.messageStatus = sendStatus?UDMessageSuccess:UDMessageFailed;
-            NSIndexPath *indexPath=[NSIndexPath indexPathForRow:[self.chatViewModel.messageArray indexOfObject:message] inSection:0];
+            NSIndexPath *indexPath=[NSIndexPath indexPathForRow:[weakSelf.chatViewModel.messageArray indexOfObject:message] inSection:0];
             
-            UDMessageTableViewCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
-            [cell.messageBubbleView.indicatorView stopAnimating];
+            UDMessageTableViewCell *cell = [weakSelf.messageTableView cellForRowAtIndexPath:indexPath];
+            [cell.messageContentView.indicatorView stopAnimating];
             
-            cell.messageBubbleView.messageAgainButton.hidden = sendStatus?YES:NO;
+            cell.messageContentView.messageAgainButton.hidden = sendStatus?YES:NO;
             
             [UDManager updateTableWithSqlString:[NSString stringWithFormat:@"update Message set sendflag='%d' where msgid='%@'",sendStatus?2:1,message.contentId] params:nil];
         }
@@ -665,9 +672,8 @@
 - (void)dealloc {
     
     NSLog(@"UDMsgTableViewController销毁了");
-    
+
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ClickResendMessage object:nil];
-    
     _messageTableView.delegate = nil;
     _messageTableView.dataSource = nil;
     _messageTableView.chatTableViewDelegate = nil;

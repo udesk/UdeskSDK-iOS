@@ -42,7 +42,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
 }
 
 - (void)copyed:(id)sender {
-    [[UIPasteboard generalPasteboard] setString:self.messageBubbleView.textLabel.text];
+    [[UIPasteboard generalPasteboard] setString:self.messageContentView.textLabel.text];
     [self resignFirstResponder];
 }
 
@@ -66,37 +66,31 @@ static CGFloat const kUDHeadImageSize = 40.0f;
     self.timestampLabel.hidden = !self.displayTimestamp;
     if (displayTimestamp) {
         
-        self.timestampLabel.text = [self configTimeFormat:message];
+        NSString *dateText = nil;
+        NSString *timeText = nil;
+        
+        NSDate *today = [NSDate date];
+        NSDateComponents *components = [[NSDateComponents alloc] init];
+        [components setDay:-1];
+        NSDate *yesterday = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:today options:0];
+        
+        NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:message.timestamp];
+        NSDateComponents *todayComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:today];
+        NSDateComponents *yesterdayComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:yesterday];
+        
+        if (dateComponents.year == todayComponents.year && dateComponents.month == todayComponents.month && dateComponents.day == todayComponents.day) {
+            dateText = @"今天";
+        } else if (dateComponents.year == yesterdayComponents.year && dateComponents.month == yesterdayComponents.month && dateComponents.day == yesterdayComponents.day) {
+            dateText = @"昨天";
+        } else {
+            dateText = [NSDateFormatter localizedStringFromDate:message.timestamp dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
+        }
+        
+        timeText = [NSDateFormatter localizedStringFromDate:message.timestamp dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle];
+        
+        self.timestampLabel.text = [NSString stringWithFormat:@"%@ %@",dateText,timeText];
         
     }
-}
-
-//配置时间格式
-- (NSString *)configTimeFormat:(UDMessage *)message {
-    
-    NSString *dateText = nil;
-    NSString *timeText = nil;
-    
-    NSDate *today = [NSDate date];
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-    [components setDay:-1];
-    NSDate *yesterday = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:today options:0];
-    
-    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:message.timestamp];
-    NSDateComponents *todayComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:today];
-    NSDateComponents *yesterdayComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:yesterday];
-    
-    if (dateComponents.year == todayComponents.year && dateComponents.month == todayComponents.month && dateComponents.day == todayComponents.day) {
-        dateText = @"今天";
-    } else if (dateComponents.year == yesterdayComponents.year && dateComponents.month == yesterdayComponents.month && dateComponents.day == yesterdayComponents.day) {
-        dateText = @"昨天";
-    } else {
-        dateText = [NSDateFormatter localizedStringFromDate:message.timestamp dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
-    }
-    
-    timeText = [NSDateFormatter localizedStringFromDate:message.timestamp dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle];
-    
-    return [NSString stringWithFormat:@"%@ %@",dateText,timeText];
 }
 
 #pragma 配置头像
@@ -127,26 +121,26 @@ static CGFloat const kUDHeadImageSize = 40.0f;
 - (void)configureMessageBubbleViewWithMessage:(UDMessage *)message {
     UDMessageMediaType currentMediaType = message.messageType;
 
-    for (UIGestureRecognizer *gesTureRecognizer in self.messageBubbleView.bubbleImageView.gestureRecognizers) {
+    for (UIGestureRecognizer *gesTureRecognizer in self.messageContentView.bubbleImageView.gestureRecognizers) {
         gesTureRecognizer.delegate = self;
-        [self.messageBubbleView.bubbleImageView removeGestureRecognizer:gesTureRecognizer];
+        [self.messageContentView.bubbleImageView removeGestureRecognizer:gesTureRecognizer];
     }
-    for (UIGestureRecognizer *gesTureRecognizer in self.messageBubbleView.photoImageView.gestureRecognizers) {
+    for (UIGestureRecognizer *gesTureRecognizer in self.messageContentView.photoImageView.gestureRecognizers) {
         gesTureRecognizer.delegate = self;
-        [self.messageBubbleView.photoImageView removeGestureRecognizer:gesTureRecognizer];
+        [self.messageContentView.photoImageView removeGestureRecognizer:gesTureRecognizer];
     }
     switch (currentMediaType) {
         case UDMessageMediaTypePhoto:{
             UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sigleTapGestureRecognizerHandle:)];
             tapGestureRecognizer.delegate = self;
-            [self.messageBubbleView.photoImageView addGestureRecognizer:tapGestureRecognizer];
+            [self.messageContentView.photoImageView addGestureRecognizer:tapGestureRecognizer];
             break;
         }
         case UDMessageMediaTypeText:
         case UDMessageMediaTypeVoice: {
             UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sigleTapGestureRecognizerHandle:)];
             tapGestureRecognizer.delegate = self;
-            [self.messageBubbleView.bubbleImageView addGestureRecognizer:tapGestureRecognizer];
+            [self.messageContentView.bubbleImageView addGestureRecognizer:tapGestureRecognizer];
             
             break;
         }
@@ -155,7 +149,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             break;
     }
     //展示消息
-    [self.messageBubbleView configureCellWithMessage:message];
+    [self.messageContentView configureCellWithMessage:message];
 }
 
 #pragma mark - Gestures
@@ -179,7 +173,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
         SEL action = nil;
         switch (i) {
             case 0: {
-                if ([self.messageBubbleView.message messageType] == UDMessageMediaTypeText) {
+                if ([self.messageContentView.message messageType] == UDMessageMediaTypeText) {
                     action = @selector(copyed:);
                 }
                 break;
@@ -199,8 +193,8 @@ static CGFloat const kUDHeadImageSize = 40.0f;
     UIMenuController *menu = [UIMenuController sharedMenuController];
     [menu setMenuItems:menuItems];
     
-    CGRect targetRect = [self convertRect:[self.messageBubbleView bubbleFrame]
-                                 fromView:self.messageBubbleView];
+    CGRect targetRect = [self convertRect:[self.messageContentView bubbleFrame]
+                                 fromView:self.messageContentView];
     
     [menu setTargetRect:CGRectInset(targetRect, 0.0f, 4.0f) inView:self];
     
@@ -214,14 +208,14 @@ static CGFloat const kUDHeadImageSize = 40.0f;
         [self setupNormalMenuController];
         //代理传出点击事件
         if ([self.delegate respondsToSelector:@selector(didSelectedOnMessage:indexPath:messageTableViewCell:)]) {
-            [self.delegate didSelectedOnMessage:self.messageBubbleView.message indexPath:self.indexPath messageTableViewCell:self];
+            [self.delegate didSelectedOnMessage:self.messageContentView.message indexPath:self.indexPath messageTableViewCell:self];
         }
     }
 }
 
 #pragma mark - 消息类型
 - (UDMessageFromType)bubbleMessageType {
-    return self.messageBubbleView.message.messageFrom;
+    return self.messageContentView.message.messageFrom;
 }
 #pragma mark - 消息Cell高度
 + (CGFloat)calculateCellHeightWithMessage:(UDMessage *)message
@@ -258,6 +252,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
 }
 
 - (instancetype)initWithMessage:(UDMessage *)message
+              displaysTimestamp:(BOOL)displayTimestamp
                 reuseIdentifier:(NSString *)cellIdentifier {
     self = [self initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     if (self) {
@@ -280,19 +275,20 @@ static CGFloat const kUDHeadImageSize = 40.0f;
         }
         
         // 2、配置头像
+        
         CGRect headButtonFrame;
         switch (message.messageFrom) {
             case UDMessageTypeSending:
                 
                 headButtonFrame = CGRectMake(kUDHeadShowX,
-                                             kUDHeadShowY + (self.displayTimestamp ? (kUDTimeStampLabelHeight + kUDLabelPadding * 2) : 0),
+                                             kUDHeadShowY + (displayTimestamp ? (kUDTimeStampLabelHeight + kUDLabelPadding * 2) : 0),
                                              kUDHeadImageSize,
                                              kUDHeadImageSize);
                 
                 break;
             case UDMessageTypeReceiving:
                 headButtonFrame = CGRectMake(UD_SCREEN_WIDTH - kUDHeadImageSize - kUDHeadShowX,
-                                             kUDHeadShowY + (self.displayTimestamp ? (kUDTimeStampLabelHeight + kUDLabelPadding * 2) : 0),
+                                             kUDHeadShowY + (displayTimestamp ? (kUDTimeStampLabelHeight + kUDLabelPadding * 2) : 0),
                                              kUDHeadImageSize,
                                              kUDHeadImageSize);
                 break;
@@ -300,23 +296,20 @@ static CGFloat const kUDHeadImageSize = 40.0f;
                 break;
   
         }
-        if (!_headImageView) {
                         
-            // 初始化头像
-            UIImageView *headImage = [[UIImageView alloc] initWithFrame:headButtonFrame];
-            [self.contentView addSubview:headImage];
-            [self.contentView sendSubviewToBack:headImage];
-            self.headImageView = headImage;
-            
-        }
+        // 初始化头像
+        UIImageView *headImage = [[UIImageView alloc] initWithFrame:headButtonFrame];
+        [self.contentView addSubview:headImage];
+        self.headImageView = headImage;
         
         // 3、配置需要显示什么消息内容，比如语音、文字、图片
-        if (!_messageBubbleView) {
+        if (!self.messageContentView) {
+
             // 初始化消息内容view
             UDMessageContentView *messageBubbleView = [[UDMessageContentView alloc] initWithFrame:CGRectZero message:message];
             [self.contentView addSubview:messageBubbleView];
             [self.contentView sendSubviewToBack:messageBubbleView];
-            self.messageBubbleView = messageBubbleView;
+            self.messageContentView = messageBubbleView;
         }
     
     }
@@ -370,7 +363,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
                               timeStampLabelNeedHeight,
                               CGRectGetWidth(self.contentView.bounds) - bubbleX - offsetX,
                               CGRectGetHeight(self.contentView.bounds) - timeStampLabelNeedHeight);
-    self.messageBubbleView.frame = bubbleMessageViewFrame;
+    self.messageContentView.frame = bubbleMessageViewFrame;
     
 }
 
@@ -378,9 +371,8 @@ static CGFloat const kUDHeadImageSize = 40.0f;
 - (void)dealloc {
     _headImageView = nil;
     _timestampLabel = nil;
-    _messageBubbleView = nil;
+    _messageContentView = nil;
     _indexPath = nil;
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - TableViewCell
@@ -388,12 +380,12 @@ static CGFloat const kUDHeadImageSize = 40.0f;
 - (void)prepareForReuse {
     // 这里做清除工作
     [super prepareForReuse];
-    self.messageBubbleView.textLabel.text = nil;
-    self.messageBubbleView.textLabel.attributedText = nil;
-    self.messageBubbleView.bubbleImageView.image = nil;
-    self.messageBubbleView.animationVoiceImageView.image = nil;
-    self.messageBubbleView.voiceDurationLabel.text = nil;
-    self.messageBubbleView.photoImageView.image = nil;
+    self.messageContentView.textLabel.text = nil;
+    self.messageContentView.textLabel.attributedText = nil;
+    self.messageContentView.bubbleImageView.image = nil;
+    self.messageContentView.animationVoiceImageView.image = nil;
+    self.messageContentView.voiceDurationLabel.text = nil;
+    self.messageContentView.photoImageView.image = nil;
     self.headImageView.image = nil;
     self.timestampLabel.text = nil;
 }

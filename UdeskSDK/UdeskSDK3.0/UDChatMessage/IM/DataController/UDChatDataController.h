@@ -19,6 +19,6 @@
  */
 - (void)requestAgentDataWithCallback:(void(^)(UDAgentModel *udAgent,NSError *error))callback;
 
-- (void)getDatabaseHistoryMessage:(void(^)(NSMutableArray *dbMessageArray))result;
+- (void)getDatabaseHistoryMessage:(void(^)(NSArray *dbMessageArray))result;
 
 @end

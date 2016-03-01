@@ -35,6 +35,8 @@
     
 //    [UDManager initWithAppkey:@"55d1fb287829dff0fea71d34c6cb3ebc" domianName:@"udesk.udesk.cn"];
     
+//    [UDManager initWithAppkey:@"9f7cb6193f001a5465d28ba5703b59ab" domianName:@"reocar.udesk11.com"];
+    
     return YES;
 }
 

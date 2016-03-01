@@ -55,8 +55,8 @@
     self.searchContactUsColor = UDRGBCOLOR(32, 104, 235);
     self.contactUsBorderColor = UDRGBCOLOR(32, 104, 235);
     self.promptTextColor = [UIColor darkGrayColor];
-    self.ticketNavigationColor = [UIColor whiteColor];
-    self.ticketBackButtonColor = UDRGBCOLOR(32, 104, 235);
+    self.ticketNavigationColor = [UDTools colorWithHexString:@"3565df"];
+    self.ticketBackButtonColor = [UIColor whiteColor];
     self.ticketTitleColor = [UIColor whiteColor];
     self.agentStatusTitleColor = [UIColor whiteColor];
     self.robotNavigationColor = [UIColor whiteColor];

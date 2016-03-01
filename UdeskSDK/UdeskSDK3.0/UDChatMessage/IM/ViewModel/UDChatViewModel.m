@@ -14,11 +14,9 @@
 #import "UDEmotionManagerView.h"
 #import "UDMessageTextView.h"
 #import "UDAgentModel.h"
+#import "NSTimer+UDBlocks.h"
 
-@interface UDChatViewModel()<UDManagerDelegate> {
-
-    dispatch_source_t timer;
-}
+@interface UDChatViewModel()<UDManagerDelegate>
 
 @end
 
@@ -352,20 +350,65 @@
 }
 
 #pragma mark - db消息
-- (void)viewModelWithDatabase:(NSMutableArray *)messageArray {
+- (void)viewModelWithDatabase:(NSArray *)messageArray {
 
-    self.messageArray = messageArray;
+    [messageArray ud_each:^(NSDictionary *dic) {
+        
+        [self.messageArray insertObject:[self dbMessageResolving:dic] atIndex:0];
+        
+    }];
     
     [self reloadChatTableView];
 }
 
-#pragma mark - 更多消息
-- (void)viewModelWithMoreMessage:(NSMutableArray *)messageArray {
-
-    for (int i = 0; i<messageArray.count; i++) {
-        
-        [self.messageArray insertObject:messageArray[i] atIndex:0];
+- (UDMessage *)dbMessageResolving:(NSDictionary *)dbMessage {
+    
+    UDMessage *message = [[UDMessage alloc] init];
+    message.messageFrom = [[dbMessage objectForKey:@"direction"] integerValue];
+    message.messageType = [[dbMessage objectForKey:@"mesType"] integerValue];
+    message.contentId = [dbMessage objectForKey:@"msgid"];
+    message.messageStatus = [[dbMessage objectForKey:@"sendflag"] integerValue];
+    message.timestamp = [UDTools dateFromString:[dbMessage objectForKey:@"replied_at"]];
+    
+    switch (message.messageType) {
+        case UDMessageMediaTypeText:
+            message.text = [UDTools receiveTextEmoji:[dbMessage objectForKey:@"content"]];
+            
+            break;
+        case UDMessageMediaTypePhoto:{
+            
+            message.width = [dbMessage objectForKey:@"width"];
+            message.height = [dbMessage objectForKey:@"height"];
+            message.photoUrl = [dbMessage objectForKey:@"content"];
+            
+        }
+            break;
+        case UDMessageMediaTypeVoice:
+            message.voiceDuration = [dbMessage objectForKey:@"duration"];
+            message.voiceUrl = [dbMessage objectForKey:@"content"];
+            
+            break;
+        case UDMessageMediaTypeRedirect:{
+            
+            message.text = [dbMessage objectForKey:@"content"];
+            
+            break;
+        }
+            
+        default:
+            break;
     }
+    
+    return message;
+    
+}
+
+#pragma mark - 更多消息
+- (void)viewModelWithMoreMessage:(NSArray *)messageArray {
+
+    [messageArray ud_each:^(NSDictionary *dic) {
+        [self.messageArray insertObject:[self dbMessageResolving:dic] atIndex:0];
+    }];
     
 }
 
@@ -486,38 +529,36 @@
     }
 }
 
+
+
 #pragma mark - 重发失败的消息
 - (void)resendFailedMessage:(void(^)(UDMessage *failedMessage,BOOL sendStatus))completion {
     
-    //第一种 每一秒执行一次（重复性）
-    double delayInSeconds = 5;
-    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
-    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC, 0.0);
-    dispatch_source_set_event_handler(timer, ^{
+    UDWEAKSELF
+    [NSTimer ud_scheduleTimerWithTimeInterval:6.0f repeats:YES usingBlock:^(NSTimer *timer) {
         
-        //重新发送
-        [self resendFailedMessage:^(UDMessage *failedMessage, BOOL sendStatus) {
+        if (weakSelf.failedMessageArray.count==0) {
             
-            if (completion) {
-                completion(failedMessage,sendStatus);
-            }
-        }];
-        
-    });
-    dispatch_resume(timer);
-    
+            [timer invalidate];
+            timer = nil;
+        }
+        else {
+            
+            //重新发送
+            [self sendFailedMessage:^(UDMessage *failedMessage, BOOL sendStatus) {
+                
+                if (completion) {
+                    completion(failedMessage,sendStatus);
+                }
+            }];
+        }
+    }];
     
 }
 
 - (void)sendFailedMessage:(void(^)(UDMessage *failedMessage,BOOL sendStatus))completion {
     
-    if (self.failedMessageArray.count==0) {
-        
-        timer = nil;
-        
-        return;
-    }
-
+    UDWEAKSELF
     [self.failedMessageArray ud_each:^(UDMessage *resendMessage) {
         
         NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:resendMessage.timestamp];
@@ -528,7 +569,7 @@
                 completion(resendMessage,NO);
             }
             
-            [self.failedMessageArray removeObject:resendMessage];
+            [weakSelf.failedMessageArray removeObject:resendMessage];
             
         } else {
             

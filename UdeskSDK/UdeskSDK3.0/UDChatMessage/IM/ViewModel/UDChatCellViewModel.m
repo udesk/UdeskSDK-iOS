@@ -46,7 +46,7 @@
             
             UDPhotoManeger *photoManeger = [UDPhotoManeger maneger];
             
-            [photoManeger showLocalPhoto:messageTableViewCell.messageBubbleView.photoImageView withImageMessage:message];
+            [photoManeger showLocalPhoto:messageTableViewCell.messageContentView.photoImageView withImageMessage:message];
             
         }
             break;
@@ -54,15 +54,15 @@
             
             [[UDAudioPlayerHelper shareInstance] setDelegate:(id<NSFileManagerDelegate>)self];
             if (_currentSelectedCell) {
-                [_currentSelectedCell.messageBubbleView.animationVoiceImageView stopAnimating];
+                [_currentSelectedCell.messageContentView.animationVoiceImageView stopAnimating];
             }
             if (_currentSelectedCell == messageTableViewCell) {
-                [messageTableViewCell.messageBubbleView.animationVoiceImageView stopAnimating];
+                [messageTableViewCell.messageContentView.animationVoiceImageView stopAnimating];
                 [[UDAudioPlayerHelper shareInstance] stopAudio];
                 self.currentSelectedCell = nil;
             } else {
                 self.currentSelectedCell = messageTableViewCell;
-                [messageTableViewCell.messageBubbleView.animationVoiceImageView startAnimating];
+                [messageTableViewCell.messageContentView.animationVoiceImageView startAnimating];
                 [[UDAudioPlayerHelper shareInstance] managerAudio:message toPlay:YES];
             }
             
@@ -77,12 +77,7 @@
 #pragma mark - UDAudioPlayerHelper Delegate
 - (void)didAudioPlayerStopPlay:(AVAudioPlayer*)audioPlayer {
     
-    [_currentSelectedCell.messageBubbleView.animationVoiceImageView stopAnimating];
-    
-}
-
-- (void)configTimeFormat:(UDMessage *)message {
-
+    [_currentSelectedCell.messageContentView.animationVoiceImageView stopAnimating];
     
 }
 

@@ -100,14 +100,14 @@
  *
  *  @param messageArray 消息数组
  */
-- (void)viewModelWithDatabase:(NSMutableArray *)messageArray;
+- (void)viewModelWithDatabase:(NSArray *)messageArray;
 
 /**
  *  加载更多消息（本地消息）
  *
  *  @param messageArray 更多消息数组
  */
-- (void)viewModelWithMoreMessage:(NSMutableArray *)messageArray;
+- (void)viewModelWithMoreMessage:(NSArray *)messageArray;
 
 /**
  *  点击底部功能栏坐相应操作

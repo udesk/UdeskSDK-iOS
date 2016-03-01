@@ -54,70 +54,18 @@ static NSInteger const UDChatGetHistoreMessageNumber = 20;
     
 }
 
-- (void)getDatabaseHistoryMessage:(void (^)(NSMutableArray *dbMessageArray))result {
-    
-    NSMutableArray *onlyMessage = [NSMutableArray array];
+- (void)getDatabaseHistoryMessage:(void (^)(NSArray *dbMessageArray))result {
 
     NSString *sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%ld",MessageDB,(long)_messageNumber,(long)UDChatGetHistoreMessageNumber];
     _messageNumber += UDChatGetHistoreMessageNumber;
     
     [UDManager queryTabelWithSqlString:sql params:nil finishedBlock:^(NSArray *dbData) {
         
-        [dbData ud_each:^(NSDictionary *dic) {
-            
-            [onlyMessage insertObject:[self dbMessageResolving:dic] atIndex:0];
-            
-        }];
-        
         if (result) {
-            result(onlyMessage);
+            result(dbData);
         }
 
     }];
-    
-}
-
-
-- (UDMessage *)dbMessageResolving:(NSDictionary *)dbMessage {
-    
-    UDMessage *message = [[UDMessage alloc] init];
-    message.messageFrom = [[dbMessage objectForKey:@"direction"] integerValue];
-    message.messageType = [[dbMessage objectForKey:@"mesType"] integerValue];
-    message.contentId = [dbMessage objectForKey:@"msgid"];
-    message.messageStatus = [[dbMessage objectForKey:@"sendflag"] integerValue];
-    message.timestamp = [UDTools dateFromString:[dbMessage objectForKey:@"replied_at"]];
-    
-    switch (message.messageType) {
-        case UDMessageMediaTypeText:
-            message.text = [UDTools receiveTextEmoji:[dbMessage objectForKey:@"content"]];
-            
-            break;
-        case UDMessageMediaTypePhoto:{
-            
-            message.width = [dbMessage objectForKey:@"width"];
-            message.height = [dbMessage objectForKey:@"height"];
-            message.photoUrl = [dbMessage objectForKey:@"content"];
-            
-        }
-            break;
-        case UDMessageMediaTypeVoice:
-            message.voiceDuration = [dbMessage objectForKey:@"duration"];
-            message.voiceUrl = [dbMessage objectForKey:@"content"];
-            
-            
-            break;
-        case UDMessageMediaTypeRedirect:{
-        
-            message.text = [dbMessage objectForKey:@"content"];
-            
-            break;
-        }
-            
-        default:
-            break;
-    }
-    
-    return message;
     
 }
 

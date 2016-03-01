@@ -64,7 +64,9 @@
 
 // 获取Cell需要的高度
 + (CGSize)getBubbleFrameWithMessage:(UDMessage *)message {
-    __block CGSize bubbleSize;
+    
+    CGSize bubbleSize;
+
     switch (message.messageType) {
         case UDMessageMediaTypeText: {
             CGSize needTextSize = [UDMessageContentView neededSizeForText:message.text];
@@ -277,6 +279,7 @@
             
             if (image) {
                 
+                self.message.photo = image;
                 _photoImageView.image = image;
             }
             else {
@@ -289,8 +292,9 @@
                     if (data) {
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            _photoImageView.image = [UIImage imageWithData:data];
                             
+                            self.message.photo = [UIImage imageWithData:data];
+                            _photoImageView.image = [UIImage imageWithData:data];
                         });
                         
                         [[UDCache sharedUDCache] storeImage:_photoImageView.image forKey:message.contentId];
@@ -364,8 +368,8 @@
         if (!_photoImageView) {
             UIImageView *photoImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
 
-            photoImageView.userInteractionEnabled = YES;
             [self addSubview:photoImageView];
+            photoImageView.userInteractionEnabled = YES;
             _photoImageView = photoImageView;
             
         }

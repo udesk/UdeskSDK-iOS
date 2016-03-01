@@ -68,7 +68,9 @@
     UDMessageTableViewCell *messageTableViewCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     if (!messageTableViewCell) {
-        messageTableViewCell = [[UDMessageTableViewCell alloc] initWithMessage:message reuseIdentifier:cellIdentifier];
+
+        messageTableViewCell = [[UDMessageTableViewCell alloc] initWithMessage:message displaysTimestamp:displayTimestamp reuseIdentifier:cellIdentifier];
+        
         messageTableViewCell.delegate = self;
     }
     

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4412423B1C818BDD0079CFA8 /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4412423A1C818BDD0079CFA8 /* libUdesk.a */; };
 		4426E7F21C5B13A0005A5011 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4426E7F11C5B13A0005A5011 /* main.m */; };
 		4426E7F51C5B13A0005A5011 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4426E7F41C5B13A0005A5011 /* AppDelegate.m */; };
 		4426E7F81C5B13A0005A5011 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4426E7F71C5B13A0005A5011 /* ViewController.m */; };
@@ -19,6 +18,8 @@
 		4426E9541C5B143D005A5011 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4426E9531C5B143D005A5011 /* libxml2.tbd */; };
 		4426E9561C5B1442005A5011 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4426E9551C5B1442005A5011 /* libz.tbd */; };
 		4426EA111C5B1714005A5011 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4426EA101C5B1714005A5011 /* JavaScriptCore.framework */; };
+		44439A521C85310F00820D1A /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44439A511C85310F00820D1A /* libUdesk.a */; };
+		44439A561C85314000820D1A /* NSTimer+UDBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 44439A551C85314000820D1A /* NSTimer+UDBlocks.m */; };
 		44891F381C7569BA00557D2E /* UDOneScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F331C7569BA00557D2E /* UDOneScrollView.m */; };
 		44891F391C7569BA00557D2E /* UDPhotoManeger.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F351C7569BA00557D2E /* UDPhotoManeger.m */; };
 		44891F3A1C7569BA00557D2E /* UDPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F371C7569BA00557D2E /* UDPhotoView.m */; };
@@ -71,7 +72,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4412423A1C818BDD0079CFA8 /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
 		4426E7ED1C5B13A0005A5011 /* UdeskSDK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UdeskSDK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4426E7F11C5B13A0005A5011 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4426E7F31C5B13A0005A5011 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -88,6 +88,10 @@
 		4426E9551C5B1442005A5011 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		4426E9571C5B148C005A5011 /* UdeskPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UdeskPrefixHeader.pch; sourceTree = "<group>"; };
 		4426EA101C5B1714005A5011 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		44439A421C84339E00820D1A /* libcompiler_rt.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcompiler_rt.tbd; path = usr/lib/system/libcompiler_rt.tbd; sourceTree = SDKROOT; };
+		44439A511C85310F00820D1A /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
+		44439A541C85314000820D1A /* NSTimer+UDBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+UDBlocks.h"; sourceTree = "<group>"; };
+		44439A551C85314000820D1A /* NSTimer+UDBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+UDBlocks.m"; sourceTree = "<group>"; };
 		44891F321C7569BA00557D2E /* UDOneScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDOneScrollView.h; sourceTree = "<group>"; };
 		44891F331C7569BA00557D2E /* UDOneScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDOneScrollView.m; sourceTree = "<group>"; };
 		44891F341C7569BA00557D2E /* UDPhotoManeger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPhotoManeger.h; sourceTree = "<group>"; };
@@ -199,7 +203,7 @@
 				4426E9561C5B1442005A5011 /* libz.tbd in Frameworks */,
 				4426E9541C5B143D005A5011 /* libxml2.tbd in Frameworks */,
 				4426E9521C5B1437005A5011 /* libresolv.tbd in Frameworks */,
-				4412423B1C818BDD0079CFA8 /* libUdesk.a in Frameworks */,
+				44439A521C85310F00820D1A /* libUdesk.a in Frameworks */,
 				4426E9501C5B1410005A5011 /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -210,6 +214,7 @@
 		4426E7E41C5B13A0005A5011 = {
 			isa = PBXGroup;
 			children = (
+				44439A421C84339E00820D1A /* libcompiler_rt.tbd */,
 				4426EA101C5B1714005A5011 /* JavaScriptCore.framework */,
 				4426E9551C5B1442005A5011 /* libz.tbd */,
 				4426E9531C5B143D005A5011 /* libxml2.tbd */,
@@ -254,6 +259,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		44439A531C85314000820D1A /* NSTimer */ = {
+			isa = PBXGroup;
+			children = (
+				44439A541C85314000820D1A /* NSTimer+UDBlocks.h */,
+				44439A551C85314000820D1A /* NSTimer+UDBlocks.m */,
+			);
+			path = NSTimer;
+			sourceTree = "<group>";
+		};
 		44891F311C7569BA00557D2E /* UDPhotoViewer */ = {
 			isa = PBXGroup;
 			children = (
@@ -288,7 +302,7 @@
 		449354521C5F40F300236FC7 /* SDK */ = {
 			isa = PBXGroup;
 			children = (
-				4412423A1C818BDD0079CFA8 /* libUdesk.a */,
+				44439A511C85310F00820D1A /* libUdesk.a */,
 				449354541C5F40F300236FC7 /* UDManager.h */,
 				449354551C5F40F300236FC7 /* UDMessage.h */,
 			);
@@ -465,6 +479,7 @@
 		449354911C5F40F300236FC7 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				44439A531C85314000820D1A /* NSTimer */,
 				449354921C5F40F300236FC7 /* NSArray */,
 				449354951C5F40F300236FC7 /* NSDictionary */,
 				449354981C5F40F300236FC7 /* UIViewController */,
@@ -650,6 +665,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				449354F71C5F40F300236FC7 /* UDKeywordRegularParser.m in Sources */,
+				44439A561C85314000820D1A /* NSTimer+UDBlocks.m in Sources */,
 				449C275F1C7C53340017F7DB /* UDImageCompat.m in Sources */,
 				449354F11C5F40F300236FC7 /* UDAudioPlayerHelper.m in Sources */,
 				449354E91C5F40F300236FC7 /* UDMessageTableViewCell.m in Sources */,
@@ -767,6 +783,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				PROVISIONING_PROFILE = "e2543beb-2f20-4c8d-8dbb-2315447ca74c";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -808,6 +825,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
 				PROVISIONING_PROFILE = "e2543beb-2f20-4c8d-8dbb-2315447ca74c";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -832,6 +850,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/UdeskSDK/UdeskSDK3.0/SDK",
 					"$(PROJECT_DIR)/UdeskSDK/UdeskSDK3.0/Resource",
+					"$(SDKROOT)/usr/lib/system",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -861,6 +880,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/UdeskSDK/UdeskSDK3.0/SDK",
 					"$(PROJECT_DIR)/UdeskSDK/UdeskSDK3.0/Resource",
+					"$(SDKROOT)/usr/lib/system",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
