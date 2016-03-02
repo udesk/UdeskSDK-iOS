@@ -13,9 +13,9 @@
 #import "UDMessage.h"
 
 #import "UdeskUtils.h"
-#import "NSArray+UDUtils.h"
+#import "NSArray+UDMessage.h"
 #import "UDFoundationMacro.h"
-#import "NSDictionary+UDUtils.h"
+#import "NSDictionary+UDMessage.h"
 #import "UDKeywordRegularParser.h"
 #import "UDMessageBubbleFactory.h"
 #import "UDVoiceRecordHelper.h"
@@ -25,6 +25,7 @@
 #import "UDViewExt.h"
 #import "UDAlertController.h"
 #import "UDCache.h"
+#import "UIImage+UDMessage.h"
 
 #define  Config [UDConfig sharedUDConfig]
 

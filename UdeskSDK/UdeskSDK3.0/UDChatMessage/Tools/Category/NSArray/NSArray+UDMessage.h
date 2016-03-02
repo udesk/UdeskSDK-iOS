@@ -1,12 +1,12 @@
 //
-//  NSArray+UDUtils.h
+//  NSArray+UDMessage.h
 //  UdeskSDK
 //
 //  Created by xuchen on 16/1/18.
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
 
-@interface NSArray (UDUtils)
+@interface NSArray (UDMessage)
 
 /*!
  @method objectAtIndexCheck:

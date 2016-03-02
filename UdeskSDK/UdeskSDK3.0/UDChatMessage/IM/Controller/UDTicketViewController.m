@@ -8,12 +8,6 @@
 
 #import "UDTicketViewController.h"
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_0
-#import <JavaScriptCore/JavaScriptCore.h>
-#else
-
-#endif
-
 @interface UDTicketViewController ()
 
 @end
@@ -49,31 +43,7 @@
         [self.view addSubview:_ticketWebView];
         
         [_ticketWebView stringByEvaluatingJavaScriptFromString:@"ticketCallBack()"];
-        
-        if (ud_isIOS7) {
-            JSContext *ticketContext = [self.ticketWebView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-            
-            ticketContext[@"ticketCallBack"] = ^() {
-                
-                NSArray *args = [JSContext currentArguments];
-                
-                for (JSValue *uDVal in args) {
-                    
-                    NSString *jsValString = [NSString stringWithFormat:@"%@",uDVal];
-                    
-                    if ([jsValString isEqualToString:@"200"]) {
-                        
-                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"工单提交成功" message:@"客服收到您的工单会第一时间答复您" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-                        [alertView show];
-                        
-                    }
-                    
-                }
-                
-            };
-            
-        }
-        
+
     }
 
 }

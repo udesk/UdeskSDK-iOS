@@ -14,7 +14,7 @@
 #import "UDEmotionManagerView.h"
 #import "UDMessageTextView.h"
 #import "UDAgentModel.h"
-#import "NSTimer+UDBlocks.h"
+#import "NSTimer+UDMessage.h"
 
 @interface UDChatViewModel()<UDManagerDelegate>
 

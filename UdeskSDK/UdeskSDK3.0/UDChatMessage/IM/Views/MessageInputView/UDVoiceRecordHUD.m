@@ -62,7 +62,7 @@
     
     if (!_microPhoneImageView) {
         UIImageView *microPhoneImageView = [[UIImageView alloc] initWithFrame:CGRectMake(11.0, 28.0, 80, 80)];
-        microPhoneImageView.image = [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_speak_Button.png")];
+        microPhoneImageView.image = [UIImage ud_defaultVoiceSpeakImage];
         microPhoneImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
         microPhoneImageView.contentMode = UIViewContentModeScaleToFill;
         [self addSubview:microPhoneImageView];
@@ -80,7 +80,7 @@
     
     if (!_cancelRecordImageView) {
         UIImageView *cancelRecordImageView = [[UIImageView alloc] initWithFrame:CGRectMake(30.0, 20.0, 80, 80)];
-        cancelRecordImageView.image = [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voice_revoke.png")];
+        cancelRecordImageView.image = [UIImage ud_defaultVoiceRevokeImage];
         cancelRecordImageView.hidden = YES;
         cancelRecordImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
         cancelRecordImageView.contentMode = UIViewContentModeScaleToFill;

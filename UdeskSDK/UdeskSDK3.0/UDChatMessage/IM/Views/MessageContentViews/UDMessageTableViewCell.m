@@ -102,13 +102,13 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             if (Config.headImage != nil) {
                 _headImageView.image = Config.headImage;
             } else {
-                _headImageView.image = [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_customer.png")];
+                _headImageView.image = [UIImage ud_defaultCustomerImage];
             }
 
             break;
         case UDMessageTypeReceiving:
             
-            _headImageView.image = [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_agent.png")];
+            _headImageView.image = [UIImage ud_defaultAgentImage];
             break;
             
         default:

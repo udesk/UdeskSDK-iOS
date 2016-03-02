@@ -17,9 +17,9 @@
 		4426E9521C5B1437005A5011 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4426E9511C5B1437005A5011 /* libresolv.tbd */; };
 		4426E9541C5B143D005A5011 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4426E9531C5B143D005A5011 /* libxml2.tbd */; };
 		4426E9561C5B1442005A5011 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4426E9551C5B1442005A5011 /* libz.tbd */; };
-		4426EA111C5B1714005A5011 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4426EA101C5B1714005A5011 /* JavaScriptCore.framework */; };
 		44439A521C85310F00820D1A /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44439A511C85310F00820D1A /* libUdesk.a */; };
-		44439A561C85314000820D1A /* NSTimer+UDBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 44439A551C85314000820D1A /* NSTimer+UDBlocks.m */; };
+		44439A561C85314000820D1A /* NSTimer+UDMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 44439A551C85314000820D1A /* NSTimer+UDMessage.m */; };
+		44439B1C1C86D83800820D1A /* UIImage+UDMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 44439B1B1C86D83800820D1A /* UIImage+UDMessage.m */; };
 		44891F381C7569BA00557D2E /* UDOneScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F331C7569BA00557D2E /* UDOneScrollView.m */; };
 		44891F391C7569BA00557D2E /* UDPhotoManeger.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F351C7569BA00557D2E /* UDPhotoManeger.m */; };
 		44891F3A1C7569BA00557D2E /* UDPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44891F371C7569BA00557D2E /* UDPhotoView.m */; };
@@ -46,8 +46,8 @@
 		449354EB1C5F40F300236FC7 /* UDMessageInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493548B1C5F40F300236FC7 /* UDMessageInputView.m */; };
 		449354EC1C5F40F300236FC7 /* UDMessageTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493548D1C5F40F300236FC7 /* UDMessageTextView.m */; };
 		449354ED1C5F40F300236FC7 /* UDVoiceRecordHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493548F1C5F40F300236FC7 /* UDVoiceRecordHUD.m */; };
-		449354EE1C5F40F300236FC7 /* NSArray+UDUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354941C5F40F300236FC7 /* NSArray+UDUtils.m */; };
-		449354EF1C5F40F300236FC7 /* NSDictionary+UDUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354971C5F40F300236FC7 /* NSDictionary+UDUtils.m */; };
+		449354EE1C5F40F300236FC7 /* NSArray+UDMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354941C5F40F300236FC7 /* NSArray+UDMessage.m */; };
+		449354EF1C5F40F300236FC7 /* NSDictionary+UDMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 449354971C5F40F300236FC7 /* NSDictionary+UDMessage.m */; };
 		449354F01C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493549A1C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.m */; };
 		449354F11C5F40F300236FC7 /* UDAudioPlayerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493549D1C5F40F300236FC7 /* UDAudioPlayerHelper.m */; };
 		449354F21C5F40F300236FC7 /* UDBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4493549F1C5F40F300236FC7 /* UDBaseModel.m */; };
@@ -87,11 +87,11 @@
 		4426E9531C5B143D005A5011 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		4426E9551C5B1442005A5011 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		4426E9571C5B148C005A5011 /* UdeskPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UdeskPrefixHeader.pch; sourceTree = "<group>"; };
-		4426EA101C5B1714005A5011 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		44439A421C84339E00820D1A /* libcompiler_rt.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcompiler_rt.tbd; path = usr/lib/system/libcompiler_rt.tbd; sourceTree = SDKROOT; };
 		44439A511C85310F00820D1A /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
-		44439A541C85314000820D1A /* NSTimer+UDBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+UDBlocks.h"; sourceTree = "<group>"; };
-		44439A551C85314000820D1A /* NSTimer+UDBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+UDBlocks.m"; sourceTree = "<group>"; };
+		44439A541C85314000820D1A /* NSTimer+UDMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+UDMessage.h"; sourceTree = "<group>"; };
+		44439A551C85314000820D1A /* NSTimer+UDMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+UDMessage.m"; sourceTree = "<group>"; };
+		44439B1A1C86D83800820D1A /* UIImage+UDMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+UDMessage.h"; sourceTree = "<group>"; };
+		44439B1B1C86D83800820D1A /* UIImage+UDMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+UDMessage.m"; sourceTree = "<group>"; };
 		44891F321C7569BA00557D2E /* UDOneScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDOneScrollView.h; sourceTree = "<group>"; };
 		44891F331C7569BA00557D2E /* UDOneScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDOneScrollView.m; sourceTree = "<group>"; };
 		44891F341C7569BA00557D2E /* UDPhotoManeger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPhotoManeger.h; sourceTree = "<group>"; };
@@ -145,10 +145,10 @@
 		4493548D1C5F40F300236FC7 /* UDMessageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDMessageTextView.m; sourceTree = "<group>"; };
 		4493548E1C5F40F300236FC7 /* UDVoiceRecordHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDVoiceRecordHUD.h; sourceTree = "<group>"; };
 		4493548F1C5F40F300236FC7 /* UDVoiceRecordHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDVoiceRecordHUD.m; sourceTree = "<group>"; };
-		449354931C5F40F300236FC7 /* NSArray+UDUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+UDUtils.h"; sourceTree = "<group>"; };
-		449354941C5F40F300236FC7 /* NSArray+UDUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+UDUtils.m"; sourceTree = "<group>"; };
-		449354961C5F40F300236FC7 /* NSDictionary+UDUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+UDUtils.h"; sourceTree = "<group>"; };
-		449354971C5F40F300236FC7 /* NSDictionary+UDUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+UDUtils.m"; sourceTree = "<group>"; };
+		449354931C5F40F300236FC7 /* NSArray+UDMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+UDMessage.h"; sourceTree = "<group>"; };
+		449354941C5F40F300236FC7 /* NSArray+UDMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+UDMessage.m"; sourceTree = "<group>"; };
+		449354961C5F40F300236FC7 /* NSDictionary+UDMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+UDMessage.h"; sourceTree = "<group>"; };
+		449354971C5F40F300236FC7 /* NSDictionary+UDMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+UDMessage.m"; sourceTree = "<group>"; };
 		449354991C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+UDKeyboardAnimation.h"; sourceTree = "<group>"; };
 		4493549A1C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+UDKeyboardAnimation.m"; sourceTree = "<group>"; };
 		4493549C1C5F40F300236FC7 /* UDAudioPlayerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDAudioPlayerHelper.h; sourceTree = "<group>"; };
@@ -199,7 +199,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4426EA111C5B1714005A5011 /* JavaScriptCore.framework in Frameworks */,
 				4426E9561C5B1442005A5011 /* libz.tbd in Frameworks */,
 				4426E9541C5B143D005A5011 /* libxml2.tbd in Frameworks */,
 				4426E9521C5B1437005A5011 /* libresolv.tbd in Frameworks */,
@@ -214,8 +213,6 @@
 		4426E7E41C5B13A0005A5011 = {
 			isa = PBXGroup;
 			children = (
-				44439A421C84339E00820D1A /* libcompiler_rt.tbd */,
-				4426EA101C5B1714005A5011 /* JavaScriptCore.framework */,
 				4426E9551C5B1442005A5011 /* libz.tbd */,
 				4426E9531C5B143D005A5011 /* libxml2.tbd */,
 				4426E9511C5B1437005A5011 /* libresolv.tbd */,
@@ -262,10 +259,19 @@
 		44439A531C85314000820D1A /* NSTimer */ = {
 			isa = PBXGroup;
 			children = (
-				44439A541C85314000820D1A /* NSTimer+UDBlocks.h */,
-				44439A551C85314000820D1A /* NSTimer+UDBlocks.m */,
+				44439A541C85314000820D1A /* NSTimer+UDMessage.h */,
+				44439A551C85314000820D1A /* NSTimer+UDMessage.m */,
 			);
 			path = NSTimer;
+			sourceTree = "<group>";
+		};
+		44439B191C86D74200820D1A /* UIImage */ = {
+			isa = PBXGroup;
+			children = (
+				44439B1A1C86D83800820D1A /* UIImage+UDMessage.h */,
+				44439B1B1C86D83800820D1A /* UIImage+UDMessage.m */,
+			);
+			path = UIImage;
 			sourceTree = "<group>";
 		};
 		44891F311C7569BA00557D2E /* UDPhotoViewer */ = {
@@ -479,6 +485,7 @@
 		449354911C5F40F300236FC7 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				44439B191C86D74200820D1A /* UIImage */,
 				44439A531C85314000820D1A /* NSTimer */,
 				449354921C5F40F300236FC7 /* NSArray */,
 				449354951C5F40F300236FC7 /* NSDictionary */,
@@ -490,8 +497,8 @@
 		449354921C5F40F300236FC7 /* NSArray */ = {
 			isa = PBXGroup;
 			children = (
-				449354931C5F40F300236FC7 /* NSArray+UDUtils.h */,
-				449354941C5F40F300236FC7 /* NSArray+UDUtils.m */,
+				449354931C5F40F300236FC7 /* NSArray+UDMessage.h */,
+				449354941C5F40F300236FC7 /* NSArray+UDMessage.m */,
 			);
 			path = NSArray;
 			sourceTree = "<group>";
@@ -499,8 +506,8 @@
 		449354951C5F40F300236FC7 /* NSDictionary */ = {
 			isa = PBXGroup;
 			children = (
-				449354961C5F40F300236FC7 /* NSDictionary+UDUtils.h */,
-				449354971C5F40F300236FC7 /* NSDictionary+UDUtils.m */,
+				449354961C5F40F300236FC7 /* NSDictionary+UDMessage.h */,
+				449354971C5F40F300236FC7 /* NSDictionary+UDMessage.m */,
 			);
 			path = NSDictionary;
 			sourceTree = "<group>";
@@ -665,7 +672,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				449354F71C5F40F300236FC7 /* UDKeywordRegularParser.m in Sources */,
-				44439A561C85314000820D1A /* NSTimer+UDBlocks.m in Sources */,
+				44439A561C85314000820D1A /* NSTimer+UDMessage.m in Sources */,
 				449C275F1C7C53340017F7DB /* UDImageCompat.m in Sources */,
 				449354F11C5F40F300236FC7 /* UDAudioPlayerHelper.m in Sources */,
 				449354E91C5F40F300236FC7 /* UDMessageTableViewCell.m in Sources */,
@@ -679,7 +686,7 @@
 				449C275D1C7C53340017F7DB /* UDAlertController.m in Sources */,
 				449354E31C5F40F300236FC7 /* UDAgentViewModel.m in Sources */,
 				44891F3A1C7569BA00557D2E /* UDPhotoView.m in Sources */,
-				449354EE1C5F40F300236FC7 /* NSArray+UDUtils.m in Sources */,
+				449354EE1C5F40F300236FC7 /* NSArray+UDMessage.m in Sources */,
 				449354F21C5F40F300236FC7 /* UDBaseModel.m in Sources */,
 				449354F61C5F40F300236FC7 /* UDGeneral.m in Sources */,
 				449354F51C5F40F300236FC7 /* UdeskUtils.m in Sources */,
@@ -689,10 +696,11 @@
 				449354E21C5F40F300236FC7 /* UDReceiveChatMsg.m in Sources */,
 				449354FE1C5F40F300236FC7 /* UDMessageBubbleFactory.m in Sources */,
 				449354F91C5F40F300236FC7 /* UDPhotographyHelper.m in Sources */,
-				449354EF1C5F40F300236FC7 /* NSDictionary+UDUtils.m in Sources */,
+				449354EF1C5F40F300236FC7 /* NSDictionary+UDMessage.m in Sources */,
 				449354E11C5F40F300236FC7 /* UDAgentModel.m in Sources */,
 				449354E41C5F40F300236FC7 /* UDChatCellViewModel.m in Sources */,
 				449354DA1C5F40F300236FC7 /* UDSearchController.m in Sources */,
+				44439B1C1C86D83800820D1A /* UIImage+UDMessage.m in Sources */,
 				449354D81C5F40F300236FC7 /* UDContentController.m in Sources */,
 				449354EC1C5F40F300236FC7 /* UDMessageTextView.m in Sources */,
 				449354FB1C5F40F300236FC7 /* UDTopAlertView.m in Sources */,

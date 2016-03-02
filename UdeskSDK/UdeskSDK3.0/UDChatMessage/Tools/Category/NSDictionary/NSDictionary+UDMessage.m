@@ -1,14 +1,14 @@
 //
-//  NSDictionary+Utils.m
+//  NSDictionary+UDMessage.m
 //  UdeskSDK
 //
 //  Created by xuchen on 16/1/18.
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
 
-#import "NSDictionary+UDUtils.h"
+#import "NSDictionary+UDMessage.h"
 
-@implementation NSDictionary(UDUtils)
+@implementation NSDictionary(UDMessage)
 
 - (void)ud_each:(void (^)(id key, id obj))block
 {

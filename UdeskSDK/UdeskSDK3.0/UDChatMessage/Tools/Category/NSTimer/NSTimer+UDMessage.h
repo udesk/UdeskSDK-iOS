@@ -1,5 +1,5 @@
 //
-//  NSTimer+Blocks.h
+//  NSTimer+UDMessage.h
 //
 //  Created by xuchen on 3/14/16.
 //  Copyright 2016 Random Ideas, LLC. All rights reserved.
@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSTimer (UDBlocks)
+@interface NSTimer (UDMessage)
 
 /** Creates a new @c NSTimer object using the specified handler, schedules it on
  * the current run loop, and returns it.

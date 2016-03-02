@@ -398,7 +398,7 @@
         if (!_messageAgainButton) {
             
             UIButton *againButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            [againButton setImage:[UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_refresh_Button.png")] forState:UIControlStateNormal];
+            [againButton setImage:[UIImage ud_defaultRefreshImage] forState:UIControlStateNormal];
             [againButton addTarget:self action:@selector(againButtonAction) forControlEvents:UIControlEventTouchUpInside];
             againButton.frame = CGRectZero;
             againButton.hidden = YES;

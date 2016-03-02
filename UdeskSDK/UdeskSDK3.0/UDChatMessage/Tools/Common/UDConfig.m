@@ -45,12 +45,12 @@
     self.iMBackButtonColor = [UIColor whiteColor];
     self.iMNavigationColor = [UDTools colorWithHexString:@"3565df"];
     self.iMTitleColor = [UIColor whiteColor];
-    self.faqNavigationColor = [UIColor whiteColor];
-    self.faqTitleColor = [UIColor blackColor];
-    self.faqBackButtonColor = UDRGBCOLOR(32, 104, 235);
-    self.articleContentNavigationColor = [UIColor whiteColor];
-    self.articleBackButtonColor = UDRGBCOLOR(32, 104, 235);
-    self.articleContentTitleColor = [UIColor blackColor];
+    self.faqNavigationColor = [UDTools colorWithHexString:@"3565df"];
+    self.faqTitleColor = [UIColor whiteColor];
+    self.faqBackButtonColor = [UIColor whiteColor];
+    self.articleContentNavigationColor = [UDTools colorWithHexString:@"3565df"];
+    self.articleBackButtonColor = [UIColor whiteColor];
+    self.articleContentTitleColor = [UIColor whiteColor];
     self.searchCancleButtonColor = UDRGBCOLOR(32, 104, 235);
     self.searchContactUsColor = UDRGBCOLOR(32, 104, 235);
     self.contactUsBorderColor = UDRGBCOLOR(32, 104, 235);
@@ -59,10 +59,9 @@
     self.ticketBackButtonColor = [UIColor whiteColor];
     self.ticketTitleColor = [UIColor whiteColor];
     self.agentStatusTitleColor = [UIColor whiteColor];
-    self.robotNavigationColor = [UIColor whiteColor];
-    self.robotBackButtonColor = UDRGBCOLOR(32, 104, 235);
-    self.robotTitleColor = [UIColor blackColor];
-    
+    self.robotNavigationColor = [UDTools colorWithHexString:@"3565df"];
+    self.robotBackButtonColor = [UIColor whiteColor];
+    self.robotTitleColor = [UIColor whiteColor];
 //    NSString *imageUrl = @"http://img5.duitang.com/uploads/item/201409/15/20140915205358_tz8Y3.jpeg";
 //    
 //    //缓存image

@@ -1,5 +1,5 @@
 //
-//  NSDictionary+Utils.h
+//  NSDictionary+UDMessage.h
 //  UdeskSDK
 //
 //  Created by xuchen on 16/1/18.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSDictionary(UDUtils)
+@interface NSDictionary(UDMessage)
 
 - (NSNumber *)numberForKey:(NSString *)key;
 - (NSString *)stringForKey:(NSString *)key;

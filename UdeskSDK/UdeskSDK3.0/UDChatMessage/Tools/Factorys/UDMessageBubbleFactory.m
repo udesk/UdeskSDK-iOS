@@ -13,41 +13,22 @@
 + (UIImage *)bubbleImageViewForType:(UDMessageFromType)type
                                   style:(UDBubbleImageViewStyle)style
                               meidaType:(UDMessageMediaType)mediaType {
-    NSString *messageTypeString;
-    
-    switch (style) {
-        case UDBubbleImageViewStyleUDChat:
-            messageTypeString = @"ud_ChatBubble";
-            break;
-        default:
-            break;
-    }
+    UIImage *bubbleImage;
     
     switch (type) {
         case UDMessageTypeSending:
             // 发送
-            messageTypeString = [messageTypeString stringByAppendingString:@"_Sending"];
+            bubbleImage = [UIImage ud_bubbleSendImage];
             break;
         case UDMessageTypeReceiving:
             // 接收
-            messageTypeString = [messageTypeString stringByAppendingString:@"_Receiving"];
+            bubbleImage = [UIImage ud_bubbleReceiveImage];
             break;
         default:
             break;
     }
     
-    switch (mediaType) {
-        case UDMessageMediaTypePhoto:
-        case UDMessageMediaTypeText:
-        case UDMessageMediaTypeVoice:
-            messageTypeString = [messageTypeString stringByAppendingString:@"_Solid.png"];
-            break;
-        default:
-            break;
-    }
-    
-    UIImage *bublleImage = [UIImage imageWithContentsOfFile:getUDBundlePath(messageTypeString)];
-    UIImage *edgeBubbleImage = [bublleImage stretchableImageWithLeftCapWidth:bublleImage.size.width / 2 topCapHeight:bublleImage.size.height / 2];
+    UIImage *edgeBubbleImage = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width / 2 topCapHeight:bubbleImage.size.height / 2];
     return edgeBubbleImage;
 }
 

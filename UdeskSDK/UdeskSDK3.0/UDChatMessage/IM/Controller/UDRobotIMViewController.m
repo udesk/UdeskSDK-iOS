@@ -75,7 +75,7 @@
     informationButton.hidden = !transfer;
     informationButton.titleLabel.font = [UIFont systemFontOfSize:16];
     [informationButton setTitle:getUDLocalizedString(@"转人工") forState:UIControlStateNormal];
-    [informationButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [informationButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [informationButton addTarget:self action:@selector(transferButtonAction) forControlEvents:UIControlEventTouchUpInside];
     
     UIBarButtonItem *otherNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:informationButton];

@@ -1,14 +1,14 @@
 //
-//  NSArray+SHYUtil.m
+//  NSArray+UDMessage.m
 //  UdeskSDK
 //
 //  Created by xuchen on 16/1/18.
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
 
-#import "NSArray+UDUtils.h"
+#import "NSArray+UDMessage.h"
 
-@implementation NSArray (UDUtils)
+@implementation NSArray (UDMessage)
 
 - (id)objectAtIndexCheck:(NSUInteger)index
 {

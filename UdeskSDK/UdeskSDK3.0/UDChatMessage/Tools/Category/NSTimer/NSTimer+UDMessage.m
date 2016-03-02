@@ -1,13 +1,13 @@
 //
-//  NSTimer+Blocks.m
+//  NSTimer+UDMessage.m
 //
 //  Created by xuchen on 3/14/16.
 //  Copyright 2016 Random Ideas, LLC. All rights reserved.
 //
 
-#import "NSTimer+UDBlocks.h"
+#import "NSTimer+UDMessage.h"
 
-@implementation NSTimer (UDBlocks)
+@implementation NSTimer (UDMessage)
 
 + (instancetype)ud_scheduleTimerWithTimeInterval:(NSTimeInterval)seconds repeats:(BOOL)repeats usingBlock:(void (^)(NSTimer *timer))block
 {
