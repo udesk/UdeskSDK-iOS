@@ -184,7 +184,7 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 *  @param completion  创建成功回调（返回用户ID）
 */
 + (void)createCustomer:(NSDictionary *)customerMsg
-completion:(void (^)(NSString *customerId,NSError *error))completion;
+            completion:(void (^)(NSString *customerId,NSError *error))completion;
 
 /**
 *  获取用户的登录信息
@@ -200,7 +200,7 @@ completion:(void (^)(NSString *customerId,NSError *error))completion;
 *  @param completion 回调用户信息
 */
 + (void)getCustomerLoginInfo:(NSString *)customerId
-completion:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
+                  completion:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
 
 /**
 *  获取客服信息
@@ -216,7 +216,14 @@ completion:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
 *  @param completion 回调客服信息
 */
 + (void)getAgentInformation:(NSString *)customerId
-completion:(void (^)(id responseObject,NSError *error))completion;
+                 completion:(void (^)(id responseObject,NSError *error))completion;
+/**
+*  获取转接后客服的信息
+*
+*  @param completion 回调客服信息
+*/
++ (void)getRedirectAgentInformation:(NSDictionary *)agentId
+                         completion:(void (^)(id responseObject,NSError *error))completion;
 
 /**
 *  登录Udesk
@@ -227,9 +234,9 @@ completion:(void (^)(id responseObject,NSError *error))completion;
 *  @param receiveDelegate 接收消息和接收状态代理
 */
 + (void)loginUdeskWithUserName:(NSString *)userName
-password:(NSString *)password
-completion:(void (^) (BOOL status))completion
-receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
+                      password:(NSString *)password
+                    completion:(void (^) (BOOL status))completion
+               receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
 
 /**
 *  登录Udesk
@@ -238,12 +245,22 @@ receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
 *  @param receiveDelegate 接收消息和接收状态代理
 */
 + (void)loginUdesk:(void (^) (BOOL status))completion
-receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
+   receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
 
 /**
-*  退出Udesk
+*  退出Udesk (切换用户，需要调用此接口)
 */
 + (void)logoutUdesk;
+
+/**
+*  设置客户离线 (在用户点击home键后调用此方法)
+*/
++ (void)setCustomerOffline;
+
+/**
+*  设置客户在线 (用户点击app进入页面时调用此方法)
+*/
++ (void)setCustomerOnline;
 
 /**
 *  发送消息
@@ -252,7 +269,7 @@ receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
 *  @param completion 发送回调
 */
 + (void)sendMessage:(UDMessage *)message
-completion:(void (^) (UDMessage *message,BOOL sendStatus))completion;
+         completion:(void (^) (UDMessage *message,BOOL sendStatus))completion;
 
 /**
 *  获取用户自定义字段
@@ -274,7 +291,7 @@ completion:(void (^) (UDMessage *message,BOOL sendStatus))completion;
 *  @param completion 回调提交状态
 */
 + (void)submitCustomerDevicesInfo:(NSString *)customerId
-completion:(void (^)(id responseObject, NSError *error))completion;
+                       completion:(void (^)(id responseObject, NSError *error))completion;
 
 /**
 *  获取公司帮助中心文章
@@ -290,7 +307,7 @@ completion:(void (^)(id responseObject, NSError *error))completion;
 *  @param completion 回调文章内容信息
 */
 + (void)getFaqArticlesContent:(NSString *)contentId
-completion:(void (^)(id responseObject, NSError *error))completion;
+                   completion:(void (^)(id responseObject, NSError *error))completion;
 
 /**
 *  搜索帮助中心文章
@@ -299,7 +316,7 @@ completion:(void (^)(id responseObject, NSError *error))completion;
 *  @param completion 回调搜索信息
 */
 + (void)searchFaqArticles:(NSString *)content
-completion:(void (^)(id responseObject, NSError *error))completion;
+               completion:(void (^)(id responseObject, NSError *error))completion;
 
 /**
 *  获取提交工单URL
@@ -340,8 +357,8 @@ completion:(void (^)(id responseObject, NSError *error))completion;
 *  @param finishedblock 回调查询内容
 */
 + (void)queryTabelWithSqlString:(NSString *)sql
-params:(NSArray *)params
-finishedBlock:(void (^) (NSArray *dbData))finishedblock;
+                         params:(NSArray *)params
+                  finishedBlock:(void (^) (NSArray *dbData))finishedblock;
 
 
 /**
@@ -384,13 +401,35 @@ finishedBlock:(void (^) (NSArray *dbData))finishedblock;
 + (BOOL)supportTransfer;
 
 /**
-*  设置客户离线 (在用户点击home键后调用此方法)
+*  同步获取网络状态
+*
+*  @return 返回网络状态
 */
-+ (void)setCustomerOffline;
++ (NSString *)internetStatus;
 
 /**
-*  设置客户在线 (在用户将要进入app的时候调用此方法)
+*  异步获取网络状态
+*
+*  @param completion call back网络状态
 */
-+ (void)setCustomerOnline;
++ (void)receiveNetwork:(void(^)(UDNetworkStatus reachability))completion;
+
+/**
+*  获取满意度调查选项
+*
+*  @param completion 回调选项内容
+*/
++ (void)getSurveyOptions:(void (^)(id responseObject, NSError *error))completion;
+
+/**
+*  满意度调查投票
+*
+*  @param agentId    满意度调查的客服
+*  @param optionId   满意度选项ID
+*  @param completion 回调结果
+*/
++ (void)survetVoteWithAgentId:(NSString *)agentId
+                 withOptionId:(NSString *)optionId
+                   completion:(void (^)(id responseObject, NSError *error))completion;
 
 ```
