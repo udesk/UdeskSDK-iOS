@@ -54,7 +54,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // 初始化消息页面布局
+    //初始化消息页面布局
     [self initilzer];
     //初始化数据
     [self initData];
@@ -77,7 +77,7 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     
-    //提示用户允许访问麦克风
+    // 提示用户允许访问麦克风
     if (ud_isIOS7) {
         [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
             
