@@ -101,48 +101,91 @@
 }
 
 //显示客服状态
-- (void)bindDataWithAgentModel:(UDAgentViewModel *)viewModel {
+//- (void)bindDataWithAgentModel:(UDAgentViewModel *)viewModel {
+//
+//    _nick = viewModel.agentModel.nick;
+//    
+//    //改变title frame
+//    [self changeTitleFrame];
+//    
+//    if (viewModel.agentModel.code  == 2000) {
+//        
+//        //显示在线状态
+//        _describeTitle.hidden = NO;
+//        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
+//        
+//        CGRect describeFrame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
+//        
+//        _describeTitle.frame = describeFrame;
+//        
+//        //显示名字，显示在线状态
+//        _describeTitle.text = viewModel.agentModel.message;
+//
+//    }
+//    else if (viewModel.agentModel.code == 2001) {
+//        
+//        _describeTitle.hidden = NO;
+//        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
+//        
+//        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
+//        
+//        _describeTitle.text = viewModel.agentModel.message;
+//        
+//    }
+//    else {
+//        
+//        _describeTitle.hidden = NO;
+//        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
+//        
+//        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
+//        
+//        _describeTitle.text = viewModel.agentModel.message;
+//        
+//    }
+//    
+//}
 
-    _nick = viewModel.agentModel.nick;
+- (void)bindDataWithAgentModel:(UDAgentModel *)agentModel {
+
+    _nick = agentModel.nick;
     
     //改变title frame
     [self changeTitleFrame];
     
-    if (viewModel.agentModel.code  == 2000) {
+    if (agentModel.code  == 2000) {
         
         //显示在线状态
         _describeTitle.hidden = NO;
-        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
+        CGSize describeSize = [UDGeneral.store textSize:agentModel.message fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
         
         CGRect describeFrame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
         
         _describeTitle.frame = describeFrame;
         
         //显示名字，显示在线状态
-        _describeTitle.text = viewModel.agentModel.message;
-
+        _describeTitle.text = agentModel.message;
+        
     }
-    else if (viewModel.agentModel.code == 2001) {
+    else if (agentModel.code == 2001) {
         
         _describeTitle.hidden = NO;
-        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
+        CGSize describeSize = [UDGeneral.store textSize:agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
         _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
         
-        _describeTitle.text = viewModel.agentModel.message;
+        _describeTitle.text = agentModel.message;
         
     }
     else {
         
         _describeTitle.hidden = NO;
-        CGSize describeSize = [UDGeneral.store textSize:viewModel.agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
+        CGSize describeSize = [UDGeneral.store textSize:agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
         _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
         
-        _describeTitle.text = viewModel.agentModel.message;
+        _describeTitle.text = agentModel.message;
         
     }
-    
 }
 
 @end

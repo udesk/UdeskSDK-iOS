@@ -18,4 +18,6 @@
 
 - (UDAgentViewModel *)viewModelWithAgent:(UDAgentModel *)agentModel;
 
+- (void)requestAgentModel:(void(^)(UDAgentModel *agentModel,NSError *error))callback;
+
 @end

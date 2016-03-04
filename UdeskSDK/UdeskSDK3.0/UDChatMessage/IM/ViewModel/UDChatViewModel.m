@@ -529,8 +529,6 @@
     }
 }
 
-
-
 #pragma mark - 重发失败的消息
 - (void)resendFailedMessage:(void(^)(UDMessage *failedMessage,BOOL sendStatus))completion {
     

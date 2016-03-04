@@ -26,10 +26,11 @@
 #import "UDChatViewModel.h"
 #import "UDChatCellViewModel.h"
 #import "UIViewController+UDKeyboardAnimation.h"
+#import "UDCustomerViewModel.h"
 
 #define UDTitleLength  UD_SCREEN_WIDTH>320?200:170
 
-@interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDChatTableViewDelegate,UDEmotionManagerViewDelegate,UDChatViewModelDelegate>
+@interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDChatTableViewDelegate,UDEmotionManagerViewDelegate,UDChatViewModelDelegate,UDCustomerDelegate>
 
 @property (nonatomic, assign) UDInputViewType textViewInputViewType;
 
@@ -164,24 +165,47 @@
 
 #pragma mark - 请求客服数据
 - (void)requestAgentData {
-
-    [self.dataController requestAgentDataWithCallback:^(UDAgentModel *agentModel, NSError *error) {
-        //装载客服数据
-        [self loadAgentDataReload:agentModel];
+    
+//    [self.dataController requestAgentDataWithCallback:^(UDAgentModel *agentModel, NSError *error) {
+//        //装载客服数据
+//        [self loadAgentDataReload:agentModel];
+//        
+//    }];
+    
+    [UDAgentViewModel.store requestAgentModel:^(UDAgentModel *agentModel, NSError *error) {
+        
+        [self.agentStatusView bindDataWithAgentModel:agentModel];
+        
+        self.messageInputView.agentCode = agentModel.code;
+        
+        if (agentModel.code == 2000) {
+         
+            [UDCustomerViewModel.store requestCustomerDataAndLoginUdesk:self];
+        }
         
     }];
     
 }
+
+- (void)receiveAgentMessage:(UDMessage *)message {
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        [self.chatViewModel.messageArray addObject:message];
+        [self reloadChatTableView];
+    });
+}
+
 //装载客服数据
 - (void)loadAgentDataReload:(UDAgentModel *)agentModel {
 
-    UDAgentViewModel *viewModel = [UDAgentViewModel.store viewModelWithAgent:agentModel];
-    //更新客服状态文字
-    [self.agentStatusView bindDataWithAgentModel:viewModel];
+//    UDAgentViewModel *viewModel = [UDAgentViewModel.store viewModelWithAgent:agentModel];
+//    //更新客服状态文字
+    [self.agentStatusView bindDataWithAgentModel:agentModel];
     //登录Udesk
-    [self.chatViewModel loginUdeskWithAgent:viewModel];
-    //客服viewModel
-    self.chatViewModel.viewModel = viewModel;
+//    [self.chatViewModel loginUdeskWithAgent:viewModel];
+//    //客服viewModel
+//    self.chatViewModel.viewModel = viewModel;
     //底部功能栏根据客服状态code做操作
     self.messageInputView.agentCode = agentModel.code;
     

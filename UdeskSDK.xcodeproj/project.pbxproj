@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		440479451C87E1E400581940 /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 440479441C87E1E400581940 /* libUdesk.a */; };
+		4404794A1C8932B500581940 /* UDCustomerDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 440479491C8932B500581940 /* UDCustomerDataController.m */; };
+		4404794D1C8932D400581940 /* UDHistoryMessageDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4404794C1C8932D400581940 /* UDHistoryMessageDataController.m */; };
+		440479501C893F7D00581940 /* UDCustomerViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4404794F1C893F7D00581940 /* UDCustomerViewModel.m */; };
+		440479531C893F8C00581940 /* UDCustomerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 440479521C893F8C00581940 /* UDCustomerModel.m */; };
+		440479561C896A7300581940 /* UDSendMessageViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 440479551C896A7300581940 /* UDSendMessageViewModel.m */; };
 		4426E7F21C5B13A0005A5011 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4426E7F11C5B13A0005A5011 /* main.m */; };
 		4426E7F51C5B13A0005A5011 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4426E7F41C5B13A0005A5011 /* AppDelegate.m */; };
 		4426E7F81C5B13A0005A5011 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4426E7F71C5B13A0005A5011 /* ViewController.m */; };
@@ -73,6 +78,16 @@
 
 /* Begin PBXFileReference section */
 		440479441C87E1E400581940 /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
+		440479481C8932B500581940 /* UDCustomerDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDCustomerDataController.h; sourceTree = "<group>"; };
+		440479491C8932B500581940 /* UDCustomerDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDCustomerDataController.m; sourceTree = "<group>"; };
+		4404794B1C8932D400581940 /* UDHistoryMessageDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDHistoryMessageDataController.h; sourceTree = "<group>"; };
+		4404794C1C8932D400581940 /* UDHistoryMessageDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDHistoryMessageDataController.m; sourceTree = "<group>"; };
+		4404794E1C893F7D00581940 /* UDCustomerViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDCustomerViewModel.h; sourceTree = "<group>"; };
+		4404794F1C893F7D00581940 /* UDCustomerViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDCustomerViewModel.m; sourceTree = "<group>"; };
+		440479511C893F8C00581940 /* UDCustomerModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDCustomerModel.h; sourceTree = "<group>"; };
+		440479521C893F8C00581940 /* UDCustomerModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDCustomerModel.m; sourceTree = "<group>"; };
+		440479541C896A7300581940 /* UDSendMessageViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDSendMessageViewModel.h; sourceTree = "<group>"; };
+		440479551C896A7300581940 /* UDSendMessageViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDSendMessageViewModel.m; sourceTree = "<group>"; };
 		4426E7ED1C5B13A0005A5011 /* UdeskSDK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UdeskSDK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4426E7F11C5B13A0005A5011 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4426E7F31C5B13A0005A5011 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -388,6 +403,10 @@
 				4493546C1C5F40F300236FC7 /* UDAgentDataController.m */,
 				4493546D1C5F40F300236FC7 /* UDChatDataController.h */,
 				4493546E1C5F40F300236FC7 /* UDChatDataController.m */,
+				440479481C8932B500581940 /* UDCustomerDataController.h */,
+				440479491C8932B500581940 /* UDCustomerDataController.m */,
+				4404794B1C8932D400581940 /* UDHistoryMessageDataController.h */,
+				4404794C1C8932D400581940 /* UDHistoryMessageDataController.m */,
 			);
 			path = DataController;
 			sourceTree = "<group>";
@@ -399,6 +418,8 @@
 				449354711C5F40F300236FC7 /* UDAgentModel.m */,
 				449354721C5F40F300236FC7 /* UDReceiveChatMsg.h */,
 				449354731C5F40F300236FC7 /* UDReceiveChatMsg.m */,
+				440479511C893F8C00581940 /* UDCustomerModel.h */,
+				440479521C893F8C00581940 /* UDCustomerModel.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -412,6 +433,10 @@
 				449354781C5F40F300236FC7 /* UDChatCellViewModel.m */,
 				449354791C5F40F300236FC7 /* UDChatViewModel.h */,
 				4493547A1C5F40F300236FC7 /* UDChatViewModel.m */,
+				4404794E1C893F7D00581940 /* UDCustomerViewModel.h */,
+				4404794F1C893F7D00581940 /* UDCustomerViewModel.m */,
+				440479541C896A7300581940 /* UDSendMessageViewModel.h */,
+				440479551C896A7300581940 /* UDSendMessageViewModel.m */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -681,6 +706,7 @@
 				449354F41C5F40F300236FC7 /* UDConfigurationHelper.m in Sources */,
 				449354DB1C5F40F300236FC7 /* UDProblemModel.m in Sources */,
 				449354FA1C5F40F300236FC7 /* UDTools.m in Sources */,
+				440479531C893F8C00581940 /* UDCustomerModel.m in Sources */,
 				44891F381C7569BA00557D2E /* UDOneScrollView.m in Sources */,
 				449354DC1C5F40F300236FC7 /* UDChatViewController.m in Sources */,
 				449C275D1C7C53340017F7DB /* UDAlertController.m in Sources */,
@@ -699,15 +725,19 @@
 				449354EF1C5F40F300236FC7 /* NSDictionary+UDMessage.m in Sources */,
 				449354E11C5F40F300236FC7 /* UDAgentModel.m in Sources */,
 				449354E41C5F40F300236FC7 /* UDChatCellViewModel.m in Sources */,
+				440479561C896A7300581940 /* UDSendMessageViewModel.m in Sources */,
+				4404794D1C8932D400581940 /* UDHistoryMessageDataController.m in Sources */,
 				449354DA1C5F40F300236FC7 /* UDSearchController.m in Sources */,
 				44439B1C1C86D83800820D1A /* UIImage+UDMessage.m in Sources */,
 				449354D81C5F40F300236FC7 /* UDContentController.m in Sources */,
 				449354EC1C5F40F300236FC7 /* UDMessageTextView.m in Sources */,
 				449354FB1C5F40F300236FC7 /* UDTopAlertView.m in Sources */,
 				449354E01C5F40F300236FC7 /* UDChatDataController.m in Sources */,
+				4404794A1C8932B500581940 /* UDCustomerDataController.m in Sources */,
 				449354F01C5F40F300236FC7 /* UIViewController+UDKeyboardAnimation.m in Sources */,
 				449354E61C5F40F300236FC7 /* UDAgentStatusView.m in Sources */,
 				449354EA1C5F40F300236FC7 /* UDEmotionManagerView.m in Sources */,
+				440479501C893F7D00581940 /* UDCustomerViewModel.m in Sources */,
 				449354ED1C5F40F300236FC7 /* UDVoiceRecordHUD.m in Sources */,
 				449354DD1C5F40F300236FC7 /* UDRobotIMViewController.m in Sources */,
 				449354FC1C5F40F300236FC7 /* UDVoiceRecordHelper.m in Sources */,

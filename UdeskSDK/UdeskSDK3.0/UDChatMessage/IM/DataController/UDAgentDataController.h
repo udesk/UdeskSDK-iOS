@@ -8,9 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class UDAgentModel;
-
-typedef void (^UDAgentDataCallBack) (UDAgentModel *udAgent,NSError *error);
+typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
 
 @interface UDAgentDataController : NSObject
 

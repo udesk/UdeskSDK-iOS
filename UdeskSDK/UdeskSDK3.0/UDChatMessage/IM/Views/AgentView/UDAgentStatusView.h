@@ -32,6 +32,8 @@
  *
  *  @param viewModel 客服数据
  */
-- (void)bindDataWithAgentModel:(UDAgentViewModel *)viewModel;
+//- (void)bindDataWithAgentModel:(UDAgentViewModel *)viewModel;
+
+- (void)bindDataWithAgentModel:(UDAgentModel *)agentModel;
 
 @end
