@@ -55,7 +55,7 @@
 /**
  *  客服Model
  */
-@property (nonatomic, strong) UDAgentViewModel        *viewModel;
+@property (nonatomic, strong) UDAgentModel        *agentModel;
 
 @property (nonatomic, weak  ) id<UDChatViewModelDelegate> delegate;
 
@@ -93,7 +93,7 @@
  *
  *  @param viewModel 客服model(根据客服状态去登录)
  */
-- (void)loginUdeskWithAgent:(UDAgentViewModel *)viewModel;
+- (void)loginUdeskWithAgent:(UDAgentModel *)agentModel;
 
 /**
  *  DB消息

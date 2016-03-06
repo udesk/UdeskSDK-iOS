@@ -26,11 +26,10 @@
 #import "UDChatViewModel.h"
 #import "UDChatCellViewModel.h"
 #import "UIViewController+UDKeyboardAnimation.h"
-#import "UDCustomerViewModel.h"
 
 #define UDTitleLength  UD_SCREEN_WIDTH>320?200:170
 
-@interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDChatTableViewDelegate,UDEmotionManagerViewDelegate,UDChatViewModelDelegate,UDCustomerDelegate>
+@interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDChatTableViewDelegate,UDEmotionManagerViewDelegate,UDChatViewModelDelegate>
 
 @property (nonatomic, assign) UDInputViewType textViewInputViewType;
 
@@ -165,47 +164,24 @@
 
 #pragma mark - 请求客服数据
 - (void)requestAgentData {
-    
-//    [self.dataController requestAgentDataWithCallback:^(UDAgentModel *agentModel, NSError *error) {
-//        //装载客服数据
-//        [self loadAgentDataReload:agentModel];
-//        
-//    }];
-    
+
     [UDAgentViewModel.store requestAgentModel:^(UDAgentModel *agentModel, NSError *error) {
-        
-        [self.agentStatusView bindDataWithAgentModel:agentModel];
-        
-        self.messageInputView.agentCode = agentModel.code;
-        
-        if (agentModel.code == 2000) {
-         
-            [UDCustomerViewModel.store requestCustomerDataAndLoginUdesk:self];
-        }
+        //装载客服数据
+        [self loadAgentDataReload:agentModel];
         
     }];
     
 }
 
-- (void)receiveAgentMessage:(UDMessage *)message {
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-        [self.chatViewModel.messageArray addObject:message];
-        [self reloadChatTableView];
-    });
-}
-
 //装载客服数据
 - (void)loadAgentDataReload:(UDAgentModel *)agentModel {
 
-//    UDAgentViewModel *viewModel = [UDAgentViewModel.store viewModelWithAgent:agentModel];
-//    //更新客服状态文字
+    //更新客服状态文字
     [self.agentStatusView bindDataWithAgentModel:agentModel];
     //登录Udesk
-//    [self.chatViewModel loginUdeskWithAgent:viewModel];
-//    //客服viewModel
-//    self.chatViewModel.viewModel = viewModel;
+    [self.chatViewModel loginUdeskWithAgent:agentModel];
+    //客服viewModel
+    self.chatViewModel.agentModel = agentModel;
     //底部功能栏根据客服状态code做操作
     self.messageInputView.agentCode = agentModel.code;
     
@@ -238,7 +214,7 @@
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         
-        self.chatViewModel.viewModel.agentModel.code = isNetwork?2000:2003;
+        self.chatViewModel.agentModel.code = isNetwork?2000:2003;
         self.messageInputView.agentCode = isNetwork?2000:2003;
         [UDTopAlertView showWithType:isNetwork?UDAlertTypeOnline:UDAlertTypeError text:isNetwork?getUDLocalizedString(@"客服上线了！"):getUDLocalizedString(@"网络断开链接了！") parentView:self.view];
         [self.agentStatusView agentOnlineOrNotOnline:isNetwork?@"available":@"notNetwork"];
@@ -451,7 +427,7 @@
     UDWEAKSELF
     UDMessage *failedMessage = [notif.userInfo objectForKey:@"failedMessage"];
     
-    failedMessage.agent_jid = self.chatViewModel.viewModel.agentModel.jid;
+    failedMessage.agent_jid = self.chatViewModel.agentModel.jid;
     
     [UDManager sendMessage:failedMessage completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI

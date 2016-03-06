@@ -38,7 +38,7 @@
 - (void)sendTextMessage:(NSString *)text
              completion:(void(^)(UDMessage *message,BOOL sendStatus))completion {
     
-    if (_viewModel.agentModel.code == 2000) {
+    if (_agentModel.code == 2000) {
         
         if ([UDTools isBlankString:text]) {
             UDAlertController *notOnline = [UDAlertController alertWithTitle:nil message:@"不能发送空白消息"];
@@ -52,7 +52,7 @@
         
         UDMessage *textMessage = [[UDMessage alloc] initWithText:text timestamp:date];
         
-        textMessage.agent_jid = _viewModel.agentModel.jid;
+        textMessage.agent_jid = _agentModel.jid;
         
         [self.messageArray addObject:textMessage];
         //通知刷新UI
@@ -72,7 +72,7 @@
         }];
         
     }
-    else if (_viewModel.agentModel.code == 2001) {
+    else if (_agentModel.code == 2001) {
         //请求客服队列
         [self queueStatus];
     }
@@ -87,7 +87,7 @@
 - (void)sendImageMessage:(UIImage *)image
               completion:(void(^)(UDMessage *message,BOOL sendStatus))completion {
 
-    if (_viewModel.agentModel.code == 2000) {
+    if (_agentModel.code == 2000) {
         
         //限制图片的size
         NSString *newWidth = [NSString stringWithFormat:@"%f",[UDTools setImageSize:image].width];
@@ -101,7 +101,7 @@
         }
         
         UDMessage *photoMessage = [[UDMessage alloc] initWithPhoto:image timestamp:date];
-        photoMessage.agent_jid = _viewModel.agentModel.jid;
+        photoMessage.agent_jid = _agentModel.jid;
         photoMessage.width = newWidth;
         photoMessage.height = newHeight;
         
@@ -125,7 +125,7 @@
         }];
         
     }
-    else if (_viewModel.agentModel.code == 2001) {
+    else if (_agentModel.code == 2001) {
         //请求队列
         [self queueStatus];
     }
@@ -141,12 +141,12 @@
            audioDuration:(NSString *)audioDuration
               completion:(void (^)(UDMessage *, BOOL))comletion {
 
-    if (_viewModel.agentModel.code == 2000) {
+    if (_agentModel.code == 2000) {
         
         NSDate *date = [NSDate date];
         
         UDMessage *voiceMessage = [[UDMessage alloc] initWithVoicePath:audioPath voiceDuration:audioDuration timestamp:date];
-        voiceMessage.agent_jid = _viewModel.agentModel.jid;
+        voiceMessage.agent_jid = _agentModel.jid;
         
         [self.messageArray addObject:voiceMessage];
         //通知刷新UI
@@ -169,7 +169,7 @@
         }];
         
     }
-    else if (_viewModel.agentModel.code == 2001) {
+    else if (_agentModel.code == 2001) {
         //请求客服队列
         [self queueStatus];
     }
@@ -179,11 +179,11 @@
     }
 }
 #pragma mark - 登录Udesk
-- (void)loginUdeskWithAgent:(UDAgentViewModel *)viewModel {
+- (void)loginUdeskWithAgent:(UDAgentModel *)agentModel {
 
-    _viewModel = viewModel;
+    _agentModel = agentModel;
     
-    if (viewModel.agentModel.code == 2000) {
+    if (agentModel.code == 2000) {
         
         //客服在线才登录XMPP
         [UDManager loginUdesk:^(BOOL status) {
@@ -193,7 +193,7 @@
             }
             
         } receiveDelegate:self];
-    } else if (viewModel.agentModel.code == 2002) {
+    } else if (agentModel.code == 2002) {
         
         [self agentNotOnline];
     }
@@ -231,11 +231,11 @@
     
     if ([statusType isEqualToString:@"available"]) {
         
-        self.viewModel.agentModel.code = 2000;
+        self.agentModel.code = 2000;
         
     } else {
         
-        self.viewModel.agentModel.code = 2002;
+        self.agentModel.code = 2002;
     }
     
     if ([self.delegate respondsToSelector:@selector(receiveAgentPresence:)]) {
@@ -313,7 +313,7 @@
 //非法创建用户Alert
 - (void)notCustomer {
     
-    UDAlertController *notCustomerAlert = [UDAlertController alertWithTitle:nil message:_viewModel.agentModel.message];
+    UDAlertController *notCustomerAlert = [UDAlertController alertWithTitle:nil message:_agentModel.message];
     [notCustomerAlert addCloseActionWithTitle:getUDLocalizedString(@"确定") Handler:NULL];
     [notCustomerAlert showWithSender:nil controller:nil animated:YES completion:NULL];
     
@@ -415,15 +415,15 @@
 #pragma mark - 点击功能栏弹出相应Alert
 - (void)clickInputView {
 
-    if (self.viewModel.agentModel.code == 2002) {
+    if (self.agentModel.code == 2002) {
         
         [self agentNotOnline];
-    } else if (self.viewModel.agentModel.code == 2003) {
+    } else if (self.agentModel.code == 2003) {
         
         [self netWorkDisconnectAlertView];
-    } else if (self.viewModel.agentModel.code == 2001) {
+    } else if (self.agentModel.code == 2001) {
         [self queueStatus];
-    } else if (self.viewModel.agentModel.code == 2004) {
+    } else if (self.agentModel.code == 2004) {
     
         [self notCustomer];
     }
