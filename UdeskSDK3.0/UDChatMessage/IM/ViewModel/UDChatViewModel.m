@@ -139,7 +139,7 @@
 #pragma mark - 发送语音消息
 - (void)sendAudioMessage:(NSString *)audioPath
            audioDuration:(NSString *)audioDuration
-              completion:(void (^)(UDMessage *, BOOL))comletion {
+              completion:(void (^)(UDMessage *, BOOL sendStatus))comletion {
 
     if (_agentModel.code == 2000) {
         
