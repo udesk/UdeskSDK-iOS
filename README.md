@@ -20,7 +20,6 @@ libz.tbd
 libxml2.tbd
 libresolv.tbd
 libsqlite3.tbd
-JavaScriptCore.framework
 ```
 
 把SDK文件夹中的Udesk文件夹拖到你的工程里
