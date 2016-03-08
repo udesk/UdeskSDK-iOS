@@ -102,12 +102,6 @@
             NSLog(@"提交设备信息:%@",responseObject);
         }];
         
-        //获取用户信息
-        [UDManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
-            
-            NSLog(@"用户登录信息:%@",loginInfoDic);
-        }];
-        
     }];
     
 }

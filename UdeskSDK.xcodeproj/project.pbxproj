@@ -26,7 +26,6 @@
 		44445C1C1C8D1D7600DD25DF /* UDChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44445B9F1C8D1D7600DD25DF /* UDChatViewController.m */; };
 		44445C1D1C8D1D7600DD25DF /* UDRobotIMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44445BA11C8D1D7600DD25DF /* UDRobotIMViewController.m */; };
 		44445C1E1C8D1D7600DD25DF /* UDTicketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44445BA31C8D1D7600DD25DF /* UDTicketViewController.m */; };
-		44445C1F1C8D1D7600DD25DF /* UDAgentDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44445BA61C8D1D7600DD25DF /* UDAgentDataController.m */; };
 		44445C201C8D1D7600DD25DF /* UDChatDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44445BA81C8D1D7600DD25DF /* UDChatDataController.m */; };
 		44445C231C8D1D7600DD25DF /* UDAgentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44445BAF1C8D1D7600DD25DF /* UDAgentModel.m */; };
 		44445C251C8D1D7600DD25DF /* UDReceiveMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 44445BB31C8D1D7600DD25DF /* UDReceiveMessage.m */; };
@@ -105,8 +104,6 @@
 		44445BA11C8D1D7600DD25DF /* UDRobotIMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDRobotIMViewController.m; sourceTree = "<group>"; };
 		44445BA21C8D1D7600DD25DF /* UDTicketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDTicketViewController.h; sourceTree = "<group>"; };
 		44445BA31C8D1D7600DD25DF /* UDTicketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDTicketViewController.m; sourceTree = "<group>"; };
-		44445BA51C8D1D7600DD25DF /* UDAgentDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDAgentDataController.h; sourceTree = "<group>"; };
-		44445BA61C8D1D7600DD25DF /* UDAgentDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDAgentDataController.m; sourceTree = "<group>"; };
 		44445BA71C8D1D7600DD25DF /* UDChatDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDChatDataController.h; sourceTree = "<group>"; };
 		44445BA81C8D1D7600DD25DF /* UDChatDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDChatDataController.m; sourceTree = "<group>"; };
 		44445BAE1C8D1D7600DD25DF /* UDAgentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDAgentModel.h; sourceTree = "<group>"; };
@@ -353,8 +350,6 @@
 		44445BA41C8D1D7600DD25DF /* DataController */ = {
 			isa = PBXGroup;
 			children = (
-				44445BA51C8D1D7600DD25DF /* UDAgentDataController.h */,
-				44445BA61C8D1D7600DD25DF /* UDAgentDataController.m */,
 				44445BA71C8D1D7600DD25DF /* UDChatDataController.h */,
 				44445BA81C8D1D7600DD25DF /* UDChatDataController.m */,
 			);
@@ -691,7 +686,6 @@
 				44445C261C8D1D7600DD25DF /* UDAgentViewModel.m in Sources */,
 				44445C481C8D1D7600DD25DF /* UDImageDecoder.m in Sources */,
 				44445C3C1C8D1D7600DD25DF /* UDKeywordRegularParser.m in Sources */,
-				44445C1F1C8D1D7600DD25DF /* UDAgentDataController.m in Sources */,
 				44445C1D1C8D1D7600DD25DF /* UDRobotIMViewController.m in Sources */,
 				44445C451C8D1D7600DD25DF /* UDAlertController.m in Sources */,
 				44445C2E1C8D1D7600DD25DF /* UDMessageInputView.m in Sources */,

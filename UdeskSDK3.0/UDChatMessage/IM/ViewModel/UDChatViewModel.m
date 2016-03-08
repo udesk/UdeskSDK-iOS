@@ -185,14 +185,19 @@
     
     if (agentModel.code == 2000) {
         
-        //客服在线才登录XMPP
-        [UDManager loginUdesk:^(BOOL status) {
+        //获取用户信息
+        [UDManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
             
-            if (status) {
-                NSLog(@"登录Udesk成功");
-            }
-            
-        } receiveDelegate:self];
+            //客服在线才登录XMPP
+            [UDManager loginUdesk:^(BOOL status) {
+                
+                if (status) {
+                    NSLog(@"登录Udesk成功");
+                }
+                
+            } receiveDelegate:self];
+        }];
+        
     } else if (agentModel.code == 2002) {
         
         [self agentNotOnline];

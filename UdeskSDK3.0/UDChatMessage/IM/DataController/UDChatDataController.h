@@ -13,13 +13,6 @@
 @interface UDChatDataController : NSObject
 
 /**
- *  请求客服信息
- *
- *  @param callback 客服数据
- */
-- (void)requestAgentDataWithCallback:(void(^)(UDAgentModel *udAgent,NSError *error))callback;
-
-/**
  *  获取DB数据
  *
  *  @param result db消息数组

@@ -160,14 +160,17 @@
     self.messageTableView.chatViewModel = self.chatViewModel;
     
     self.chatViewModel.delegate = self;
+    
+    self.agentViewModel = [[UDAgentViewModel alloc] init];
 }
 
 #pragma mark - 请求客服数据
 - (void)requestAgentData {
 
-    [UDAgentViewModel.store requestAgentModel:^(UDAgentModel *agentModel, NSError *error) {
+    UDWEAKSELF
+    [self.agentViewModel requestAgentModel:^(UDAgentModel *agentModel, NSError *error) {
         //装载客服数据
-        [self loadAgentDataReload:agentModel];
+        [weakSelf loadAgentDataReload:agentModel];
         
     }];
     
@@ -180,8 +183,6 @@
     [self.agentStatusView bindDataWithAgentModel:agentModel];
     //登录Udesk
     [self.chatViewModel loginUdeskWithAgent:agentModel];
-    //客服viewModel
-    self.chatViewModel.agentModel = agentModel;
     //底部功能栏根据客服状态code做操作
     self.messageInputView.agentCode = agentModel.code;
     
@@ -662,6 +663,8 @@
     
     //返回上级页面，设置客户离线
     [UDManager setCustomerOffline];
+    //客户不在当前页面停止请求排队客服
+    self.agentViewModel.stopRequest = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -684,7 +687,8 @@
     _chatViewModel.delegate = nil;
     _photographyHelper = nil;
     _agentStatusView = nil;
-    
+    _agentViewModel = nil;
+
 }
 
 @end

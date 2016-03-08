@@ -93,4 +93,6 @@
  */
 @property (nonatomic, strong) UDChatCellViewModel  *chatCellViewModel;
 
+@property (nonatomic, strong) UDAgentViewModel     *agentViewModel;
+
 @end

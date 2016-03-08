@@ -14,7 +14,7 @@
 
 @property (nonatomic, strong) UDAgentModel *agentModel;
 
-+ (instancetype)store;
+@property (nonatomic, assign) BOOL         stopRequest;
 
 /**
  *  获取客服Model
