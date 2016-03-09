@@ -30,7 +30,7 @@
         
         if (robotUrl) {
             
-            UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64)];
+            UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:self.view.bounds];
             intelligenceWeb.backgroundColor=[UIColor whiteColor];
             
             NSURL *ticketURL = robotUrl;

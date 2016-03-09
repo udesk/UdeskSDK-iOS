@@ -69,6 +69,7 @@
 
 #pragma mark - 初始化视图
 - (void)initilzer {
+    
     if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
@@ -665,6 +666,7 @@
     [UDManager setCustomerOffline];
     //客户不在当前页面停止请求排队客服
     self.agentViewModel.stopRequest = YES;
+    
 }
 
 - (void)didReceiveMemoryWarning {

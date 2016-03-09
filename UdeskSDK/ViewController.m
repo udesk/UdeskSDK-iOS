@@ -83,14 +83,25 @@
         
         //NSLog(@"用户自定义字段：%@",responseObject);
     }];
+
+#warning sdk_token参数必填，其它参数可选（有的最好都写上）
+    NSString *nick_name = [NSString stringWithFormat:@"sdk用户%u",arc4random()];
+    NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
+    
     
     NSDictionary *parameters = @{
                                  @"user": @{
-
-                                         @"nick_name": @"测试",
-                                         @"sdk_token":@"testUdeskSDKcodeencrypt"
+                                         @"sdk_token": sdk_token,
+                                         @"nick_name": nick_name
                                          }
                                  };
+    
+//    NSDictionary *parameters = @{
+//                                 @"user": @{
+//                                         @"sdk_token": @"testsdktokenencrypt",
+//                                         @"nick_name": @"测试"
+//                                         }
+//                                 };
     
     //创建用户
     [UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {

@@ -33,7 +33,7 @@
     
     if (![UDTools isBlankString:key]||[UDTools isBlankString:domain]) {
         
-        _ticketWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-44-kUDStatusBarHeight)];
+        _ticketWebView = [[UIWebView alloc] initWithFrame:self.view.bounds];
         _ticketWebView.backgroundColor=[UIColor whiteColor];
         
         NSURL *ticketURL = [UDManager getSubmitTicketURL];
