@@ -315,15 +315,6 @@
     
 }
 
-//非法创建用户Alert
-- (void)notCustomer {
-    
-    UDAlertController *notCustomerAlert = [UDAlertController alertWithTitle:nil message:_agentModel.message];
-    [notCustomerAlert addCloseActionWithTitle:getUDLocalizedString(@"确定") Handler:NULL];
-    [notCustomerAlert showWithSender:nil controller:nil animated:YES completion:NULL];
-    
-}
-
 //客服不在线Alert
 - (void)agentNotOnline {
     
@@ -428,11 +419,7 @@
         [self netWorkDisconnectAlertView];
     } else if (self.agentModel.code == 2001) {
         [self queueStatus];
-    } else if (self.agentModel.code == 2004) {
-    
-        [self notCustomer];
     }
-
 }
 
 #pragma mark - 刷新Tableview

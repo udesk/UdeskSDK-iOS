@@ -61,6 +61,8 @@
 //客服上下线改变状态
 - (void)agentOnlineOrNotOnline:(NSString *)statusType {
 
+    [self changeTitleFrame];
+    
     if ([statusType isEqualToString:@"available"]) {
     
         NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",_nick];
@@ -70,7 +72,8 @@
         _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);;
         _describeTitle.text = describeTieleStr;
         
-    } else if ([statusType isEqualToString:@"unavailable"]) {
+    }
+    else if ([statusType isEqualToString:@"unavailable"]) {
         
         NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 离线了",_nick];
         
@@ -80,7 +83,8 @@
         
         _describeTitle.text = describeTieleStr;
 
-    } else if ([statusType isEqualToString:@"notNetwork"]) {
+    }
+    else if ([statusType isEqualToString:@"notNetwork"]) {
     
         NSString *describeTieleStr = @"网络断开链接了";
         
@@ -98,20 +102,21 @@
     CGRect newframe = _titleLabel.frame;
     newframe.size.height = 30;
     _titleLabel.frame = newframe;
+    
+    //显示在线状态
+    _describeTitle.hidden = NO;
 }
 
 - (void)bindDataWithAgentModel:(UDAgentModel *)agentModel {
 
     _nick = agentModel.nick;
     
-    //改变title frame
-    [self changeTitleFrame];
-    
-    if (agentModel.code  == 2000) {
+    if (agentModel.code) {
         
-        //显示在线状态
-        _describeTitle.hidden = NO;
-        CGSize describeSize = [UDGeneral.store textSize:agentModel.message fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
+        //改变title frame
+        [self changeTitleFrame];
+        
+        CGSize describeSize = [UDGeneral.store textSize:agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
         CGRect describeFrame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
         
@@ -120,27 +125,8 @@
         //显示名字，显示在线状态
         _describeTitle.text = agentModel.message;
         
-    }
-    else if (agentModel.code == 2001) {
-        
-        _describeTitle.hidden = NO;
-        CGSize describeSize = [UDGeneral.store textSize:agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
-        
-        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
-        
-        _describeTitle.text = agentModel.message;
-        
-    }
-    else {
-        
-        _describeTitle.hidden = NO;
-        CGSize describeSize = [UDGeneral.store textSize:agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
-        
-        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
-        
-        _describeTitle.text = agentModel.message;
-        
-    }
+    }    
+    
 }
 
 @end

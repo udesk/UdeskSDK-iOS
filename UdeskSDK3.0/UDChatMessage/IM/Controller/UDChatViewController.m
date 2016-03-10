@@ -214,14 +214,13 @@
 
 - (void)setNetWorkStatusChangeUI:(BOOL)isNetwork {
     
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         
         self.chatViewModel.agentModel.code = isNetwork?2000:2003;
         self.messageInputView.agentCode = isNetwork?2000:2003;
-        [UDTopAlertView showWithType:isNetwork?UDAlertTypeOnline:UDAlertTypeError text:isNetwork?getUDLocalizedString(@"客服上线了！"):getUDLocalizedString(@"网络断开链接了！") parentView:self.view];
         [self.agentStatusView agentOnlineOrNotOnline:isNetwork?@"available":@"notNetwork"];
-        
-    }];
+        [UDTopAlertView showWithType:isNetwork?UDAlertTypeOnline:UDAlertTypeError text:isNetwork?getUDLocalizedString(@"客服上线了！"):getUDLocalizedString(@"网络断开链接了！") parentView:self.view];
+    });
     
 }
 
