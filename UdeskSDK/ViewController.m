@@ -89,23 +89,13 @@
     NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
     
     
-//    NSDictionary *parameters = @{
-//                                 @"user": @{
-//                                         @"sdk_token": sdk_token,
-//                                         @"nick_name": nick_name
-//                                         }
-//                                 };
-    
     NSDictionary *parameters = @{
                                  @"user": @{
-                                         
-                                         @"nick_name": @"小明",
-                                         @"cellphone":@"15950568911",
-                                         @"email":@"xiaoming@qq.com",
-                                         @"description":@"用户描述",
-                                         @"sdk_token":@"JustZ"
+                                         @"sdk_token": sdk_token,
+                                         @"nick_name": nick_name
                                          }
                                  };
+    
     
 //    NSDictionary *parameters = @{
 //                                 @"user": @{
