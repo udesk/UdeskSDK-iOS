@@ -14,6 +14,7 @@
 @class UDMessageInputView;
 @class UDEmotionManagerView;
 @class UDAgentModel;
+@class UDMessage;
 
 @protocol UDChatViewModelDelegate <NSObject>
 

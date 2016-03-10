@@ -10,6 +10,9 @@
 #import "UDProblemModel.h"
 #import "UDContentController.h"
 #import "UDChatViewController.h"
+#import "UdeskUtils.h"
+#import "UDFoundationMacro.h"
+#import "UDManager.h"
 
 @interface UDSearchController()<UISearchDisplayDelegate, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource>
 

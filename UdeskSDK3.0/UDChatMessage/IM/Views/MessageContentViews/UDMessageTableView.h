@@ -10,6 +10,7 @@
 
 @class UDChatViewModel;
 @class UDMessageTableViewCell;
+@class UDMessage;
 
 @protocol UDChatTableViewDelegate <NSObject>
 

@@ -7,6 +7,7 @@
 //
 
 #import "UDMessageVoiceFactory.h"
+#import "UdeskUtils.h"
 
 @implementation UDMessageVoiceFactory
 

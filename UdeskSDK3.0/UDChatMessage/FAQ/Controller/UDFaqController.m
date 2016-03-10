@@ -9,6 +9,9 @@
 #import "UDFaqController.h"
 #import "UDProblemModel.h"
 #import "UDSearchController.h"
+#import "UDFoundationMacro.h"
+#import "UdeskUtils.h"
+#import "UDManager.h"
 
 @interface UDFaqController ()<UISearchDisplayDelegate,UISearchBarDelegate>
 

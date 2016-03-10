@@ -7,6 +7,10 @@
 //
 
 #import "UDTicketViewController.h"
+#import "UDManager.h"
+#import "UdeskUtils.h"
+#import "UDTools.h"
+#import "UDFoundationMacro.h"
 
 @interface UDTicketViewController ()
 

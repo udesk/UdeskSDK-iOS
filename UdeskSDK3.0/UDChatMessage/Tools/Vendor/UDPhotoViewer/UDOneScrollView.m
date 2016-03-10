@@ -7,6 +7,8 @@
 //
 
 #import "UDOneScrollView.h"
+#import "UDFoundationMacro.h"
+#import "UDCache.h"
 
 #define AnimationTime 0.25
 

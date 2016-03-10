@@ -7,6 +7,7 @@
 //
 
 #import "UDMessageBubbleFactory.h"
+#import "UIImage+UDMessage.h"
 
 @implementation UDMessageBubbleFactory
 

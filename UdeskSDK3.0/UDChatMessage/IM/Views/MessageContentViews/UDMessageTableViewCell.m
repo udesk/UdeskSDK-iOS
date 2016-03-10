@@ -7,6 +7,8 @@
 //
 
 #import "UDMessageTableViewCell.h"
+#import "UDFoundationMacro.h"
+#import "UIImage+UDMessage.h"
 
 //时间 Y
 static const CGFloat kUDLabelPadding         = 5.0f;

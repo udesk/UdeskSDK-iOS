@@ -26,6 +26,12 @@
 #import "UDChatViewModel.h"
 #import "UDChatCellViewModel.h"
 #import "UIViewController+UDKeyboardAnimation.h"
+#import "UDFoundationMacro.h"
+#import <AVFoundation/AVFoundation.h>
+#import "UDViewExt.h"
+#import "UDManager.h"
+#import "UdeskUtils.h"
+#import "NSArray+UDMessage.h"
 
 #define UDTitleLength  UD_SCREEN_WIDTH>320?200:170
 

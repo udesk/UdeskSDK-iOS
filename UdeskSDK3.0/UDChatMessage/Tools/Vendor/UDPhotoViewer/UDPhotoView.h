@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UDOneScrollView.h"
+#import "UDMessage.h"
 
 @interface UDPhotoView : UIView<UDOneScrollViewDelegate>
 

@@ -8,6 +8,7 @@
 
 #import "UDPhotoView.h"
 #import "UDOneScrollView.h"
+#import "UDFoundationMacro.h"
 
 #define Gap 10   //俩照片间黑色间距
 

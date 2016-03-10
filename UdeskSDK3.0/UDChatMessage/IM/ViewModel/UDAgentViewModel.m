@@ -9,6 +9,7 @@
 #import "UDAgentViewModel.h"
 #import "UDAgentModel.h"
 #import "NSTimer+UDMessage.h"
+#import "UDManager.h"
 
 typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
 

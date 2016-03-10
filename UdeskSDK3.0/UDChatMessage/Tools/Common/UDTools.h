@@ -7,27 +7,23 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AVFoundation/AVFoundation.h>
-
-#import "UDManager.h"
-#import "UDMessage.h"
-
-#import "UdeskUtils.h"
-#import "NSArray+UDMessage.h"
-#import "UDFoundationMacro.h"
-#import "NSDictionary+UDMessage.h"
-#import "UDKeywordRegularParser.h"
-#import "UDMessageBubbleFactory.h"
-#import "UDVoiceRecordHelper.h"
-#import "UDVoiceRecordHUD.h"
-#import "UDGeneral.h"
-#import "UDConfig.h"
-#import "UDViewExt.h"
-#import "UDAlertController.h"
-#import "UDCache.h"
-#import "UIImage+UDMessage.h"
-
-#define  Config [UDConfig sharedUDConfig]
+//#import <AVFoundation/AVFoundation.h>
+//#import "UDMessage.h"
+//
+//#import "UdeskUtils.h"
+//#import "NSArray+UDMessage.h"
+//#import "UDFoundationMacro.h"
+//#import "NSDictionary+UDMessage.h"
+//#import "UDKeywordRegularParser.h"
+//#import "UDMessageBubbleFactory.h"
+//#import "UDVoiceRecordHelper.h"
+//#import "UDVoiceRecordHUD.h"
+//#import "UDGeneral.h"
+//#import "UDConfig.h"
+//#import "UDViewExt.h"
+//#import "UDAlertController.h"
+//#import "UDCache.h"
+//#import "UIImage+UDMessage.h"
 
 @interface UDTools : NSObject
 

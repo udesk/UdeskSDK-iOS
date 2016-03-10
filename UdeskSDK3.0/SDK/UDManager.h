@@ -28,13 +28,6 @@
 //DBDelete
 #define DeleteMessage [NSString stringWithFormat:@"delete *from %@",MessageDB]
 
-//重发消息
-#define ClickResendMessage                    @"ClickResendMessage"
-
-//语音最大时长
-#define kVoiceRecorderTotalTime 60.0
-
-
 typedef NS_ENUM(NSInteger, UDNetworkStatus) {
     // Apple NetworkStatus Compatible Names.
     UDNotReachable = 0,

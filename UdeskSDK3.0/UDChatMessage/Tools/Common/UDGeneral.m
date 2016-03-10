@@ -7,6 +7,7 @@
 //
 
 #import "UDGeneral.h"
+#import "UDFoundationMacro.h"
 
 @implementation UDGeneral
 

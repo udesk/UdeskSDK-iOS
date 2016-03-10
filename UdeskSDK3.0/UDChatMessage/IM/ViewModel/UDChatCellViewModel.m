@@ -12,6 +12,7 @@
 #import "UDPhotoManeger.h"
 #import "UDMessageInputView.h"
 #import "UDMessageTextView.h"
+#import "UDTools.h"
 
 @interface UDChatCellViewModel()<UDAudioPlayerHelperDelegate>
 

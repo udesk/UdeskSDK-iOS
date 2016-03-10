@@ -8,6 +8,11 @@
 
 #import "UDReceiveMessage.h"
 #import "UDAgentModel.h"
+#import "UDMessage.h"
+#import "UDTools.h"
+#import "UDManager.h"
+#import "UDCache.h"
+#import <AVFoundation/AVFoundation.h>
 
 @implementation UDReceiveMessage
 

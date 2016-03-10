@@ -10,6 +10,14 @@
 #import "UDMessageTextView.h"
 #import "UDMessageInputView.h"
 #import "UDMessageVoiceFactory.h"
+#import "UDGeneral.h"
+#import "UDFoundationMacro.h"
+#import "UDTools.h"
+#import "UDManager.h"
+#import "UDCache.h"
+#import "UIImage+UDMessage.h"
+#import "UDAlertController.h"
+#import "UdeskUtils.h"
 
 #define kUDHaveBubbleMargin 10.0f // 距离气泡上下边的间隙
 

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 @class UDMessageTableViewCell;
 @class UDMessageInputView;
+@class UDMessage;
 
 @interface UDChatCellViewModel : NSObject
 

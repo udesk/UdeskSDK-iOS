@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UDMessage.h"
 
 @protocol UDOneScrollViewDelegate <NSObject>
 

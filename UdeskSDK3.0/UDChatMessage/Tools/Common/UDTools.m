@@ -7,6 +7,8 @@
 //
 
 #import "UDTools.h"
+#import "UDFoundationMacro.h"
+#import "UDKeywordRegularParser.h"
 
 #define MAXIMAGESIZE    300
 

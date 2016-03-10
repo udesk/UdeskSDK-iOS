@@ -10,6 +10,8 @@
 #import "UDChatViewController.h"
 #import "UDFaqController.h"
 #import "UDRobotIMViewController.h"
+#import "UDFoundationMacro.h"
+#import "UDManager.h"
 
 @interface ViewController ()
 
@@ -73,16 +75,16 @@
     [button3 addTarget:self action:@selector(buttonAction3) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button3];
     
+    //获取用户自定义字段
+    [UDManager getCustomerFields:^(id responseObject, NSError *error) {
+        
+        NSLog(@"用户自定义字段：%@",responseObject);
+    }];
     [self setNewConfigUdesk];
 }
 
 - (void)setNewConfigUdesk {
     
-    //获取用户自定义字段
-    [UDManager getCustomerFields:^(id responseObject, NSError *error) {
-        
-        //NSLog(@"用户自定义字段：%@",responseObject);
-    }];
 
 #warning sdk_token参数必填，其它参数可选（有的最好都写上）
     NSString *nick_name = [NSString stringWithFormat:@"sdk用户%u",arc4random()];

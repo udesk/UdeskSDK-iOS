@@ -8,6 +8,10 @@
 
 #import "UDRobotIMViewController.h"
 #import "UDChatViewController.h"
+#import "UDFoundationMacro.h"
+#import "UdeskUtils.h"
+#import "UDManager.h"
+#import "UDAlertController.h"
 
 @interface UDRobotIMViewController ()
 

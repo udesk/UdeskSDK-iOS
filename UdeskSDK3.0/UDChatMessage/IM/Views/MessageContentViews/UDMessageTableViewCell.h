@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 
 #import "UDConfigurationHelper.h"
-
 #import "UDMessageContentView.h"
+#import "UDMessage.h"
 
 @class UDMessageTableViewCell;
 

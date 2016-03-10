@@ -9,7 +9,17 @@
 #ifndef UDFoundationMacro_pch
 #define UDFoundationMacro_pch
 
+#import "UDConfig.h"
+
 #pragma mark - Funtion Method (宏 方法)
+//SDK-UI配置
+#define  Config [UDConfig sharedUDConfig]
+
+//语音最大时长
+#define kVoiceRecorderTotalTime 60.0
+
+//通知重发消息
+#define ClickResendMessage                    @"ClickResendMessage"
 
 // image STRETCH
 #define UD_STRETCH_IMAGE(image, edgeInsets) ([image resizableImageWithCapInsets:edgeInsets resizingMode:UIImageResizingModeStretch])

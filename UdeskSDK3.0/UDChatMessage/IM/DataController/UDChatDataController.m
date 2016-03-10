@@ -8,6 +8,7 @@
 
 #import "UDChatDataController.h"
 #import "UDAgentModel.h"
+#import "UDManager.h"
 
 static NSInteger const UDChatGetHistoreMessageNumber = 20;
 

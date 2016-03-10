@@ -7,6 +7,7 @@
 //
 
 #import "UDPhotographyHelper.h"
+#import "UDFoundationMacro.h"
 
 @interface UDPhotographyHelper () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 

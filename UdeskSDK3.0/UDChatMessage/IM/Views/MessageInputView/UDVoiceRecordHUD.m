@@ -7,6 +7,9 @@
 //
 
 #import "UDVoiceRecordHUD.h"
+#import "UDFoundationMacro.h"
+#import "UIImage+UDMessage.h"
+#import "UdeskUtils.h"      
 
 @interface UDVoiceRecordHUD ()
 

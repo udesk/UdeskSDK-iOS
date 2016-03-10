@@ -7,6 +7,8 @@
 //
 
 #import "UDAudioPlayerHelper.h"
+#import <AVFoundation/AVFoundation.h>
+#import "UDCache.h"
 
 @implementation UDAudioPlayerHelper
 

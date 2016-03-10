@@ -15,6 +15,13 @@
 #import "UDMessageTextView.h"
 #import "UDAgentModel.h"
 #import "NSTimer+UDMessage.h"
+#import "UDManager.h"
+#import "UDTools.h"
+#import "UDAlertController.h"
+#import "UDCache.h"
+#import "UDFoundationMacro.h"
+#import "UdeskUtils.h"
+#import "NSArray+UDMessage.h"
 
 @interface UDChatViewModel()<UDManagerDelegate>
 

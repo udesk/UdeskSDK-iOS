@@ -7,6 +7,7 @@
 //
 
 #import "UIImage+UDMessage.h"
+#import "UdeskUtils.h"
 
 @implementation UIImage (UDMessage)
 

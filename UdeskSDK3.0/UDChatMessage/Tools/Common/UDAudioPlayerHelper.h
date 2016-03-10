@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVAudioPlayer.h>
+#import "UDMessage.h"
 
 @protocol UDAudioPlayerHelperDelegate <NSObject>
 

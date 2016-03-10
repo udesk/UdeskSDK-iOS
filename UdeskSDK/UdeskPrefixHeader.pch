@@ -15,6 +15,5 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-#import "UDTools.h"
 
 #endif /* UdeskPrefixHeader_pch */

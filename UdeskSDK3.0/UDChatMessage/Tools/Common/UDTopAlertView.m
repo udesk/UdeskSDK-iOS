@@ -7,6 +7,7 @@
 //
 
 #import "UDTopAlertView.h"
+#import "UDFoundationMacro.h"
 
 #define UD_TEXTSIZE(text, font) [text length] > 0 ? [text \
 sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;

@@ -7,6 +7,10 @@
 //
 
 #import "UDContentController.h"
+#import "UDFoundationMacro.h"
+#import "UdeskUtils.h"
+#import "UDGeneral.h"
+#import "UDManager.h"
 
 @interface UDContentController (){
     

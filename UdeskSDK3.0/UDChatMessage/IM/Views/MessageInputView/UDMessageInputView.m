@@ -9,6 +9,9 @@
 #import "UDMessageInputView.h"
 #import "UDMessageTableView.h"
 #import "UDMessageTextView.h"
+#import "UIImage+UDMessage.h"
+#import "UDFoundationMacro.h"
+#import "UdeskUtils.h"
 
 #define ViewHeight 30 //图标大小
 

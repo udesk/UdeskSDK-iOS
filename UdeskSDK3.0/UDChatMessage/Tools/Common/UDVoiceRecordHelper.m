@@ -7,7 +7,9 @@
 //
 
 #import "UDVoiceRecordHelper.h"
+#import "UDTools.h"
 #import <AVFoundation/AVFoundation.h>
+#import "UDFoundationMacro.h"
 
 @interface UDVoiceRecordHelper () <AVAudioRecorderDelegate> {
     NSTimer *_timer;

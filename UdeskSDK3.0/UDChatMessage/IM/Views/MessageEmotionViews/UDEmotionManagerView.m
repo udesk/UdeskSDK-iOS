@@ -7,6 +7,9 @@
 //
 
 #import "UDEmotionManagerView.h"
+#import "UDFoundationMacro.h"
+#import "UdeskUtils.h"
+#import "UIImage+UDMessage.h"
 
 static CGFloat EmojiWidth;
 static CGFloat EmojiHeight;

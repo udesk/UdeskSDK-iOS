@@ -9,6 +9,8 @@
 #import "UDMessageTableView.h"
 #import "UDMessageTableViewCell.h"
 #import "UDChatViewModel.h"
+#import "UDFoundationMacro.h"
+#import "NSArray+UDMessage.h"
 
 @interface UDMessageTableView() <UDMessageTableViewCellDelegate>
 @end

@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UDMessage.h"
 
 @interface UDMessageBubbleFactory : NSObject
 
