@@ -180,11 +180,20 @@
 }
 #pragma mark - 登录Udesk
 - (void)loginUdeskWithAgent:(UDAgentModel *)agentModel {
-
+    
     _agentModel = agentModel;
     
-    if (agentModel.code == 2000) {
+    if ([[UDManager internetStatus] isEqualToString:@"notReachable"]) {
         
+        _agentModel.code = 2003;
+        
+        [self netWorkDisconnectAlertView];
+        
+        return;
+    }
+    
+    if (agentModel.code == 2000) {
+        //
         //获取用户信息
         [UDManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
             
@@ -198,11 +207,12 @@
             } receiveDelegate:self];
         }];
         
-    } else if (agentModel.code == 2002) {
+    }
+    else if (agentModel.code == 2002) {
         
         [self agentNotOnline];
     }
-   
+    
 }
 
 #pragma mark - UDManagerDelegate

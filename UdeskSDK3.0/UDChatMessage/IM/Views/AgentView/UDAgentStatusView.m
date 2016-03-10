@@ -63,6 +63,10 @@
 
     [self changeTitleFrame];
     
+    if ([UDTools isBlankString:_nick]) {
+        _nick = @"";
+    }
+    
     if ([statusType isEqualToString:@"available"]) {
     
         NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",_nick];

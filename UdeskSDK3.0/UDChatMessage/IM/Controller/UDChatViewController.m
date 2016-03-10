@@ -179,7 +179,7 @@
 
 //装载客服数据
 - (void)loadAgentDataReload:(UDAgentModel *)agentModel {
-
+    
     //更新客服状态文字
     [self.agentStatusView bindDataWithAgentModel:agentModel];
     //登录Udesk
@@ -215,7 +215,7 @@
 - (void)setNetWorkStatusChangeUI:(BOOL)isNetwork {
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        
+
         self.chatViewModel.agentModel.code = isNetwork?2000:2003;
         self.messageInputView.agentCode = isNetwork?2000:2003;
         [self.agentStatusView agentOnlineOrNotOnline:isNetwork?@"available":@"notNetwork"];
