@@ -13,7 +13,7 @@ Pod::Spec.new do |spec|
   spec.summary      = 'Udesk SDK for iOS'
   spec.homepage     = 'https://github.com/udesk/UdeskSDK-iOS'
   spec.author       = {'xuchen ' => 'xuc@udesk.cn'}
-  spec.source       =  {:git => 'https://github.com/udesk/UdeskSDK-iOS.git', :tag => spec.version.to_s }
+  spec.source       =  {:git => 'https://github.com/udesk/UdeskSDK-iOS.git', :tag => "1.1" }
   spec.source_files = 'UdeskSDK/UDChatMessage/**/*.{h,m}','UdeskSDK/SDK/*.{h}'
   spec.platform     = :ios, '6.0'
   spec.requires_arc = true

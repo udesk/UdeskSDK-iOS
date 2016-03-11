@@ -26,11 +26,15 @@
     
 //    [UDManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
     
-    [UDManager initWithAppkey:@"6c37f775019907785d85c027e29dae4e" domianName:@"udesksdk.udesk.cn"];
+//    [UDManager initWithAppkey:@"6c37f775019907785d85c027e29dae4e" domianName:@"udesksdk.udesk.cn"];
     
 //    [UDManager initWithAppkey:@"2f04e99ff44ec68165c585a209efdd6d" domianName:@"reocar.tiyanudesk.com"];
     
 //    [UDManager initWithAppkey:@"c7663d315dc698892fb9c5dfb7a49e1c" domianName:@"schxit.udesk.cn"];
+    
+//    [UDManager initWithAppkey:@"acbae8bcd929409a8b67fa05ed505dec" domianName:@"reocar.udesk.cn"];
+    
+    [UDManager initWithAppkey:@"cc36f043f1e3bf71a0f73a51f4ac3fb5" domianName:@"rd-dota.udesk.cn"];
     
     return YES;
 }
