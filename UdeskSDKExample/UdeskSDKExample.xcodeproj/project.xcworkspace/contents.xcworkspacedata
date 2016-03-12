@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/xuchen/Udesk/UdeskSDK-iOS/UdeskSDKExample.xcodeproj">
+      location = "self:UdeskSDKExample.xcodeproj">
    </FileRef>
 </Workspace>

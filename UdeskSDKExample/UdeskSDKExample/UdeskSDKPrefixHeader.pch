@@ -1,13 +1,13 @@
 //
-//  UdeskPrefixHeader.pch
-//  UdeskSDK
+//  UdeskSDKPrefixHeader.pch
+//  UdeskSDKExample
 //
-//  Created by xuchen on 16/1/29.
+//  Created by xuchen on 16/3/12.
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
 
-#ifndef UdeskPrefixHeader_pch
-#define UdeskPrefixHeader_pch
+#ifndef UdeskSDKPrefixHeader_pch
+#define UdeskSDKPrefixHeader_pch
 
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
@@ -15,5 +15,6 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
+#import "UDManager.h"
 
-#endif /* UdeskPrefixHeader_pch */
+#endif /* UdeskSDKPrefixHeader_pch */

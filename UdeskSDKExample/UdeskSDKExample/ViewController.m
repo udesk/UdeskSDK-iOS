@@ -1,8 +1,8 @@
 //
 //  ViewController.m
-//  UdeskSDK
+//  UdeskSDKExample
 //
-//  Created by xuchen on 16/1/29.
+//  Created by xuchen on 16/3/12.
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
 
@@ -10,8 +10,9 @@
 #import "UDChatViewController.h"
 #import "UDFaqController.h"
 #import "UDRobotIMViewController.h"
-#import "UDFoundationMacro.h"
-#import "UDManager.h"
+
+#define SCREEN_WIDTH  [[UIScreen mainScreen] bounds].size.width
+#define SCREEN_HEIGHT [[UIScreen mainScreen] bounds].size.height
 
 @interface ViewController ()
 
@@ -30,20 +31,20 @@
     
     self.navigationController.navigationBar.translucent = NO;
     
-    self.view.backgroundColor = UDRGBACOLOR(275.0f, 275.0f, 275.0f, 1);
+    self.view.backgroundColor = [UIColor whiteColor];
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-170)/2, 10, 170, 40)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake((SCREEN_WIDTH-170)/2, 10, 170, 40)];
     label.text = @"欢迎使用Udesk SDK";
     label.backgroundColor = [UIColor clearColor];
     [self.view addSubview:label];
     
-    UILabel *label1 = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-280)/2, label.frame.origin.y + label.frame.size.height, 280, 40)];
+    UILabel *label1 = [[UILabel alloc] initWithFrame:CGRectMake((SCREEN_WIDTH-280)/2, label.frame.origin.y + label.frame.size.height, 280, 40)];
     label1.text = @"以下是展示Udesk SDK功能的按钮";
     label1.backgroundColor = [UIColor clearColor];
     [self.view addSubview:label1];
     
     UIButton *button1 = [UIButton buttonWithType:UIButtonTypeCustom];
-    button1.frame = CGRectMake((UD_SCREEN_WIDTH-130)/2, label1.frame.origin.y + label1.frame.size.height+10, 130, 40);
+    button1.frame = CGRectMake((SCREEN_WIDTH-130)/2, label1.frame.origin.y + label1.frame.size.height+10, 130, 40);
     [button1 setTitle:@"帮助中心" forState:0];
     [button1 setTitleColor:[UIColor blackColor] forState:0];
     button1.layer.cornerRadius = 3;
@@ -54,7 +55,7 @@
     [self.view addSubview:button1];
     
     UIButton *button2 = [UIButton buttonWithType:UIButtonTypeCustom];
-    button2.frame = CGRectMake((UD_SCREEN_WIDTH-130)/2, button1.frame.origin.y + button1.frame.size.height+20, 130, 40);
+    button2.frame = CGRectMake((SCREEN_WIDTH-130)/2, button1.frame.origin.y + button1.frame.size.height+20, 130, 40);
     [button2 setTitle:@"联系我们" forState:0];
     [button2 setTitleColor:[UIColor blackColor] forState:0];
     button2.layer.cornerRadius = 3;
@@ -65,7 +66,7 @@
     [self.view addSubview:button2];
     
     UIButton *button3 = [UIButton buttonWithType:UIButtonTypeCustom];
-    button3.frame = CGRectMake((UD_SCREEN_WIDTH-130)/2, button2.frame.origin.y + button2.frame.size.height+20, 130, 40);
+    button3.frame = CGRectMake((SCREEN_WIDTH-130)/2, button2.frame.origin.y + button2.frame.size.height+20, 130, 40);
     [button3 setTitle:@"机器人" forState:0];
     [button3 setTitleColor:[UIColor blackColor] forState:0];
     button3.layer.cornerRadius = 3;
@@ -83,13 +84,13 @@
     [self setNewConfigUdesk];
     
     
-//    NSLog(@"%@",[UDManager udeskSDKVersion]);
+    //    NSLog(@"%@",[UDManager udeskSDKVersion]);
     
 }
 
 - (void)setNewConfigUdesk {
     
-
+    
 #warning sdk_token参数必填，其它参数可选（有的最好都写上）
     NSString *nick_name = [NSString stringWithFormat:@"sdk用户%u",arc4random()];
     NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
@@ -103,12 +104,12 @@
                                  };
     
     
-//    NSDictionary *parameters = @{
-//                                 @"user": @{
-//                                         @"sdk_token": @"testsdktokenencrypt",
-//                                         @"nick_name": @"测试"
-//                                         }
-//                                 };
+    //    NSDictionary *parameters = @{
+    //                                 @"user": @{
+    //                                         @"sdk_token": @"testsdktokenencrypt",
+    //                                         @"nick_name": @"测试"
+    //                                         }
+    //                                 };
     
     //创建用户
     [UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {
@@ -148,10 +149,10 @@
     
 }
 
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 
 @end

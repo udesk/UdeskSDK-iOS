@@ -1,9 +1,8 @@
-
 //
 //  ViewController.h
-//  UdeskSDK
+//  UdeskSDKExample
 //
-//  Created by xuchen on 16/1/29.
+//  Created by xuchen on 16/3/12.
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
 
