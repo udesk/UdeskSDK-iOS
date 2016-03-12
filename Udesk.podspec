@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |spec|
   spec.name         = 'Udesk'
-  spec.version      = '1.1.2'
+  spec.version      = '1.1.3'
   spec.license      = 'MIT'
   spec.summary      = 'Udesk SDK for iOS'
   spec.homepage     = 'https://github.com/udesk/UdeskSDK-iOS'
@@ -21,5 +21,8 @@ Pod::Spec.new do |spec|
   spec.libraries    = 'z', 'xml2', 'resolv', 'sqlite3'
   spec.resource     = 'UdeskSDK/Resource/UdeskBundle.bundle'
   spec.vendored_libraries = 'UdeskSDK/SDK/libUdesk.a'
-  spec.xcconfig     = {'OTHER_LDFLAGS' => '-ObjC'}
+  spec.xcconfig     = { 
+  'LIBRARY_SEARCH_PATHS' => '"$(PODS_ROOT)/UdeskSDK/SDK"',
+  'OTHER_LDFLAGS' => '"-ObjC"',
+  'OTHER_LDFLAGS' => '"-lxml2"'}
 end
