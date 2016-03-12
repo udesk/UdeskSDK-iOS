@@ -849,8 +849,8 @@
 					"$(PROJECT_DIR)/UdeskSDK/SDK",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
+					"-lxml2",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.UdeskSDK;
 				PRODUCT_NAME = UdeskSDKExample;
@@ -877,8 +877,8 @@
 					"$(PROJECT_DIR)/UdeskSDK/SDK",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
+					"-lxml2",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.UdeskSDK;
 				PRODUCT_NAME = UdeskSDKExample;
