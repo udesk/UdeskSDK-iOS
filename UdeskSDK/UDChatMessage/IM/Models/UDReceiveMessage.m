@@ -13,6 +13,7 @@
 #import "UDManager.h"
 #import "UDCache.h"
 #import <AVFoundation/AVFoundation.h>
+#import "UDHpple.h"
 
 @implementation UDReceiveMessage
 
@@ -41,13 +42,28 @@
     
     message.messageStatus = UDMessageSuccess;
     
-    NSString *receiveType = [messageDic objectForKey:@"type"];
-    NSString *receiveContent = [[messageDic objectForKey:@"data"] objectForKey:@"content"];
-    
     //消息类型
-    NSString *type = receiveType;
+    NSString *type = [messageDic objectForKey:@"type"];
     //消息内容
-    NSString *content = receiveContent;
+    NSString *content = [[messageDic objectForKey:@"data"] objectForKey:@"content"];
+    
+    
+    NSData *htmlData = [content dataUsingEncoding:NSUTF8StringEncoding];
+    UDHpple *xpathParser = [[UDHpple alloc] initWithHTMLData:htmlData];
+    
+    NSArray *dataPArray = [xpathParser searchWithXPathQuery:@"//p"];
+    NSArray *dataAArray = [xpathParser searchWithXPathQuery:@"//a"];
+    
+    for (UDHppleElement *happleElement in dataPArray) {
+        
+        message.text = happleElement.content;
+    }
+    for (UDHppleElement *happleElement in dataAArray) {
+        
+        message.richContent = happleElement.content;
+        message.richURL = [NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]];
+    }
+    
     
     //消息时间
     NSString *created_at = [UDTools nowDate];
@@ -63,7 +79,7 @@
         message.text = [UDTools receiveTextEmoji:content];
         message.messageType = UDMessageMediaTypeText;
         
-        NSArray *textDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"0"]];
+        NSArray *textDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeText]];
         [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
         
         if (block) {
@@ -93,7 +109,7 @@
             message.width = newWidth;
             message.height = newHeight;
             //缓存图片
-            NSArray *photoDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"1"],newWidth,newHeight];
+            NSArray *photoDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypePhoto],newWidth,newHeight];
             [UDManager insertTableWithSqlString:InsertPhotoMsg params:photoDBArray];
             
             if (block) {
@@ -119,7 +135,7 @@
         //缓存语音
         [[UDCache sharedUDCache] storeData:audioData forKey:message.contentId];
         
-        NSArray *audioDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"2"],[NSString stringWithFormat:@"%.f",pl.duration]];
+        NSArray *audioDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeVoice],[NSString stringWithFormat:@"%.f",pl.duration]];
         
         [UDManager insertTableWithSqlString:InsertAudioMsg params:audioDBArray];
         
@@ -144,7 +160,7 @@
             }
             
             //存储转移信息
-            NSArray *textDBArray = @[message.text,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeCenter],[NSString stringWithFormat:@"4"]];
+            NSArray *textDBArray = @[message.text,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeCenter],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeRedirect]];
             
             [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
             //block传出
@@ -172,6 +188,34 @@
             }
             
         }];
+    }
+    else if ([type isEqualToString:@"rich"]) {
+        
+        NSData *htmlData = [content dataUsingEncoding:NSUTF8StringEncoding];
+        UDHpple *xpathParser = [[UDHpple alloc] initWithHTMLData:htmlData];
+        
+        NSArray *dataPArray = [xpathParser searchWithXPathQuery:@"//p"];
+        NSArray *dataAArray = [xpathParser searchWithXPathQuery:@"//a"];
+        
+        for (UDHppleElement *happleElement in dataPArray) {
+            
+            message.text = happleElement.content;
+        }
+        for (UDHppleElement *happleElement in dataAArray) {
+
+            message.richContent = happleElement.content;
+            message.richURL = [NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]];
+        }
+        
+        message.messageType = UDMessageMediaTypeRich;
+        
+        NSArray *textDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeRich]];
+        [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
+        
+        if (block) {
+            block(message);
+        }
+        
     }
     
 }

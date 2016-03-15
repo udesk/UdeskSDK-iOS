@@ -76,6 +76,7 @@
     CGSize bubbleSize;
 
     switch (message.messageType) {
+        case UDMessageMediaTypeRich:
         case UDMessageMediaTypeText: {
             CGSize needTextSize = [UDMessageContentView neededSizeForText:message.text];
             bubbleSize = CGSizeMake(needTextSize.width + kUDTextHorizontalBubblePadding*2 + kUDArrowMarginWidth, needTextSize.height + kUDHaveBubbleMargin * 2);
@@ -181,6 +182,7 @@
             _redirectTagLabel.hidden = YES;
             
         }
+        case UDMessageMediaTypeRich:
         case UDMessageMediaTypeText: {
             //气泡的图片
             _bubbleImageView.image = [UDMessageBubbleFactory bubbleImageViewForType:message.messageFrom style:UDBubbleImageViewStyleUDChat meidaType:message.messageType];
@@ -189,7 +191,7 @@
             // 隐藏图片
             _photoImageView.hidden = YES;
 
-            if (message.messageType == UDMessageMediaTypeText) {
+            if (message.messageType == UDMessageMediaTypeText||message.messageType==UDMessageMediaTypeRich) {
                 //显示文本消息的控件
                 _textLabel.hidden = NO;
                 // 隐藏语音播放动画
@@ -323,8 +325,30 @@
     
         _redirectTagLabel.text = message.text;
     }
+    else if (message.messageType == UDMessageMediaTypeRich) {
+        
+        _textLabel.text = message.text;
+        if (![UDTools isBlankString:message.richURL]) {
+
+            NSRange range = [message.text rangeOfString: message.richContent];
+            NSMutableAttributedString*attribute = [[NSMutableAttributedString alloc] initWithString:message.text];
+            [attribute addAttributes: @{NSForegroundColorAttributeName: [UIColor blueColor]}range: range];
+            
+            [_textLabel setAttributedText:attribute];
+        }
+    }
     
     [self setNeedsLayout];
+}
+
+- (void)setRichLable {
+
+    NSRange range = [self.message.text rangeOfString: self.message.richContent];
+    NSMutableAttributedString*attribute = [[NSMutableAttributedString alloc] initWithString: self.message.text];
+    [attribute addAttributes: @{NSForegroundColorAttributeName: [UIColor blueColor]}range: range];
+    
+    [_textLabel setAttributedText:attribute];
+
 }
 
 - (void)configureVoiceDurationLabelFrameWithBubbleFrame:(CGRect)bubbleFrame {
@@ -464,6 +488,7 @@
     UDMessageMediaType currentType = self.message.messageType;
     
     switch (currentType) {
+        case UDMessageMediaTypeRich:
         case UDMessageMediaTypeText:
         case UDMessageMediaTypeVoice: {
             // 获取实际气泡的大小

@@ -44,6 +44,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
 }
 
 - (void)copyed:(id)sender {
+    
     [[UIPasteboard generalPasteboard] setString:self.messageContentView.textLabel.text];
     [self resignFirstResponder];
 }
@@ -138,6 +139,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             [self.messageContentView.photoImageView addGestureRecognizer:tapGestureRecognizer];
             break;
         }
+        case UDMessageMediaTypeRich:
         case UDMessageMediaTypeText:
         case UDMessageMediaTypeVoice: {
             UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sigleTapGestureRecognizerHandle:)];
@@ -175,7 +177,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
         SEL action = nil;
         switch (i) {
             case 0: {
-                if ([self.messageContentView.message messageType] == UDMessageMediaTypeText) {
+                if ([self.messageContentView.message messageType] == UDMessageMediaTypeText||[self.messageContentView.message messageType] == UDMessageMediaTypeRich) {
                     action = @selector(copyed:);
                 }
                 break;
@@ -205,7 +207,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
 }
 #pragma mark - 点击消息
 - (void)sigleTapGestureRecognizerHandle:(UITapGestureRecognizer *)tapGestureRecognizer {
-
+    
     if (tapGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         [self setupNormalMenuController];
         //代理传出点击事件
@@ -214,7 +216,6 @@ static CGFloat const kUDHeadImageSize = 40.0f;
         }
     }
 }
-
 #pragma mark - 消息类型
 - (UDMessageFromType)bubbleMessageType {
     return self.messageContentView.message.messageFrom;
@@ -368,7 +369,6 @@ static CGFloat const kUDHeadImageSize = 40.0f;
     self.messageContentView.frame = bubbleMessageViewFrame;
     
 }
-
 
 - (void)dealloc {
     _headImageView = nil;

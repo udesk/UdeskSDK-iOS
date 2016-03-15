@@ -69,6 +69,15 @@
             
             break;
             
+        case UDMessageMediaTypeRich:
+            
+            if (![UDTools isBlankString:[UDTools contentsOfRegexStrArray:message.richURL]]) {
+                
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[UDTools contentsOfRegexStrArray:message.richURL]]];
+            }
+            
+            break;
+            
         default:
             break;
     }
