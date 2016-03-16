@@ -64,7 +64,9 @@
     self.robotNavigationColor = [UDTools colorWithHexString:@"3565df"];
     self.robotBackButtonColor = [UIColor whiteColor];
     self.robotTitleColor = [UIColor whiteColor];
-//    self.agentMenuBackButtonColor = [];
+    self.agentMenuBackButtonColor = [UIColor whiteColor];
+    self.agentMenuNavigationColor = [UDTools colorWithHexString:@"3565df"];
+    self.agentMenuTitleColor = [UIColor whiteColor];
 //    NSString *imageUrl = @"http://img5.duitang.com/uploads/item/201409/15/20140915205358_tz8Y3.jpeg";
 //    
 //    //缓存image

@@ -10,4 +10,14 @@
 
 @implementation UDAgentMenuModel
 
+- (id)initWithContentsOfDic:(NSDictionary *)dic {
+    
+    self = [super initWithContentsOfDic:dic];
+    if (self) {
+        self.menu_id = dic[@"id"];
+    }
+    
+    return self;
+}
+
 @end

@@ -94,10 +94,14 @@
 /*** 机器人页面标题颜色 */
 @property (nonatomic, strong) UIColor  *robotTitleColor;
 
-/*** 客服菜单选择器导航栏颜色 */
+/*** 客服菜单选择器返回按钮颜色 */
 @property (nonatomic, strong) UIColor  *agentMenuBackButtonColor;
 
+/*** 客服菜单选择器导航栏颜色 */
+@property (nonatomic, strong) UIColor  *agentMenuNavigationColor;
 
+/*** 客服菜单选择器导航栏颜色 */
+@property (nonatomic, strong) UIColor  *agentMenuTitleColor;
 /**
  *  用户头像
  */
