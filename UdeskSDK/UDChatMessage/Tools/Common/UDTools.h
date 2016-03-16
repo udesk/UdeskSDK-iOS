@@ -7,23 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-//#import <AVFoundation/AVFoundation.h>
-//#import "UDMessage.h"
-//
-//#import "UdeskUtils.h"
-//#import "NSArray+UDMessage.h"
-//#import "UDFoundationMacro.h"
-//#import "NSDictionary+UDMessage.h"
-//#import "UDKeywordRegularParser.h"
-//#import "UDMessageBubbleFactory.h"
-//#import "UDVoiceRecordHelper.h"
-//#import "UDVoiceRecordHUD.h"
-//#import "UDGeneral.h"
-//#import "UDConfig.h"
-//#import "UDViewExt.h"
-//#import "UDAlertController.h"
-//#import "UDCache.h"
-//#import "UIImage+UDMessage.h"
 
 @interface UDTools : NSObject
 
@@ -47,8 +30,6 @@
 + (NSString *)sendTextEmoji:(NSString *)text;
 + (NSString *)receiveTextEmoji:(NSString *)text;
 
-//检索是否为链接
-+ (NSString *)contentsOfRegexStrArray:(NSString *)text;
 //NSString转NSDate
 + (NSDate *)dateFromString:(NSString *)string;
 //NSDate转NSString

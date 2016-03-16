@@ -7,9 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4431F1631C9949810071BA8C /* UDAgentMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4431F1621C9949810071BA8C /* UDAgentMenuModel.m */; };
 		44444A401C9810B900B48702 /* UDMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 44444A3F1C9810B900B48702 /* UDMessage.m */; };
 		44444A461C9902C500B48702 /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44444A451C9902C500B48702 /* libUdesk.a */; };
 		44444A4A1C99065700B48702 /* UDAgentNavigationMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 44444A491C99065700B48702 /* UDAgentNavigationMenu.m */; };
+		44444A501C99344A00B48702 /* UDLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44444A4F1C99344A00B48702 /* UDLabel.m */; };
 		448CD88E1C96CD200049DE3F /* UDHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 448CD8891C96CD200049DE3F /* UDHpple.m */; };
 		448CD88F1C96CD200049DE3F /* UDHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 448CD88B1C96CD200049DE3F /* UDHppleElement.m */; };
 		448CD8901C96CD200049DE3F /* UDXPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 448CD88D1C96CD200049DE3F /* UDXPathQuery.m */; };
@@ -76,12 +78,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4431F1611C9949810071BA8C /* UDAgentMenuModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDAgentMenuModel.h; sourceTree = "<group>"; };
+		4431F1621C9949810071BA8C /* UDAgentMenuModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDAgentMenuModel.m; sourceTree = "<group>"; };
 		44444A3E1C9810B900B48702 /* UDMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDMessage.h; sourceTree = "<group>"; };
 		44444A3F1C9810B900B48702 /* UDMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDMessage.m; sourceTree = "<group>"; };
 		44444A451C9902C500B48702 /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
 		44444A471C9902D100B48702 /* UDManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UDManager.h; sourceTree = "<group>"; };
 		44444A481C99065700B48702 /* UDAgentNavigationMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDAgentNavigationMenu.h; sourceTree = "<group>"; };
 		44444A491C99065700B48702 /* UDAgentNavigationMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDAgentNavigationMenu.m; sourceTree = "<group>"; };
+		44444A4E1C99344A00B48702 /* UDLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDLabel.h; sourceTree = "<group>"; };
+		44444A4F1C99344A00B48702 /* UDLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDLabel.m; sourceTree = "<group>"; };
 		448CD8881C96CD200049DE3F /* UDHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDHpple.h; sourceTree = "<group>"; };
 		448CD8891C96CD200049DE3F /* UDHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDHpple.m; sourceTree = "<group>"; };
 		448CD88A1C96CD200049DE3F /* UDHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDHppleElement.h; sourceTree = "<group>"; };
@@ -394,6 +400,8 @@
 				44C3A1DB1C93AF51004BDB2B /* UDAgentModel.m */,
 				44C3A1DC1C93AF51004BDB2B /* UDReceiveMessage.h */,
 				44C3A1DD1C93AF51004BDB2B /* UDReceiveMessage.m */,
+				4431F1611C9949810071BA8C /* UDAgentMenuModel.h */,
+				4431F1621C9949810071BA8C /* UDAgentMenuModel.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -537,6 +545,8 @@
 		44C3A20B1C93AF51004BDB2B /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				44444A4E1C99344A00B48702 /* UDLabel.h */,
+				44444A4F1C99344A00B48702 /* UDLabel.m */,
 				44C3A20C1C93AF51004BDB2B /* UDAudioPlayerHelper.h */,
 				44C3A20D1C93AF51004BDB2B /* UDAudioPlayerHelper.m */,
 				44C3A20E1C93AF51004BDB2B /* UDBaseModel.h */,
@@ -731,6 +741,8 @@
 				44C3A2431C93AF51004BDB2B /* UDFaqController.m in Sources */,
 				44C3A2601C93AF51004BDB2B /* UdeskUtils.m in Sources */,
 				44C3A2521C93AF51004BDB2B /* UDMessageTableViewCell.m in Sources */,
+				44444A501C99344A00B48702 /* UDLabel.m in Sources */,
+				4431F1631C9949810071BA8C /* UDAgentMenuModel.m in Sources */,
 				44C3A25E1C93AF51004BDB2B /* UDConfig.m in Sources */,
 				44C3A2511C93AF51004BDB2B /* UDMessageTableView.m in Sources */,
 				44C3A25D1C93AF51004BDB2B /* UDBaseModel.m in Sources */,

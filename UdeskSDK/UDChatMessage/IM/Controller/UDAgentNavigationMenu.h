@@ -10,4 +10,6 @@
 
 @interface UDAgentNavigationMenu : UIViewController
 
+@property (nonatomic, strong) NSArray *agentMenuData;
+
 @end

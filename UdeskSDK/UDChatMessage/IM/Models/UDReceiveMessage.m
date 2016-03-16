@@ -47,24 +47,6 @@
     //消息内容
     NSString *content = [[messageDic objectForKey:@"data"] objectForKey:@"content"];
     
-    
-    NSData *htmlData = [content dataUsingEncoding:NSUTF8StringEncoding];
-    UDHpple *xpathParser = [[UDHpple alloc] initWithHTMLData:htmlData];
-    
-    NSArray *dataPArray = [xpathParser searchWithXPathQuery:@"//p"];
-    NSArray *dataAArray = [xpathParser searchWithXPathQuery:@"//a"];
-    
-    for (UDHppleElement *happleElement in dataPArray) {
-        
-        message.text = happleElement.content;
-    }
-    for (UDHppleElement *happleElement in dataAArray) {
-        
-        message.richContent = happleElement.content;
-        message.richURL = [NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]];
-    }
-    
-    
     //消息时间
     NSString *created_at = [UDTools nowDate];
     NSString *subString = [created_at substringWithRange:NSMakeRange(0, 19)];
@@ -201,10 +183,19 @@
             
             message.text = happleElement.content;
         }
+        
+        NSMutableDictionary *richURLDictionary = [NSMutableDictionary dictionary];
+        NSMutableArray *richContetnArray = [NSMutableArray array];
+        
         for (UDHppleElement *happleElement in dataAArray) {
 
-            message.richContent = happleElement.content;
-            message.richURL = [NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]];
+            [richURLDictionary setObject:[NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]] forKey:happleElement.content];
+            [richContetnArray addObject:happleElement.content];
+
+            message.richArray = [NSArray arrayWithArray:richContetnArray];
+            
+            message.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
+            
         }
         
         message.messageType = UDMessageMediaTypeRich;

@@ -10,6 +10,7 @@
 #import "UDChatViewController.h"
 #import "UDFaqController.h"
 #import "UDRobotIMViewController.h"
+#import "UDAgentNavigationMenu.h"
 
 #define SCREEN_WIDTH  [[UIScreen mainScreen] bounds].size.width
 #define SCREEN_HEIGHT [[UIScreen mainScreen] bounds].size.height
@@ -76,6 +77,19 @@
     [button3 addTarget:self action:@selector(buttonAction3) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button3];
     
+    
+    UIButton *button4 = [UIButton buttonWithType:UIButtonTypeCustom];
+    button4.frame = CGRectMake((SCREEN_WIDTH-150)/2, button3.frame.origin.y + button2.frame.size.height+20, 150, 40);
+    [button4 setTitle:@"客服导航栏菜单" forState:0];
+    [button4 setTitleColor:[UIColor blackColor] forState:0];
+    button4.layer.cornerRadius = 3;
+    button4.layer.masksToBounds = YES;
+    button4.layer.borderWidth = 1.2;
+    button4.layer.borderColor = [UIColor blackColor].CGColor;
+    [button4 addTarget:self action:@selector(buttonAction4) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button4];
+
+    
     //获取用户自定义字段
     [UDManager getCustomerFields:^(id responseObject, NSError *error) {
         
@@ -121,13 +135,6 @@
             NSLog(@"提交设备信息:%@",responseObject);
         }];
         
-        
-        [UDManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
-            
-            NSLog(@"%@",responseObject);
-            
-        }];
-        
     }];
     
 }
@@ -156,6 +163,12 @@
     
 }
 
+- (void)buttonAction4 {
+
+    UDAgentNavigationMenu *agentMenu = [[UDAgentNavigationMenu alloc] init];
+    
+    [self.navigationController pushViewController:agentMenu animated:YES];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

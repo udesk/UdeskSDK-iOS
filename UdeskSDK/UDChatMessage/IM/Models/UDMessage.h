@@ -112,11 +112,11 @@ typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
 /**
  *  超链接的文本
  */
-@property (nonatomic, strong) NSString                 *richContent;
+@property (nonatomic, strong) NSArray                 *richArray;
 /**
  *  超链接
  */
-@property (nonatomic, strong) NSString                 *richURL;
+@property (nonatomic, strong) NSDictionary            *richURLDictionary;
 
 /**
  *  初始化文本消息

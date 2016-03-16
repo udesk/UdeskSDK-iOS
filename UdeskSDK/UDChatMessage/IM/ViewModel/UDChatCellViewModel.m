@@ -28,18 +28,6 @@
         messageTableViewCell:(UDMessageTableViewCell *)messageTableViewCell {
 
     switch (message.messageType) {
-        case UDMessageMediaTypeText:
-            
-            if (![UDTools isBlankString:[UDTools contentsOfRegexStrArray:message.text]]) {
-                
-                if ([[UDTools contentsOfRegexStrArray:message.text] hasPrefix:@"www"]) {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@",[UDTools contentsOfRegexStrArray:message.text]]]];
-                }else {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[UDTools contentsOfRegexStrArray:message.text]]];
-                }
-            }
-            
-            break;
             
         case UDMessageMediaTypePhoto: {
             
@@ -65,15 +53,6 @@
                 self.currentSelectedCell = messageTableViewCell;
                 [messageTableViewCell.messageContentView.animationVoiceImageView startAnimating];
                 [[UDAudioPlayerHelper shareInstance] managerAudio:message toPlay:YES];
-            }
-            
-            break;
-            
-        case UDMessageMediaTypeRich:
-            
-            if (![UDTools isBlankString:[UDTools contentsOfRegexStrArray:message.richURL]]) {
-                
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[UDTools contentsOfRegexStrArray:message.richURL]]];
             }
             
             break;

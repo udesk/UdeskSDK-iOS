@@ -368,32 +368,6 @@
     
 }
 
-//检索文本的正则表达式的字符串
-+ (NSString *)contentsOfRegexStringWithWXLabel
-{
-    //需要添加链接字符串的正则表达式：@http://、@邮箱、号码
-    NSString *regex = @"((http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|(www.[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)";
-    return regex;
-}
-
-//返回所有的链接字符串数组
-+ (NSString *)contentsOfRegexStrArray:(NSString *)text
-{
-    
-    //需要添加链接字符串正则表达：邮箱、http://、号码
-    NSString *regex = [UDTools contentsOfRegexStringWithWXLabel];
-    NSError *error = NULL;
-    NSTextCheckingResult *result;
-    if (text != nil){
-        
-        NSRegularExpression *regexs = [NSRegularExpression regularExpressionWithPattern:regex options:NSRegularExpressionCaseInsensitive error:&error];
-        result = [regexs firstMatchInString:text options:0 range:NSMakeRange(0, [text length])];
-    }
-    
-    return [text substringWithRange:result.range];
-    
-}
-
 //NSString转NSDate
 + (NSDate *)dateFromString:(NSString *)string
 {

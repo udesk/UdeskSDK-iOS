@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @class UDMessage;
+@class UDLabel;
 
 @interface UDMessageContentView : UIView
 
@@ -20,7 +21,7 @@
  *  自定义显示文本消息控件
  */
 
-@property (nonatomic, weak  ) UILabel                              *textLabel;
+@property (nonatomic, weak  ) UDLabel                              *textLabel;
 
 /**
  *  用于显示气泡的ImageView控件

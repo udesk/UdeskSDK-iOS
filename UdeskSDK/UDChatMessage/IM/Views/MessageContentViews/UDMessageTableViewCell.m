@@ -9,6 +9,7 @@
 #import "UDMessageTableViewCell.h"
 #import "UDFoundationMacro.h"
 #import "UIImage+UDMessage.h"
+#import "UDLabel.h"
 
 //时间 Y
 static const CGFloat kUDLabelPadding         = 5.0f;
@@ -139,8 +140,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             [self.messageContentView.photoImageView addGestureRecognizer:tapGestureRecognizer];
             break;
         }
-        case UDMessageMediaTypeRich:
-        case UDMessageMediaTypeText:
+
         case UDMessageMediaTypeVoice: {
             UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sigleTapGestureRecognizerHandle:)];
             tapGestureRecognizer.delegate = self;
@@ -313,6 +313,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             [self.contentView addSubview:messageBubbleView];
             [self.contentView sendSubviewToBack:messageBubbleView];
             self.messageContentView = messageBubbleView;
+            
         }
     
     }

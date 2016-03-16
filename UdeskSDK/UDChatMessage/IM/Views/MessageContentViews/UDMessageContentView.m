@@ -18,6 +18,7 @@
 #import "UIImage+UDMessage.h"
 #import "UDAlertController.h"
 #import "UdeskUtils.h"
+#import "UDLabel.h"
 
 #define kUDHaveBubbleMargin 10.0f // 距离气泡上下边的间隙
 
@@ -31,7 +32,7 @@
 
 #define MAXIMAGESIZE 500
 
-@interface UDMessageContentView ()
+@interface UDMessageContentView ()<UDLabelDelegate>
 
 @end
 
@@ -43,8 +44,10 @@
 + (CGSize)neededSizeForText:(NSString *)text {
     
     CGSize textSize = [UDGeneral.store textSize:text fontOfSize:[UIFont systemFontOfSize:Config.contentFontSize] ToSize:CGSizeMake(UD_SCREEN_WIDTH>320?235:180, CGFLOAT_MAX)];
+    
+    float textfloat = [UDLabel getAttributedStringHeightWithString:text WidthValue:UD_SCREEN_WIDTH>320?235:180 delegate:nil font:[UIFont systemFontOfSize:Config.contentFontSize]];
 
-    return CGSizeMake(textSize.width, textSize.height);
+    return CGSizeMake(textSize.width, textfloat);
 }
 
 // 计算图片实际大小
@@ -328,27 +331,48 @@
     else if (message.messageType == UDMessageMediaTypeRich) {
         
         _textLabel.text = message.text;
-        if (![UDTools isBlankString:message.richURL]) {
+        if (message.richURLDictionary.count>0) {
 
-            NSRange range = [message.text rangeOfString: message.richContent];
-            NSMutableAttributedString*attribute = [[NSMutableAttributedString alloc] initWithString:message.text];
-            [attribute addAttributes: @{NSForegroundColorAttributeName: [UIColor blueColor]}range: range];
-            
-            [_textLabel setAttributedText:attribute];
+            for (NSString *richContent in message.richArray) {
+                
+                [_textLabel.matchArray addObject:richContent];
+            }
         }
     }
     
     [self setNeedsLayout];
 }
 
-- (void)setRichLable {
-
-    NSRange range = [self.message.text rangeOfString: self.message.richContent];
-    NSMutableAttributedString*attribute = [[NSMutableAttributedString alloc] initWithString: self.message.text];
-    [attribute addAttributes: @{NSForegroundColorAttributeName: [UIColor blueColor]}range: range];
+- (void)toucheBenginUDLabel:(UDLabel *)udLabel withContext:(NSString *)context {
     
-    [_textLabel setAttributedText:attribute];
+    NSString *httpUrl = context;
+    
+    if (self.message.messageType == UDMessageMediaTypeRich) {
 
+        httpUrl = [self.message.richURLDictionary objectForKey:context];
+    }
+        
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:httpUrl]];
+    
+}
+
+//检索文本的正则表达式的字符串
+- (NSString *)contentsOfRegexStringWithUDLabel:(UDLabel *)udLabel
+{
+    //需要添加链接字符串的正则表达式：http:// (开发者可以根据自身需求添加正则)
+    NSString *regex = @"http(s)?://([A-Za-z0-9._-]+(/)?)*";
+    return regex;
+}
+
+//设置当前链接文本的颜色
+- (UIColor *)linkColorWithUDLabel:(UDLabel *)udLabel
+{
+    return [UIColor blueColor];
+}
+//设置当前文本手指经过的颜色
+- (UIColor *)passColorWithUDLabel:(UDLabel *)udLabel
+{
+    return [UIColor lightGrayColor];
 }
 
 - (void)configureVoiceDurationLabelFrameWithBubbleFrame:(CGRect)bubbleFrame {
@@ -386,11 +410,11 @@
         
         // 2、初始化显示文本消息的TextView
         if (!_textLabel) {
-            UILabel *textLabel = [[UILabel alloc] init];
+            UDLabel *textLabel = [[UDLabel alloc] initWithFrame:CGRectZero];
             textLabel.backgroundColor = [UIColor clearColor];
             textLabel.numberOfLines = 0;
+            textLabel.udLabelDelegate = self;
             textLabel.font = [UIFont systemFontOfSize:Config.contentFontSize];
-            
             [self addSubview:textLabel];
             _textLabel = textLabel;
             

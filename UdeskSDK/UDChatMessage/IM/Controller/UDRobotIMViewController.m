@@ -12,6 +12,7 @@
 #import "UdeskUtils.h"
 #import "UDManager.h"
 #import "UDAlertController.h"
+#import "UDChatViewController.h"
 
 @interface UDRobotIMViewController ()
 
@@ -47,14 +48,11 @@
             
         } else {
             
-            UDAlertController *leaveOrTicket = [UDAlertController alertWithTitle:nil message:@"没有开通机器人"];
-            [leaveOrTicket addCloseActionWithTitle:@"确定" Handler:^(UDAlertAction * _Nonnull action) {
-                
-                [self.navigationController popViewControllerAnimated:YES];
-            }];
-            [leaveOrTicket showWithSender:nil controller:nil animated:YES completion:NULL];
+            UDChatViewController *chat = [[UDChatViewController alloc] init];
+            
+            [self.navigationController pushViewController:chat animated:YES];
+            
         }
-        
         
     }];
     
