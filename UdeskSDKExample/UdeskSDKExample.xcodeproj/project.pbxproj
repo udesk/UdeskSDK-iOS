@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		44444A3D1C98109F00B48702 /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44444A3C1C98109F00B48702 /* libUdesk.a */; };
 		44444A401C9810B900B48702 /* UDMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 44444A3F1C9810B900B48702 /* UDMessage.m */; };
+		44444A461C9902C500B48702 /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44444A451C9902C500B48702 /* libUdesk.a */; };
+		44444A4A1C99065700B48702 /* UDAgentNavigationMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 44444A491C99065700B48702 /* UDAgentNavigationMenu.m */; };
 		448CD88E1C96CD200049DE3F /* UDHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 448CD8891C96CD200049DE3F /* UDHpple.m */; };
 		448CD88F1C96CD200049DE3F /* UDHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 448CD88B1C96CD200049DE3F /* UDHppleElement.m */; };
 		448CD8901C96CD200049DE3F /* UDXPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 448CD88D1C96CD200049DE3F /* UDXPathQuery.m */; };
@@ -75,9 +76,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		44444A3C1C98109F00B48702 /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
 		44444A3E1C9810B900B48702 /* UDMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDMessage.h; sourceTree = "<group>"; };
 		44444A3F1C9810B900B48702 /* UDMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDMessage.m; sourceTree = "<group>"; };
+		44444A451C9902C500B48702 /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
+		44444A471C9902D100B48702 /* UDManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UDManager.h; sourceTree = "<group>"; };
+		44444A481C99065700B48702 /* UDAgentNavigationMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDAgentNavigationMenu.h; sourceTree = "<group>"; };
+		44444A491C99065700B48702 /* UDAgentNavigationMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDAgentNavigationMenu.m; sourceTree = "<group>"; };
 		448CD8881C96CD200049DE3F /* UDHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDHpple.h; sourceTree = "<group>"; };
 		448CD8891C96CD200049DE3F /* UDHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDHpple.m; sourceTree = "<group>"; };
 		448CD88A1C96CD200049DE3F /* UDHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDHppleElement.h; sourceTree = "<group>"; };
@@ -99,7 +103,6 @@
 		44C3A0781C93AE05004BDB2B /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		44C3A07C1C93AE11004BDB2B /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		44C3A1BD1C93AF51004BDB2B /* UdeskBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UdeskBundle.bundle; sourceTree = "<group>"; };
-		44C3A1C01C93AF51004BDB2B /* UDManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDManager.h; sourceTree = "<group>"; };
 		44C3A1C51C93AF51004BDB2B /* UDContentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDContentController.h; sourceTree = "<group>"; };
 		44C3A1C61C93AF51004BDB2B /* UDContentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDContentController.m; sourceTree = "<group>"; };
 		44C3A1C71C93AF51004BDB2B /* UDFaqController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDFaqController.h; sourceTree = "<group>"; };
@@ -208,7 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				44C3A07D1C93AE11004BDB2B /* libz.tbd in Frameworks */,
-				44444A3D1C98109F00B48702 /* libUdesk.a in Frameworks */,
+				44444A461C9902C500B48702 /* libUdesk.a in Frameworks */,
 				448CD8921C979EE40049DE3F /* libxml2.tbd in Frameworks */,
 				44C3A0791C93AE05004BDB2B /* libresolv.tbd in Frameworks */,
 				44C3A0771C93ADFF004BDB2B /* libsqlite3.tbd in Frameworks */,
@@ -299,8 +302,8 @@
 		44C3A1BE1C93AF51004BDB2B /* SDK */ = {
 			isa = PBXGroup;
 			children = (
-				44444A3C1C98109F00B48702 /* libUdesk.a */,
-				44C3A1C01C93AF51004BDB2B /* UDManager.h */,
+				44444A451C9902C500B48702 /* libUdesk.a */,
+				44444A471C9902D100B48702 /* UDManager.h */,
 			);
 			path = SDK;
 			sourceTree = "<group>";
@@ -367,6 +370,8 @@
 				44C3A1D31C93AF51004BDB2B /* UDRobotIMViewController.m */,
 				44C3A1D41C93AF51004BDB2B /* UDTicketViewController.h */,
 				44C3A1D51C93AF51004BDB2B /* UDTicketViewController.m */,
+				44444A481C99065700B48702 /* UDAgentNavigationMenu.h */,
+				44444A491C99065700B48702 /* UDAgentNavigationMenu.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -711,6 +716,7 @@
 				44C3A25A1C93AF51004BDB2B /* UIImage+UDMessage.m in Sources */,
 				44C3A2721C93AF51004BDB2B /* UDPhotoView.m in Sources */,
 				44C3A2441C93AF51004BDB2B /* UDSearchController.m in Sources */,
+				44444A4A1C99065700B48702 /* UDAgentNavigationMenu.m in Sources */,
 				44C3A26F1C93AF51004BDB2B /* UIImage+UDMultiFormat.m in Sources */,
 				44C3A2421C93AF51004BDB2B /* UDContentController.m in Sources */,
 				448CD88E1C96CD200049DE3F /* UDHpple.m in Sources */,
@@ -791,7 +797,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -813,6 +820,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "2f37dde3-80f9-4b48-990f-0350945bdb59";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -835,7 +843,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -850,6 +859,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "2f37dde3-80f9-4b48-990f-0350945bdb59";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -873,8 +883,9 @@
 					"-lxml2",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.UdeskSDKExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "2f37dde3-80f9-4b48-990f-0350945bdb59";
 			};
 			name = Debug;
 		};
@@ -895,8 +906,9 @@
 					"-lxml2",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.UdeskSDKExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "2f37dde3-80f9-4b48-990f-0350945bdb59";
 			};
 			name = Release;
 		};

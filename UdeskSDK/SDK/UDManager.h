@@ -329,5 +329,24 @@ typedef NS_ENUM(NSInteger, UDNetworkStatus) {
 + (void)survetVoteWithAgentId:(NSString *)agentId
                  withOptionId:(NSString *)optionId
                    completion:(void (^)(id responseObject, NSError *error))completion;
+/**
+ *  获取后台配置的导航菜单
+ *
+ *  @param completion 回调结果
+ */
++ (void)getAgentNavigationMenu:(void (^)(id responseObject, NSError *error))completion;
+
+/**
+ *  指定分配客服或客服组
+ *
+ *  注意：需要先调用createCustomer接口
+ *
+ *  @param agentId    客服id（选择客服组，则客服id可不填）
+ *  @param groupId    客服组id（选择客服，则客服组id可不填）
+ *  @param completion 回调结果
+ */
++ (void)assignAgentOrGroup:(NSString *)agentId
+                   groupID:(NSString *)groupId
+                completion:(void (^) (id responseObject,NSError *error))completion;
 
 @end

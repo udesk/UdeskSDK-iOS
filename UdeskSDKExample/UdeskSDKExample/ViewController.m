@@ -104,12 +104,12 @@
                                  };
     
     
-    //    NSDictionary *parameters = @{
-    //                                 @"user": @{
-    //                                         @"sdk_token": @"testsdktokenencrypt",
-    //                                         @"nick_name": @"测试"
-    //                                         }
-    //                                 };
+//        NSDictionary *parameters = @{
+//                                     @"user": @{
+//                                             @"sdk_token": @"zhangmian8890909090",
+//                                             @"nick_name": @"张勉"
+//                                             }
+//                                     };
     
     //创建用户
     [UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {
@@ -119,6 +119,13 @@
         [UDManager submitCustomerDevicesInfo:^(id responseObject, NSError *error) {
             
             NSLog(@"提交设备信息:%@",responseObject);
+        }];
+        
+        
+        [UDManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
+            
+            NSLog(@"%@",responseObject);
+            
         }];
         
     }];
