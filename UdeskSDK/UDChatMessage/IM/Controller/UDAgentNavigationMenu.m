@@ -12,16 +12,26 @@
 #import "UDFoundationMacro.h"
 #import "UdeskUtils.h"
 #import "UDChatViewController.h"
+#import "UIImage+UDMessage.h"
 
 @interface UDAgentNavigationMenu () <UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
 
+/**
+ *  客服组菜单Tableview
+ */
 @property (nonatomic, strong) UITableView    *agentMenuTableView;
-
+/**
+ *  客服组菜单ScrollView
+ */
 @property (nonatomic, strong) UIScrollView   *agentMenuScrollView;
-
+/**
+ *  自定义客服组菜单数据
+ */
 @property (nonatomic, strong) NSMutableArray *allAgentMenuData;
-
-@property (nonatomic, assign) int      menuPage;
+/**
+ *  客服组分页
+ */
+@property (nonatomic, assign) int            menuPage;
 
 @end
 
@@ -54,43 +64,9 @@
     
     [self requestAgentMenu];
 }
-
-#pragma mark - 设置标题
-- (void)setNavigationTitleName {
-    
-    UILabel *menuLabel = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 0, 100, 44)];
-    menuLabel.text = getUDLocalizedString(@"请选择客服组");
-    menuLabel.backgroundColor = [UIColor clearColor];
-    menuLabel.textAlignment = NSTextAlignmentCenter;
-    menuLabel.textColor = Config.faqTitleColor;
-    self.navigationItem.titleView = menuLabel;
-}
-
-- (void)setBackNavigationItem {
-    //取消按钮
-    UIButton * closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    closeButton.frame = CGRectMake(0, 0, 40, 40);
-    [closeButton setTitle:@"返回" forState:UIControlStateNormal];
-    [closeButton addTarget:self action:@selector(closeButtonAction) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIBarButtonItem *closeNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
-    
-    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
-                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                       target:nil action:nil];
-    
-    // 调整 leftBarButtonItem 在 iOS7 下面的位置
-    if((FUDSystemVersion>=7.0)){
-        
-        negativeSpacer.width = -10;
-        self.navigationItem.leftBarButtonItems = @[negativeSpacer,closeNavigationItem];
-    }else
-        self.navigationItem.leftBarButtonItem = closeNavigationItem;
-    
-}
-
+#pragma mark - 设置MenuScrollView
 - (void)setAgentMenuScrollView {
-
+    
     _agentMenuScrollView= [[UIScrollView alloc] initWithFrame:self.view.bounds];
     _agentMenuScrollView.delegate = self;
     _agentMenuScrollView.showsHorizontalScrollIndicator = NO;
@@ -103,23 +79,61 @@
     [self.view addSubview:_agentMenuScrollView];
 }
 
-- (void)closeButtonAction {
+#pragma mark - 设置标题
+- (void)setNavigationTitleName {
+    
+    UILabel *menuLabel = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 0, 100, 44)];
+    menuLabel.text = getUDLocalizedString(@"请选择客服组");
+    menuLabel.backgroundColor = [UIColor clearColor];
+    menuLabel.textAlignment = NSTextAlignmentCenter;
+    menuLabel.textColor = Config.faqTitleColor;
+    self.navigationItem.titleView = menuLabel;
+}
+#pragma mark - 设置返回按钮
+- (void)setBackNavigationItem {
+    
+    //返回按钮
+    UIButton * backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    backButton.frame = CGRectMake(0, 0, 100, 40);
+    [backButton setTitle:getUDLocalizedString(@"返回") forState:UIControlStateNormal];
+    
+    [backButton setImage:[UIImage ud_defaultBackImage] forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(backButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *closeNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+    
+    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                       target:nil action:nil];
+    
+    // 调整 leftBarButtonItem 在 iOS7 下面的位置
+    if((FUDSystemVersion>=7.0)){
+        
+        negativeSpacer.width = -35;
+        self.navigationItem.leftBarButtonItems = @[negativeSpacer,closeNavigationItem];
+    }else
+        self.navigationItem.leftBarButtonItem = closeNavigationItem;
+    
+}
+
+- (void)backButtonAction {
     
     self.menuPage --;
     
+    //判断ScrollView.contentOffset.x是否到头
     if (self.agentMenuScrollView.contentOffset.x>0) {
         
         [UIView animateWithDuration:0.35f animations:^{
-            
+            //执行返回
             _agentMenuScrollView.contentOffset = CGPointMake(self.agentMenuScrollView.contentOffset.x-UD_SCREEN_WIDTH, 0);
         } completion:^(BOOL finished) {
-            
+            //装载这个页面的数据
             NSMutableArray *array = [NSMutableArray array];
             
             UDAgentMenuModel *subMenuModel = self.agentMenuData.lastObject;
             
             NSString *parentId;
-            
+            //查找属于上级菜单的父级
             for (UDAgentMenuModel *model in self.allAgentMenuData) {
                 
                 if ([model.menu_id isEqualToString:subMenuModel.parentId]) {
@@ -130,6 +144,7 @@
                 
             }
             
+            //查找与上级菜单的父级同级的菜单选项
             for (UDAgentMenuModel *model in self.allAgentMenuData) {
                 
                 if ([model.parentId isEqualToString:parentId]) {
@@ -139,7 +154,7 @@
             }
             
             if (array.count > 0) {
-                
+                //装载数据刷新指定tableview
                 self.agentMenuData = array;
                 
                 UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:self.menuPage+100];
@@ -160,6 +175,7 @@
     
 }
 
+#pragma mark - 请求客服组选择菜单
 - (void)requestAgentMenu {
 
     [UDManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
@@ -179,7 +195,7 @@
             NSMutableArray *rootMenuArray = [NSMutableArray array];
             
             int tableViewCount = 0;
-            
+            //寻找树状的根
             for (UDAgentMenuModel *agentMenuModel in self.allAgentMenuData) {
                 
                 if ([agentMenuModel.parentId isEqualToString:@"item_0"]) {
@@ -190,9 +206,9 @@
                 tableViewCount += [agentMenuModel.has_next intValue];
                 
             }
-            
+            //根据最大的级数设置ScrollView.contentSize
             self.agentMenuScrollView.contentSize = CGSizeMake(tableViewCount*UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT);
-            
+            //根据最大的级数循环添加tableView
             for (int i = 0; i<tableViewCount;i++) {
                 
                 UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStyleGrouped];
@@ -203,7 +219,7 @@
                 [self.agentMenuScrollView addSubview:agentMenuTableView];
                 
             }
-            
+            //装载数据 刷新第一个tableView
             self.agentMenuData = rootMenuArray;
             
             UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:100];
@@ -253,6 +269,7 @@
     
     NSMutableArray *menuArray = [NSMutableArray array];
     
+    //获取点击菜单选项的子集
     UDAgentMenuModel *didSelectModel = self.agentMenuData[indexPath.row];
     
     for (UDAgentMenuModel *allAgentMenuModel in self.allAgentMenuData) {
@@ -263,7 +280,7 @@
         }
         
     }
-    
+    //根据是否还有子集选择push还是执行动画
     if (menuArray.count > 0) {
         
         [UIView animateWithDuration:0.35f animations:^{
@@ -283,18 +300,15 @@
     }
     else {
     
+        //这里--是因为之前的++并没有执行给ScrollView.contentOffset 
+        self.menuPage -- ;
+        
         UDChatViewController *chat = [[UDChatViewController alloc] init];
         
         chat.group_id = didSelectModel.group_id;
         
-        chat.backBlock = ^(){
-        
-            self.menuPage --;
-        };
-        
         [self.navigationController pushViewController:chat animated:YES];
     }
-    
     
 }
 

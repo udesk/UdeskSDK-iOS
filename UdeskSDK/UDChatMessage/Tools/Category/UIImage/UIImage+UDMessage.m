@@ -106,4 +106,9 @@
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voice_revoke.png")];
 }
 
++ (UIImage *)ud_defaultBackImage {
+
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_back")];
+}
+
 @end

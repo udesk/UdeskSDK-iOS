@@ -125,4 +125,11 @@
  */
 + (UIImage *)ud_defaultVoiceRevokeImage;
 
+/**
+ *  导航栏左侧返回图片
+ *
+ *  @return 返回图片
+ */
++ (UIImage *)ud_defaultBackImage;
+
 @end

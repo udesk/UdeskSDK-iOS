@@ -19,28 +19,12 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
 
 @implementation UDAgentViewModel
 
-
+//请求客服信息
 - (void)requestAgentModel:(void(^)(UDAgentModel *agentModel,NSError *error))completion {
     
     [self requestAgentDataWithCallback:^(id responseObject, NSError *error) {
         
-        NSDictionary *result = [responseObject objectForKey:@"result"];
-        
-        NSDictionary *agent = [result objectForKey:@"agent"];
-        
-        UDAgentModel *agentModel = [[UDAgentModel alloc] initWithContentsOfDic:agent];
-        
-        agentModel.code = [[result objectForKey:@"code"] integerValue];
-        
-        agentModel.message = [result objectForKey:@"message"];
-        
-        if (agentModel.code == 2000) {
-            
-            NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",agentModel.nick];
-            
-            agentModel.message = describeTieleStr;
-            
-        }
+       UDAgentModel *agentModel = [self resolvingAgentData:responseObject];
         
         if (completion) {
             completion(agentModel,error);
@@ -49,7 +33,7 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
     }];
     
 }
-
+//请求客服信息block
 - (void)requestAgentDataWithCallback:(UDAgentDataCallBack)completion {
     
     UDAgentDataCallBack dataCallback = ^(id responseObject, NSError *error) {
@@ -93,42 +77,14 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
     
 }
 
-- (void)requestOnlyAgentDataWithAgentId:(NSString *)agentId
-                                groupId:(NSString *)groupId
-                               completion:(UDAgentDataCallBack)completion{
-
-    [UDManager assignAgentOrGroup:agentId groupID:groupId completion:^(id responseObject, NSError *error) {
-        
-        if (completion) {
-            completion(responseObject,error);
-        }
-        
-    }];
-}
-
+//指定分配客服或客服组
 - (void)assignAgentOrGroup:(NSString *)agentId
                    groupID:(NSString *)groupId
                 completion:(void(^)(UDAgentModel *agentModel,NSError *error))completion {
 
     [self requestAgentDataWithAgentId:agentId groupId:groupId completion:^(id responseObject, NSError *error) {
         
-        NSDictionary *result = [responseObject objectForKey:@"result"];
-        
-        NSDictionary *agent = [result objectForKey:@"agent"];
-        
-        UDAgentModel *agentModel = [[UDAgentModel alloc] initWithContentsOfDic:agent];
-        
-        agentModel.code = [[result objectForKey:@"code"] integerValue];
-        
-        agentModel.message = [result objectForKey:@"message"];
-        
-        if (agentModel.code == 2000) {
-            
-            NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",agentModel.nick];
-            
-            agentModel.message = describeTieleStr;
-            
-        }
+        UDAgentModel *agentModel = [self resolvingAgentData:responseObject];
         
         if (completion) {
             completion(agentModel,error);
@@ -137,7 +93,7 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
     }];
 
 }
-
+//请求指定客服信息
 - (void)requestAgentDataWithAgentId:(NSString *)agentId
                             groupId:(NSString *)groupId
                          completion:(UDAgentDataCallBack)completion {
@@ -171,5 +127,42 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
     
 }
 
+//请求指定客服信息
+- (void)requestOnlyAgentDataWithAgentId:(NSString *)agentId
+                                groupId:(NSString *)groupId
+                             completion:(UDAgentDataCallBack)completion{
+    
+    [UDManager assignAgentOrGroup:agentId groupID:groupId completion:^(id responseObject, NSError *error) {
+        
+        if (completion) {
+            completion(responseObject,error);
+        }
+        
+    }];
+}
+
+//解析客服信息
+- (UDAgentModel *)resolvingAgentData:(NSDictionary *)responseObject {
+
+    NSDictionary *result = [responseObject objectForKey:@"result"];
+    
+    NSDictionary *agent = [result objectForKey:@"agent"];
+    
+    UDAgentModel *agentModel = [[UDAgentModel alloc] initWithContentsOfDic:agent];
+    
+    agentModel.code = [[result objectForKey:@"code"] integerValue];
+    
+    agentModel.message = [result objectForKey:@"message"];
+    
+    if (agentModel.code == 2000) {
+        
+        NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",agentModel.nick];
+        
+        agentModel.message = describeTieleStr;
+        
+    }
+    
+    return agentModel;
+}
 
 @end

@@ -72,42 +72,7 @@
     //网路状态的变换
     [self networkStatusChange];
     
-    [self setBackNavigationItem];
-    
 }
-
-- (void)setBackNavigationItem {
-    //取消按钮
-    UIButton * closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    closeButton.frame = CGRectMake(0, 0, 40, 40);
-    [closeButton setTitle:@"返回" forState:UIControlStateNormal];
-    [closeButton addTarget:self action:@selector(closeButtonAction) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIBarButtonItem *closeNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
-    
-    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
-                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                       target:nil action:nil];
-    
-    // 调整 leftBarButtonItem 在 iOS7 下面的位置
-    if((FUDSystemVersion>=7.0)){
-        
-        negativeSpacer.width = -10;
-        self.navigationItem.leftBarButtonItems = @[negativeSpacer,closeNavigationItem];
-    }else
-        self.navigationItem.leftBarButtonItem = closeNavigationItem;
-    
-}
-
-- (void)closeButtonAction {
-
-    if (self.backBlock) {
-        self.backBlock();
-    }
-    
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
 #pragma mark - 初始化视图
 - (void)initilzer {
     
@@ -210,9 +175,9 @@
 - (void)requestAgentData {
 
     UDWEAKSELF
-    if (![UDTools isBlankString:self.group_id]) {
+    if (![UDTools isBlankString:self.group_id]||![UDTools isBlankString:self.agent_id]) {
         
-        [self.agentViewModel assignAgentOrGroup:nil groupID:self.group_id completion:^(UDAgentModel *agentModel, NSError *error) {
+        [self.agentViewModel assignAgentOrGroup:self.agent_id groupID:self.group_id completion:^(UDAgentModel *agentModel, NSError *error) {
             
             [weakSelf loadAgentDataReload:agentModel];
             

@@ -23,8 +23,6 @@
 @class UDChatCellViewModel;
 @class UDChatDataController;
 
-typedef void (^ChatVCBackBlock) ();
-
 @interface UDChatViewController : UIViewController
 
 /**
@@ -94,11 +92,17 @@ typedef void (^ChatVCBackBlock) ();
  *  TableViewCellModel
  */
 @property (nonatomic, strong) UDChatCellViewModel  *chatCellViewModel;
-
+/**
+ *  客服viewModel
+ */
 @property (nonatomic, strong) UDAgentViewModel     *agentViewModel;
-
-@property (nonatomic, copy  ) ChatVCBackBlock      backBlock;
-
+/**
+ *  客服组id
+ */
 @property (nonatomic, strong) NSString             *group_id;
+/**
+ *  客服id
+ */
+@property (nonatomic, strong) NSString             *agent_id;
 
 @end

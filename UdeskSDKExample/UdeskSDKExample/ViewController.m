@@ -151,6 +151,8 @@
     
     UDChatViewController *chat = [[UDChatViewController alloc] init];
     
+    chat.agent_id = @"11";
+    
     [self.navigationController pushViewController:chat animated:YES];
     
 }
