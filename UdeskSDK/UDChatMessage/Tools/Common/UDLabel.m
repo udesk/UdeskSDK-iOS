@@ -132,7 +132,7 @@
     // set attributes to attributed string
     [_attrString addAttributes:attributes range:NSMakeRange(0, _attrString.length)];
     
-    
+    CFRelease(style);
     //生成CTFramesetterRef对象
     CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)_attrString);
     
@@ -424,6 +424,7 @@
     // set attributes to attributed string
     [attrString addAttributes:attributes range:NSMakeRange(0, attrString.length)];
     
+    CFRelease(style);
     
     //生成CTFramesetterRef对象
     CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)attrString);
