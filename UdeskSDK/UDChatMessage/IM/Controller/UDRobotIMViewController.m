@@ -25,6 +25,15 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
+    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+    }
+    
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
+    
+    
     UILabel *robotTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
     robotTitle.text = getUDLocalizedString(@"智能机器人对话");
     robotTitle.backgroundColor = [UIColor clearColor];
@@ -106,10 +115,6 @@
 
     [super viewWillAppear:animated];
     
-    if (_navigationBarHidden) {
-        self.navigationController.navigationBarHidden = !_navigationBarHidden;
-    }
-    
     if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.robotNavigationColor;
     } else {
@@ -121,7 +126,6 @@
 - (void)viewWillDisappear:(BOOL)animated {
 
     [super viewWillDisappear:animated];
-    self.navigationController.navigationBarHidden = _navigationBarHidden;
     
     if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;

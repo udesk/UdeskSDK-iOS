@@ -18,7 +18,6 @@
     BOOL isLoadingFinished;
     UIWebView *htmlWebView;
     NSString *_htmlContent;
-    BOOL _navigationBarHidden;
 
 }
 
@@ -78,9 +77,6 @@
         self.navigationController.navigationBar.tintColor = Config.articleBackButtonColor;
     }
 
-    if (self.navigationController.navigationBarHidden) {
-        self.navigationController.navigationBarHidden = NO;
-    }
 }
 
 
@@ -94,9 +90,6 @@
         self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
     }
     
-    if (self.navigationController.navigationBarHidden) {
-        self.navigationController.navigationBarHidden = NO;
-    }
 }
 
 //加载数据

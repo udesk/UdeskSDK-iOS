@@ -10,6 +10,9 @@
 
 @interface ViewController : UIViewController
 
+- (IBAction)udeskFaq:(id)sender;
+- (IBAction)udeskContactUs:(id)sender;
+- (IBAction)udeskRobot:(id)sender;
 
 @end
 

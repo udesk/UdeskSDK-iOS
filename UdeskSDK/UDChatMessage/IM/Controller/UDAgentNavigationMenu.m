@@ -54,6 +54,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+    }
+    
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
+    
     self.view.backgroundColor = [UIColor colorWithRed:0.918f  green:0.922f  blue:0.925f alpha:1];
     
     [self setAgentMenuScrollView];
@@ -211,12 +219,17 @@
             //根据最大的级数循环添加tableView
             for (int i = 0; i<tableViewCount;i++) {
                 
-                UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStyleGrouped];
+                UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStylePlain];
                 agentMenuTableView.delegate = self;
                 agentMenuTableView.dataSource = self;
                 agentMenuTableView.tag = 100+i;
+                agentMenuTableView.backgroundColor = self.view.backgroundColor;
                 
                 [self.agentMenuScrollView addSubview:agentMenuTableView];
+                
+                //删除多余的cell
+                UIView *footerView = [[UIView alloc] initWithFrame:CGRectZero];
+                [agentMenuTableView setTableFooterView:footerView];
                 
             }
             //装载数据 刷新第一个tableView

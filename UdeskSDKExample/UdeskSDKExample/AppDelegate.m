@@ -19,9 +19,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    ViewController *view = [[ViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:view];
-    self.window.rootViewController = nav;
+//    ViewController *view = [[ViewController alloc] init];
+//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:view];
+//    self.window.rootViewController = nav;
     
     //    [UDManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
     

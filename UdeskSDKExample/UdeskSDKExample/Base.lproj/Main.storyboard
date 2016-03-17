@@ -1,25 +1,152 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Pk6-nv-cfT">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <!--Navigation Controller-->
+        <scene sceneID="e4B-Rc-LpA">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iMH-mB-hLx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController id="Pk6-nv-cfT" sceneMemberID="viewController">
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="375" height="667"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="eZU-OU-rqe">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="8wK-oC-L3q" kind="relationship" relationship="rootViewController" id="qLc-8i-tue"/>
+                    </connections>
+                </navigationController>
             </objects>
+            <point key="canvasLocation" x="-2499" y="990"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="WA7-b9-RLN">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SQe-en-NyT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="8wK-oC-L3q" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="e6v-oP-Iqc"/>
+                        <viewControllerLayoutGuide type="bottom" id="j3o-wN-f9y"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dh7-fJ-gPa">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zFv-Bf-aZs">
+                                <rect key="frame" x="94" y="299" width="68" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="zFv-Bf-aZs" secondAttribute="height" multiplier="68:31" id="Bfw-iY-wCy"/>
+                                    <constraint firstAttribute="width" constant="68" id="YeW-f8-GJH"/>
+                                    <constraint firstAttribute="height" constant="31" id="cCa-xS-rRs"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="其它API"/>
+                                <connections>
+                                    <segue destination="Tup-EJ-gte" kind="push" id="6A4-4T-wGR"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="udesk.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="4w4-q7-gRb">
+                                <rect key="frame" x="86" y="95" width="203" height="121"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" link="YES" image="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="121" id="NOw-ig-Rmn"/>
+                                    <constraint firstAttribute="width" secondItem="4w4-q7-gRb" secondAttribute="height" multiplier="203:121" id="XA2-S4-11X"/>
+                                    <constraint firstAttribute="width" constant="203" id="avI-nS-whH"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FwP-yA-E0d">
+                                <rect key="frame" x="94" y="253" width="81" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31" id="DGa-c0-RrL"/>
+                                    <constraint firstAttribute="width" secondItem="FwP-yA-E0d" secondAttribute="height" multiplier="81:31" id="Hcb-CC-eAn"/>
+                                    <constraint firstAttribute="width" constant="81" id="c0X-wC-PTC"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="帮助中心"/>
+                                <connections>
+                                    <action selector="udeskFaq:" destination="8wK-oC-L3q" eventType="touchUpInside" id="x9a-L2-UNG"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ucy-qx-cp6">
+                                <rect key="frame" x="202" y="253" width="80" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="apv-al-1xu"/>
+                                    <constraint firstAttribute="height" constant="31" id="qZF-Z1-5fR"/>
+                                    <constraint firstAttribute="width" secondItem="Ucy-qx-cp6" secondAttribute="height" multiplier="80:31" id="vhc-Xd-Dbc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="联系我们"/>
+                                <connections>
+                                    <action selector="udeskContactUs:" destination="8wK-oC-L3q" eventType="touchUpInside" id="2Ra-ka-8cJ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JeZ-Sm-ZxD">
+                                <rect key="frame" x="208" y="299" width="91" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="91" id="EMf-bt-up4"/>
+                                    <constraint firstAttribute="width" secondItem="JeZ-Sm-ZxD" secondAttribute="height" multiplier="91:31" id="exr-hj-7dT"/>
+                                    <constraint firstAttribute="height" constant="31" id="tnE-C5-uIe"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="机器人客服"/>
+                                <connections>
+                                    <action selector="udeskRobot:" destination="8wK-oC-L3q" eventType="touchUpInside" id="yja-fs-yYP"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="4w4-q7-gRb" secondAttribute="trailing" constant="66" id="1MN-w2-lEF"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Ucy-qx-cp6" secondAttribute="trailing" constant="73" id="2ey-d9-5bU"/>
+                            <constraint firstItem="FwP-yA-E0d" firstAttribute="leading" secondItem="dh7-fJ-gPa" secondAttribute="leadingMargin" constant="74" id="L4h-fi-VsL"/>
+                            <constraint firstItem="Ucy-qx-cp6" firstAttribute="top" secondItem="4w4-q7-gRb" secondAttribute="bottom" constant="37" id="R7H-D6-1MZ"/>
+                            <constraint firstItem="4w4-q7-gRb" firstAttribute="leading" secondItem="dh7-fJ-gPa" secondAttribute="leadingMargin" constant="66" id="TRk-CR-UiT"/>
+                            <constraint firstItem="zFv-Bf-aZs" firstAttribute="leading" secondItem="dh7-fJ-gPa" secondAttribute="leadingMargin" constant="74" id="hNy-pf-fBs"/>
+                            <constraint firstItem="JeZ-Sm-ZxD" firstAttribute="top" secondItem="Ucy-qx-cp6" secondAttribute="bottom" constant="15" id="m7N-bm-YDW"/>
+                            <constraint firstItem="FwP-yA-E0d" firstAttribute="top" secondItem="4w4-q7-gRb" secondAttribute="bottom" constant="37" id="qXP-ew-iaM"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="JeZ-Sm-ZxD" secondAttribute="trailing" constant="56" id="rng-KG-6TY"/>
+                            <constraint firstItem="zFv-Bf-aZs" firstAttribute="top" secondItem="FwP-yA-E0d" secondAttribute="bottom" constant="15" id="x7f-aD-baJ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="iM1-t6-2Yc"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="375" height="667"/>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="-1853.5" y="932.5"/>
+        </scene>
+        <!--Table View Controller-->
+        <scene sceneID="XXB-gy-9By">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SVu-DO-vRP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController id="Tup-EJ-gte" customClass="UDTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="OLe-A5-luy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="Tup-EJ-gte" id="Xfb-Zx-0s2"/>
+                            <outlet property="delegate" destination="Tup-EJ-gte" id="9ag-Az-KWb"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="Hii-f8-a7Z"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="375" height="667"/>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="-951" y="1007"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="udesk.jpg" width="4167" height="2083"/>
+    </resources>
 </document>

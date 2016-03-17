@@ -62,8 +62,6 @@
 {
     [super viewWillDisappear:animated];
     
-    self.navigationController.navigationBarHidden = NO;
-    
     if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
@@ -74,10 +72,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-
-    if (self.navigationController.navigationBarHidden) {
-        self.navigationController.navigationBarHidden = NO;
-    }
     
     if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.ticketNavigationColor;

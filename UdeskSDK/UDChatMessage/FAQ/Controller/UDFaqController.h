@@ -18,9 +18,5 @@
  *  帮助中心数据数组
  */
 @property (nonatomic, strong) NSArray      *problemData;
-/**
- *  记录导航栏使用情况
- */
-@property (nonatomic, assign) BOOL         navigationBarHidden;
 
 @end

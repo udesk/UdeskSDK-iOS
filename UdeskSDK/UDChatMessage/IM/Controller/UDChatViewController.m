@@ -122,6 +122,7 @@
     _messageInputView = inputView;
     
     UDAgentStatusView *agentStatusView = [[UDAgentStatusView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-UDTitleLength)/2, 0, UDTitleLength, 44)];
+    
     self.navigationItem.titleView = agentStatusView;
     _agentStatusView = agentStatusView;
     

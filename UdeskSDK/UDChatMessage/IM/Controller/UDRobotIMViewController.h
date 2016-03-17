@@ -12,9 +12,4 @@
 
 @property (nonatomic, assign) BOOL isManpower;
 
-/**
- *  是否为自定义导航栏
- */
-@property (nonatomic, assign) BOOL             navigationBarHidden;
-
 @end

@@ -11,9 +11,7 @@
 #import "UDFaqController.h"
 #import "UDRobotIMViewController.h"
 #import "UDAgentNavigationMenu.h"
-
-#define SCREEN_WIDTH  [[UIScreen mainScreen] bounds].size.width
-#define SCREEN_HEIGHT [[UIScreen mainScreen] bounds].size.height
+#import "UDFoundationMacro.h"
 
 @interface ViewController ()
 
@@ -24,86 +22,31 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.title = @"设置";
+
+    UILabel *sdkLabel = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 0, 100, 44)];
+    sdkLabel.text = @"SDK";
+    sdkLabel.backgroundColor = [UIColor clearColor];
+    sdkLabel.textAlignment = NSTextAlignmentCenter;
+    sdkLabel.textColor = [UIColor whiteColor];
+    self.navigationItem.titleView = sdkLabel;
     
-    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
+    if (ud_isIOS6) {
+        self.navigationController.navigationBar.tintColor = Config.iMNavigationColor;
+    } else {
+        self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
     }
     
-    self.navigationController.navigationBar.translucent = NO;
+    [self setNewConfigUdesk];
     
-    self.view.backgroundColor = [UIColor whiteColor];
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake((SCREEN_WIDTH-170)/2, 10, 170, 40)];
-    label.text = @"欢迎使用Udesk SDK";
-    label.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:label];
-    
-    UILabel *label1 = [[UILabel alloc] initWithFrame:CGRectMake((SCREEN_WIDTH-280)/2, label.frame.origin.y + label.frame.size.height, 280, 40)];
-    label1.text = @"以下是展示Udesk SDK功能的按钮";
-    label1.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:label1];
-    
-    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeCustom];
-    button1.frame = CGRectMake((SCREEN_WIDTH-130)/2, label1.frame.origin.y + label1.frame.size.height+10, 130, 40);
-    [button1 setTitle:@"帮助中心" forState:0];
-    [button1 setTitleColor:[UIColor blackColor] forState:0];
-    button1.layer.cornerRadius = 3;
-    button1.layer.masksToBounds = YES;
-    button1.layer.borderWidth = 1.2;
-    button1.layer.borderColor = [UIColor blackColor].CGColor;
-    [button1 addTarget:self action:@selector(buttonAction1) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:button1];
-    
-    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeCustom];
-    button2.frame = CGRectMake((SCREEN_WIDTH-130)/2, button1.frame.origin.y + button1.frame.size.height+20, 130, 40);
-    [button2 setTitle:@"联系我们" forState:0];
-    [button2 setTitleColor:[UIColor blackColor] forState:0];
-    button2.layer.cornerRadius = 3;
-    button2.layer.masksToBounds = YES;
-    button2.layer.borderWidth = 1.2;
-    button2.layer.borderColor = [UIColor blackColor].CGColor;
-    [button2 addTarget:self action:@selector(buttonAction2) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:button2];
-    
-    UIButton *button3 = [UIButton buttonWithType:UIButtonTypeCustom];
-    button3.frame = CGRectMake((SCREEN_WIDTH-130)/2, button2.frame.origin.y + button2.frame.size.height+20, 130, 40);
-    [button3 setTitle:@"机器人" forState:0];
-    [button3 setTitleColor:[UIColor blackColor] forState:0];
-    button3.layer.cornerRadius = 3;
-    button3.layer.masksToBounds = YES;
-    button3.layer.borderWidth = 1.2;
-    button3.layer.borderColor = [UIColor blackColor].CGColor;
-    [button3 addTarget:self action:@selector(buttonAction3) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:button3];
-    
-    
-    UIButton *button4 = [UIButton buttonWithType:UIButtonTypeCustom];
-    button4.frame = CGRectMake((SCREEN_WIDTH-150)/2, button3.frame.origin.y + button2.frame.size.height+20, 150, 40);
-    [button4 setTitle:@"客服导航栏菜单" forState:0];
-    [button4 setTitleColor:[UIColor blackColor] forState:0];
-    button4.layer.cornerRadius = 3;
-    button4.layer.masksToBounds = YES;
-    button4.layer.borderWidth = 1.2;
-    button4.layer.borderColor = [UIColor blackColor].CGColor;
-    [button4 addTarget:self action:@selector(buttonAction4) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:button4];
+}
 
+- (void)setNewConfigUdesk {
     
     //获取用户自定义字段
     [UDManager getCustomerFields:^(id responseObject, NSError *error) {
         
         NSLog(@"用户自定义字段：%@",responseObject);
     }];
-    [self setNewConfigUdesk];
-    
-    
-    //    NSLog(@"%@",[UDManager udeskSDKVersion]);
-    
-}
-
-- (void)setNewConfigUdesk {
-    
     
 #warning sdk_token参数必填，其它参数可选（有的最好都写上）
     NSString *nick_name = [NSString stringWithFormat:@"sdk用户%u",arc4random()];
@@ -139,7 +82,12 @@
     
 }
 
-- (void)buttonAction1 {
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)udeskFaq:(id)sender {
     
     UDFaqController *faq = [[UDFaqController alloc] init];
     
@@ -147,34 +95,17 @@
     
 }
 
-- (void)buttonAction2 {
+- (IBAction)udeskContactUs:(id)sender {
     
     UDChatViewController *chat = [[UDChatViewController alloc] init];
     
-    chat.agent_id = @"11";
-    
     [self.navigationController pushViewController:chat animated:YES];
-    
 }
 
-- (void)buttonAction3 {
+- (IBAction)udeskRobot:(id)sender {
     
     UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
     
     [self.navigationController pushViewController:robot animated:YES];
-    
 }
-
-- (void)buttonAction4 {
-
-    UDAgentNavigationMenu *agentMenu = [[UDAgentNavigationMenu alloc] init];
-    
-    [self.navigationController pushViewController:agentMenu animated:YES];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 @end

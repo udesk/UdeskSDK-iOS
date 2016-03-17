@@ -60,11 +60,15 @@
 - (void)faqTableViewAndSearch {
     
     _faqTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-44-kUDStatusBarHeight) style:UITableViewStylePlain];
-    _faqTableView.backgroundColor = [UIColor whiteColor];
+    _faqTableView.backgroundColor = [UIColor colorWithRed:0.918f  green:0.922f  blue:0.925f alpha:1];
     _faqTableView.dataSource = self;
     _faqTableView.delegate = self;
     [self.view addSubview:_faqTableView];
     
+    
+    //删除多余的cell
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectZero];
+    [_faqTableView setTableFooterView:footerView];
     
     UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.f, 0.f,UD_SCREEN_WIDTH, 44)];
     searchBar.tintColor = UDRGBCOLOR(33, 40, 42);
@@ -154,8 +158,6 @@
 {
     [super viewWillDisappear:animated];
     
-    self.navigationController.navigationBarHidden = _navigationBarHidden;
-    
     if (ud_isIOS6) {
         self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
@@ -174,10 +176,7 @@
         self.navigationController.navigationBar.barTintColor = Config.faqNavigationColor;
         self.navigationController.navigationBar.tintColor = Config.faqBackButtonColor;
     }
-    if (_navigationBarHidden) {
-        self.navigationController.navigationBarHidden = !_navigationBarHidden;
-    }
-    
+
 }
 
 -(void)dealloc {
