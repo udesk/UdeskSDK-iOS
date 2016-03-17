@@ -303,7 +303,6 @@
 //        return NSMakeRange(0, 0);
 //    }
     
-    
     //获取当前行
     CTLineRef selectLine = CFArrayGetValueAtIndex((__bridge CFArrayRef)_row, indexLine);
     CFIndex selectCharIndex = CTLineGetStringIndexForPosition(selectLine, point);
