@@ -12,6 +12,7 @@
 #import "UDRobotIMViewController.h"
 #import "UDAgentNavigationMenu.h"
 #import "UDFoundationMacro.h"
+#import "UDTableViewController.h"
 
 @interface ViewController ()
 
@@ -23,18 +24,53 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
 
-    UILabel *sdkLabel = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 0, 100, 44)];
-    sdkLabel.text = @"SDK";
-    sdkLabel.backgroundColor = [UIColor clearColor];
-    sdkLabel.textAlignment = NSTextAlignmentCenter;
-    sdkLabel.textColor = [UIColor whiteColor];
-    self.navigationItem.titleView = sdkLabel;
+    self.title = @"SDK";
     
-    if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.iMNavigationColor;
-    } else {
-        self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
     }
+    
+    self.navigationController.navigationBar.translucent = NO;
+    
+    self.view.backgroundColor = UDRGBACOLOR(275.0f, 275.0f, 275.0f, 1);
+    
+    UIImageView *udeskImageView = [[UIImageView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-220)/2, 00, 220, 140)];
+    udeskImageView.image = [UIImage imageNamed:@"udesk.jpg"];
+    
+    [self.view addSubview:udeskImageView];
+    
+    UIButton *faqButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    faqButton.frame = CGRectMake((UD_SCREEN_WIDTH-130)/2, udeskImageView.frame.origin.y + udeskImageView.frame.size.height, 130, 40);
+    [faqButton setTitle:@"帮助中心" forState:0];
+    faqButton.backgroundColor = UDRGBCOLOR(31, 166, 255);
+    UDViewRadius(faqButton, 3);
+    [faqButton addTarget:self action:@selector(faqButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:faqButton];
+    
+    UIButton *contactUsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    contactUsButton.frame = CGRectMake((UD_SCREEN_WIDTH-130)/2, faqButton.frame.origin.y + faqButton.frame.size.height+20, 130, 40);
+    [contactUsButton setTitle:@"联系我们" forState:0];
+    contactUsButton.backgroundColor = UDRGBCOLOR(31, 166, 255);
+    UDViewRadius(contactUsButton, 3);
+    [contactUsButton addTarget:self action:@selector(contactUsButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:contactUsButton];
+    
+    UIButton *robotButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    robotButton.frame = CGRectMake((UD_SCREEN_WIDTH-130)/2, contactUsButton.frame.origin.y + contactUsButton.frame.size.height+20, 130, 40);
+    [robotButton setTitle:@"机器人" forState:0];
+    robotButton.backgroundColor = UDRGBCOLOR(31, 166, 255);
+    UDViewRadius(robotButton, 3);
+    [robotButton addTarget:self action:@selector(robotButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:robotButton];
+    
+    UIButton *otherAPIButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    otherAPIButton.frame = CGRectMake((UD_SCREEN_WIDTH-130)/2, robotButton.frame.origin.y + robotButton.frame.size.height+20, 130, 40);
+    [otherAPIButton setTitle:@"其它API" forState:0];
+    otherAPIButton.backgroundColor = UDRGBCOLOR(31, 166, 255);
+    UDViewRadius(otherAPIButton, 3);
+    [otherAPIButton addTarget:self action:@selector(otherAPIButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:otherAPIButton];
+    
     
     [self setNewConfigUdesk];
     
@@ -61,7 +97,7 @@
                                  };
     
     
-//        NSDictionary *parameters = @{
+//   NSDictionary *parameters = @{
 //                                     @"user": @{
 //                                             @"sdk_token": @"zhangmian8890909090",
 //                                             @"nick_name": @"张勉"
@@ -82,12 +118,7 @@
     
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (IBAction)udeskFaq:(id)sender {
+- (void)faqButtonAction {
     
     UDFaqController *faq = [[UDFaqController alloc] init];
     
@@ -95,17 +126,33 @@
     
 }
 
-- (IBAction)udeskContactUs:(id)sender {
+- (void)contactUsButtonAction {
     
     UDChatViewController *chat = [[UDChatViewController alloc] init];
     
     [self.navigationController pushViewController:chat animated:YES];
+    
 }
 
-- (IBAction)udeskRobot:(id)sender {
+- (void)robotButtonAction {
     
     UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
     
     [self.navigationController pushViewController:robot animated:YES];
+    
 }
+
+- (void)otherAPIButtonAction {
+
+    UDTableViewController *udTab = [[UDTableViewController alloc] init];
+    
+    [self.navigationController pushViewController:udTab animated:YES];
+    
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 @end

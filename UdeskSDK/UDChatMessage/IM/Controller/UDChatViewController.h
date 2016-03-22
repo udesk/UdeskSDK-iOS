@@ -104,5 +104,9 @@
  *  客服id
  */
 @property (nonatomic, strong) NSString             *agent_id;
+/**
+ *  判断是否需要返回到某个VC
+ */
+@property (nonatomic, assign) BOOL                 backRootVc;
 
 @end

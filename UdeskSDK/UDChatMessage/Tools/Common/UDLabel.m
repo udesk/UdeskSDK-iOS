@@ -8,6 +8,7 @@
 
 #import "UDLabel.h"
 #import <CoreText/CoreText.h>
+#import "UDTools.h"
 
 @interface UDLabel ()
 
@@ -31,6 +32,11 @@
         //开启当前点击的手势
         self.userInteractionEnabled = YES;
         self.matchArray = [NSMutableArray array];
+        
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGesturedDetected:)]; // 手势类型随你喜欢。
+        
+        [self addGestureRecognizer:tapGesture];
+        
     }
     return self;
 }
@@ -39,14 +45,14 @@
 - (void)drawRect:(CGRect)rect
 {
     //当前文本超链接文字的颜色默认为purpleColor
-    self.linkColor = [UIColor purpleColor];
+    self.linkColor = [UIColor blueColor];
     //自定义当前超链接文本颜色
     if ([self.udLabelDelegate respondsToSelector:@selector(linkColorWithUDLabel:)]) {
         self.linkColor = [self.udLabelDelegate linkColorWithUDLabel:self];
     }
     
     //当前文本超链接文字手指经过的颜色默认为greenColor
-    self.passColor = [UIColor greenColor];
+    self.passColor = [UIColor lightGrayColor];
     //自定义当前超链接文本颜色
     if ([self.udLabelDelegate respondsToSelector:@selector(passColorWithUDLabel:)]) {
         self.passColor = [self.udLabelDelegate passColorWithUDLabel:self];
@@ -87,7 +93,6 @@
         
     }
     
-    
     //------------------------设置段落属性-----------------------------
     //指定为对齐属性
     CTTextAlignment alignment = kCTJustifiedTextAlignment;
@@ -113,7 +118,7 @@
     
     //换行模式
     CTParagraphStyleSetting lineBreakMode;
-    CTLineBreakMode lineBreak = kCTLineBreakByCharWrapping;
+    CTLineBreakMode lineBreak = kCTLineBreakByWordWrapping;
     lineBreakMode.spec = kCTParagraphStyleSpecifierLineBreakMode;
     lineBreakMode.value = &lineBreak;
     lineBreakMode.valueSize = sizeof(CTLineBreakMode);
@@ -229,42 +234,13 @@
 
 #pragma mark - touch Action
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    self.movieStringRange = NSMakeRange(0, 0);
-    UITouch *touch = [touches anyObject];
-    CGPoint point = [touch locationInView:self];
-    //获取当前选中字符的范围
-    NSRange range = [self touchInLabelText:point];
-    if (range.length == 0) {
-    }else
-    {
-        //判断当前代理方法是否实现
-        if ([self.udLabelDelegate respondsToSelector:@selector(toucheEndUDLabel:withContext:)]) {
-            //获取当前点击字符串
-            NSString *context = [[self.attrString string] substringWithRange:range];
-            //调用点击开始代理方法
-            [self.udLabelDelegate toucheEndUDLabel:self withContext:context];
-        }
-    }
-
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    self.movieStringRange = NSMakeRange(0, 0);
-}
-//手指接触视图
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
+- (void)tapGesturedDetected:(UITapGestureRecognizer *)recognizer {
     
-    UITouch *touch = [touches anyObject];
-    CGPoint point = [touch locationInView:self];
+    CGPoint point = [recognizer locationInView:self];
     //获取当前选中字符的范围
     NSRange range = [self touchInLabelText:point];
-    self.movieStringRange = range;
+    self.movieStringRange = NSMakeRange(0, 0);
     if (range.length == 0) {
-        [super touchesBegan:touches withEvent:event];
     }else
     {
         //判断当前代理方法是否实现
@@ -277,7 +253,6 @@
     }
 
 }
-
 
 #pragma mark - 检索当前点击的是否是链接文本
 //检查当前点击的是否是连接文本,如果是返回文本的位置
@@ -371,90 +346,94 @@
 {
     int total_height = 0;
 
-    //生成属性字符串对象
-    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc]initWithString:text];
+    if (![UDTools isBlankString:text]) {
     
-    //------------------------设置字体属性--------------------------
-    //    CTFontRef font = CTFontCreateWithName(CFSTR("Georgia"), 15, NULL);
-    //设置当前字体
-    [attrString addAttribute:(id)kCTFontAttributeName value:font range:NSMakeRange(0, attrString.length)];
-    
-    //------------------------设置段落属性-----------------------------
-    //指定为对齐属性
-    CTTextAlignment alignment = kCTJustifiedTextAlignment;
-    CTParagraphStyleSetting alignmentStyle;
-    alignmentStyle.spec=kCTParagraphStyleSpecifierFirstLineHeadIndent;//指定为对齐属性
-    alignmentStyle.valueSize=sizeof(alignment);
-    alignmentStyle.value=&alignment;
-    
-    
-    //行距
-    float linespace = 10.0f;
-    CTParagraphStyleSetting lineSpaceSetting;
-    lineSpaceSetting.spec = kCTParagraphStyleSpecifierLineSpacing;
-    lineSpaceSetting.value = &linespace;
-    lineSpaceSetting.valueSize = sizeof(linespace);
-    
-    //多行高
-    float mutiHeight = 1.0f;
-    CTParagraphStyleSetting Muti;
-    Muti.spec = kCTParagraphStyleSpecifierLineHeightMultiple;
-    Muti.value = &mutiHeight;
-    Muti.valueSize = sizeof(float);
-    
-    //换行模式
-    CTParagraphStyleSetting lineBreakMode;
-    CTLineBreakMode lineBreak = kCTLineBreakByCharWrapping;
-    lineBreakMode.spec = kCTParagraphStyleSpecifierLineBreakMode;
-    lineBreakMode.value = &lineBreak;
-    lineBreakMode.valueSize = sizeof(CTLineBreakMode);
-    
-    //组合设置
-    CTParagraphStyleSetting settings[] = {
-        lineSpaceSetting,Muti,alignmentStyle,lineBreakMode
-    };
-    
-    //通过设置项产生段落样式对象
-    CTParagraphStyleRef style = CTParagraphStyleCreate(settings, 4);
-    
-    // build attributes
-    NSMutableDictionary *attributes = [NSMutableDictionary dictionaryWithObject:(__bridge id)style forKey:(id)kCTParagraphStyleAttributeName ];
-    
-    // set attributes to attributed string
-    [attrString addAttributes:attributes range:NSMakeRange(0, attrString.length)];
-    
-    CFRelease(style);
-    
-    //生成CTFramesetterRef对象
-    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)attrString);
-    CGRect drawingRect = CGRectMake(0, 0, width, 1000);  //这里的高要设置足够大
-    
-    //然后创建一个CGPath对象，这个Path对象用于表示可绘制区域坐标值、长宽。
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathAddRect(path, NULL, drawingRect);
-    
-    
-    CTFrameRef textFrame = CTFramesetterCreateFrame(framesetter,CFRangeMake(0,0), path, NULL);
-    CGPathRelease(path);
-    CFRelease(framesetter);
-    
-    NSArray *linesArray = (NSArray *) CTFrameGetLines(textFrame);
-    
-    CGPoint origins[[linesArray count]];
-    CTFrameGetLineOrigins(textFrame, CFRangeMake(0, 0), origins);
-    
-    int line_y = (int) origins[[linesArray count] -1].y;  //最后一行line的原点y坐标
-    
-    CGFloat ascent;
-    CGFloat descent;
-    CGFloat leading;
-    
-    CTLineRef line = (__bridge CTLineRef) [linesArray objectAtIndex:[linesArray count]-1];
-    CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
-    
-    total_height = 1000 - line_y + (int) descent +1;    //+1为了纠正descent转换成int小数点后舍去的值
-    
-    CFRelease(textFrame);
+        //生成属性字符串对象
+        NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc]initWithString:text];
+        
+        //------------------------设置字体属性--------------------------
+        //    CTFontRef font = CTFontCreateWithName(CFSTR("Georgia"), 15, NULL);
+        //设置当前字体
+        [attrString addAttribute:(id)kCTFontAttributeName value:font range:NSMakeRange(0, attrString.length)];
+        
+        //------------------------设置段落属性-----------------------------
+        //指定为对齐属性
+        CTTextAlignment alignment = kCTJustifiedTextAlignment;
+        CTParagraphStyleSetting alignmentStyle;
+        alignmentStyle.spec=kCTParagraphStyleSpecifierFirstLineHeadIndent;//指定为对齐属性
+        alignmentStyle.valueSize=sizeof(alignment);
+        alignmentStyle.value=&alignment;
+        
+        
+        //行距
+        float linespace = 10.0f;
+        CTParagraphStyleSetting lineSpaceSetting;
+        lineSpaceSetting.spec = kCTParagraphStyleSpecifierLineSpacing;
+        lineSpaceSetting.value = &linespace;
+        lineSpaceSetting.valueSize = sizeof(linespace);
+        
+        //多行高
+        float mutiHeight = 1.0f;
+        CTParagraphStyleSetting Muti;
+        Muti.spec = kCTParagraphStyleSpecifierLineHeightMultiple;
+        Muti.value = &mutiHeight;
+        Muti.valueSize = sizeof(float);
+        
+        //换行模式
+        CTParagraphStyleSetting lineBreakMode;
+        CTLineBreakMode lineBreak = kCTLineBreakByCharWrapping;
+        lineBreakMode.spec = kCTParagraphStyleSpecifierLineBreakMode;
+        lineBreakMode.value = &lineBreak;
+        lineBreakMode.valueSize = sizeof(CTLineBreakMode);
+        
+        //组合设置
+        CTParagraphStyleSetting settings[] = {
+            lineSpaceSetting,Muti,alignmentStyle,lineBreakMode
+        };
+        
+        //通过设置项产生段落样式对象
+        CTParagraphStyleRef style = CTParagraphStyleCreate(settings, 4);
+        
+        // build attributes
+        NSMutableDictionary *attributes = [NSMutableDictionary dictionaryWithObject:(__bridge id)style forKey:(id)kCTParagraphStyleAttributeName ];
+        
+        // set attributes to attributed string
+        [attrString addAttributes:attributes range:NSMakeRange(0, attrString.length)];
+        
+        CFRelease(style);
+        
+        //生成CTFramesetterRef对象
+        CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)attrString);
+        CGRect drawingRect = CGRectMake(0, 0, width, 1000);  //这里的高要设置足够大
+        
+        //然后创建一个CGPath对象，这个Path对象用于表示可绘制区域坐标值、长宽。
+        CGMutablePathRef path = CGPathCreateMutable();
+        CGPathAddRect(path, NULL, drawingRect);
+        
+        
+        CTFrameRef textFrame = CTFramesetterCreateFrame(framesetter,CFRangeMake(0,0), path, NULL);
+        CGPathRelease(path);
+        CFRelease(framesetter);
+        
+        NSArray *linesArray = (NSArray *) CTFrameGetLines(textFrame);
+        
+        CGPoint origins[[linesArray count]];
+        CTFrameGetLineOrigins(textFrame, CFRangeMake(0, 0), origins);
+        
+        int line_y = (int) origins[[linesArray count] -1].y;  //最后一行line的原点y坐标
+        
+        CGFloat ascent;
+        CGFloat descent;
+        CGFloat leading;
+        
+        CTLineRef line = (__bridge CTLineRef) [linesArray objectAtIndex:[linesArray count]-1];
+        CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+        
+        total_height = 1000 - line_y + (int) descent +1;    //+1为了纠正descent转换成int小数点后舍去的值
+        
+        CFRelease(textFrame);
+
+    }
     
     return total_height;
     

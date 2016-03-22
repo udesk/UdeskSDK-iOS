@@ -355,7 +355,7 @@ static NSUInteger UDVisibleAlertsCount = 0;
             typeof (self) strongSelf = weakSelf;
             [strongSelf performBlocks:PROPERTY(didDismissBlocks) withAction:strongSelf.executedAlertAction];
         };
-
+        
         [controller presentViewController:alertController animated:animated completion:^{
             // Bild lifetime of self to the controller.
             // Will not be called if presenting fails because another present/dismissal already happened during that runloop.
@@ -375,6 +375,8 @@ static NSUInteger UDVisibleAlertsCount = 0;
             [self.alertView show];
             [self moveSheetToWeakStorage];
         }
+        
+        if (completion) completion();
     }
     [self setIsShowingAlert:YES];
 }

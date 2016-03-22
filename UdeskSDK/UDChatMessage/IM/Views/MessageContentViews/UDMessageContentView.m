@@ -330,6 +330,8 @@
     }
     else if (message.messageType == UDMessageMediaTypeRich) {
         
+        _textLabel.textColor = Config.agentTextColor;
+        
         _textLabel.text = message.text;
         if (message.richURLDictionary.count>0) {
 
@@ -362,17 +364,6 @@
     //需要添加链接字符串的正则表达式：http:// (开发者可以根据自身需求添加正则)
     NSString *regex = @"http(s)?://([A-Za-z0-9._-]+(/)?)*";
     return regex;
-}
-
-//设置当前链接文本的颜色
-- (UIColor *)linkColorWithUDLabel:(UDLabel *)udLabel
-{
-    return [UIColor blueColor];
-}
-//设置当前文本手指经过的颜色
-- (UIColor *)passColorWithUDLabel:(UDLabel *)udLabel
-{
-    return [UIColor lightGrayColor];
 }
 
 - (void)configureVoiceDurationLabelFrameWithBubbleFrame:(CGRect)bubbleFrame {

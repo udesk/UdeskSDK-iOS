@@ -144,22 +144,33 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
 //解析客服信息
 - (UDAgentModel *)resolvingAgentData:(NSDictionary *)responseObject {
 
-    NSDictionary *result = [responseObject objectForKey:@"result"];
-    
-    NSDictionary *agent = [result objectForKey:@"agent"];
-    
-    UDAgentModel *agentModel = [[UDAgentModel alloc] initWithContentsOfDic:agent];
-    
-    agentModel.code = [[result objectForKey:@"code"] integerValue];
-    
-    agentModel.message = [result objectForKey:@"message"];
-    
-    if (agentModel.code == 2000) {
+    UDAgentModel *agentModel;
+
+    if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
         
-        NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",agentModel.nick];
+        NSDictionary *result = [responseObject objectForKey:@"result"];
         
-        agentModel.message = describeTieleStr;
+        NSDictionary *agent = [result objectForKey:@"agent"];
         
+        agentModel = [[UDAgentModel alloc] initWithContentsOfDic:agent];
+        
+        agentModel.code = [[result objectForKey:@"code"] integerValue];
+        
+        agentModel.message = [result objectForKey:@"message"];
+        
+        if (agentModel.code == 2000) {
+            
+            NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",agentModel.nick];
+            
+            agentModel.message = describeTieleStr;
+            
+        }
+        
+    }
+    else {
+    
+        agentModel = [[UDAgentModel alloc] initWithContentsOfDic:responseObject];
+        agentModel.code = [[responseObject objectForKey:@"code"] integerValue];
     }
     
     return agentModel;

@@ -12,17 +12,9 @@
 #import "UDChatViewController.h"
 #import "UDFoundationMacro.h"
 #import "UDTools.h"
+#import "UDAlertController.h"
 
-typedef enum : NSUInteger {
-    
-    UDSDKDemoManagerAgentId,
-    UDSDKDemoManagerGroupId,
-    UDSDKDemoManagerSDKVersion,
-    UDSDKDemoManagerAgentMenu,
-    
-} UDSDKDemoManager;
-
-@interface UDTableViewController () <UIAlertViewDelegate>
+@interface UDTableViewController ()
 
 @property (nonatomic, strong) NSArray *udeskOtherApiArray;
 
@@ -93,12 +85,22 @@ typedef enum : NSUInteger {
             
             NSString *title = @"输入一个客服 id 进行指定分配";
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-            alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+            UDAlertController *inputAgentIdAlert = [UDAlertController alertWithTitle:title message:nil];
+            __weak UDAlertController *weakInputAgentIdAlert = inputAgentIdAlert;
             
-            alertView.tag = 1000+UDSDKDemoManagerAgentId;
+            [inputAgentIdAlert addCloseActionWithTitle:@"确定" Handler:^(UDAlertAction * _Nonnull action) {
+
+                [weakInputAgentIdAlert.textField resignFirstResponder];
+                UDChatViewController *chat = [[UDChatViewController alloc] init];
+                
+                chat.agent_id = weakInputAgentIdAlert.textField.text;
+                
+                [self.navigationController pushViewController:chat animated:YES];
+                
+            }];
+            [inputAgentIdAlert addTextFieldWithConfigurationHandler:nil];
             
-            [alertView show];
+            [inputAgentIdAlert showWithSender:nil controller:nil animated:YES completion:NULL];
             
             break;
         }
@@ -106,18 +108,27 @@ typedef enum : NSUInteger {
             
             NSString *title = @"输入一个客服组 id 进行指定分配";
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-            alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+            UDAlertController *inputGroupIdAlert = [UDAlertController alertWithTitle:title message:nil];
+            __weak UDAlertController *weakInputGroupIdAlert = inputGroupIdAlert;
             
-            alertView.tag = 1000+UDSDKDemoManagerGroupId;
+            [inputGroupIdAlert addCloseActionWithTitle:@"确定" Handler:^(UDAlertAction * _Nonnull action) {
+                
+                [weakInputGroupIdAlert.textField resignFirstResponder];
+                UDChatViewController *chat = [[UDChatViewController alloc] init];
+                
+                chat.agent_id = weakInputGroupIdAlert.textField.text;
+                
+                [self.navigationController pushViewController:chat animated:YES];
+                
+            }];
+            [inputGroupIdAlert addTextFieldWithConfigurationHandler:nil];
             
-            [alertView show];
+            [inputGroupIdAlert showWithSender:nil controller:nil animated:YES completion:NULL];
             
             break;
         }
         case 2: {
             
-
             UDAgentNavigationMenu *agentMenu = [[UDAgentNavigationMenu alloc] init];
             
             [self.navigationController pushViewController:agentMenu animated:YES];
@@ -130,67 +141,15 @@ typedef enum : NSUInteger {
             
             NSString *title = [NSString stringWithFormat:@"当前Udesk SDK 版本号是：%@ ",[UDManager udeskSDKVersion]];
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-            
-            alertView.tag = 1000+UDSDKDemoManagerSDKVersion;
-            
-            [alertView show];
+            UDAlertController *notNetworkAlert = [UDAlertController alertWithTitle:title message:nil];
+            [notNetworkAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+            [notNetworkAlert showWithSender:nil controller:nil animated:YES completion:NULL];
             
             break;
         }
             
         default:
             break;
-    }
-    
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-
-    if (buttonIndex == 1) {
-
-        switch (alertView.tag) {
-            case 1000+UDSDKDemoManagerAgentId: {
-                
-                NSString *agent_id = [alertView textFieldAtIndex:0].text;
-                
-                UDChatViewController *chat = [[UDChatViewController alloc] init];
-                
-                chat.agent_id = agent_id;
-                
-                [self.navigationController pushViewController:chat animated:YES];
-                
-                break;
-            }
-            case 1000+UDSDKDemoManagerGroupId: {
-                
-                NSString *group_id = [alertView textFieldAtIndex:0].text;
-                
-                UDChatViewController *chat = [[UDChatViewController alloc] init];
-                
-                chat.group_id = group_id;
-                
-                [self.navigationController pushViewController:chat animated:YES];
-                
-                break;
-            }
-            case 1000+UDSDKDemoManagerAgentMenu:{
-                
-                
-                
-                break;
-            }
-            case 1000+UDSDKDemoManagerSDKVersion:{
-                
-                
-                
-                break;
-                
-            }
-            default:
-                break;
-        }
-    
     }
     
 }
@@ -206,6 +165,17 @@ typedef enum : NSUInteger {
         self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     }
 
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    if (ud_isIOS6) {
+        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+    } else {
+        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+    }
 }
 
 /*

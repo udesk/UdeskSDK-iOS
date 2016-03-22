@@ -22,6 +22,7 @@
 #import "UDFoundationMacro.h"
 #import "UdeskUtils.h"
 #import "NSArray+UDMessage.h"
+#import "UDHpple.h"
 
 @interface UDChatViewModel()<UDManagerDelegate>
 
@@ -200,7 +201,6 @@
     }
     
     if (agentModel.code == 2000) {
-        //
         //获取用户信息
         [UDManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
             
@@ -218,6 +218,10 @@
     else if (agentModel.code == 2002) {
         
         [self agentNotOnline];
+    }
+    else if (agentModel.code == 5050||agentModel.code == 5060) {
+        
+        [self notExistAgent];
     }
     
 }
@@ -340,26 +344,35 @@
     NSString *cancelButtonTitle = getUDLocalizedString(@"取消");
     NSString *ticketButtonTitle = getUDLocalizedString(@"留言");
     
-    UDAlertController *leaveOrTicket = [UDAlertController alertWithTitle:title message:message];
-    [leaveOrTicket addCloseActionWithTitle:cancelButtonTitle Handler:NULL];
+    UDAlertController *notOnlineAlert = [UDAlertController alertWithTitle:title message:message];
+    [notOnlineAlert addCloseActionWithTitle:cancelButtonTitle Handler:NULL];
     
-    [leaveOrTicket addAction:[UDAlertAction actionWithTitle:ticketButtonTitle handler:^(UDAlertAction * _Nonnull action) {
+    [notOnlineAlert addAction:[UDAlertAction actionWithTitle:ticketButtonTitle handler:^(UDAlertAction * _Nonnull action) {
         
         if ([self.delegate respondsToSelector:@selector(clickSendOffLineTicket)]) {
             [self.delegate clickSendOffLineTicket];
         }
     }]];
     
-    [leaveOrTicket showWithSender:nil controller:nil animated:YES completion:NULL];
+    [notOnlineAlert showWithSender:nil controller:nil animated:YES completion:NULL];
     
 }
 
 //无网络Alert
 - (void)netWorkDisconnectAlertView {
     
-    UDAlertController *leaveOrTicket = [UDAlertController alertWithTitle:nil message:@"网络断开连接，请先连接网络"];
-    [leaveOrTicket addCloseActionWithTitle:@"确定" Handler:NULL];
-    [leaveOrTicket showWithSender:nil controller:nil animated:YES completion:NULL];
+    UDAlertController *notNetworkAlert = [UDAlertController alertWithTitle:nil message:@"网络断开连接，请先连接网络"];
+    [notNetworkAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+    [notNetworkAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+}
+
+//不存在客服或客服组
+- (void)notExistAgent {
+
+    UDAlertController *notExistAgentAlert = [UDAlertController alertWithTitle:nil message:self.agentModel.message];
+    [notExistAgentAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+    [notExistAgentAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+
 }
 
 #pragma mark - db消息
@@ -383,9 +396,11 @@
     message.messageStatus = [[dbMessage objectForKey:@"sendflag"] integerValue];
     message.timestamp = [UDTools dateFromString:[dbMessage objectForKey:@"replied_at"]];
     
+    NSString *content = [dbMessage objectForKey:@"content"];
+    
     switch (message.messageType) {
         case UDMessageMediaTypeText:
-            message.text = [UDTools receiveTextEmoji:[dbMessage objectForKey:@"content"]];
+            message.text = [UDTools receiveTextEmoji:content];
             
             break;
         case UDMessageMediaTypePhoto:{
@@ -403,7 +418,44 @@
             break;
         case UDMessageMediaTypeRedirect:{
             
-            message.text = [dbMessage objectForKey:@"content"];
+            message.text = content;
+            
+            break;
+        }
+        case UDMessageMediaTypeRich: {
+        
+            NSData *htmlData = [content dataUsingEncoding:NSUTF8StringEncoding];
+            UDHpple *xpathParser = [[UDHpple alloc] initWithHTMLData:htmlData];
+            
+            NSArray *dataPArray = [xpathParser searchWithXPathQuery:@"//p"];
+            NSArray *dataAArray = [xpathParser searchWithXPathQuery:@"//a"];
+            
+            for (UDHppleElement *happleElement in dataPArray) {
+                
+                if ([UDTools isBlankString:message.text]) {
+                    message.text = happleElement.content;
+                }
+                else {
+                    
+                    message.text = [NSString stringWithFormat:@"%@\n",message.text];
+                    message.text = [message.text stringByAppendingString:happleElement.content];
+                }
+                
+            }
+            
+            NSMutableDictionary *richURLDictionary = [NSMutableDictionary dictionary];
+            NSMutableArray *richContetnArray = [NSMutableArray array];
+            
+            for (UDHppleElement *happleElement in dataAArray) {
+                
+                [richURLDictionary setObject:[NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]] forKey:happleElement.content];
+                [richContetnArray addObject:happleElement.content];
+                
+                message.richArray = [NSArray arrayWithArray:richContetnArray];
+                
+                message.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
+                
+            }
             
             break;
         }
@@ -431,12 +483,19 @@
     if (self.agentModel.code == 2002) {
         
         [self agentNotOnline];
-    } else if (self.agentModel.code == 2003) {
+    }
+    else if (self.agentModel.code == 2003) {
         
         [self netWorkDisconnectAlertView];
-    } else if (self.agentModel.code == 2001) {
+    }
+    else if (self.agentModel.code == 2001) {
         [self queueStatus];
     }
+    else if (self.agentModel.code == 5050||self.agentModel.code == 5060) {
+        
+        [self notExistAgent];
+    }
+
 }
 
 #pragma mark - 刷新Tableview

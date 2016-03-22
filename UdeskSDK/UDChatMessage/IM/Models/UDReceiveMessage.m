@@ -181,7 +181,15 @@
         
         for (UDHppleElement *happleElement in dataPArray) {
             
-            message.text = happleElement.content;
+            if ([UDTools isBlankString:message.text]) {
+                message.text = happleElement.content;
+            }
+            else {
+            
+                message.text = [NSString stringWithFormat:@"%@\n",message.text];
+                message.text = [message.text stringByAppendingString:happleElement.content];
+            }
+            
         }
         
         NSMutableDictionary *richURLDictionary = [NSMutableDictionary dictionary];
@@ -201,6 +209,7 @@
         message.messageType = UDMessageMediaTypeRich;
         
         NSArray *textDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeRich]];
+        
         [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
         
         if (block) {
