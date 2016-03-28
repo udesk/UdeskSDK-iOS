@@ -206,20 +206,29 @@
             }
             else {
                 
-                self.menuTitleLabel.text = nil;
-                
-                self.backButton.hidden = YES;
-                
-                UDChatViewController *chat = [[UDChatViewController alloc] init];
-                
-                chat.backRootVc = YES;
-                
-                [self.navigationController pushViewController:chat animated:NO];
+                [self pushChatViewController];
             }
             
         }
+        else {
+        
+            [self pushChatViewController];
+        }
         
     }];
+}
+
+- (void)pushChatViewController {
+
+    self.menuTitleLabel.text = nil;
+    
+    self.backButton.hidden = YES;
+    
+    UDChatViewController *chat = [[UDChatViewController alloc] init];
+    
+    chat.backRootVc = YES;
+    
+    [self.navigationController pushViewController:chat animated:NO];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

@@ -139,34 +139,35 @@
                 NSString *nick = [[[responseObject objectForKey:@"result"] objectForKey:@"agent"] objectForKey:@"nick"];
                 
                 message.text = [NSString stringWithFormat:@"客服转接成功，%@ 为您服务",nick];
-            }
-            
-            //存储转移信息
-            NSArray *textDBArray = @[message.text,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeCenter],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeRedirect]];
-            
-            [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
-            //block传出
-            if (block) {
-                block(message);
-            }
-            //解析客服数据
-            NSDictionary *result = [responseObject objectForKey:@"result"];
-            UDAgentModel *agentModel = [[UDAgentModel alloc] initWithContentsOfDic:[result objectForKey:@"agent"]];
-            
-            agentModel.code = [[result objectForKey:@"code"] integerValue];
-            
-            agentModel.message = [result objectForKey:@"message"];
-            
-            if (agentModel.code == 2000) {
                 
-                NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",agentModel.nick];
+                //存储转移信息
+                NSArray *textDBArray = @[message.text,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeCenter],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeRedirect]];
                 
-                agentModel.message = describeTieleStr;
+                [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
+                //block传出
+                if (block) {
+                    block(message);
+                }
+                //解析客服数据
+                NSDictionary *result = [responseObject objectForKey:@"result"];
+                UDAgentModel *agentModel = [[UDAgentModel alloc] initWithContentsOfDic:[result objectForKey:@"agent"]];
                 
-            }
-            
-            if (_udAgentBlock) {
-                _udAgentBlock(agentModel);
+                agentModel.code = [[result objectForKey:@"code"] integerValue];
+                
+                agentModel.message = [result objectForKey:@"message"];
+                
+                if (agentModel.code == 2000) {
+                    
+                    NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",agentModel.nick];
+                    
+                    agentModel.message = describeTieleStr;
+                    
+                }
+                
+                if (_udAgentBlock) {
+                    _udAgentBlock(agentModel);
+                }
+
             }
             
         }];

@@ -88,16 +88,31 @@
             UDAlertController *inputAgentIdAlert = [UDAlertController alertWithTitle:title message:nil];
             __weak UDAlertController *weakInputAgentIdAlert = inputAgentIdAlert;
             
-            [inputAgentIdAlert addCloseActionWithTitle:@"确定" Handler:^(UDAlertAction * _Nonnull action) {
-
+            [inputAgentIdAlert addAction:[UDAlertAction actionWithTitle:@"确定" style:UDAlertActionStyleDefault handler:^(UDAlertAction * _Nonnull action) {
+                
                 [weakInputAgentIdAlert.textField resignFirstResponder];
-                UDChatViewController *chat = [[UDChatViewController alloc] init];
                 
-                chat.agent_id = weakInputAgentIdAlert.textField.text;
+                if (weakInputAgentIdAlert.textField.text.length>0) {
+                    
+                    UDChatViewController *chat = [[UDChatViewController alloc] init];
+                    
+                    chat.agent_id = weakInputAgentIdAlert.textField.text;
+                    
+                    [self.navigationController pushViewController:chat animated:YES];
+
+                }
+                else {
+                    
+                    UDAlertController *completionAlert = [UDAlertController alertWithTitle:nil message:@"请正确输入id"];
+                    [completionAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+                    
+                    [completionAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+                }
+
                 
-                [self.navigationController pushViewController:chat animated:YES];
-                
-            }];
+            }]];
+            
+            [inputAgentIdAlert addCloseActionWithTitle:@"取消" Handler:nil];
             [inputAgentIdAlert addTextFieldWithConfigurationHandler:nil];
             
             [inputAgentIdAlert showWithSender:nil controller:nil animated:YES completion:NULL];
@@ -111,16 +126,32 @@
             UDAlertController *inputGroupIdAlert = [UDAlertController alertWithTitle:title message:nil];
             __weak UDAlertController *weakInputGroupIdAlert = inputGroupIdAlert;
             
-            [inputGroupIdAlert addCloseActionWithTitle:@"确定" Handler:^(UDAlertAction * _Nonnull action) {
+            [inputGroupIdAlert addAction:[UDAlertAction actionWithTitle:@"确定" style:UDAlertActionStyleDefault handler:^(UDAlertAction * _Nonnull action) {
                 
                 [weakInputGroupIdAlert.textField resignFirstResponder];
-                UDChatViewController *chat = [[UDChatViewController alloc] init];
                 
-                chat.agent_id = weakInputGroupIdAlert.textField.text;
                 
-                [self.navigationController pushViewController:chat animated:YES];
+                if (weakInputGroupIdAlert.textField.text.length>0) {
+                    
+                    UDChatViewController *chat = [[UDChatViewController alloc] init];
+                    
+                    chat.group_id = weakInputGroupIdAlert.textField.text;
+                    
+                    [self.navigationController pushViewController:chat animated:YES];
+                }
+                else {
                 
-            }];
+                    UDAlertController *completionAlert = [UDAlertController alertWithTitle:nil message:@"请正确输入id"];
+                    [completionAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+                    
+                    [completionAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+                }
+                
+                
+            }]];
+             
+            [inputGroupIdAlert addCloseActionWithTitle:@"取消" Handler:nil];
+             
             [inputGroupIdAlert addTextFieldWithConfigurationHandler:nil];
             
             [inputGroupIdAlert showWithSender:nil controller:nil animated:YES completion:NULL];

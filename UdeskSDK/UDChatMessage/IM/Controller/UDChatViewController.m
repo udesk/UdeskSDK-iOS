@@ -33,9 +33,8 @@
 #import "UdeskUtils.h"
 #import "NSArray+UDMessage.h"
 #import "UDTools.h"
-#import "UDTableViewController.h"
 #import "UIImage+UDMessage.h"
-#import "UDAgentNavigationMenu.h"
+#import "ViewController.h"
 
 #define UDTitleLength  UD_SCREEN_WIDTH>320?200:170
 
@@ -113,7 +112,7 @@
     
     //返回到指定控制器
     for (UIViewController *controller in self.navigationController.viewControllers) {
-        if ([controller isKindOfClass:[UDTableViewController class]]) {//self替换成要返回的控制器
+        if ([controller isKindOfClass:[ViewController class]]) {//self替换成要返回的控制器
             [self.navigationController popToViewController:controller animated:YES];
         }
     }

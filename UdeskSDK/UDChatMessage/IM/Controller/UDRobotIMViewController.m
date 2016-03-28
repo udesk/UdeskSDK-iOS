@@ -12,7 +12,7 @@
 #import "UdeskUtils.h"
 #import "UDManager.h"
 #import "UDAlertController.h"
-#import "UDChatViewController.h"
+#import "UDAgentNavigationMenu.h"
 
 @interface UDRobotIMViewController ()
 
@@ -106,9 +106,9 @@
 
 - (void)transferButtonAction {
 
-    UDChatViewController *chatMsg = [[UDChatViewController alloc] init];
+    UDAgentNavigationMenu *agentMenu = [[UDAgentNavigationMenu alloc] init];
     
-    [self.navigationController pushViewController:chatMsg animated:YES];
+    [self.navigationController pushViewController:agentMenu animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

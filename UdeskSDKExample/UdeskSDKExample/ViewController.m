@@ -89,20 +89,26 @@
     NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
     
     
-    NSDictionary *parameters = @{
-                                 @"user": @{
-                                         @"sdk_token": sdk_token,
-                                         @"nick_name": nick_name
-                                         }
-                                 };
+//    NSDictionary *parameters = @{
+//                                 @"user": @{
+//                                         @"sdk_token": sdk_token,
+//                                         @"nick_name": nick_name,
+//                                         @"cellphone":@"18888888888",
+//                                         @"weixin_id":@"xiaoming888",
+//                                         @"weibo_name":@"xmwb888",
+//                                         @"qq":@"8888888",
+//                                         @"email":@"xiaoming@qq.com",
+//                                         @"description":@"用户描述",
+//                                         }
+//                                 };
     
     
-//   NSDictionary *parameters = @{
-//                                     @"user": @{
-//                                             @"sdk_token": @"zhangmian8890909090",
-//                                             @"nick_name": @"张勉"
-//                                             }
-//                                     };
+   NSDictionary *parameters = @{
+                                     @"user": @{
+                                             @"sdk_token": @"zhangmian8890909090",
+                                             @"nick_name": @"张勉"
+                                             }
+                                     };
     
     //创建用户
     [UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {
@@ -147,6 +153,29 @@
     UDTableViewController *udTab = [[UDTableViewController alloc] init];
     
     [self.navigationController pushViewController:udTab animated:YES];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (ud_isIOS6) {
+        self.navigationController.navigationBar.tintColor = Config.iMNavigationColor;
+    } else {
+        self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.iMBackButtonColor;
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    
+    if (ud_isIOS6) {
+        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+    } else {
+        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+    }
     
 }
 
