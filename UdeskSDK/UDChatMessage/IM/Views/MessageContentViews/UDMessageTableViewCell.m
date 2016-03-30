@@ -65,7 +65,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
 }
 #pragma mark - 是否显示Time的label
 - (void)configureTimestamp:(BOOL)displayTimestamp atMessage:(UDMessage *)message {
-
+    
     self.displayTimestamp = displayTimestamp;
     self.timestampLabel.hidden = !self.displayTimestamp;
     if (displayTimestamp) {
@@ -108,11 +108,12 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             } else {
                 _headImageView.image = [UIImage ud_defaultCustomerImage];
             }
-
+            
             break;
         case UDMessageTypeReceiving:
             
             _headImageView.image = [UIImage ud_defaultAgentImage];
+            
             break;
             
         default:
@@ -124,7 +125,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
 #pragma mark - 配置需要显示什么消息内容，比如语音、文字、图片，并添加点击事件
 - (void)configureMessageBubbleViewWithMessage:(UDMessage *)message {
     UDMessageMediaType currentMediaType = message.messageType;
-
+    
     for (UIGestureRecognizer *gesTureRecognizer in self.messageContentView.bubbleImageView.gestureRecognizers) {
         gesTureRecognizer.delegate = self;
         [self.messageContentView.bubbleImageView removeGestureRecognizer:gesTureRecognizer];
@@ -140,7 +141,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             [self.messageContentView.photoImageView addGestureRecognizer:tapGestureRecognizer];
             break;
         }
-
+            
         case UDMessageMediaTypeVoice: {
             UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sigleTapGestureRecognizerHandle:)];
             tapGestureRecognizer.delegate = self;
@@ -148,7 +149,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             
             break;
         }
-
+            
         default:
             break;
     }
@@ -182,7 +183,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
                 }
                 break;
             }
-
+                
             default:
                 break;
         }
@@ -240,7 +241,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
     self.textLabel.hidden = YES;
     self.detailTextLabel.text = nil;
     self.detailTextLabel.hidden = YES;
-
+    
     
     self.backgroundColor = [UIColor clearColor];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -274,40 +275,17 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             [self.contentView bringSubviewToFront:timestampLabel];
             
             _timestampLabel = timestampLabel;
-
+            
         }
         
-        // 2、配置头像
-        
-        CGRect headButtonFrame;
-        switch (message.messageFrom) {
-            case UDMessageTypeSending:
-                
-                headButtonFrame = CGRectMake(kUDHeadShowX,
-                                             kUDHeadShowY + (displayTimestamp ? (kUDTimeStampLabelHeight + kUDLabelPadding * 2) : 0),
-                                             kUDHeadImageSize,
-                                             kUDHeadImageSize);
-                
-                break;
-            case UDMessageTypeReceiving:
-                headButtonFrame = CGRectMake(UD_SCREEN_WIDTH - kUDHeadImageSize - kUDHeadShowX,
-                                             kUDHeadShowY + (displayTimestamp ? (kUDTimeStampLabelHeight + kUDLabelPadding * 2) : 0),
-                                             kUDHeadImageSize,
-                                             kUDHeadImageSize);
-                break;
-            default:
-                break;
-  
-        }
-                        
         // 初始化头像
-        UIImageView *headImage = [[UIImageView alloc] initWithFrame:headButtonFrame];
+        UIImageView *headImage = [[UIImageView alloc] initWithFrame:CGRectZero];
         [self.contentView addSubview:headImage];
         self.headImageView = headImage;
         
         // 3、配置需要显示什么消息内容，比如语音、文字、图片
         if (!self.messageContentView) {
-
+            
             // 初始化消息内容view
             UDMessageContentView *messageBubbleView = [[UDMessageContentView alloc] initWithFrame:CGRectZero message:message];
             [self.contentView addSubview:messageBubbleView];
@@ -315,7 +293,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             self.messageContentView = messageBubbleView;
             
         }
-    
+        
     }
     return self;
 }
@@ -339,34 +317,35 @@ static CGFloat const kUDHeadImageSize = 40.0f;
     
     // 布局头像
     CGFloat layoutOriginY = kUDHeadShowY + (self.displayTimestamp ? 19 : 0);
-    CGRect headImageViewFrame = self.headImageView.frame;
-    headImageViewFrame.origin.y = layoutOriginY;
-    
-    if ([self bubbleMessageType] == UDMessageTypeReceiving) {
-        headImageViewFrame.origin.x = kUDHeadShowX;
-    }
-    else if ([self bubbleMessageType] == UDMessageTypeSending) {
-    
-        headImageViewFrame.origin.x = (CGRectGetWidth(self.bounds) - kUDHeadShowX - kUDHeadImageSize);
-    }
-
-    self.headImageView.frame = headImageViewFrame;
     
     // 布局消息内容的View
     CGFloat bubbleX = 0.0f;
     CGFloat offsetX = 0.0f;
-    if ([self bubbleMessageType] == UDMessageTypeReceiving) {
-        bubbleX = kUDHeadImageSize + kUDHeadShowX * 2;
-    } else if ([self bubbleMessageType] == UDMessageTypeSending) {
-        offsetX = kUDHeadImageSize + kUDHeadShowX * 2;
+    
+    switch ([self bubbleMessageType]) {
+        case UDMessageTypeReceiving:
+            
+            self.headImageView.frame = CGRectMake(kUDHeadShowX, layoutOriginY, kUDHeadImageSize, kUDHeadImageSize);
+            
+            bubbleX = kUDHeadImageSize + kUDHeadShowX * 2;
+            break;
+        case UDMessageTypeSending:
+            
+            self.headImageView.frame = CGRectMake(UD_SCREEN_WIDTH - kUDHeadImageSize - kUDHeadShowX, layoutOriginY, kUDHeadImageSize, kUDHeadImageSize);
+            
+            offsetX = kUDHeadImageSize + kUDHeadShowX * 2;
+            break;
+            
+        default:
+            break;
     }
     
     CGFloat timeStampLabelNeedHeight = (self.displayTimestamp ? (kUDTimeStampLabelHeight + kUDLabelPadding) : 0);
     
     CGRect bubbleMessageViewFrame = CGRectMake(bubbleX,
-                              timeStampLabelNeedHeight,
-                              CGRectGetWidth(self.contentView.bounds) - bubbleX - offsetX,
-                              CGRectGetHeight(self.contentView.bounds) - timeStampLabelNeedHeight);
+                                               timeStampLabelNeedHeight,
+                                               CGRectGetWidth(self.contentView.bounds) - bubbleX - offsetX,
+                                               CGRectGetHeight(self.contentView.bounds) - timeStampLabelNeedHeight);
     self.messageContentView.frame = bubbleMessageViewFrame;
     
 }
@@ -395,7 +374,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 
