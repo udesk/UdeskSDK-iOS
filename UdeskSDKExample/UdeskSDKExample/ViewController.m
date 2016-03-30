@@ -89,26 +89,20 @@
     NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
     
     
-//    NSDictionary *parameters = @{
-//                                 @"user": @{
-//                                         @"sdk_token": sdk_token,
-//                                         @"nick_name": nick_name,
-//                                         @"cellphone":@"18888888888",
-//                                         @"weixin_id":@"xiaoming888",
-//                                         @"weibo_name":@"xmwb888",
-//                                         @"qq":@"8888888",
-//                                         @"email":@"xiaoming@qq.com",
-//                                         @"description":@"用户描述",
-//                                         }
-//                                 };
+    NSDictionary *parameters = @{
+                                 @"user": @{
+                                         @"sdk_token": sdk_token,
+                                         @"nick_name": nick_name,
+                                         }
+                                 };
     
     
-   NSDictionary *parameters = @{
-                                     @"user": @{
-                                             @"sdk_token": @"zhangmian8890909090",
-                                             @"nick_name": @"张勉"
-                                             }
-                                     };
+//   NSDictionary *parameters = @{
+//                                     @"user": @{
+//                                             @"sdk_token": @"zhangmian8890909090",
+//                                             @"nick_name": @"张勉"
+//                                             }
+//                                     };
     
     //创建用户
     [UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {
