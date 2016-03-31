@@ -95,14 +95,7 @@
                                          @"nick_name": nick_name,
                                          }
                                  };
-    
-    
-//   NSDictionary *parameters = @{
-//                                     @"user": @{
-//                                             @"sdk_token": @"zhangmian8890909090",
-//                                             @"nick_name": @"张勉"
-//                                             }
-//                                     };
+
     
     //创建用户
     [UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {
@@ -123,7 +116,7 @@
     UDFaqController *faq = [[UDFaqController alloc] init];
     
     [self.navigationController pushViewController:faq animated:YES];
-    
+
 }
 
 - (void)contactUsButtonAction {
