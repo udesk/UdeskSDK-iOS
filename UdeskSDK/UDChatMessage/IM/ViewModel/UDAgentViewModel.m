@@ -50,7 +50,7 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
         if (agentCode == 2001 && self.stopRequest == NO) {
             
             // 客服状态码等于2001 20s轮训一次
-            double delayInSeconds = 5.0f;
+            double delayInSeconds = 20.0f;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 
@@ -112,7 +112,7 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
         if (agentCode == 2001 && self.stopRequest == NO) {
             
             // 客服状态码等于2001 20s轮训一次
-            double delayInSeconds = 5.0f;
+            double delayInSeconds = 20.0f;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 
