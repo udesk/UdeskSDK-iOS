@@ -23,11 +23,15 @@ libsqlite3.tbd
 ```
 
 把SDK文件夹中的Udesk文件夹拖到你的工程里
-点击的你工程targets->Build Settings 搜索Other Linker Flags 加入 –lxml2 -ObjC，搜索header search paths 加入/usr/include/libxml2
+点击的你工程targets->Build Settings 
+搜索Other Linker Flags 加入 –lxml2 -ObjC，
+搜索header search paths 加入/usr/include/libxml2。
 
 .pch 引入 
+```
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
+```
 
 文件介绍
 
