@@ -71,7 +71,6 @@
     [otherAPIButton addTarget:self action:@selector(otherAPIButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:otherAPIButton];
     
-    
     [self setNewConfigUdesk];
     
 }

@@ -23,9 +23,11 @@ libsqlite3.tbd
 ```
 
 把SDK文件夹中的Udesk文件夹拖到你的工程里
-点击的你工程targets->Build Settings 搜索Other Linker Flags 加入 –lxml2 -ObjC
+点击的你工程targets->Build Settings 搜索Other Linker Flags 加入 –lxml2 -ObjC，搜索header search paths 加入/usr/include/libxml2
 
-.pch 引入 UDTools.h
+.pch 引入 
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 文件介绍
 
@@ -430,5 +432,25 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 + (void)survetVoteWithAgentId:(NSString *)agentId
                  withOptionId:(NSString *)optionId
                    completion:(void (^)(id responseObject, NSError *error))completion;
+
+/**
+*  获取后台配置的导航菜单
+*
+*  @param completion 回调结果
+*/
++ (void)getAgentNavigationMenu:(void (^)(id responseObject, NSError *error))completion;
+
+/**
+*  指定分配客服或客服组
+*
+*  注意：需要先调用createCustomer接口
+*
+*  @param agentId    客服id（选择客服组，则客服id可不填）
+*  @param groupId    客服组id（选择客服，则客服组id可不填）
+*  @param completion 回调结果
+*/
++ (void)assignAgentOrGroup:(NSString *)agentId
+                   groupID:(NSString *)groupId
+                completion:(void (^) (id responseObject,NSError *error))completion;
 
 ```
