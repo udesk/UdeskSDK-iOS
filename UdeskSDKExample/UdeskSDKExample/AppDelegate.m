@@ -30,7 +30,20 @@
     
     //    [UDManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
     
-    [UDManager initWithAppkey:@"6c37f775019907785d85c027e29dae4e" domianName:@"udesksdk.udesk.cn"];
+//    [UDManager initWithAppkey:@"6c37f775019907785d85c027e29dae4e" domianName:@"udesksdk.udesk.cn"];
+    
+//      [UDManager initWithAppkey:@"c18d023ff18902fdfdb6ce15a11ef47b" domianName:@"showshow.udesk.cn"];
+    
+//    [UDManager initWithAppkey:@"cc36f043f1e3bf71a0f73a51f4ac3fb5" domianName:@"rd-dota.udesk.cn"];
+    [UDManager initWithAppkey:@"3a4dc5e0cd39995448018c553048fdd4" domianName:@"reocar.udeskmonkey.com"];
+    
+//    [UDManager initWithAppkey:@"1646e2e722f888bad47c02723b14fce4" domianName:@"reocar.udesk10.com"];
+    
+//    [UDManager initWithAppkey:@"08be248375765077e0be8b8bbeb1f02f" domianName:@"udeskdemo.udesk.cn"];
+    
+//    [UDManager initWithAppkey:@"2f04e99ff44ec68165c585a209efdd6d" domianName:@"reocar.tiyanudesk.com"];
+    
+//    [UDManager initWithAppkey:@"399bcc3cf728f7a18a15c0d9fc50f38f" domianName:@"reocar.udesk20.com"];
     
     return YES;
 }
