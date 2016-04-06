@@ -20,13 +20,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-//    DomainKeyViewController *view = [[DomainKeyViewController alloc] init];
-//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:view];
-//    self.window.rootViewController = nav;
-    
-    ViewController *view = [[ViewController alloc] init];
+    DomainKeyViewController *view = [[DomainKeyViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:view];
     self.window.rootViewController = nav;
+    
+//    ViewController *view = [[ViewController alloc] init];
+//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:view];
+//    self.window.rootViewController = nav;
     
     //    [UDManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
     
@@ -35,7 +35,7 @@
 //      [UDManager initWithAppkey:@"c18d023ff18902fdfdb6ce15a11ef47b" domianName:@"showshow.udesk.cn"];
     
 //    [UDManager initWithAppkey:@"cc36f043f1e3bf71a0f73a51f4ac3fb5" domianName:@"rd-dota.udesk.cn"];
-    [UDManager initWithAppkey:@"3a4dc5e0cd39995448018c553048fdd4" domianName:@"reocar.udeskmonkey.com"];
+//    [UDManager initWithAppkey:@"3a4dc5e0cd39995448018c553048fdd4" domianName:@"reocar.udeskmonkey.com"];
     
 //    [UDManager initWithAppkey:@"1646e2e722f888bad47c02723b14fce4" domianName:@"reocar.udesk10.com"];
     

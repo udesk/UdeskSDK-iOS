@@ -11,6 +11,9 @@
 #import "UDViewExt.h"
 #import "ViewController.h"
 
+#define UD_DOMAIN        @"UD_DOMAIN"
+#define UD_KEY       @"UD_KEY"
+
 @interface DomainKeyViewController()
 
 @property (nonatomic, strong)UITextField *accountTextField;
@@ -42,7 +45,8 @@
     self.accountTextField.placeholder = @"请输入公司域名";
     self.accountTextField.clearButtonMode = UITextFieldViewModeAlways;
     self.accountTextField.textAlignment = NSTextAlignmentCenter;
-//    self.accountTextField.text = @"udesksdk.udesk.cn";
+    
+    self.accountTextField.text = [[NSUserDefaults standardUserDefaults] stringForKey:UD_DOMAIN];
     
     [self.view addSubview:self.accountTextField];
     
@@ -52,7 +56,7 @@
     self.passwordTextField.placeholder = @"请输入公司密钥";
     self.passwordTextField.clearButtonMode = UITextFieldViewModeAlways;
     self.passwordTextField.textAlignment = NSTextAlignmentCenter;
-//    self.passwordTextField.text = @"6c37f775019907785d85c027e29dae4e";
+    self.passwordTextField.text = [[NSUserDefaults standardUserDefaults] stringForKey:UD_KEY];
     
     [self.view addSubview:self.passwordTextField];
     
@@ -97,6 +101,9 @@
 
     if ([self checkInputValid]) {
         
+        [self setField:self.passwordTextField forKey:UD_KEY];
+        [self setField:self.accountTextField forKey:UD_DOMAIN];
+        
         [UDManager initWithAppkey:self.passwordTextField.text domianName:self.accountTextField.text];
         
         ViewController *vc = [[ViewController alloc] init];
@@ -104,6 +111,16 @@
         [self.navigationController pushViewController:vc animated:YES];
     }
     
+}
+
+- (void)setField:(UITextField *)field forKey:(NSString *)key
+{
+    if (field.text != nil) {
+        [[NSUserDefaults standardUserDefaults] setObject:field.text forKey:key];
+    }
+    else {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {

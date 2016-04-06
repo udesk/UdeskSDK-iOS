@@ -849,7 +849,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "e2543beb-2f20-4c8d-8dbb-2315447ca74c";
+				PROVISIONING_PROFILE = "0b94a6d6-558a-4ee7-99ed-ea5fa1c1586c";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -888,7 +888,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "e2543beb-2f20-4c8d-8dbb-2315447ca74c";
+				PROVISIONING_PROFILE = "0b94a6d6-558a-4ee7-99ed-ea5fa1c1586c";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -899,8 +899,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				GCC_PREFIX_HEADER = UdeskSDKExample/UdeskSDKPrefixHeader.pch;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = UdeskSDKExample/Info.plist;
@@ -916,7 +916,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e2543beb-2f20-4c8d-8dbb-2315447ca74c";
+				PROVISIONING_PROFILE = "0b94a6d6-558a-4ee7-99ed-ea5fa1c1586c";
 			};
 			name = Debug;
 		};
@@ -924,8 +924,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				GCC_PREFIX_HEADER = UdeskSDKExample/UdeskSDKPrefixHeader.pch;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = UdeskSDKExample/Info.plist;
@@ -941,7 +941,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e2543beb-2f20-4c8d-8dbb-2315447ca74c";
+				PROVISIONING_PROFILE = "0b94a6d6-558a-4ee7-99ed-ea5fa1c1586c";
 			};
 			name = Release;
 		};
