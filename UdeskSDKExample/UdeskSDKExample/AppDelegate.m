@@ -20,17 +20,17 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    DomainKeyViewController *view = [[DomainKeyViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:view];
-    self.window.rootViewController = nav;
-    
-//    ViewController *view = [[ViewController alloc] init];
+//    DomainKeyViewController *view = [[DomainKeyViewController alloc] init];
 //    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:view];
 //    self.window.rootViewController = nav;
     
+    ViewController *view = [[ViewController alloc] init];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:view];
+    self.window.rootViewController = nav;
+    
     //    [UDManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
     
-//    [UDManager initWithAppkey:@"6c37f775019907785d85c027e29dae4e" domianName:@"udesksdk.udesk.cn"];
+    [UDManager initWithAppkey:@"6c37f775019907785d85c027e29dae4e" domianName:@"udesksdk.udesk.cn"];
     
 //      [UDManager initWithAppkey:@"c18d023ff18902fdfdb6ce15a11ef47b" domianName:@"showshow.udesk.cn"];
     

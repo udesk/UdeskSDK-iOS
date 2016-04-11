@@ -34,7 +34,6 @@
 #import "NSArray+UDMessage.h"
 #import "UDTools.h"
 #import "UIImage+UDMessage.h"
-#import "ViewController.h"
 
 #define UDTitleLength  UD_SCREEN_WIDTH>320?200:170
 
@@ -74,49 +73,8 @@
     //网路状态的变换
     [self networkStatusChange];
     
-    //这里是根据指引客户选择客服组菜单添加的返回按钮。
-    if (self.backRootVc) {
-        
-        [self setBackNavigationItem];
-    }
 }
 
-#pragma mark - 设置返回按钮
-- (void)setBackNavigationItem {
-    
-    //返回按钮
-    UIButton * backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    backButton.frame = CGRectMake(0, 0, 70, 40);
-    [backButton setTitle:getUDLocalizedString(@"返回") forState:UIControlStateNormal];
-    
-    [backButton setImage:[UIImage ud_defaultBackImage] forState:UIControlStateNormal];
-    [backButton addTarget:self action:@selector(backButtonAction) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIBarButtonItem *closeNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
-    
-    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
-                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                       target:nil action:nil];
-    
-    // 调整 leftBarButtonItem 在 iOS7 下面的位置
-    if((FUDSystemVersion>=7.0)){
-        
-        negativeSpacer.width = -19;
-        self.navigationItem.leftBarButtonItems = @[negativeSpacer,closeNavigationItem];
-    }else
-        self.navigationItem.leftBarButtonItem = closeNavigationItem;
-    
-}
-#warning 如果你没有选择通过指引客户选择客服组，可以删除。如果选择了请替换UDTableViewController这个为你们自己的root vc
-- (void)backButtonAction {
-    
-    //返回到指定控制器
-    for (UIViewController *controller in self.navigationController.viewControllers) {
-        if ([controller isKindOfClass:[ViewController class]]) {//self替换成要返回的控制器
-            [self.navigationController popToViewController:controller animated:YES];
-        }
-    }
-}
 #pragma mark - 初始化视图
 - (void)initilzer {
     
