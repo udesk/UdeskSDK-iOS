@@ -91,7 +91,11 @@
     NSDictionary *parameters = @{
                                  @"user": @{
                                          @"sdk_token": sdk_token,
-                                         @"nick_name": nick_name,
+                                         @"nick_name":nick_name,
+                                         @"customer_field":@{
+                                                    @"TextField_390":@"测试测试"
+                                                 }
+                                         
                                          }
                                  };
 
