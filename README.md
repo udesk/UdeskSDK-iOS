@@ -111,7 +111,7 @@ status = 0;
 {
 comment = “测试测试”;      
 "content_type" = droplist; 
-"field_label" = "测试";   ———————————-用户自定义字段value
+"field_label" = "测试";  
 "field_name" = “SelectField_109";   ——————用户自定义字段key
 options =             (    
 {
@@ -123,8 +123,18 @@ requirment = 1;
 };
 }
 ```
-> 注意：field_name的value为用户自定义字段key field_label的value为用户自定义字段value
-把这个键值对添加到@“user”字典，客服就能看到用户自定义字段了
+> 使用:添加key值"customer_field" 类型为字典，根据返回的信息field_name的value 作为key，value根据需求定义。把这个键值对添加到customer_field。最后把customer_field添加到用户信息参数的user字典里
+  示例:
+NSDictionary *parameters = @{
+@"user": @{
+@"sdk_token": sdk_token,
+@"cellphone":cellphone,
+@"customer_field":@{
+@"SelectField_109":@"测试测试"
+}
+
+}
+};
 
 创建用户
 ```
