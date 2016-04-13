@@ -125,6 +125,7 @@ requirment = 1;
 ```
 > 使用:添加key值"customer_field" 类型为字典，根据返回的信息field_name的value 作为key，value根据需求定义。把这个键值对添加到customer_field。最后把customer_field添加到用户信息参数的user字典里
   示例:
+```
 NSDictionary *parameters = @{
 @"user": @{
 @"sdk_token": sdk_token,
@@ -135,6 +136,7 @@ NSDictionary *parameters = @{
 
 }
 };
+```
 
 创建用户
 ```
