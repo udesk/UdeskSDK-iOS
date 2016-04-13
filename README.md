@@ -137,7 +137,6 @@ NSDictionary *parameters = @{
 }
 };
 ```
-
 创建用户
 ```
 [UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {
