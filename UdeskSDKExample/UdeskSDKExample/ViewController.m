@@ -93,7 +93,8 @@
                                          @"sdk_token": sdk_token,
                                          @"nick_name":nick_name,
                                          @"customer_field":@{
-                                                    @"TextField_390":@"测试测试"
+                                                    @"TextField_390":@"测试测试",
+                                                    @"SelectField_455":@[@"1"]
                                                  }
                                          
                                          }
