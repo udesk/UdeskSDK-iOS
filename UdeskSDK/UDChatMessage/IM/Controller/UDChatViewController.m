@@ -95,13 +95,13 @@
     }
     
     // 初始化message tableView
-	UDMessageTableView *messageTableView = [[UDMessageTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    UDMessageTableView *messageTableView = [[UDMessageTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     messageTableView.delegate = self;
     messageTableView.dataSource = self;
     
     [self.view addSubview:messageTableView];
     [self.view sendSubviewToBack:messageTableView];
-	_messageTableView = messageTableView;
+    _messageTableView = messageTableView;
     
     //添加单击手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapChatTableView:)];
@@ -235,21 +235,22 @@
 
 #pragma mark - 请求客服数据
 - (void)requestAgentData {
-
+    
+    UDWEAKSELF
     if (![UDTools isBlankString:self.group_id]||![UDTools isBlankString:self.agent_id]) {
         
         [self.agentViewModel assignAgentOrGroup:self.agent_id groupID:self.group_id completion:^(UDAgentModel *agentModel, NSError *error) {
             
-            [self loadAgentDataReload:agentModel];
+            [weakSelf loadAgentDataReload:agentModel];
             
         }];
-
+        
     }
     else {
-    
+        
         [self.agentViewModel requestAgentModel:^(UDAgentModel *agentModel, NSError *error) {
             //装载客服数据
-            [self loadAgentDataReload:agentModel];
+            [weakSelf loadAgentDataReload:agentModel];
             
         }];
     }
@@ -298,7 +299,7 @@
 - (void)setNetWorkStatusChangeUI:(BOOL)isNetwork {
     
     dispatch_async(dispatch_get_main_queue(), ^{
-
+        
         self.chatViewModel.agentModel.code = isNetwork?2000:2003;
         self.messageInputView.agentCode = isNetwork?2000:2003;
         [self.agentStatusView agentOnlineOrNotOnline:isNetwork?@"available":@"notNetwork"];
@@ -309,7 +310,7 @@
 
 #pragma mark - 加载db数据
 - (void)loadDatabaseMessage {
-
+    
     [self.dataController getDatabaseHistoryMessage:^(NSArray *dbMessageArray) {
         //更新数据
         [self.chatViewModel viewModelWithDatabase:dbMessageArray];
@@ -350,7 +351,7 @@
     [self.agentStatusView agentOnlineOrNotOnline:presence];
     
     if ([presence isEqualToString:@"available"]) {
-
+        
         [UDTopAlertView showWithType:UDAlertTypeOnline text:getUDLocalizedString(@"客服上线了！") parentView:self.view];
     } else {
         
@@ -360,7 +361,7 @@
 }
 #pragma mark - 客户被转接了
 - (void)notificationRedirect:(UDAgentModel *)agentModel {
-
+    
     //装载客服数据
     [self loadAgentDataReload:agentModel];
 }
@@ -378,7 +379,7 @@
 
 #pragma mark - 离线发送表单
 - (void)clickSendOffLineTicket {
-
+    
     UDTicketViewController *offLineTicket = [[UDTicketViewController alloc] init];
     
     [self.navigationController pushViewController:offLineTicket animated:YES];
@@ -442,7 +443,7 @@
 #pragma mark - 显示功能面板
 - (void)layoutOtherMenuViewHiden:(BOOL)hide {
     //根据textViewInputViewType切换功能面板
-
+    
     [self.chatViewModel layoutOtherMenuViewHiden:hide
                                         ViewType:self.textViewInputViewType
                                         chatView:self.view
@@ -455,7 +456,7 @@
                                               self.textViewInputViewType = UDInputViewTypeNormal;
                                           }
                                       }];
-        
+    
 }
 #pragma mark - UDMessageInputView Delegate
 - (void)inputTextViewWillBeginEditing:(UDMessageTextView *)messageInputTextView {
@@ -479,10 +480,11 @@
 
 #pragma mark - 发送文字
 - (void)didSendTextAction:(NSString *)text {
-
+    
+    UDWEAKSELF
     [self.chatViewModel sendTextMessage:text completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI
-        [self sendMessageStatus:sendStatus message:message];
+        [weakSelf sendMessageStatus:sendStatus message:message];
     }];
     
     [self.messageInputView.inputTextView setText:nil];
@@ -544,10 +546,10 @@
 }
 //根据发送状态更新UI
 - (void)sendStatusConfigUI:(BOOL)sendStatus message:(UDMessage *)message {
-
+    
     UDWEAKSELF
     [self.chatViewModel.messageArray ud_each:^(UDMessage *oldMessage){
-    
+        
         if ([oldMessage.contentId isEqualToString:message.contentId]) {
             
             message.messageStatus = sendStatus?UDMessageSuccess:UDMessageFailed;
@@ -567,7 +569,7 @@
 
 #pragma mark - 点击图片
 - (void)didSelectedMultipleMediaAction {
-
+    
     self.textViewInputViewType = UDInputViewTypeShareMenu;
     [self layoutOtherMenuViewHiden:NO];
 }
@@ -582,12 +584,12 @@
 }
 #pragma mark - UDMessageInputViewDelegate
 - (void)prepareRecordingVoiceActionWithCompletion:(BOOL (^)(void))completion {
-
+    
     [self prepareRecordWithCompletion:completion];
 }
 //选择的发送图片方式
 - (void)sendImageWithSourceType:(UIImagePickerControllerSourceType)sourceType {
-
+    
     //打开图片选择器
     void (^PickerMediaBlock)(UIImage *image) = ^(UIImage *image) {
         if (image) {
@@ -600,14 +602,14 @@
 
 //开始录音
 - (void)didStartRecordingVoiceAction {
-
+    
     [self.voiceRecordHUD startRecordingHUDAtView:self.view];
     [self.voiceRecordHelper startRecordingWithStartRecorderCompletion:nil];
 }
 
 //取消录音
 - (void)didCancelRecordingVoiceAction {
-
+    
     UDWEAKSELF
     [self.voiceRecordHUD cancelRecordCompled:^(BOOL fnished) {
         weakSelf.voiceRecordHUD = nil;
@@ -617,7 +619,7 @@
 
 //录音完成
 - (void)didFinishRecoingVoiceAction {
-
+    
     if (self.isMaxTimeStop == NO) {
         [self finishRecorded];
     } else {
@@ -651,7 +653,7 @@
 
 #pragma mark - UDEmotionManagerView Delegate
 - (void)emojiViewDidPressDeleteButton:(UIButton *)deletebutton {
-
+    
     if (self.messageInputView.inputTextView.text.length > 0) {
         NSRange lastRange = [self.messageInputView.inputTextView.text rangeOfComposedCharacterSequenceAtIndex:self.messageInputView.inputTextView.text.length-1];
         self.messageInputView.inputTextView.text = [self.messageInputView.inputTextView.text substringToIndex:lastRange.location];
@@ -664,7 +666,7 @@
 }
 //点击表情面板的发送按钮
 - (void)didEmotionViewSendAction {
-
+    
     [self didSendTextAction:self.messageInputView.inputTextView.text];
 }
 
@@ -758,7 +760,7 @@
 - (void)dealloc {
     
     NSLog(@"UDMsgTableViewController销毁了");
-
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ClickResendMessage object:nil];
     _messageTableView.delegate = nil;
     _messageTableView.dataSource = nil;
@@ -770,7 +772,7 @@
     _photographyHelper = nil;
     _agentStatusView = nil;
     _agentViewModel = nil;
-
+    
 }
 
 @end
