@@ -34,10 +34,11 @@
 #import "NSArray+UDMessage.h"
 #import "UDTools.h"
 #import "UIImage+UDMessage.h"
+#import "UDReachability.h"
 
 #define UDTitleLength  UD_SCREEN_WIDTH>320?200:170
 
-@interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDChatTableViewDelegate,UDEmotionManagerViewDelegate,UDChatViewModelDelegate>
+@interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDEmotionManagerViewDelegate,UDChatViewModelDelegate,UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic, assign) UDInputViewType textViewInputViewType;
 
@@ -95,11 +96,17 @@
     
     // 初始化message tableView
 	UDMessageTableView *messageTableView = [[UDMessageTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-    messageTableView.chatTableViewDelegate = self;
+    messageTableView.delegate = self;
+    messageTableView.dataSource = self;
     
     [self.view addSubview:messageTableView];
     [self.view sendSubviewToBack:messageTableView];
 	_messageTableView = messageTableView;
+    
+    //添加单击手势
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapChatTableView:)];
+    
+    [messageTableView addGestureRecognizer:tap];
     
     // 设置Message TableView 的bottom
     CGFloat inputViewHeight = 50.0f;
@@ -123,21 +130,66 @@
     
     _messageInputView = inputView;
     
-    UDAgentStatusView *agentStatusView = [[UDAgentStatusView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-UDTitleLength)/2, 0, UDTitleLength, 44)];
+    UDAgentStatusView *agentStatusView = [[UDAgentStatusView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-UDTitleLength)/2, 20, UDTitleLength, 44)];
     
     self.navigationItem.titleView = agentStatusView;
     _agentStatusView = agentStatusView;
     
 }
-#pragma mark - UDChatTableViewDelegate
-//点击空白处隐藏键盘
-- (void)didTapChatTableView:(UITableView *)tableView {
-    
-    [self layoutOtherMenuViewHiden:YES];
-}
-//滑动视图
-- (void)scrollViewWillBeginDragging:(UIScrollView *)UIScrollView {
 
+#pragma mark - Table View Data Source
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [self.chatViewModel numberOfItemsInSection:section];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UDMessage * message = [self.chatViewModel objectAtIndexPath:indexPath.row];
+    
+    BOOL displayTimestamp = [self.chatViewModel shouldDisplayTimeForRowAtIndexPath:indexPath];
+    
+    static NSString *cellIdentifier = @"UDMessageTableViewCell";
+    
+    UDMessageTableViewCell *messageTableViewCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+    if (!messageTableViewCell) {
+        
+        messageTableViewCell = [[UDMessageTableViewCell alloc] initWithMessage:message displaysTimestamp:displayTimestamp reuseIdentifier:cellIdentifier];
+        
+        messageTableViewCell.delegate = self;
+    }
+    
+    messageTableViewCell.indexPath = indexPath;
+    
+    [messageTableViewCell configureCellWithMessage:message displaysTimestamp:displayTimestamp];
+    [messageTableViewCell setBackgroundColor:tableView.backgroundColor];
+    
+    return messageTableViewCell;
+}
+
+#pragma mark - Table View Delegate
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UDMessage *message = [self.chatViewModel objectAtIndexPath:indexPath.row];
+    
+    CGFloat calculateCellHeight = [self calculateCellHeightWithMessage:message atIndexPath:indexPath];
+    
+    return calculateCellHeight;
+}
+
+#pragma mark - 计算cell的高度
+- (CGFloat)calculateCellHeightWithMessage:(UDMessage *)message atIndexPath:(NSIndexPath *)indexPath {
+    CGFloat cellHeight = 0;
+    
+    BOOL displayTimestamp = [self.chatViewModel shouldDisplayTimeForRowAtIndexPath:indexPath];
+    
+    cellHeight = [UDMessageTableViewCell calculateCellHeightWithMessage:message displaysTimestamp:displayTimestamp];
+    
+    return cellHeight;
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
     //滑动表隐藏Menu
     UIMenuController *menu = [UIMenuController sharedMenuController];
     if (menu.isMenuVisible) {
@@ -148,7 +200,8 @@
         [self layoutOtherMenuViewHiden:YES];
     }
 }
-//点击消息
+
+#pragma mark - UDTableViewCellDelegate
 - (void)didSelectedOnMessage:(UDMessage *)message indexPath:(NSIndexPath *)indexPath messageTableViewCell:(UDMessageTableViewCell *)messageTableViewCell {
     
     //点击cell对应的操作
@@ -156,6 +209,14 @@
                                        indexPath:indexPath
                                 messageInputView:self.messageInputView
                             messageTableViewCell:messageTableViewCell];
+    
+}
+
+#pragma mark - UDChatTableViewDelegate
+//点击空白处隐藏键盘
+- (void)didTapChatTableView:(UITableView *)tableView {
+    
+    [self layoutOtherMenuViewHiden:YES];
 }
 
 #pragma mark - 初始化模型
@@ -165,9 +226,7 @@
     
     self.dataController = [[UDChatDataController alloc] init];
     
-    self.chatViewModel = [[UDChatViewModel alloc] init];
-    
-    self.messageTableView.chatViewModel = self.chatViewModel;
+    self.chatViewModel = [UDChatViewModel sharedViewModel];
     
     self.chatViewModel.delegate = self;
     
@@ -177,12 +236,11 @@
 #pragma mark - 请求客服数据
 - (void)requestAgentData {
 
-    UDWEAKSELF
     if (![UDTools isBlankString:self.group_id]||![UDTools isBlankString:self.agent_id]) {
         
         [self.agentViewModel assignAgentOrGroup:self.agent_id groupID:self.group_id completion:^(UDAgentModel *agentModel, NSError *error) {
             
-            [weakSelf loadAgentDataReload:agentModel];
+            [self loadAgentDataReload:agentModel];
             
         }];
 
@@ -191,7 +249,7 @@
     
         [self.agentViewModel requestAgentModel:^(UDAgentModel *agentModel, NSError *error) {
             //装载客服数据
-            [weakSelf loadAgentDataReload:agentModel];
+            [self loadAgentDataReload:agentModel];
             
         }];
     }
@@ -213,23 +271,27 @@
 #pragma makr - 根据网络状态变化做事
 - (void)networkStatusChange {
     
+    UDReachability *networkReach = [UDReachability reachabilityWithHostname:@"www.baidu.com"];
+    
     UDWEAKSELF
-    [UDManager receiveNetwork:^(UDNetworkStatus reachability) {
-        
-        if (reachability == UDNotReachable) {
-            
-            weakSelf.networkSwitch = YES;
-            [weakSelf setNetWorkStatusChangeUI:NO];
-            
-        } else {
-            
-            if (weakSelf.networkSwitch) {
-                weakSelf.networkSwitch = NO;
-                [weakSelf setNetWorkStatusChangeUI:YES];
-            }
+    networkReach.reachableBlock = ^(UDReachability *reachability)
+    {
+        UDSTRONGSELF
+        if (strongSelf.networkSwitch) {
+            strongSelf.networkSwitch = NO;
+            [strongSelf setNetWorkStatusChangeUI:YES];
         }
-
-    }];
+        
+    };
+    
+    networkReach.unreachableBlock = ^(UDReachability *reachability)
+    {
+        UDSTRONGSELF
+        strongSelf.networkSwitch = YES;
+        [strongSelf setNetWorkStatusChangeUI:NO];
+    };
+    
+    [networkReach startNotifier];
     
 }
 
@@ -686,7 +748,6 @@
     [UDManager setCustomerOffline];
     //客户不在当前页面停止请求排队客服
     self.agentViewModel.stopRequest = YES;
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -701,7 +762,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ClickResendMessage object:nil];
     _messageTableView.delegate = nil;
     _messageTableView.dataSource = nil;
-    _messageTableView.chatTableViewDelegate = nil;
     _messageTableView = nil;
     _messageInputView.delegate = nil;
     _messageInputView = nil;

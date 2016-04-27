@@ -24,11 +24,23 @@
 #import "NSArray+UDMessage.h"
 #import "UDHpple.h"
 
-@interface UDChatViewModel()<UDManagerDelegate>
+@interface UDChatViewModel() <UDManagerDelegate>
 
 @end
 
 @implementation UDChatViewModel
+
++ (instancetype)sharedViewModel {
+    
+    static UDChatViewModel *_sharedViewModel = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sharedViewModel = [[self alloc ] init];
+    });
+    
+    return _sharedViewModel;
+}
 
 - (instancetype)init
 {
@@ -191,7 +203,7 @@
     
     _agentModel = agentModel;
     
-    if ([[UDManager internetStatus] isEqualToString:@"notReachable"]) {
+    if ([[UDTools internetStatus] isEqualToString:@"notReachable"]) {
         
         _agentModel.code = 2003;
         
@@ -244,7 +256,8 @@
     //解析消息创建消息体并添加到数组
     [receiveMessage resolveChatMsg:messageDic callbackMsg:^(UDMessage *message) {
         
-        [weakSelf.messageArray addObject:message];
+        UDSTRONGSELF
+        [strongSelf.messageArray addObject:message];
         
         [self reloadChatTableView];
     }];
@@ -378,6 +391,7 @@
 #pragma mark - db消息
 - (void)viewModelWithDatabase:(NSArray *)messageArray {
 
+    [self.messageArray removeAllObjects];
     [messageArray ud_each:^(NSDictionary *dic) {
         
         [self.messageArray insertObject:[self dbMessageResolving:dic] atIndex:0];
@@ -649,6 +663,16 @@
         }
         
     }];
+}
+
+- (NSInteger)numberOfItemsInSection:(NSInteger)section {
+
+    return [self.messageArray count];
+}
+- (UDMessage *)objectAtIndexPath:(NSInteger)row {
+
+    return [self.messageArray objectAtIndexCheck:row];
+    
 }
 
 @end

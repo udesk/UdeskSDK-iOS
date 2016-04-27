@@ -78,8 +78,8 @@
             
             UIImage *image = [UIImage imageWithData:data];
             message.photo  = image;
-
-            //缓存图片            
+            
+            //缓存图片
             [[UDCache sharedUDCache] storeImage:image forKey:message.contentId];
             
             message.messageType = UDMessageMediaTypePhoto;

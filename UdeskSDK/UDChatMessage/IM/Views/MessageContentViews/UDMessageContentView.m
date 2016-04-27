@@ -474,7 +474,7 @@
     [againMsgController addCloseActionWithTitle:getUDLocalizedString(@"取消") Handler:NULL];
     [againMsgController addAction:[UDAlertAction actionWithTitle:getUDLocalizedString(@"确定") handler:^(UDAlertAction * _Nonnull action) {
         
-        if (![[UDManager internetStatus] isEqualToString:@"notReachable"]) {
+        if (![[UDTools internetStatus] isEqualToString:@"notReachable"]) {
             
             self.messageAgainButton.hidden = YES;
             self.indicatorView.hidden = NO;

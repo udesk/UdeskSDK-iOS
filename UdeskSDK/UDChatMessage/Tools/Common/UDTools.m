@@ -9,6 +9,8 @@
 #import "UDTools.h"
 #import "UDFoundationMacro.h"
 #import "UDKeywordRegularParser.h"
+#import "UDReachability.h"
+#import <AVFoundation/AVFoundation.h>
 
 #define MAXIMAGESIZE    300
 
@@ -23,6 +25,32 @@
     
     return [nsdf2 stringFromDate:[NSDate date]];
     
+}
+
+//同步获取网络状态
++ (NSString *)internetStatus {
+    
+    UDReachability *reachability   = [UDReachability reachabilityWithHostName:@"www.baidu.com"];
+    UDNetworkStatus internetStatus = [reachability currentReachabilityStatus];
+    
+    NSString *net = nil;
+    switch (internetStatus) {
+        case UDReachableViaWiFi:
+            net = @"wifi";
+            break;
+            
+        case UDReachableViaWWAN:
+            net = @"WWAN";
+            break;
+            
+        case UDNotReachable:
+            net = @"notReachable";
+            
+        default:
+            break;
+    }
+    
+    return net;
 }
 
 //字符串转字典
@@ -413,6 +441,35 @@
         }
     }
     return CGRectMake(x, y, v.frame.size.width, v.frame.size.height);
+}
+
+//判断是否允许使用麦克风7.0新增的方法requestRecordPermission
++ (BOOL)canRecord
+{
+    __block BOOL bCanRecord = YES;
+    if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending)
+    {
+        AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+        if ([audioSession respondsToSelector:@selector(requestRecordPermission:)]) {
+            [audioSession performSelector:@selector(requestRecordPermission:) withObject:^(BOOL granted) {
+                if (granted) {
+                    bCanRecord = YES;
+                }
+                else {
+                    bCanRecord = NO;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[[UIAlertView alloc] initWithTitle:nil
+                                                    message:@"app需要访问您的麦克风。\n请启用麦克风-设置/隐私/麦克风"
+                                                   delegate:nil
+                                          cancelButtonTitle:@"关闭"
+                                          otherButtonTitles:nil] show];
+                    });
+                }
+            }];
+        }
+    }
+    
+    return bCanRecord;
 }
 
 

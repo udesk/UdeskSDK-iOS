@@ -60,6 +60,9 @@
 
 @property (nonatomic, weak  ) id<UDChatViewModelDelegate> delegate;
 
+
++ (instancetype)sharedViewModel;
+
 /**
  *  发送文本消息
  *
@@ -149,5 +152,8 @@
  *  @param completion 发送回调
  */
 - (void)resendFailedMessage:(void(^)(UDMessage *failedMessage,BOOL sendStatus))completion;
+
+- (NSInteger)numberOfItemsInSection:(NSInteger)section;
+- (UDMessage *)objectAtIndexPath:(NSInteger)row;
 
 @end

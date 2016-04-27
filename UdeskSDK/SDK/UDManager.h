@@ -28,13 +28,6 @@
 //DBDelete
 #define DeleteMessage [NSString stringWithFormat:@"delete *from %@",MessageDB]
 
-typedef NS_ENUM(NSInteger, UDNetworkStatus) {
-    // Apple NetworkStatus Compatible Names.
-    UDNotReachable = 0,
-    UDReachableViaWiFi = 2,
-    UDReachableViaWWAN = 1
-};
-
 @protocol UDManagerDelegate <NSObject>
 
 /**
@@ -297,20 +290,6 @@ typedef NS_ENUM(NSInteger, UDNetworkStatus) {
  *  @return sdk版本
  */
 + (NSString *)udeskSDKVersion;
-
-/**
- *  同步获取网络状态
- *
- *  @return 返回网络状态
- */
-+ (NSString *)internetStatus;
-
-/**
- *  异步获取网络状态
- *
- *  @param completion call back网络状态
- */
-+ (void)receiveNetwork:(void(^)(UDNetworkStatus reachability))completion;
 
 /**
  *  获取满意度调查选项

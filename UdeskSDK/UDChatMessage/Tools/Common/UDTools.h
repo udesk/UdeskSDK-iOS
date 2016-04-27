@@ -24,6 +24,9 @@
 
 //随机生成唯一字符串
 + (NSString *)soleString;
+
++ (NSString *)internetStatus;
+
 //计算图片大小
 + (CGSize)setImageSize:(UIImage *)image;
 
@@ -38,5 +41,7 @@
 + (UIImage *)compressImageWith:(UIImage *)image;
 
 + (CGRect)relativeFrameForScreenWithView:(UIView *)v;
+
++ (BOOL)canRecord;
 
 @end
