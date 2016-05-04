@@ -139,26 +139,10 @@ NSDictionary *parameters = @{
 ```
 创建用户
 ```
-[UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {
-
-NSLog(@"用户ID:%@",customerId);
-//提交用户设备信息
-[UDManager submitCustomerDevicesInfo:^(id responseObject, NSError *error) {
-
-NSLog(@"提交设备信息:%@",responseObject);
-}];
-
-//获取用户登录信息
-[UDManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
-
-NSLog(@"用户登录信息:%@",loginInfoDic);
-}];
-
-}];
+[UDManager createCustomerWithCustomerInfo:parameters];
 
 ```
 
-用户点击事件里需要引入.h文件
 
 ### 3）、推出聊天页面
 ```
@@ -198,11 +182,17 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 /**
 *  创建用户
 *
-*  @param customerMsg 用户信息
-*  @param completion  创建成功回调（返回用户ID）
+*  @param customerInfo 用户信息
 */
-+ (void)createCustomer:(NSDictionary *)customerMsg
-            completion:(void (^)(NSString *customerId,NSError *error))completion;
++ (void)createCustomerWithCustomerInfo:(NSDictionary *)customerInfo;
+
+/**
+*  在服务端创建用户
+*
+*  @param completion 成功信息回调
+*  @param failure    失败信息回调
+*/
++ (void)createServerCustomer:(void(^)(id responseObject))completion failure:(void(^)(NSError *error))failure;
 
 /**
 *  获取用户的登录信息
@@ -218,30 +208,21 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 *  @param completion 回调用户信息
 */
 + (void)getCustomerLoginInfo:(NSString *)customerId
-                  completion:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
+completion:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
 
 /**
 *  获取客服信息
 *
 *  @param completion 回调客服信息
 */
-+ (void)getAgentInformation:(void (^)(id responseObject,NSError *error))completion;
-
-/**
-*  通过开发者存储的用户ID获取客服信息
-*
-*  @param customerId 用户ID
-*  @param completion 回调客服信息
-*/
-+ (void)getAgentInformation:(NSString *)customerId
-                 completion:(void (^)(id responseObject,NSError *error))completion;
++ (void)requestRandomAgent:(void (^)(id responseObject,NSError *error))completion;
 /**
 *  获取转接后客服的信息
 *
 *  @param completion 回调客服信息
 */
 + (void)getRedirectAgentInformation:(NSDictionary *)agentId
-                         completion:(void (^)(id responseObject,NSError *error))completion;
+completion:(void (^)(id responseObject,NSError *error))completion;
 
 /**
 *  登录Udesk
@@ -249,12 +230,17 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 *  @param userName        用户帐号
 *  @param password        用户密码
 *  @param completion      回调登录状态
-*  @param receiveDelegate 接收消息和接收状态代理
 */
 + (void)loginUdeskWithUserName:(NSString *)userName
-                      password:(NSString *)password
-                    completion:(void (^) (BOOL status))completion
-               receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
+password:(NSString *)password
+completion:(void (^)(BOOL status))completion;
+
+/**
+*  接收消息代理
+*
+*  @param receiveDelegate 接收消息和接收状态代理
+*/
++ (void)receiveUdeskDelegate:(id<UDManagerDelegate>)receiveDelegate;
 
 /**
 *  登录Udesk
@@ -262,8 +248,7 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 *  @param completion      回调登录状态
 *  @param receiveDelegate 接收消息和接收状态代理
 */
-+ (void)loginUdesk:(void (^) (BOOL status))completion
-   receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
++ (void)loginUdesk:(void (^) (BOOL status))completion;
 
 /**
 *  退出Udesk (切换用户，需要调用此接口)
@@ -287,7 +272,7 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 *  @param completion 发送回调
 */
 + (void)sendMessage:(UDMessage *)message
-         completion:(void (^) (UDMessage *message,BOOL sendStatus))completion;
+completion:(void (^) (UDMessage *message,BOOL sendStatus))completion;
 
 /**
 *  获取用户自定义字段
@@ -309,7 +294,7 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 *  @param completion 回调提交状态
 */
 + (void)submitCustomerDevicesInfo:(NSString *)customerId
-                       completion:(void (^)(id responseObject, NSError *error))completion;
+completion:(void (^)(id responseObject, NSError *error))completion;
 
 /**
 *  获取公司帮助中心文章
@@ -325,7 +310,7 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 *  @param completion 回调文章内容信息
 */
 + (void)getFaqArticlesContent:(NSString *)contentId
-                   completion:(void (^)(id responseObject, NSError *error))completion;
+completion:(void (^)(id responseObject, NSError *error))completion;
 
 /**
 *  搜索帮助中心文章
@@ -334,7 +319,7 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 *  @param completion 回调搜索信息
 */
 + (void)searchFaqArticles:(NSString *)content
-               completion:(void (^)(id responseObject, NSError *error))completion;
+completion:(void (^)(id responseObject, NSError *error))completion;
 
 /**
 *  获取提交工单URL
@@ -370,14 +355,20 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 /**
 *  查询数据库
 *
-*  @param sql           sql语句
-*  @param params        参数
-*  @param finishedblock 回调查询内容
+*  @param sql    sql语句
+*  @param params 参数
+*
+*  @return 查询结果
 */
-+ (void)queryTabelWithSqlString:(NSString *)sql
-                         params:(NSArray *)params
-                  finishedBlock:(void (^) (NSArray *dbData))finishedblock;
++ (NSArray *)queryTabelWithSqlString:(NSString *)sql
+params:(NSArray *)params;
 
+/**
+*  数据库消息条数
+*
+*  @return 结果
+*/
++ (NSInteger)dbMessageCount;
 
 /**
 *  删除数据库内容
@@ -419,18 +410,11 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 + (BOOL)supportTransfer;
 
 /**
-*  同步获取网络状态
+*  获取sdk版本
 *
-*  @return 返回网络状态
+*  @return sdk版本
 */
-+ (NSString *)internetStatus;
-
-/**
-*  异步获取网络状态
-*
-*  @param completion call back网络状态
-*/
-+ (void)receiveNetwork:(void(^)(UDNetworkStatus reachability))completion;
++ (NSString *)udeskSDKVersion;
 
 /**
 *  获取满意度调查选项
@@ -447,9 +431,8 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 *  @param completion 回调结果
 */
 + (void)survetVoteWithAgentId:(NSString *)agentId
-                 withOptionId:(NSString *)optionId
-                   completion:(void (^)(id responseObject, NSError *error))completion;
-
+withOptionId:(NSString *)optionId
+completion:(void (^)(id responseObject, NSError *error))completion;
 /**
 *  获取后台配置的导航菜单
 *
@@ -467,7 +450,12 @@ UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
 *  @param completion 回调结果
 */
 + (void)assignAgentOrGroup:(NSString *)agentId
-                   groupID:(NSString *)groupId
-                completion:(void (^) (id responseObject,NSError *error))completion;
+groupID:(NSString *)groupId
+completion:(void (^) (id responseObject,NSError *error))completion;
+
+/**
+*  取消所有操作
+*/
++ (void)ud_cancelAllOperations;
 
 ```

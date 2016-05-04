@@ -10,6 +10,7 @@
 #import "UDFoundationMacro.h"
 #import "UDViewExt.h"
 #import "ViewController.h"
+#import "UDManager.h"
 
 #define UD_DOMAIN        @"UD_DOMAIN"
 #define UD_KEY       @"UD_KEY"
