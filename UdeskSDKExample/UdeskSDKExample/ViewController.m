@@ -91,12 +91,7 @@
     NSDictionary *parameters = @{
                                  @"user": @{
                                          @"sdk_token": sdk_token,
-                                         @"nick_name":nick_name,
-                                         @"customer_field":@{
-                                                    @"TextField_390":@"测试测试",
-                                                    @"SelectField_455":@[@"1"]
-                                                 }
-                                         
+                                         @"nick_name":nick_name
                                          }
                                  };
 
@@ -117,9 +112,41 @@
 
 - (void)faqButtonAction {
     
-    UDFaqController *faq = [[UDFaqController alloc] init];
+//    UDFaqController *faq = [[UDFaqController alloc] init];
+//    
+//    [self.navigationController pushViewController:faq animated:YES];
     
-    [self.navigationController pushViewController:faq animated:YES];
+    [UDManager logoutUdesk];
+    
+#warning sdk_token参数必填，其它参数可选（有的最好都写上）
+    NSString *nick_name = [NSString stringWithFormat:@"sdk用户%u",arc4random()];
+    NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
+    
+    
+    NSDictionary *parameters = @{
+                                 @"user": @{
+                                         @"sdk_token": sdk_token,
+                                         @"nick_name":nick_name,
+                                         @"customer_field":@{
+                                                 @"TextField_390":@"测试测试",
+                                                 @"SelectField_455":@[@"1"]
+                                                 }
+                                         
+                                         }
+                                 };
+    
+    
+    //创建用户
+    [UDManager createCustomer:parameters completion:^(NSString *customerId, NSError *error) {
+        
+        NSLog(@"用户ID:%@",customerId);
+        
+        [UDManager submitCustomerDevicesInfo:^(id responseObject, NSError *error) {
+            
+            NSLog(@"提交设备信息:%@",responseObject);
+        }];
+        
+    }];
 
 }
 

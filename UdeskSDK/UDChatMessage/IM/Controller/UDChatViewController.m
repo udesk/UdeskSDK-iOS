@@ -728,7 +728,7 @@
         self.navigationController.navigationBar.tintColor = Config.iMBackButtonColor;
     }
     //设置客户在线
-    [UDManager setCustomerOnline];
+//    [UDManager setCustomerOnline];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
