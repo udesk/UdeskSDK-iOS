@@ -54,6 +54,7 @@
 
 @interface UDManager : NSObject
 
+
 /**
  *  初始化Udesk
  *
@@ -64,11 +65,17 @@
 /**
  *  创建用户
  *
- *  @param customerMsg 用户信息
- *  @param completion  创建成功回调（返回用户ID）
+ *  @param customerInfo 用户信息
  */
-+ (void)createCustomer:(NSDictionary *)customerMsg
-            completion:(void (^)(NSString *customerId,NSError *error))completion;
++ (void)createCustomerWithCustomerInfo:(NSDictionary *)customerInfo;
+
+/**
+ *  在服务端创建用户
+ *
+ *  @param completion 成功信息回调
+ *  @param failure    失败信息回调
+ */
++ (void)createServerCustomer:(void(^)(id responseObject))completion failure:(void(^)(NSError *error))failure;
 
 /**
  *  获取用户的登录信息
@@ -91,16 +98,7 @@
  *
  *  @param completion 回调客服信息
  */
-+ (void)getAgentInformation:(void (^)(id responseObject,NSError *error))completion;
-
-/**
- *  通过开发者存储的用户ID获取客服信息
- *
- *  @param customerId 用户ID
- *  @param completion 回调客服信息
- */
-+ (void)getAgentInformation:(NSString *)customerId
-                 completion:(void (^)(id responseObject,NSError *error))completion;
++ (void)requestRandomAgent:(void (^)(id responseObject,NSError *error))completion;
 /**
  *  获取转接后客服的信息
  *
@@ -115,12 +113,17 @@
  *  @param userName        用户帐号
  *  @param password        用户密码
  *  @param completion      回调登录状态
- *  @param receiveDelegate 接收消息和接收状态代理
  */
 + (void)loginUdeskWithUserName:(NSString *)userName
                       password:(NSString *)password
-                    completion:(void (^) (BOOL status))completion
-               receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
+                    completion:(void (^)(BOOL status))completion;
+
+/**
+ *  接收消息代理
+ *
+ *  @param receiveDelegate 接收消息和接收状态代理
+ */
++ (void)receiveUdeskDelegate:(id<UDManagerDelegate>)receiveDelegate;
 
 /**
  *  登录Udesk
@@ -128,8 +131,7 @@
  *  @param completion      回调登录状态
  *  @param receiveDelegate 接收消息和接收状态代理
  */
-+ (void)loginUdesk:(void (^) (BOOL status))completion
-   receiveDelegate:(id<UDManagerDelegate>)receiveDelegate;
++ (void)loginUdesk:(void (^) (BOOL status))completion;
 
 /**
  *  退出Udesk (切换用户，需要调用此接口)
@@ -236,14 +238,20 @@
 /**
  *  查询数据库
  *
- *  @param sql           sql语句
- *  @param params        参数
- *  @param finishedblock 回调查询内容
+ *  @param sql    sql语句
+ *  @param params 参数
+ *
+ *  @return 查询结果
  */
-+ (void)queryTabelWithSqlString:(NSString *)sql
-                         params:(NSArray *)params
-                  finishedBlock:(void (^) (NSArray *dbData))finishedblock;
++ (NSArray *)queryTabelWithSqlString:(NSString *)sql
+                         params:(NSArray *)params;
 
+/**
+ *  数据库消息条数
+ *
+ *  @return 结果
+ */
++ (NSInteger)dbMessageCount;
 
 /**
  *  删除数据库内容
@@ -327,5 +335,10 @@
 + (void)assignAgentOrGroup:(NSString *)agentId
                    groupID:(NSString *)groupId
                 completion:(void (^) (id responseObject,NSError *error))completion;
+
+/**
+ *  取消所有操作
+ */
++ (void)ud_cancelAllOperations;
 
 @end

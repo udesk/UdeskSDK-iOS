@@ -88,7 +88,8 @@
 }
 //录音准备工作，配置录音
 - (void)prepareRecordingCompletion:(UDPrepareRecorderCompletion)completion {
-    UDWEAKSELF
+    
+    @udWeakify(self);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         _isPause = NO;
         
@@ -110,19 +111,19 @@
         [recordSetting setValue:[NSNumber numberWithFloat:16000.0] forKey:AVSampleRateKey];
         [recordSetting setValue:[NSNumber numberWithInt: 1] forKey:AVNumberOfChannelsKey];
         
-        if (weakSelf) {
-            UDSTRONGSELF
-            strongSelf.recordPath = [self getRecorderPath];
+        if (self) {
+            @udStrongify(self);
+            self.recordPath = [self getRecorderPath];
             error = nil;
             
-            if (strongSelf.recorder) {
-                [strongSelf cancelRecording];
+            if (self.recorder) {
+                [self cancelRecording];
             } else {
-                strongSelf.recorder = [[AVAudioRecorder alloc] initWithURL:[NSURL fileURLWithPath:strongSelf.recordPath] settings:recordSetting error:&error];
-                strongSelf.recorder.delegate = strongSelf;
-                [strongSelf.recorder prepareToRecord];
-                strongSelf.recorder.meteringEnabled = YES;
-                [strongSelf.recorder recordForDuration:(NSTimeInterval) 160];
+                self.recorder = [[AVAudioRecorder alloc] initWithURL:[NSURL fileURLWithPath:self.recordPath] settings:recordSetting error:&error];
+                self.recorder.delegate = self;
+                [self.recorder prepareToRecord];
+                self.recorder.meteringEnabled = YES;
+                [self.recorder recordForDuration:(NSTimeInterval) 160];
     
             }
             
@@ -134,7 +135,7 @@
                 
                 //上层如果传回来说已经取消了，那这边就坐原先取消的动作
                 if (!completion()) {
-                    [strongSelf cancelledDeleteWithCompletion:^{
+                    [self cancelledDeleteWithCompletion:^{
                     }];
                 }
             });

@@ -15,6 +15,7 @@
 #import "UIImage+UDMessage.h"
 #import "UDGeneral.h"
 #import "UDTools.h"
+#import "UDManager.h"
 
 @interface UDAgentNavigationMenu () <UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
 
@@ -226,8 +227,6 @@
     
     UDChatViewController *chat = [[UDChatViewController alloc] init];
     
-    chat.backRootVc = YES;
-    
     [self.navigationController pushViewController:chat animated:NO];
 }
 
@@ -316,8 +315,6 @@
         
         chat.group_id = didSelectModel.group_id;
         
-        chat.backRootVc = YES;
-        
         [self.navigationController pushViewController:chat animated:YES];
     }
     
@@ -376,7 +373,7 @@
         
         [UIView animateWithDuration:0.35f animations:^{
             //执行返回
-            _agentMenuScrollView.contentOffset = CGPointMake(self.agentMenuScrollView.contentOffset.x-UD_SCREEN_WIDTH, 0);
+            self.agentMenuScrollView.contentOffset = CGPointMake(self.agentMenuScrollView.contentOffset.x-UD_SCREEN_WIDTH, 0);
         } completion:^(BOOL finished) {
             //装载这个页面的数据
             NSMutableArray *array = [NSMutableArray array];

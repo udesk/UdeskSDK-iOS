@@ -7,42 +7,52 @@
 //
 
 #import "UDChatViewController.h"
-#import "UDReceiveMessage.h"
 #import "UDTopAlertView.h"
 #import "UDAgentModel.h"
 #import "UDAgentStatusView.h"
-#import "UDAgentViewModel.h"
 #import "UDMessageInputView.h"
 #import "UDMessageTableView.h"
-#import "UDMessageTextView.h"
-#import "UDMessageContentView.h"
 #import "UDMessageTableViewCell.h"
 #import "UDTicketViewController.h"
 #import "UDEmotionManagerView.h"
 #import "UDVoiceRecordHUD.h"
 #import "UDPhotographyHelper.h"
 #import "UDVoiceRecordHelper.h"
-#import "UDChatDataController.h"
 #import "UDChatViewModel.h"
-#import "UDChatCellViewModel.h"
 #import "UIViewController+UDKeyboardAnimation.h"
 #import "UDFoundationMacro.h"
 #import <AVFoundation/AVFoundation.h>
 #import "UDViewExt.h"
 #import "UDManager.h"
 #import "UdeskUtils.h"
-#import "NSArray+UDMessage.h"
 #import "UDTools.h"
 #import "UIImage+UDMessage.h"
-#import "UDReachability.h"
+#import "UDAudioPlayerHelper.h"
+#import "UDPhotoManeger.h"
 
-#define UDTitleLength  UD_SCREEN_WIDTH>320?200:170
+@interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UDAudioPlayerHelperDelegate>
 
-@interface UDChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDEmotionManagerViewDelegate,UDChatViewModelDelegate,UITableViewDelegate,UITableViewDataSource>
+@property (nonatomic, assign) UDInputViewType        textViewInputViewType;//输入消息类型
 
-@property (nonatomic, assign) UDInputViewType textViewInputViewType;
+@property (nonatomic, strong) UDMessageTableViewCell *currentSelectedCell;//cell
 
-@property (nonatomic, assign) BOOL networkSwitch;
+@property (nonatomic, weak  ) UDMessageTableView     *messageTableView;//用于显示消息的TableView
+
+@property (nonatomic, weak  ) UDMessageInputView     *messageInputView;//用于显示发送消息类型控制的工具条，在底部
+
+@property (nonatomic, weak  ) UDAgentStatusView      *agentStatusView;//客服状态view
+
+@property (nonatomic, strong) UDVoiceRecordHelper    *voiceRecordHelper;//管理录音工具对象
+
+@property (nonatomic, strong) UDVoiceRecordHUD       *voiceRecordHUD;//语音录制动画
+
+@property (nonatomic, strong) UDEmotionManagerView   *emotionManagerView;//管理表情的控件
+
+@property (nonatomic, strong) UDPhotographyHelper    *photographyHelper;//管理本机的摄像和图片库的工具对象
+
+@property (nonatomic, assign) BOOL                   isMaxTimeStop;//判断是不是超出了录音最大时长
+
+@property (nonatomic, strong) UDChatViewModel        *chatViewModel;//viewModel
 
 @end
 
@@ -52,6 +62,7 @@
 {
     self = [super init];
     if (self) {
+        
         self.hidesBottomBarWhenPushed = YES;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resendClickFailedMessage:) name:ClickResendMessage object:nil];
@@ -63,17 +74,83 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //初始化viewModel
+    [self initViewModel];
     //初始化消息页面布局
     [self initilzer];
-    //初始化数据
-    [self initData];
-    //请求客服数据
-    [self requestAgentData];
-    //加载DB数据
-    [self loadDatabaseMessage];
-    //网路状态的变换
-    [self networkStatusChange];
+    //重写返回按钮
+    [self setCloseNavigationItem];
+}
+
+#pragma mark - 添加左侧导航栏按钮
+- (void)setCloseNavigationItem {
+    //取消按钮
+    UIButton * closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    closeButton.frame = CGRectMake(0, 0, 70, 40);
+    [closeButton setTitle:getUDLocalizedString(@"返回") forState:UIControlStateNormal];
+    [closeButton setImage:[UIImage ud_defaultBackImage] forState:UIControlStateNormal];
+    [closeButton addTarget:self action:@selector(closeButtonAction) forControlEvents:UIControlEventTouchUpInside];
     
+    UIBarButtonItem *closeNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
+    
+    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                       target:nil action:nil];
+    
+    // 调整 leftBarButtonItem 在 iOS7 下面的位置
+    if((FUDSystemVersion>=7.0)){
+        
+        negativeSpacer.width = -19;
+        self.navigationItem.leftBarButtonItems = @[negativeSpacer,closeNavigationItem];
+    }else
+        self.navigationItem.leftBarButtonItem = closeNavigationItem;
+    
+}
+
+- (void)closeButtonAction {
+    
+    //取消所有请求
+    [self.chatViewModel cancelPollingAgent];
+    [UDManager ud_cancelAllOperations];
+    
+    //用过返回上级页面了，发送中的消息改为发送失败，如果有需求，开发者可自定义
+    [UDManager updateTableWithSqlString:@"update Message set sendflag='1' where sendflag = '0'" params:nil];
+    
+    //返回上级页面，设置客户离线
+    [UDManager setCustomerOffline];
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+//初始化viewModel
+- (void)initViewModel {
+    
+    self.chatViewModel = [[UDChatViewModel alloc] initWithAgentId:self.agent_id withGroupId:self.group_id];
+    @udWeakify(self);
+    //接收客服信息
+    self.chatViewModel.fetchAgentDataBlock = ^(UDAgentModel *agentModel){
+        
+        //更新客服状态文字
+        @udStrongify(self);
+        [self.agentStatusView bindDataWithAgentModel:agentModel];
+        //显示top AlertView
+        [UDTopAlertView showWithAgentModel:agentModel parentView:self.view];
+        //底部功能栏根据客服状态code做操作
+        self.messageInputView.agentCode = agentModel.code;
+    };
+    //更新消息内容
+    self.chatViewModel.updateMessageContentBlock = ^{
+        
+        @udStrongify(self);
+        [self.messageTableView reloadData];
+    };
+    //离线留言
+    self.chatViewModel.clickSendOffLineTicket = ^{
+        
+        @udStrongify(self);
+        UDTicketViewController *offLineTicket = [[UDTicketViewController alloc] init];
+        [self.navigationController pushViewController:offLineTicket animated:YES];
+    };
 }
 
 #pragma mark - 初始化视图
@@ -95,13 +172,14 @@
     }
     
     // 初始化message tableView
-    UDMessageTableView *messageTableView = [[UDMessageTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+	UDMessageTableView *messageTableView = [[UDMessageTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     messageTableView.delegate = self;
     messageTableView.dataSource = self;
+    [messageTableView finishLoadingMoreMessages:self.chatViewModel.message_count];
     
     [self.view addSubview:messageTableView];
     [self.view sendSubviewToBack:messageTableView];
-    _messageTableView = messageTableView;
+	_messageTableView = messageTableView;
     
     //添加单击手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapChatTableView:)];
@@ -130,11 +208,25 @@
     
     _messageInputView = inputView;
     
-    UDAgentStatusView *agentStatusView = [[UDAgentStatusView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-UDTitleLength)/2, 20, UDTitleLength, 44)];
+    //客服标题
+    CGFloat agentStatusTitleLength = [[UIScreen mainScreen] bounds].size.width>320?200:170;
+    
+    UDAgentStatusView *agentStatusView = [[UDAgentStatusView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-agentStatusTitleLength)/2, 20, agentStatusTitleLength, 44)];
     
     self.navigationItem.titleView = agentStatusView;
+    
     _agentStatusView = agentStatusView;
     
+    //表情view
+    if (!_emotionManagerView) {
+        UDEmotionManagerView *emotionManagerView = [[UDEmotionManagerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds), CGRectGetWidth(self.view.bounds), UD_SCREEN_WIDTH<375?200:216)];
+        emotionManagerView.delegate = self;
+        emotionManagerView.backgroundColor = [UIColor colorWithWhite:0.961 alpha:1.000];
+        emotionManagerView.alpha = 0.0;
+        [self.view addSubview:emotionManagerView];
+        _emotionManagerView = emotionManagerView;
+    }
+    [self.view bringSubviewToFront:_emotionManagerView];
 }
 
 #pragma mark - Table View Data Source
@@ -146,7 +238,7 @@
     
     UDMessage * message = [self.chatViewModel objectAtIndexPath:indexPath.row];
     
-    BOOL displayTimestamp = [self.chatViewModel shouldDisplayTimeForRowAtIndexPath:indexPath];
+    BOOL displayTimestamp = [self shouldDisplayTimeForRowAtIndexPath:indexPath];
     
     static NSString *cellIdentifier = @"UDMessageTableViewCell";
     
@@ -181,11 +273,30 @@
 - (CGFloat)calculateCellHeightWithMessage:(UDMessage *)message atIndexPath:(NSIndexPath *)indexPath {
     CGFloat cellHeight = 0;
     
-    BOOL displayTimestamp = [self.chatViewModel shouldDisplayTimeForRowAtIndexPath:indexPath];
+    BOOL displayTimestamp = [self shouldDisplayTimeForRowAtIndexPath:indexPath];
     
     cellHeight = [UDMessageTableViewCell calculateCellHeightWithMessage:message displaysTimestamp:displayTimestamp];
     
     return cellHeight;
+}
+
+#pragma mark - 是否显示时间轴Label
+- (BOOL)shouldDisplayTimeForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if(indexPath.row==0 || indexPath.row>=[self.chatViewModel numberOfItemsInSection:indexPath.section]){
+        return YES;
+    }else{
+        
+        UDMessage *message = [self.chatViewModel objectAtIndexPath:indexPath.row];
+        UDMessage *previousMessage=[self.chatViewModel objectAtIndexPath:indexPath.row-1];
+        NSInteger interval=[message.timestamp timeIntervalSinceDate:previousMessage.timestamp];
+        if(interval>60*3){
+            return YES;
+        }else{
+            return NO;
+        }
+    }
+    
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -205,11 +316,46 @@
 - (void)didSelectedOnMessage:(UDMessage *)message indexPath:(NSIndexPath *)indexPath messageTableViewCell:(UDMessageTableViewCell *)messageTableViewCell {
     
     //点击cell对应的操作
-    [self.chatCellViewModel didSelectedOnMessage:message
-                                       indexPath:indexPath
-                                messageInputView:self.messageInputView
-                            messageTableViewCell:messageTableViewCell];
+    switch (message.messageType) {
+            
+        case UDMessageMediaTypePhoto: {
+            
+            [self.messageInputView.inputTextView resignFirstResponder];
+            
+            UDPhotoManeger *photoManeger = [UDPhotoManeger maneger];
+            
+            [photoManeger showLocalPhoto:messageTableViewCell.messageContentView.photoImageView withImageMessage:message];
+            
+        }
+            break;
+        case UDMessageMediaTypeVoice:
+            
+            [[UDAudioPlayerHelper shareInstance] setDelegate:(id<NSFileManagerDelegate>)self];
+            if (_currentSelectedCell) {
+                [_currentSelectedCell.messageContentView.animationVoiceImageView stopAnimating];
+            }
+            if (_currentSelectedCell == messageTableViewCell) {
+                [messageTableViewCell.messageContentView.animationVoiceImageView stopAnimating];
+                [[UDAudioPlayerHelper shareInstance] stopAudio];
+                self.currentSelectedCell = nil;
+            } else {
+                self.currentSelectedCell = messageTableViewCell;
+                [messageTableViewCell.messageContentView.animationVoiceImageView startAnimating];
+                [[UDAudioPlayerHelper shareInstance] managerAudio:message toPlay:YES];
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
     
+}
+
+#pragma mark - UDAudioPlayerHelper Delegate
+- (void)didAudioPlayerStopPlay:(AVAudioPlayer*)audioPlayer {
+    
+    [_currentSelectedCell.messageContentView.animationVoiceImageView stopAnimating];   
 }
 
 #pragma mark - UDChatTableViewDelegate
@@ -219,170 +365,21 @@
     [self layoutOtherMenuViewHiden:YES];
 }
 
-#pragma mark - 初始化模型
-- (void)initData {
-    
-    self.chatCellViewModel = [[UDChatCellViewModel alloc] init];
-    
-    self.dataController = [[UDChatDataController alloc] init];
-    
-    self.chatViewModel = [UDChatViewModel sharedViewModel];
-    
-    self.chatViewModel.delegate = self;
-    
-    self.agentViewModel = [[UDAgentViewModel alloc] init];
-}
-
-#pragma mark - 请求客服数据
-- (void)requestAgentData {
-    
-    UDWEAKSELF
-    if (![UDTools isBlankString:self.group_id]||![UDTools isBlankString:self.agent_id]) {
-        
-        [self.agentViewModel assignAgentOrGroup:self.agent_id groupID:self.group_id completion:^(UDAgentModel *agentModel, NSError *error) {
-            
-            [weakSelf loadAgentDataReload:agentModel];
-            
-        }];
-        
-    }
-    else {
-        
-        [self.agentViewModel requestAgentModel:^(UDAgentModel *agentModel, NSError *error) {
-            //装载客服数据
-            [weakSelf loadAgentDataReload:agentModel];
-            
-        }];
-    }
-    
-}
-
-//装载客服数据
-- (void)loadAgentDataReload:(UDAgentModel *)agentModel {
-    
-    //更新客服状态文字
-    [self.agentStatusView bindDataWithAgentModel:agentModel];
-    //登录Udesk
-    [self.chatViewModel loginUdeskWithAgent:agentModel];
-    //底部功能栏根据客服状态code做操作
-    self.messageInputView.agentCode = agentModel.code;
-    
-}
-
-#pragma makr - 根据网络状态变化做事
-- (void)networkStatusChange {
-    
-    UDReachability *networkReach = [UDReachability reachabilityWithHostname:@"www.baidu.com"];
-    
-    UDWEAKSELF
-    networkReach.reachableBlock = ^(UDReachability *reachability)
-    {
-        UDSTRONGSELF
-        if (strongSelf.networkSwitch) {
-            strongSelf.networkSwitch = NO;
-            [strongSelf setNetWorkStatusChangeUI:YES];
-        }
-        
-    };
-    
-    networkReach.unreachableBlock = ^(UDReachability *reachability)
-    {
-        UDSTRONGSELF
-        strongSelf.networkSwitch = YES;
-        [strongSelf setNetWorkStatusChangeUI:NO];
-    };
-    
-    [networkReach startNotifier];
-    
-}
-
-- (void)setNetWorkStatusChangeUI:(BOOL)isNetwork {
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        self.chatViewModel.agentModel.code = isNetwork?2000:2003;
-        self.messageInputView.agentCode = isNetwork?2000:2003;
-        [self.agentStatusView agentOnlineOrNotOnline:isNetwork?@"available":@"notNetwork"];
-        [UDTopAlertView showWithType:isNetwork?UDAlertTypeOnline:UDAlertTypeError text:isNetwork?getUDLocalizedString(@"客服上线了！"):getUDLocalizedString(@"网络断开链接了！") parentView:self.view];
-    });
-    
-}
-
-#pragma mark - 加载db数据
-- (void)loadDatabaseMessage {
-    
-    [self.dataController getDatabaseHistoryMessage:^(NSArray *dbMessageArray) {
-        //更新数据
-        [self.chatViewModel viewModelWithDatabase:dbMessageArray];
-        //判断db数据条数是否需要下拉刷新
-        [self.messageTableView finishLoadingMoreMessages:dbMessageArray.count];
-        
-    }];
-}
 #pragma mark - 下拉加载更多数据
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    if (scrollView.contentOffset.y<=0 && self.messageTableView.isRefresh) {
+    if (scrollView.contentOffset.y<0 && self.messageTableView.isRefresh) {
         //开始刷新
         [self.messageTableView startLoadingMoreMessages];
         //获取更多数据
-        [self.dataController getDatabaseHistoryMessage:^(NSArray *dbMessageArray) {
-            //配置更多数据
-            [self.chatViewModel viewModelWithMoreMessage:dbMessageArray];
-            //延迟0.5，提高用户体验
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                //关闭刷新、刷新数据
-                [self.messageTableView finishLoadingMoreMessages:dbMessageArray.count];
-                
-                [self.messageTableView reloadData];
-                
-            });
-            
-        }];
-        
+        [self.chatViewModel pullMoreDateBaseMessage];
+        //延迟0.8，提高用户体验
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //关闭刷新、刷新数据
+            [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.message_total_pages];
+        });
     }
     
-}
-
-#pragma mark - UDChatViewModelDelegate
-//接收客服状态变化
-- (void)receiveAgentPresence:(NSString *)presence {
-    //更新客服状态title
-    [self.agentStatusView agentOnlineOrNotOnline:presence];
-    
-    if ([presence isEqualToString:@"available"]) {
-        
-        [UDTopAlertView showWithType:UDAlertTypeOnline text:getUDLocalizedString(@"客服上线了！") parentView:self.view];
-    } else {
-        
-        [UDTopAlertView showWithType:UDAlertTypeOffline text:getUDLocalizedString(@"客服下线了！") parentView:self.view];
-    }
-    
-}
-#pragma mark - 客户被转接了
-- (void)notificationRedirect:(UDAgentModel *)agentModel {
-    
-    //装载客服数据
-    [self loadAgentDataReload:agentModel];
-}
-
-#pragma mark - 刷新TableView
-- (void)reloadChatTableView {
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        [self.messageTableView reloadData];
-        [self.messageTableView scrollToBottomAnimated:YES];
-    });
-    
-}
-
-#pragma mark - 离线发送表单
-- (void)clickSendOffLineTicket {
-    
-    UDTicketViewController *offLineTicket = [[UDTicketViewController alloc] init];
-    
-    [self.navigationController pushViewController:offLineTicket animated:YES];
 }
 
 #pragma mark - 录制语音
@@ -390,19 +387,21 @@
     if (!_voiceRecordHelper) {
         _isMaxTimeStop = NO;
         
-        UDWEAKSELF
+        @udWeakify(self);
         _voiceRecordHelper = [[UDVoiceRecordHelper alloc] init];
         _voiceRecordHelper.maxTimeStopRecorderCompletion = ^{
             
-            UIButton *holdDown = weakSelf.messageInputView.holdDownButton;
+            @udStrongify(self);
+            UIButton *holdDown = self.messageInputView.holdDownButton;
             holdDown.selected = NO;
             holdDown.highlighted = NO;
-            weakSelf.isMaxTimeStop = YES;
+            self.isMaxTimeStop = YES;
             
-            [weakSelf finishRecorded];
+            [self finishRecorded];
         };
         _voiceRecordHelper.peakPowerForChannel = ^(float peakPowerForChannel) {
-            weakSelf.voiceRecordHUD.peakPower = peakPowerForChannel;
+            @udStrongify(self);
+            self.voiceRecordHUD.peakPower = peakPowerForChannel;
         };
         _voiceRecordHelper.maxRecordTime = kVoiceRecorderTotalTime;
     }
@@ -414,21 +413,6 @@
         _voiceRecordHUD = [[UDVoiceRecordHUD alloc] initWithFrame:CGRectMake(0, 0, 150, 150)];
     }
     return _voiceRecordHUD;
-}
-#pragma mark - 表情面板
-- (UDEmotionManagerView *)emotionManagerView {
-    
-    if (!_emotionManagerView) {
-        UDEmotionManagerView *emotionManagerView = [[UDEmotionManagerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds), CGRectGetWidth(self.view.bounds), UD_SCREEN_WIDTH<375?200:216)];
-        emotionManagerView.delegate = self;
-        emotionManagerView.backgroundColor = [UIColor colorWithWhite:0.961 alpha:1.000];
-        emotionManagerView.alpha = 0.0;
-        [self.view addSubview:emotionManagerView];
-        _emotionManagerView = emotionManagerView;
-    }
-    [self.view bringSubviewToFront:_emotionManagerView];
-    
-    return _emotionManagerView;
 }
 #pragma mark - 图片选择器
 - (UDPhotographyHelper *)photographyHelper {
@@ -442,21 +426,69 @@
 
 #pragma mark - 显示功能面板
 - (void)layoutOtherMenuViewHiden:(BOOL)hide {
+    
     //根据textViewInputViewType切换功能面板
+    [self.messageInputView.inputTextView resignFirstResponder];
     
-    [self.chatViewModel layoutOtherMenuViewHiden:hide
-                                        ViewType:self.textViewInputViewType
-                                        chatView:self.view
-                                       tabelView:self.messageTableView
-                                       inputView:self.messageInputView
-                                     emotionView:self.emotionManagerView
-                                      completion:^(BOOL finished) {
-                                          
-                                          if (hide) {
-                                              self.textViewInputViewType = UDInputViewTypeNormal;
-                                          }
-                                      }];
-    
+    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        __block CGRect inputViewFrame = self.messageInputView.frame;
+        __block CGRect otherMenuViewFrame;
+        
+        void (^InputViewAnimation)(BOOL hide) = ^(BOOL hide) {
+            inputViewFrame.origin.y = (hide ? (CGRectGetHeight(self.view.bounds) - CGRectGetHeight(inputViewFrame)) : (CGRectGetMinY(otherMenuViewFrame) - CGRectGetHeight(inputViewFrame)));
+            self.messageInputView.frame = inputViewFrame;
+        };
+        
+        void (^EmotionManagerViewAnimation)(BOOL hide) = ^(BOOL hide) {
+            otherMenuViewFrame = self.emotionManagerView.frame;
+            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
+            self.emotionManagerView.alpha = !hide;
+            self.emotionManagerView.frame = otherMenuViewFrame;
+            
+        };
+        
+        if (hide) {
+            switch (self.textViewInputViewType) {
+                case UDInputViewTypeEmotion: {
+                    EmotionManagerViewAnimation(hide);
+                    break;
+                }
+                default:
+                    break;
+            }
+        } else {
+            
+            // 这里需要注意block的执行顺序，因为otherMenuViewFrame是公用的对象，所以对于被隐藏的Menu的frame的origin的y会是最大值
+            switch (self.textViewInputViewType) {
+                case UDInputViewTypeEmotion: {
+                    // 2、再显示和自己相关的View
+                    EmotionManagerViewAnimation(hide);
+                    break;
+                }
+                case UDInputViewTypeShareMenu: {
+                    // 1、先隐藏和自己无关的View
+                    EmotionManagerViewAnimation(!hide);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+        
+        InputViewAnimation(hide);
+        
+        [self.messageTableView setTableViewInsetsWithBottomValue:self.view.frame.size.height
+         - self.messageInputView.frame.origin.y];
+        
+        [self.messageTableView scrollToBottomAnimated:NO];
+        
+    } completion:^(BOOL finished) {
+        
+        if (hide) {
+            self.textViewInputViewType = UDInputViewTypeNormal;
+        }
+    }];
+
 }
 #pragma mark - UDMessageInputView Delegate
 - (void)inputTextViewWillBeginEditing:(UDMessageTextView *)messageInputTextView {
@@ -475,16 +507,17 @@
 
 - (void)didUDMessageInputView {
     //根据客服code 实现相应的点击事件
-    [self.chatViewModel clickInputView];
+    [self.chatViewModel clickInputViewShowAlertView];
 }
 
 #pragma mark - 发送文字
 - (void)didSendTextAction:(NSString *)text {
-    
-    UDWEAKSELF
+
+    @udWeakify(self);
     [self.chatViewModel sendTextMessage:text completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI
-        [weakSelf sendMessageStatus:sendStatus message:message];
+        @udStrongify(self);
+        [self sendMessageStatus:sendStatus message:message];
     }];
     
     [self.messageInputView.inputTextView setText:nil];
@@ -492,32 +525,36 @@
 
 #pragma mark - 发送图片
 - (void)didSendMessageWithPhoto:(UIImage *)photo {
-    UDWEAKSELF
+    
+    @udWeakify(self);
     [self.chatViewModel sendImageMessage:photo completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI
-        [weakSelf sendMessageStatus:sendStatus message:message];
+        @udStrongify(self);
+        [self sendMessageStatus:sendStatus message:message];
     }];
     
 }
 #pragma mark - 发送语音
 - (void)didSendMessageWithAudio:(NSString *)audioPath audioDuration:(NSString*)audioDuration {
-    UDWEAKSELF
+    
+    @udWeakify(self);
     [self.chatViewModel sendAudioMessage:audioPath audioDuration:audioDuration completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI
-        [weakSelf sendMessageStatus:sendStatus message:message];
+        @udStrongify(self);
+        [self sendMessageStatus:sendStatus message:message];
     }];
     
 }
 #pragma mark - 发送用户点击的失败消息
 - (void)resendClickFailedMessage:(NSNotification *)notif {
-    UDWEAKSELF
+    
     UDMessage *failedMessage = [notif.userInfo objectForKey:@"failedMessage"];
-    
     failedMessage.agent_jid = self.chatViewModel.agentModel.jid;
-    
+    @udWeakify(self);
     [UDManager sendMessage:failedMessage completion:^(UDMessage *message, BOOL sendStatus) {
         //处理发送结果UI
-        [weakSelf sendMessageStatus:sendStatus message:message];
+        @udStrongify(self);
+        [self sendMessageStatus:sendStatus message:message];
     }];
 }
 
@@ -529,16 +566,17 @@
         [self sendStatusConfigUI:sendStatus message:message];
         
     } else {
-        UDWEAKSELF
         [self.chatViewModel.failedMessageArray addObject:message];
         //开启重发
+        @udWeakify(self);
         [self.chatViewModel resendFailedMessage:^(UDMessage *failedMessage, BOOL sendStatus) {
             //发送成功删除失败消息数组里的消息
+            @udStrongify(self);
             if (sendStatus) {
-                [weakSelf.chatViewModel.failedMessageArray removeObject:failedMessage];
+                [self.chatViewModel.failedMessageArray removeObject:failedMessage];
             }
             //根据发送状态更新UI
-            [weakSelf sendStatusConfigUI:sendStatus message:message];
+            [self sendStatusConfigUI:sendStatus message:message];
         }];
         
     }
@@ -547,29 +585,27 @@
 //根据发送状态更新UI
 - (void)sendStatusConfigUI:(BOOL)sendStatus message:(UDMessage *)message {
     
-    UDWEAKSELF
-    [self.chatViewModel.messageArray ud_each:^(UDMessage *oldMessage){
+    for (UDMessage *oldMessage in self.chatViewModel.messageArray) {
         
         if ([oldMessage.contentId isEqualToString:message.contentId]) {
             
             message.messageStatus = sendStatus?UDMessageSuccess:UDMessageFailed;
-            NSIndexPath *indexPath=[NSIndexPath indexPathForRow:[weakSelf.chatViewModel.messageArray indexOfObject:message] inSection:0];
+            NSIndexPath *indexPath=[NSIndexPath indexPathForRow:[self.chatViewModel.messageArray indexOfObject:message] inSection:0];
             
-            UDMessageTableViewCell *cell = [weakSelf.messageTableView cellForRowAtIndexPath:indexPath];
+            UDMessageTableViewCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
             [cell.messageContentView.indicatorView stopAnimating];
             
             cell.messageContentView.messageAgainButton.hidden = sendStatus?YES:NO;
             
             [UDManager updateTableWithSqlString:[NSString stringWithFormat:@"update Message set sendflag='%d' where msgid='%@'",sendStatus?2:1,message.contentId] params:nil];
         }
-        
-    }];
-    
+
+    }
 }
 
 #pragma mark - 点击图片
 - (void)didSelectedMultipleMediaAction {
-    
+
     self.textViewInputViewType = UDInputViewTypeShareMenu;
     [self layoutOtherMenuViewHiden:NO];
 }
@@ -584,12 +620,12 @@
 }
 #pragma mark - UDMessageInputViewDelegate
 - (void)prepareRecordingVoiceActionWithCompletion:(BOOL (^)(void))completion {
-    
+
     [self prepareRecordWithCompletion:completion];
 }
 //选择的发送图片方式
 - (void)sendImageWithSourceType:(UIImagePickerControllerSourceType)sourceType {
-    
+
     //打开图片选择器
     void (^PickerMediaBlock)(UIImage *image) = ^(UIImage *image) {
         if (image) {
@@ -602,24 +638,25 @@
 
 //开始录音
 - (void)didStartRecordingVoiceAction {
-    
+
     [self.voiceRecordHUD startRecordingHUDAtView:self.view];
     [self.voiceRecordHelper startRecordingWithStartRecorderCompletion:nil];
 }
 
 //取消录音
 - (void)didCancelRecordingVoiceAction {
-    
-    UDWEAKSELF
+
+    @udWeakify(self);
     [self.voiceRecordHUD cancelRecordCompled:^(BOOL fnished) {
-        weakSelf.voiceRecordHUD = nil;
+        @udStrongify(self);
+        self.voiceRecordHUD = nil;
     }];
     [self.voiceRecordHelper cancelledDeleteWithCompletion:nil];
 }
 
 //录音完成
 - (void)didFinishRecoingVoiceAction {
-    
+
     if (self.isMaxTimeStop == NO) {
         [self finishRecorded];
     } else {
@@ -642,18 +679,21 @@
 }
 //录音完成
 - (void)finishRecorded {
-    UDWEAKSELF
+    
+    @udWeakify(self);
     [self.voiceRecordHUD stopRecordCompled:^(BOOL fnished) {
-        weakSelf.voiceRecordHUD = nil;
+        @udStrongify(self);
+        self.voiceRecordHUD = nil;
     }];
     [self.voiceRecordHelper stopRecordingWithStopRecorderCompletion:^{
-        [weakSelf didSendMessageWithAudio:weakSelf.voiceRecordHelper.recordPath audioDuration:weakSelf.voiceRecordHelper.recordDuration];
+        @udStrongify(self);
+        [self didSendMessageWithAudio:self.voiceRecordHelper.recordPath audioDuration:self.voiceRecordHelper.recordDuration];
     }];
 }
 
 #pragma mark - UDEmotionManagerView Delegate
 - (void)emojiViewDidPressDeleteButton:(UIButton *)deletebutton {
-    
+
     if (self.messageInputView.inputTextView.text.length > 0) {
         NSRange lastRange = [self.messageInputView.inputTextView.text rangeOfComposedCharacterSequenceAtIndex:self.messageInputView.inputTextView.text.length-1];
         self.messageInputView.inputTextView.text = [self.messageInputView.inputTextView.text substringToIndex:lastRange.location];
@@ -666,7 +706,7 @@
 }
 //点击表情面板的发送按钮
 - (void)didEmotionViewSendAction {
-    
+
     [self didSendTextAction:self.messageInputView.inputTextView.text];
 }
 
@@ -678,34 +718,34 @@
 
 #pragma mark - 监听键盘通知做出相应的操作
 - (void)subscribeToKeyboard {
-    UDWEAKSELF
+    @udWeakify(self);
     [self ud_subscribeKeyboardWithBeforeAnimations:nil animations:^(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing) {
-        
-        if (weakSelf.textViewInputViewType == UDInputViewTypeText) {
+        @udStrongify(self);
+        if (self.textViewInputViewType == UDInputViewTypeText) {
             //计算键盘的Y
-            CGFloat keyboardY = [weakSelf.view convertRect:keyboardRect fromView:nil].origin.y;
-            CGRect inputViewFrame = weakSelf.messageInputView.frame;
+            CGFloat keyboardY = [self.view convertRect:keyboardRect fromView:nil].origin.y;
+            CGRect inputViewFrame = self.messageInputView.frame;
             //底部功能栏需要的Y
             CGFloat inputViewFrameY = keyboardY - inputViewFrame.size.height;
             //tableview的bottom
-            CGFloat messageViewFrameBottom = weakSelf.view.frame.size.height - inputViewFrame.size.height;
+            CGFloat messageViewFrameBottom = self.view.frame.size.height - inputViewFrame.size.height;
             if (inputViewFrameY > messageViewFrameBottom)
                 inputViewFrameY = messageViewFrameBottom;
             //改变底部功能栏frame
-            weakSelf.messageInputView.frame = CGRectMake(inputViewFrame.origin.x,
+            self.messageInputView.frame = CGRectMake(inputViewFrame.origin.x,
                                                          inputViewFrameY,
                                                          inputViewFrame.size.width,
                                                          inputViewFrame.size.height);
             //改变tableview frame
-            [weakSelf.messageTableView setTableViewInsetsWithBottomValue:weakSelf.view.frame.size.height
-             - weakSelf.messageInputView.frame.origin.y];
+            [self.messageTableView setTableViewInsetsWithBottomValue:self.view.frame.size.height
+             - self.messageInputView.frame.origin.y];
             
             if (isShowing) {
-                [weakSelf.messageTableView scrollToBottomAnimated:NO];
-                weakSelf.emotionManagerView.alpha = 0.0;
+                [self.messageTableView scrollToBottomAnimated:NO];
+                self.emotionManagerView.alpha = 0.0;
             } else {
                 
-                [weakSelf.messageInputView.inputTextView resignFirstResponder];
+                [self.messageInputView.inputTextView resignFirstResponder];
                 
             }
             
@@ -728,7 +768,7 @@
         self.navigationController.navigationBar.tintColor = Config.iMBackButtonColor;
     }
     //设置客户在线
-//    [UDManager setCustomerOnline];
+    [UDManager setCustomerOnline];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -743,13 +783,6 @@
         self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
     }
     
-    //用过返回上级页面了，发送中的消息改为发送失败，如果有需求，开发者可自定义
-    [UDManager updateTableWithSqlString:@"update Message set sendflag='1' where sendflag = '0'" params:nil];
-    
-    //返回上级页面，设置客户离线
-    [UDManager setCustomerOffline];
-    //客户不在当前页面停止请求排队客服
-    self.agentViewModel.stopRequest = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -760,7 +793,6 @@
 - (void)dealloc {
     
     NSLog(@"UDMsgTableViewController销毁了");
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ClickResendMessage object:nil];
     _messageTableView.delegate = nil;
     _messageTableView.dataSource = nil;
@@ -768,10 +800,9 @@
     _messageInputView.delegate = nil;
     _messageInputView = nil;
     _emotionManagerView.delegate = nil;
-    _chatViewModel.delegate = nil;
     _photographyHelper = nil;
     _agentStatusView = nil;
-    _agentViewModel = nil;
+    _chatViewModel = nil;
     
 }
 

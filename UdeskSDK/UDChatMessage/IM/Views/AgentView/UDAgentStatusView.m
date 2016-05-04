@@ -40,11 +40,11 @@
     
     UILabel *titleLabel = [[UILabel alloc] init];
     
-    CGSize titleSize = [UDGeneral.store textSize:getUDLocalizedString(@"反馈") fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
+    CGSize titleSize = [UDGeneral.store textSize:getUDLocalizedString(@"会话") fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
     
     titleLabel.frame = CGRectMake((self.ud_width-titleSize.width)/2, 0, titleSize.width, 44);
     
-    titleLabel.text = getUDLocalizedString(@"反馈");
+    titleLabel.text = getUDLocalizedString(@"会话");
     titleLabel.font = [UIFont systemFontOfSize:18];
     titleLabel.textColor = Config.iMTitleColor;
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -54,7 +54,6 @@
     
     UILabel *describeTitle = [[UILabel alloc] init];
     describeTitle.font = [UIFont systemFontOfSize:11];
-    describeTitle.hidden = YES;
     describeTitle.textColor = Config.agentStatusTitleColor;
     describeTitle.textAlignment = NSTextAlignmentCenter;
     describeTitle.backgroundColor = [UIColor clearColor];
@@ -88,7 +87,7 @@
         
         CGSize describeSize = [UDGeneral.store textSize:describeTieleStr fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
-        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
+        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, _titleLabel.ud_bottom-3, describeSize.width, 14);
         
         _describeTitle.text = describeTieleStr;
 
@@ -99,7 +98,7 @@
         
         CGSize describeSize = [UDGeneral.store textSize:describeTieleStr fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
-        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
+        _describeTitle.frame = CGRectMake((self.ud_width-describeSize.width)/2, _titleLabel.ud_bottom-3, describeSize.width, 14);
         
         _describeTitle.text = describeTieleStr;
     }
@@ -112,8 +111,6 @@
     newframe.size.height = 30;
     _titleLabel.frame = newframe;
     
-    //显示在线状态
-    _describeTitle.hidden = NO;
 }
 
 - (void)bindDataWithAgentModel:(UDAgentModel *)agentModel {
@@ -127,7 +124,7 @@
         
         CGSize describeSize = [UDGeneral.store textSize:agentModel.message fontOfSize:[UIFont systemFontOfSize:11] ToSize:CGSizeMake(self.ud_width, 44)];
         
-        CGRect describeFrame = CGRectMake((self.ud_width-describeSize.width)/2, 27, describeSize.width, 14);
+        CGRect describeFrame = CGRectMake((self.ud_width-describeSize.width)/2, _titleLabel.ud_bottom-3, describeSize.width, 14);
         
         _describeTitle.frame = describeFrame;
         

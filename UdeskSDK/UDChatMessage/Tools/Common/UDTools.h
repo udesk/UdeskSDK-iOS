@@ -40,8 +40,6 @@
 //压缩图片
 + (UIImage *)compressImageWith:(UIImage *)image;
 
-+ (CGRect)relativeFrameForScreenWithView:(UIView *)v;
-
 + (BOOL)canRecord;
 
 @end

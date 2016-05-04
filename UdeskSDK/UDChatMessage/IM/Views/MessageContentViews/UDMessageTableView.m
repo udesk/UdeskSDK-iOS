@@ -29,11 +29,12 @@
         headView.backgroundColor = [UIColor clearColor];
         
         UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [headView addSubview:activity];
+        activity.hidden = NO;
         activity.frame = CGRectMake(headView.frame.size.width/2-10, 5, 20, 25);
+        [headView addSubview:activity];
         
         self.tableHeaderView = headView;
-        headView.hidden = YES;
+//        headView.hidden = YES;
         
         _headView = headView;
         _activity = activity;

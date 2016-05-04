@@ -419,30 +419,6 @@
     return currentDateString;
 }
 
-#pragma mark - 获取view在视图中的CGRect
-+ (CGRect)relativeFrameForScreenWithView:(UIView *)v
-{
-    BOOL iOS7 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7;
-    
-    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-    if (!iOS7) {
-        screenHeight -= 20;
-    }
-    UIView *view = v;
-    CGFloat x = .0;
-    CGFloat y = .0;
-    while (view.frame.size.width != UD_SCREEN_WIDTH || view.frame.size.height != screenHeight) {
-        x += view.frame.origin.x;
-        y += view.frame.origin.y;
-        view = view.superview;
-        if ([view isKindOfClass:[UIScrollView class]]) {
-            x -= ((UIScrollView *) view).contentOffset.x;
-            y -= ((UIScrollView *) view).contentOffset.y;
-        }
-    }
-    return CGRectMake(x, y, v.frame.size.width, v.frame.size.height);
-}
-
 //判断是否允许使用麦克风7.0新增的方法requestRecordPermission
 + (BOOL)canRecord
 {

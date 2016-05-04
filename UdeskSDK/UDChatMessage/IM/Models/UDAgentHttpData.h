@@ -10,18 +10,20 @@
 
 @class UDAgentModel;
 
-@interface UDAgentViewModel : NSObject
+@interface UDAgentHttpData : NSObject
 
 @property (nonatomic, strong) UDAgentModel *agentModel;
 
 @property (nonatomic, assign) BOOL         stopRequest;
+
++ (instancetype)sharedAgentHttpData;
 
 /**
  *  获取客服Model
  *
  *  @param callback 客服model
  */
-- (void)requestAgentModel:(void(^)(UDAgentModel *agentModel,NSError *error))completion;
+- (void)requestRandomAgent:(void(^)(UDAgentModel *agentModel,NSError *error))completion;
 
 /**
  *  指定分配客服或客服组
@@ -32,8 +34,8 @@
  *  @param groupId    客服组id（选择客服，则客服组id可不填）
  *  @param completion 回调结果
  */
-- (void)assignAgentOrGroup:(NSString *)agentId
-                   groupID:(NSString *)groupId
-                completion:(void(^)(UDAgentModel *agentModel,NSError *error))completion;
+- (void)chooseAgentWithAgentId:(NSString *)agent_id
+                   withGroupId:(NSString *)group_id
+                    completion:(void(^)(UDAgentModel *agentModel,NSError *error))completion;
 
 @end

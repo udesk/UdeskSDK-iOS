@@ -45,9 +45,10 @@
 
 - (void)dismissPickerViewController:(UIImagePickerController *)picker {
     
-    UDWEAKSELF
+    @udWeakify(self);
     [picker dismissViewControllerAnimated:YES completion:^{
-        weakSelf.didFinishTakeMediaCompled = nil;
+        @udStrongify(self);
+        self.didFinishTakeMediaCompled = nil;
     }];
 }
 

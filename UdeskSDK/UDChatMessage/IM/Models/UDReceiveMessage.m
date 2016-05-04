@@ -17,22 +17,9 @@
 
 @implementation UDReceiveMessage
 
-+ (instancetype)store {
-
-    return [[self alloc] init];
-
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        
-    }
-    return self;
-}
-
-- (void)resolveChatMsg:(NSDictionary *)messageDic callbackMsg:(void(^)(UDMessage *message))block {
++ (void)ud_messageModelWithDictionary:(NSDictionary *)messageDictionary
+                           completion:(void(^)(UDMessage *message))completion
+                        redirectAgent:(UDAgentDataCallBack)redirectAgent {
 
     UDMessage *message = [[UDMessage alloc] init];
     NSString *content_id = [UDTools soleString];
@@ -43,9 +30,9 @@
     message.messageStatus = UDMessageSuccess;
     
     //消息类型
-    NSString *type = [messageDic objectForKey:@"type"];
+    NSString *type = [messageDictionary objectForKey:@"type"];
     //消息内容
-    NSString *content = [[messageDic objectForKey:@"data"] objectForKey:@"content"];
+    NSString *content = [[messageDictionary objectForKey:@"data"] objectForKey:@"content"];
     
     //消息时间
     NSString *created_at = [UDTools nowDate];
@@ -64,43 +51,40 @@
         NSArray *textDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeText]];
         [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
         
-        if (block) {
-            block(message);
+        if (completion) {
+            completion(message);
         }
     }
     else if ([type isEqualToString:@"image"]) {
         
-        //缓存image
-        NSString *newURL = [content stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:newURL]];
-        
-        NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
             
-            UIImage *image = [UIImage imageWithData:data];
-            message.photo  = image;
+            NSString *newURL = [content stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:newURL]]];
             
-            //缓存图片
-            [[UDCache sharedUDCache] storeImage:image forKey:message.contentId];
-            
-            message.messageType = UDMessageMediaTypePhoto;
-            message.photoUrl = content;
-            
-            CGSize imageSize = [UDTools setImageSize:image];
-            NSString *newWidth = [NSString stringWithFormat:@"%f",imageSize.width];
-            NSString *newHeight = [NSString stringWithFormat:@"%f",imageSize.height];
-            message.width = newWidth;
-            message.height = newHeight;
-            //缓存图片
-            NSArray *photoDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypePhoto],newWidth,newHeight];
-            [UDManager insertTableWithSqlString:InsertPhotoMsg params:photoDBArray];
-            
-            if (block) {
-                block(message);
-            }
-            
-        }];
-        
-        [dataTask resume];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                message.photo  = image;
+                //缓存图片
+                [[UDCache sharedUDCache] storeImage:image forKey:message.contentId];
+                
+                message.messageType = UDMessageMediaTypePhoto;
+                message.photoUrl = content;
+                
+                CGSize imageSize = [UDTools setImageSize:image];
+                NSString *newWidth = [NSString stringWithFormat:@"%f",imageSize.width];
+                NSString *newHeight = [NSString stringWithFormat:@"%f",imageSize.height];
+                message.width = newWidth;
+                message.height = newHeight;
+                //存db
+                NSArray *photoDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypePhoto],newWidth,newHeight];
+                [UDManager insertTableWithSqlString:InsertPhotoMsg params:photoDBArray];
+                
+                if (completion) {
+                    completion(message);
+                }
+                
+            });
+        });
         
     }
     else if ([type isEqualToString:@"audio"]) {
@@ -121,17 +105,17 @@
         
         [UDManager insertTableWithSqlString:InsertAudioMsg params:audioDBArray];
         
-        if (block) {
-            block(message);
+        if (completion) {
+            completion(message);
         }
     }
     else if ([type isEqualToString:@"redirect"]) {
-    
+        
         message.messageType = UDMessageMediaTypeRedirect;
         message.messageFrom = UDMessageTypeCenter;
         
         //请求被转移的客服
-        [UDManager getRedirectAgentInformation:messageDic completion:^(id responseObject, NSError *error) {
+        [UDManager getRedirectAgentInformation:messageDictionary completion:^(id responseObject, NSError *error) {
             
             //解析数据
             if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
@@ -145,8 +129,8 @@
                 
                 [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
                 //block传出
-                if (block) {
-                    block(message);
+                if (completion) {
+                    completion(message);
                 }
                 //解析客服数据
                 NSDictionary *result = [responseObject objectForKey:@"result"];
@@ -164,10 +148,10 @@
                     
                 }
                 
-                if (_udAgentBlock) {
-                    _udAgentBlock(agentModel);
+                if (redirectAgent) {
+                    redirectAgent(agentModel);
                 }
-
+                
             }
             
         }];
@@ -186,7 +170,7 @@
                 message.text = happleElement.content;
             }
             else {
-            
+                
                 message.text = [NSString stringWithFormat:@"%@\n",message.text];
                 message.text = [message.text stringByAppendingString:happleElement.content];
             }
@@ -197,10 +181,10 @@
         NSMutableArray *richContetnArray = [NSMutableArray array];
         
         for (UDHppleElement *happleElement in dataAArray) {
-
+            
             [richURLDictionary setObject:[NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]] forKey:happleElement.content];
             [richContetnArray addObject:happleElement.content];
-
+            
             message.richArray = [NSArray arrayWithArray:richContetnArray];
             
             message.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
@@ -213,12 +197,12 @@
         
         [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
         
-        if (block) {
-            block(message);
+        if (completion) {
+            completion(message);
         }
         
     }
-    
+
 }
 
 @end

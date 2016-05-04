@@ -283,14 +283,14 @@
         self.isCancelled = NO;
         self.isRecording = NO;
         if ([self.delegate respondsToSelector:@selector(prepareRecordingVoiceActionWithCompletion:)]) {
-            UDWEAKSELF
             //这边回调 return 的 YES, 或 NO, 可以让底层知道该次录音是否成功, 今儿处理无用的 record 对象
+            @udWeakify(self);
             [self.delegate prepareRecordingVoiceActionWithCompletion:^BOOL{
-                UDSTRONGSELF
+                @udStrongify(self);
                 //这边要判断回调回来的时候, 使用者是不是已经早就松开手了
-                if (strongSelf && !strongSelf.isCancelled) {
-                    strongSelf.isRecording = YES;
-                    [strongSelf.delegate didStartRecordingVoiceAction];
+                if (self && !self.isCancelled) {
+                    self.isRecording = YES;
+                    [self.delegate didStartRecordingVoiceAction];
                     return YES;
                 } else {
                     return NO;

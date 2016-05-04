@@ -23,14 +23,5 @@
     return value;
 }
 
-- (void)ud_each:(void (^)(id obj))block
-{
-    NSParameterAssert(block != nil);
-    
-    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        block(obj);
-    }];
-}
-
 
 @end

@@ -59,7 +59,7 @@
             
             UDChatViewController *chat = [[UDChatViewController alloc] init];
             
-            [self.navigationController pushViewController:chat animated:YES];
+            [self.navigationController pushViewController:chat animated:NO];
             
         }
         

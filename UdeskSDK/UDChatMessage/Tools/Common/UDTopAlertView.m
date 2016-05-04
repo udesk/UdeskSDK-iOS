@@ -8,6 +8,7 @@
 
 #import "UDTopAlertView.h"
 #import "UDFoundationMacro.h"
+#import "UDAgentModel.h"
 
 #define UD_TEXTSIZE(text, font) [text length] > 0 ? [text \
 sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
@@ -83,50 +84,50 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
     }
 }
 
-+ (UDTopAlertView*)showWithType:(UDAlertType)type text:(NSString*)text parentView:(UIView*)parentView{
-    UDTopAlertView *alertView = [[UDTopAlertView alloc]initWithType:type text:text];
++ (UDTopAlertView *)showWithAgentModel:(UDAgentModel *)agentModel parentView:(UIView*)parentView {
+
+    UDTopAlertView *alertView = [[UDTopAlertView alloc]initWithAgentModel:agentModel];
     [parentView addSubview:alertView];
     [alertView show];
     return alertView;
 }
 
-- (instancetype)initWithType:(UDAlertType)type text:(NSString*)text // parentView:(UIView*)parentView
+- (instancetype)initWithAgentModel:(UDAgentModel *)agentModel // parentView:(UIView*)parentView
 {
     self = [super init];
     if (self) {
-        [self setType:type text:text];
+        [self setTypeWithAgentModel:agentModel];
     }
     return self;
 }
 
-- (void)setType:(UDAlertType)type text:(NSString*)text{
+- (void)setTypeWithAgentModel:(UDAgentModel *)agentModel {
     _autoHide = YES;
     _duration = 3;
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
     [self setFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width - width)*0.5, -60, width, 40)];
     self.alpha = .9f;
     UIColor *doBtnColor = FlatSkyBlueDark;
-    switch (type) {
-        case UDAlertTypeOnline:{
-            self.backgroundColor = FlatGreen;
-
-            doBtnColor = FlatGreenDark;
-        }
-            break;
-        case UDAlertTypeOffline:
-            self.backgroundColor = hsb(28, 85, 90);
-            doBtnColor = FlatOrangeDark;
-            break;
-        case UDAlertTypeQueue:
-            self.backgroundColor = hsb(204, 76, 86);;
-            doBtnColor = FlatSkyBlueDark;
-            break;
-        case UDAlertTypeError:
-            self.backgroundColor = FlatRed;
-            doBtnColor = FlatRedDark;
-            break;
-        default:
-            break;
+    
+    if (agentModel.code == 2000) {
+        
+        self.backgroundColor = FlatGreen;
+        doBtnColor = FlatGreenDark;
+    }
+    else if (agentModel.code == 2001) {
+    
+        self.backgroundColor = hsb(204, 76, 86);;
+        doBtnColor = FlatSkyBlueDark;
+    }
+    else if (agentModel.code == 2002) {
+        
+        self.backgroundColor = hsb(28, 85, 90);
+        doBtnColor = FlatOrangeDark;
+    }
+    else {
+    
+        self.backgroundColor = FlatRed;
+        doBtnColor = FlatRedDark;
     }
     
     CGFloat textLabelWidth = width*0.8;
@@ -135,9 +136,9 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
     [textLabel setTextColor:[UIColor whiteColor]];
     textLabel.textAlignment = NSTextAlignmentCenter;
     textLabel.font = [UIFont systemFontOfSize:UD_SCREEN_WIDTH<375?16:18];
-    textLabel.text = text;
+    textLabel.text = agentModel.message;
     [self addSubview:textLabel];
-
+    
 }
 
 - (void)show{

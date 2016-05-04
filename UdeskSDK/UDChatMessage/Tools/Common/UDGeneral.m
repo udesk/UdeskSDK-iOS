@@ -30,7 +30,10 @@
     CGSize size;
     
     if (ud_isIOS6) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         size = [text sizeWithFont:font constrainedToSize:toSize];
+#pragma clang diagnostic pop
     } else {
         size = [text boundingRectWithSize:toSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
     }

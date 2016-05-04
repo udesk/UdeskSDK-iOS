@@ -14,10 +14,8 @@ typedef void (^UDAgentDataCallBack) (UDAgentModel *udAgent);
 
 @interface UDReceiveMessage : NSObject
 
-@property (nonatomic, copy) UDAgentDataCallBack udAgentBlock;
-
-+ (instancetype)store;
-
-- (void)resolveChatMsg:(NSDictionary *)messageDic callbackMsg:(void(^)(UDMessage *message))block;
++ (void)ud_messageModelWithDictionary:(NSDictionary *)messageDictionary
+                           completion:(void(^)(UDMessage *message))completion
+                        redirectAgent:(UDAgentDataCallBack)redirectAgent;
 
 @end

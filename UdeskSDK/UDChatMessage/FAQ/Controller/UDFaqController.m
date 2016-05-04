@@ -133,6 +133,7 @@
 #pragma mark - 请求数据
 - (void)requestFAQData {
     
+    @udWeakify(self);
     [UDManager getFaqArticles:^(id responseObject, NSError *error) {
         
         if (!error) {
@@ -145,9 +146,10 @@
                 [muArray addObject:model];
             }
             
+            @udStrongify(self);
             self.problemData = [muArray arrayByAddingObjectsFromArray:self.problemData];
             
-            [_faqTableView reloadData];
+            [self.faqTableView reloadData];
         }
         
     }];

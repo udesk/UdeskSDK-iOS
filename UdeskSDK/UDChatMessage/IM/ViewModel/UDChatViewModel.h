@@ -9,59 +9,33 @@
 #import <Foundation/Foundation.h>
 #import "UDMessageTextView.h"
 
-@class UDAgentViewModel;
+@class UDAgentHttpData;
 @class UDMessageTableView;
 @class UDMessageInputView;
 @class UDEmotionManagerView;
 @class UDAgentModel;
 @class UDMessage;
 
-@protocol UDChatViewModelDelegate <NSObject>
-
-/**
- *  刷新TableView
- */
-- (void)reloadChatTableView;
-/**
- *  回调客服状态
- *
- *  @param presence 客服状态
- */
-- (void)receiveAgentPresence:(NSString *)presence;
-/**
- *  点击发送离线表单
- */
-- (void)clickSendOffLineTicket;
-/**
- *  通知VC客户被转接
- *
- *  @param agentMsg 转接客服信息
- */
-- (void)notificationRedirect:(UDAgentModel *)agentModel;
-
-@end
 
 @interface UDChatViewModel : NSObject
 
-/**
- *  消息数据
- */
-@property (nonatomic, strong) NSMutableArray *messageArray;
+@property (nonatomic, strong,readonly) NSMutableArray *messageArray;//消息数据
 
-/**
- *  发送失败的消息
- */
-@property (nonatomic, strong) NSMutableArray *failedMessageArray;
+@property (nonatomic, strong,readonly) NSMutableArray *failedMessageArray;//发送失败的消息
 
-/**
- *  客服Model
- */
-@property (nonatomic, strong) UDAgentModel        *agentModel;
+@property (nonatomic, strong) UDAgentModel        *agentModel;//客服Model
 
-@property (nonatomic, weak  ) id<UDChatViewModelDelegate> delegate;
+@property (nonatomic, assign) NSInteger            message_total_pages;//消息条数总数
 
+@property (nonatomic, assign) NSInteger            message_count;//消息条数总数
 
-+ (instancetype)sharedViewModel;
+@property (nonatomic, copy) void(^updateMessageContentBlock)();//消息内容更新
+
+@property (nonatomic, copy) void(^fetchAgentDataBlock)(UDAgentModel *agentModel);//接收客服数据
+
+@property (nonatomic, copy) void(^clickSendOffLineTicket)();//点击发送表单
+
+- (instancetype)initWithAgentId:(NSString *)agent_id withGroupId:(NSString *)group_id;
 
 /**
  *  发送文本消息
@@ -92,58 +66,17 @@
            audioDuration:(NSString *)audioDuration
              completion:(void(^)(UDMessage *message,BOOL sendStatus))comletion;
 
-/**
- *  登录Udesk
- *
- *  @param viewModel 客服model(根据客服状态去登录)
- */
-- (void)loginUdeskWithAgent:(UDAgentModel *)agentModel;
 
-/**
- *  DB消息
- *
- *  @param messageArray 消息数组
- */
-- (void)viewModelWithDatabase:(NSArray *)messageArray;
+//加载更多DB消息
+- (void)pullMoreDateBaseMessage;
 
-/**
- *  加载更多消息（本地消息）
- *
- *  @param messageArray 更多消息数组
- */
-- (void)viewModelWithMoreMessage:(NSArray *)messageArray;
+//取消轮询排队时候的客服接口
+- (void)cancelPollingAgent;
 
 /**
  *  点击底部功能栏坐相应操作
  */
-- (void)clickInputView;
-/**
- *  根据点击展示功能模块
- *
- *  @param hide        隐藏显示模块
- *  @param viewType    模块类型
- *  @param chatView    ChatView
- *  @param tableview   ChatTableView
- *  @param inputView   ChatInputView
- *  @param emotionView ChatEmotionView
- *  @param completion  动画回调
- */
-- (void)layoutOtherMenuViewHiden:(BOOL)hide
-                        ViewType:(UDInputViewType)viewType
-                        chatView:(UIView *)chatView
-                       tabelView:(UDMessageTableView *)tableview
-                       inputView:(UDMessageInputView *)inputView
-                     emotionView:(UDEmotionManagerView *)emotionView
-                      completion:(void(^)(BOOL finished))completion;
-
-/**
- *  是否显示时间轴Label
- *
- *  @param indexPath 目标消息的位置IndexPath
- *
- *  @return 根据indexPath获取消息的Model的对象，从而判断返回YES or NO来控制是否显示时间轴Label
- */
-- (BOOL)shouldDisplayTimeForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)clickInputViewShowAlertView;
 
 /**
  *  重发失败的消息

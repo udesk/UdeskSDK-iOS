@@ -15,6 +15,4 @@
  */
 - (id)objectAtIndexCheck:(NSUInteger)index;
 
-- (void)ud_each:(void (^)(id obj))block;
-
 @end

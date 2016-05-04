@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UDAgentViewModel.h"
+
+@class UDAgentModel;
 
 @interface UDAgentStatusView : UIView
 
@@ -32,8 +33,6 @@
  *
  *  @param viewModel 客服数据
  */
-//- (void)bindDataWithAgentModel:(UDAgentViewModel *)viewModel;
-
 - (void)bindDataWithAgentModel:(UDAgentModel *)agentModel;
 
 @end

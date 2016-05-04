@@ -10,6 +10,4 @@
 
 @interface UDRobotIMViewController : UIViewController
 
-@property (nonatomic, assign) BOOL isManpower;
-
 @end

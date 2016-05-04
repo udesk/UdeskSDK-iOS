@@ -6,42 +6,32 @@
 //  Copyright (c) 2015年 xuchen. All rights reserved.
 //
 
-#import "UDAgentViewModel.h"
+#import "UDAgentHttpData.h"
 #import "UDAgentModel.h"
 #import "NSTimer+UDMessage.h"
 #import "UDManager.h"
 
 typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
 
-@interface UDAgentViewModel()
 
-@end
+@implementation UDAgentHttpData
 
-@implementation UDAgentViewModel
++ (instancetype)sharedAgentHttpData {
+    
+    static UDAgentHttpData *_agentHttpData = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _agentHttpData = [[self alloc ] init];
+    });
+    
+    return _agentHttpData;
+}
 
 //请求客服信息
-- (void)requestAgentModel:(void(^)(UDAgentModel *agentModel,NSError *error))completion {
+- (void)requestRandomAgent:(void(^)(UDAgentModel *agentModel,NSError *error))completion {
     
-    [self requestAgentDataWithCallback:^(id responseObject, NSError *error) {
-        
-       UDAgentModel *agentModel = [self resolvingAgentData:responseObject];
-        
-        if (completion) {
-            completion(agentModel,error);
-        }
-
-    }];
-    
-}
-//请求客服信息block
-- (void)requestAgentDataWithCallback:(UDAgentDataCallBack)completion {
-    
-    UDAgentDataCallBack dataCallback = ^(id responseObject, NSError *error) {
-        
-        if (completion) {
-            
-            completion(responseObject,error);
-        }
+    [UDManager requestRandomAgent:^(id responseObject, NSError *error) {
         
         NSDictionary *result = [responseObject objectForKey:@"result"];
         
@@ -50,39 +40,14 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
         if (agentCode == 2001 && self.stopRequest == NO) {
             
             // 客服状态码等于2001 20s轮训一次
-            double delayInSeconds = 20.0f;
+            double delayInSeconds = 5.0f;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 
-                [self requestAgentDataWithCallback:completion];
+                [self requestRandomAgent:completion];
                 
             });
         }
-        
-    };
-    
-    [self requestAgentData:dataCallback];
-    
-}
-
-- (void)requestAgentData:(UDAgentDataCallBack)completion {
-    
-    [UDManager getAgentInformation:^(id responseObject, NSError *error) {
-        
-        if (completion) {
-            completion(responseObject,error);
-        }
-        
-    }];
-    
-}
-
-//指定分配客服或客服组
-- (void)assignAgentOrGroup:(NSString *)agentId
-                   groupID:(NSString *)groupId
-                completion:(void(^)(UDAgentModel *agentModel,NSError *error))completion {
-
-    [self requestAgentDataWithAgentId:agentId groupId:groupId completion:^(id responseObject, NSError *error) {
         
         UDAgentModel *agentModel = [self resolvingAgentData:responseObject];
         
@@ -91,19 +56,15 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
         }
         
     }];
-
-}
-//请求指定客服信息
-- (void)requestAgentDataWithAgentId:(NSString *)agentId
-                            groupId:(NSString *)groupId
-                         completion:(UDAgentDataCallBack)completion {
     
-    UDAgentDataCallBack dataCallback = ^(id responseObject, NSError *error) {
-        
-        if (completion) {
-            
-            completion(responseObject,error);
-        }
+}
+
+//指定分配客服或客服组
+- (void)chooseAgentWithAgentId:(NSString *)agent_id
+                   withGroupId:(NSString *)group_id
+                    completion:(void(^)(UDAgentModel *agentModel,NSError *error))completion; {
+    
+    [UDManager assignAgentOrGroup:agent_id groupID:group_id completion:^(id responseObject, NSError *error) {
         
         NSDictionary *result = [responseObject objectForKey:@"result"];
         
@@ -112,33 +73,23 @@ typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
         if (agentCode == 2001 && self.stopRequest == NO) {
             
             // 客服状态码等于2001 20s轮训一次
-            double delayInSeconds = 20.0f;
+            double delayInSeconds = 5.0f;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 
-                [self requestAgentDataWithAgentId:agentId groupId:groupId completion:completion];
+                [self chooseAgentWithAgentId:agent_id withGroupId:group_id completion:completion];
                 
             });
         }
         
-    };
-    
-    [self requestOnlyAgentDataWithAgentId:agentId groupId:groupId completion:dataCallback];
-    
-}
-
-//请求指定客服信息
-- (void)requestOnlyAgentDataWithAgentId:(NSString *)agentId
-                                groupId:(NSString *)groupId
-                             completion:(UDAgentDataCallBack)completion{
-    
-    [UDManager assignAgentOrGroup:agentId groupID:groupId completion:^(id responseObject, NSError *error) {
+        UDAgentModel *agentModel = [self resolvingAgentData:responseObject];
         
         if (completion) {
-            completion(responseObject,error);
+            completion(agentModel,error);
         }
-        
+
     }];
+
 }
 
 //解析客服信息

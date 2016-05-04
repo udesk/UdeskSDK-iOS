@@ -7,15 +7,9 @@
 //
 
 #import "UDChatViewModel.h"
-#import "UDMessageTableView.h"
 #import "UDReceiveMessage.h"
-#import "UDAgentViewModel.h"
-#import "UDMessageInputView.h"
-#import "UDEmotionManagerView.h"
-#import "UDMessageTextView.h"
 #import "UDAgentModel.h"
 #import "NSTimer+UDMessage.h"
-#import "UDManager.h"
 #import "UDTools.h"
 #import "UDAlertController.h"
 #import "UDCache.h"
@@ -23,26 +17,22 @@
 #import "UdeskUtils.h"
 #import "NSArray+UDMessage.h"
 #import "UDHpple.h"
+#import "UDAgentHttpData.h"
+#import "UDReachability.h"
+#import "UDManager.h"
 
-@interface UDChatViewModel() <UDManagerDelegate>
+@interface UDChatViewModel()<UDManagerDelegate>
+
+@property (nonatomic, strong,readwrite) NSMutableArray *messageArray;//消息数据
+@property (nonatomic, strong,readwrite) NSMutableArray *failedMessageArray;//发送失败的消息
+@property (nonatomic, assign) BOOL      netWorkChange;//网络切换
+@property (nonatomic, assign) NSInteger message_number;//消息数
 
 @end
 
 @implementation UDChatViewModel
 
-+ (instancetype)sharedViewModel {
-    
-    static UDChatViewModel *_sharedViewModel = nil;
-    static dispatch_once_t onceToken;
-    
-    dispatch_once(&onceToken, ^{
-        _sharedViewModel = [[self alloc ] init];
-    });
-    
-    return _sharedViewModel;
-}
-
-- (instancetype)init
+- (instancetype)initWithAgentId:(NSString *)agent_id withGroupId:(NSString *)group_id
 {
     self = [super init];
     if (self) {
@@ -50,216 +40,226 @@
         self.messageArray = [NSMutableArray array];
         self.failedMessageArray = [NSMutableArray array];
         
+        [UDManager receiveUdeskDelegate:self];
+        
+        @udWeakify(self);
+        //获取db消息
+        [self requestDataBaseMessageContent];
+        
+        //获取客户信息
+        [UDManager createServerCustomer:^(id responseObject) {
+            
+            //提交设备信息
+            [self submitCustomerDevicesInfo];
+            //请求客服数据
+            [self requestAgentWithAgentId:agent_id withGroupId:group_id];
+            
+        } failure:^(NSError *error) {
+            
+            NSLog(@"用户信息获取失败：%@",error);
+        }];
+        
+        
+        UDReachability *networkReach = [UDReachability reachabilityWithHostname:@"www.baidu.com"];
+        
+        networkReach.reachableBlock = ^(UDReachability *reachability)
+        {
+            @udStrongify(self);
+            if (self.netWorkChange) {
+                self.netWorkChange = NO;
+                //请求客服数据
+                [self requestAgentWithAgentId:agent_id withGroupId:group_id];
+            }
+            
+        };
+        
+        networkReach.unreachableBlock = ^(UDReachability *reachability)
+        {
+            
+            @udStrongify(self);
+            self.netWorkChange = YES;
+            self.agentModel.message = @"网络断开连接了";
+            self.agentModel.code = 2003;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [self callbackAgentModel:self.agentModel];
+            });            
+        };
+        
+        [networkReach startNotifier];
+
     }
     return self;
 }
 
-#pragma mark - 发送文字消息
-- (void)sendTextMessage:(NSString *)text
-             completion:(void(^)(UDMessage *message,BOOL sendStatus))completion {
+#pragma mark - 获取DB数据
+- (void)requestDataBaseMessageContent {
+
+    //获取db条数
+    NSInteger messageContent = [UDManager dbMessageCount];
     
-    if (_agentModel.code == 2000) {
+    self.message_count = messageContent;
+    self.message_total_pages = messageContent;
+    
+    NSString *sql;
+    if (self.message_total_pages<20) {
         
-        if ([UDTools isBlankString:text]) {
-            UDAlertController *notOnline = [UDAlertController alertWithTitle:nil message:@"不能发送空白消息"];
-            [notOnline addCloseActionWithTitle:@"确定" Handler:nil];
-            [notOnline showWithSender:nil controller:nil animated:YES completion:NULL];
-            
-            return;
-        }
-        
-        NSDate *date = [NSDate date];
-        
-        UDMessage *textMessage = [[UDMessage alloc] initWithText:text timestamp:date];
-        
-        textMessage.agent_jid = _agentModel.jid;
-        
-        [self.messageArray addObject:textMessage];
-        //通知刷新UI
-        [self reloadChatTableView];
-        
-        NSArray *array = @[text,[UDTools stringFromDate:date],textMessage.contentId,@"0",@"0",@"0"];
-        
-        [UDManager insertTableWithSqlString:InsertTextMsg params:array];
-        
-        //发送消息 callback发送状态和消息体
-        [UDManager sendMessage:textMessage completion:^(UDMessage *message,BOOL sendStatus) {
-            
-            if (completion) {
-                completion(message,sendStatus);
-            }
-            
-        }];
-        
-    }
-    else if (_agentModel.code == 2001) {
-        //请求客服队列
-        [self queueStatus];
+        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%ld",MessageDB,(long)self.message_number,(long)self.message_total_pages];
     }
     else {
-        //提示客服不在线
-        [self agentNotOnline];
+        
+        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%d",MessageDB,(long)self.message_number,20];
+        self.message_total_pages-=20;
+        self.message_number += 20;
     }
+    
+    //查询db数据
+    NSArray *dbArray = [UDManager queryTabelWithSqlString:sql params:nil];
+    
+    for (NSDictionary *dbMessage in dbArray) {
+        
+        [self.messageArray insertObject:[self ud_messageModelWithDictionary:dbMessage] atIndex:0];
+    }
+    
+    //更新UI
+    [self updateContent];
 
 }
 
-#pragma mark - 发送图片消息
-- (void)sendImageMessage:(UIImage *)image
-              completion:(void(^)(UDMessage *message,BOOL sendStatus))completion {
+//加载更多DB消息
+- (void)pullMoreDateBaseMessage {
+    
+    NSString *sql;
+    if (self.message_total_pages<20) {
+        
+        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%ld",MessageDB,(long)self.message_number,(long)self.message_total_pages];
+    }
+    else {
+        
+        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%d",MessageDB,(long)self.message_number,20];
+        self.message_total_pages-=20;
+        self.message_number += 20;
 
-    if (_agentModel.code == 2000) {
+    }
+    
+    NSArray *dbArray = [UDManager queryTabelWithSqlString:sql params:nil];
+    for (NSDictionary *dbMoreMessage in dbArray) {
+        [self.messageArray insertObject:[self ud_messageModelWithDictionary:dbMoreMessage] atIndex:0];
+    }
+    
+    //更新UI
+    [self updateContent];
+    
+}
+
+#pragma mark - 根据是否有客服id和客服组id请求客服数据
+- (void)requestAgentWithAgentId:(NSString *)agent_id withGroupId:(NSString *)group_id {
+
+    @udWeakify(self);
+    //获取客服信息
+    if (![UDTools isBlankString:group_id]||![UDTools isBlankString:agent_id]) {
         
-        //限制图片的size
-        NSString *newWidth = [NSString stringWithFormat:@"%f",[UDTools setImageSize:image].width];
-        NSString *newHeight = [NSString stringWithFormat:@"%f",[UDTools setImageSize:image].height];
-        
-        NSDate *date = [NSDate date];
-        //大于1M的照片需要压缩
-        NSData *data = UIImageJPEGRepresentation(image, 1);
-        if (data.length/1024 > 1024) {
-            image = [UDTools compressImageWith:image];
-        }
-        
-        UDMessage *photoMessage = [[UDMessage alloc] initWithPhoto:image timestamp:date];
-        photoMessage.agent_jid = _agentModel.jid;
-        photoMessage.width = newWidth;
-        photoMessage.height = newHeight;
-        
-        [self.messageArray addObject:photoMessage];
-        //通知刷新UI
-        [self reloadChatTableView];
-        //缓存图片
-        [[UDCache sharedUDCache] storeImage:photoMessage.photo forKey:photoMessage.contentId];
-        
-        //存储
-        NSArray *array = @[@"image",[UDTools stringFromDate:date],photoMessage.contentId,@"0",@"0",@"1",newWidth,newHeight];
-        
-        [UDManager insertTableWithSqlString:InsertPhotoMsg params:array];
-        
-        //发送消息 callback发送状态和消息体
-        [UDManager sendMessage:photoMessage completion:^(UDMessage *message,BOOL sendStatus) {
+        //指定客服或客服组
+        [[UDAgentHttpData sharedAgentHttpData] chooseAgentWithAgentId:agent_id withGroupId:group_id completion:^(UDAgentModel *agentModel, NSError *error) {
             
-            if (completion) {
-                completion(message,sendStatus);
-            }
+            @udStrongify(self);
+            [self distributionAgent:agentModel];
         }];
         
     }
-    else if (_agentModel.code == 2001) {
-        //请求队列
-        [self queueStatus];
-    }
     else {
-        //提示客服不在线
-        [self agentNotOnline];
-    }
-
-}
-
-#pragma mark - 发送语音消息
-- (void)sendAudioMessage:(NSString *)audioPath
-           audioDuration:(NSString *)audioDuration
-              completion:(void (^)(UDMessage *, BOOL sendStatus))comletion {
-
-    if (_agentModel.code == 2000) {
-        
-        NSDate *date = [NSDate date];
-        
-        UDMessage *voiceMessage = [[UDMessage alloc] initWithVoicePath:audioPath voiceDuration:audioDuration timestamp:date];
-        voiceMessage.agent_jid = _agentModel.jid;
-        
-        [self.messageArray addObject:voiceMessage];
-        //通知刷新UI
-        [self reloadChatTableView];
-        
-        NSArray *array = @[audioPath,[UDTools stringFromDate:date],voiceMessage.contentId,@"0",@"0",@"2",audioDuration];
-        [UDManager insertTableWithSqlString:InsertAudioMsg params:array];
-        
-        NSData *voiceData = [NSData dataWithContentsOfFile:audioPath];
-        
-        //缓存语音
-        [[UDCache sharedUDCache] storeData:voiceData forKey:voiceMessage.contentId];
-        
-        //发送消息 callback发送状态和消息体
-        [UDManager sendMessage:voiceMessage completion:^(UDMessage *message,BOOL sendStatus) {
+        //根据管理员后台配置选择客服
+        [[UDAgentHttpData sharedAgentHttpData] requestRandomAgent:^(UDAgentModel *agentModel, NSError *error) {
             
-            if (comletion) {
-                comletion(message,sendStatus);
-            }
+            @udStrongify(self);
+            [self distributionAgent:agentModel];
         }];
-        
-    }
-    else if (_agentModel.code == 2001) {
-        //请求客服队列
-        [self queueStatus];
-    }
-    else {
-        //客服不在线提示
-        [self agentNotOnline];
     }
 }
+
+//获取分配客服
+- (void)distributionAgent:(UDAgentModel *)agentModel {
+
+    //回调客服信息到vc显示
+    [self callbackAgentModel:agentModel];
+    //获取用户登录信息
+    [self requestCustomerLoginInfo];
+}
+
+//回调客服信息到vc显示
+- (void)callbackAgentModel:(UDAgentModel *)agentModel {
+    
+    if (self.fetchAgentDataBlock) {
+        self.fetchAgentDataBlock(agentModel);
+    }
+    self.agentModel = agentModel;
+}
+//取消轮询排队时候的客服接口
+- (void)cancelPollingAgent {
+
+    [UDAgentHttpData sharedAgentHttpData].stopRequest = YES;
+}
+
+#pragma mark - 获取用户登录信息
+- (void)requestCustomerLoginInfo {
+
+    @udWeakify(self);
+    [UDManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
+        
+        //登录Udesk
+        @udStrongify(self);
+        [self loginUdeskWithAgentCode:self.agentModel.code];
+    }];
+
+}
+
+#pragma mark - 提交设备信息
+- (void)submitCustomerDevicesInfo {
+
+    //提交设备信息
+    [UDManager submitCustomerDevicesInfo:^(id responseObject, NSError *error) {
+        
+        NSLog(@"设备信息提交成功");
+    }];
+}
+
 #pragma mark - 登录Udesk
-- (void)loginUdeskWithAgent:(UDAgentModel *)agentModel {
-    
-    _agentModel = agentModel;
-    
-    if ([[UDTools internetStatus] isEqualToString:@"notReachable"]) {
+- (void)loginUdeskWithAgentCode:(NSInteger)code {
+
+    if (code != 2000 && code != 2001) {
         
-        _agentModel.code = 2003;
-        
-        [self netWorkDisconnectAlertView];
-        
+        [self showAlertViewWithAgentCode:code];
         return;
     }
-    
-    if (agentModel.code == 2000) {
-        //获取用户信息
-        [UDManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
+    //只有客服在线才登录
+    if (code == 2000) {
+        //登录
+        [UDManager loginUdesk:^(BOOL status) {
             
-            //客服在线才登录XMPP
-            [UDManager loginUdesk:^(BOOL status) {
-                
-                if (status) {
-                    NSLog(@"登录Udesk成功");
-                }
-                
-            } receiveDelegate:self];
+            NSLog(@"登录Udesk成功");
         }];
         
     }
-    else if (agentModel.code == 2002) {
-        
-        [self agentNotOnline];
-    }
-    else if (agentModel.code == 5050||agentModel.code == 5060) {
-        
-        [self notExistAgent];
-    }
-    
 }
 
 #pragma mark - UDManagerDelegate
 - (void)didReceiveMessages:(NSDictionary *)message {
     
-    UDReceiveMessage *receiveMessage = UDReceiveMessage.store;
-    UDWEAKSELF
-    //消息类型为转移的回调，代理传给VC
-    receiveMessage.udAgentBlock = ^(UDAgentModel *agentModel){
+    NSDictionary *messageDictionary = [UDTools dictionaryWithJsonString:[message objectForKey:@"strContent"]];
+    @udWeakify(self);
+    [UDReceiveMessage ud_messageModelWithDictionary:messageDictionary completion:^(UDMessage *message) {
         
-        if ([self.delegate respondsToSelector:@selector(notificationRedirect:)]) {
-            [self.delegate notificationRedirect:agentModel];
-        }
-    };
-    
-    NSDictionary *messageDic = [UDTools dictionaryWithJsonString:[message objectForKey:@"strContent"]];
-    
-    //解析消息创建消息体并添加到数组
-    [receiveMessage resolveChatMsg:messageDic callbackMsg:^(UDMessage *message) {
+        //刷新UI
+        @udStrongify(self);
+        [self.messageArray addObject:message];
+        [self updateContent];
         
-        UDSTRONGSELF
-        [strongSelf.messageArray addObject:message];
+    } redirectAgent:^(UDAgentModel *agentModel) {
         
-        [self reloadChatTableView];
+        //把获取到的新客服回调给vc
+        @udStrongify(self);
+        [self callbackAgentModel:agentModel];
     }];
     
 }
@@ -268,18 +268,27 @@
     
     NSString *statusType = [presence objectForKey:@"type"];
     
+    NSInteger  agentCode;
+    NSString  *agentMessage;
     if ([statusType isEqualToString:@"available"]) {
         
-        self.agentModel.code = 2000;
+        agentCode = 2000;
+        agentMessage = [NSString stringWithFormat:@"客服 %@ 在线",self.agentModel.nick];
         
     } else {
         
-        self.agentModel.code = 2002;
+        agentCode = 2002;
+        agentMessage = [NSString stringWithFormat:@"客服 %@ 离线了",self.agentModel.nick];
     }
     
-    if ([self.delegate respondsToSelector:@selector(receiveAgentPresence:)]) {
-        [self.delegate receiveAgentPresence:statusType];
+    //与上次不同的code才抛给vc
+    if (self.agentModel.code != agentCode) {
+        
+        self.agentModel.code = agentCode;
+        self.agentModel.message = agentMessage;
+        [self callbackAgentModel:self.agentModel];
     }
+    
 }
 
 //接收客服发送的满意度调查
@@ -308,7 +317,7 @@
                             
                             //评价提交成功Alert
                             [self surveyCompletion];
-
+                            
                         }];
                         
                     }]];
@@ -317,18 +326,148 @@
                 [optionsAlert showWithSender:nil controller:nil animated:YES completion:NULL];
             }
             
-            
         }];
     }
 }
 //评价提交成功Alert
 - (void)surveyCompletion {
-
+    
     UDAlertController *completionAlert = [UDAlertController alertWithTitle:nil message:getUDLocalizedString(@"感谢您的评价")];
     [completionAlert addCloseActionWithTitle:getUDLocalizedString(@"关闭") Handler:NULL];
     
     [completionAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+}
 
+#pragma mark - 发送文字消息
+- (void)sendTextMessage:(NSString *)text
+             completion:(void(^)(UDMessage *message,BOOL sendStatus))completion {
+    
+    if (_agentModel.code != 2000) {
+        
+        [self showAlertViewWithAgentCode:_agentModel.code];
+        
+        return;
+    }
+    
+    if ([UDTools isBlankString:text]) {
+        UDAlertController *notOnline = [UDAlertController alertWithTitle:nil message:@"不能发送空白消息"];
+        [notOnline addCloseActionWithTitle:@"确定" Handler:nil];
+        [notOnline showWithSender:nil controller:nil animated:YES completion:NULL];
+        
+        return;
+    }
+    
+    NSDate *date = [NSDate date];
+    
+    UDMessage *textMessage = [[UDMessage alloc] initWithText:text timestamp:date];
+    
+    textMessage.agent_jid = _agentModel.jid;
+    
+    [self.messageArray addObject:textMessage];
+    //通知刷新UI
+    [self updateContent];
+    
+    NSArray *array = @[text,[UDTools stringFromDate:date],textMessage.contentId,@"0",@"0",@"0"];
+    
+    [UDManager insertTableWithSqlString:InsertTextMsg params:array];
+    
+    //发送消息 callback发送状态和消息体
+    [UDManager sendMessage:textMessage completion:^(UDMessage *message,BOOL sendStatus) {
+        
+        if (completion) {
+            completion(message,sendStatus);
+        }
+        
+    }];
+
+}
+
+#pragma mark - 发送图片消息
+- (void)sendImageMessage:(UIImage *)image
+              completion:(void(^)(UDMessage *message,BOOL sendStatus))completion {
+
+    if (_agentModel.code != 2000) {
+        
+        [self showAlertViewWithAgentCode:_agentModel.code];
+        
+        return;
+    }
+    
+    //限制图片的size
+    NSString *newWidth = [NSString stringWithFormat:@"%f",[UDTools setImageSize:image].width];
+    NSString *newHeight = [NSString stringWithFormat:@"%f",[UDTools setImageSize:image].height];
+    
+    NSDate *date = [NSDate date];
+    //大于1M的照片需要压缩
+    NSData *data = UIImageJPEGRepresentation(image, 1);
+    if (data.length/1024 > 1024) {
+        image = [UDTools compressImageWith:image];
+    }
+    
+    UDMessage *photoMessage = [[UDMessage alloc] initWithPhoto:image timestamp:date];
+    photoMessage.agent_jid = _agentModel.jid;
+    photoMessage.width = newWidth;
+    photoMessage.height = newHeight;
+    
+    [self.messageArray addObject:photoMessage];
+    //通知刷新UI
+    [self updateContent];
+    
+    //缓存图片
+    [[UDCache sharedUDCache] storeImage:photoMessage.photo forKey:photoMessage.contentId];
+    
+    //存储
+    NSArray *array = @[@"image",[UDTools stringFromDate:date],photoMessage.contentId,@"0",@"0",@"1",newWidth,newHeight];
+    
+    [UDManager insertTableWithSqlString:InsertPhotoMsg params:array];
+    
+    //发送消息 callback发送状态和消息体
+    [UDManager sendMessage:photoMessage completion:^(UDMessage *message,BOOL sendStatus) {
+        
+        if (completion) {
+            completion(message,sendStatus);
+        }
+    }];
+    
+}
+
+#pragma mark - 发送语音消息
+- (void)sendAudioMessage:(NSString *)audioPath
+           audioDuration:(NSString *)audioDuration
+              completion:(void (^)(UDMessage *, BOOL sendStatus))comletion {
+    
+    if (_agentModel.code != 2000) {
+        
+        [self showAlertViewWithAgentCode:_agentModel.code];
+        
+        return;
+    }
+        
+    NSDate *date = [NSDate date];
+    
+    UDMessage *voiceMessage = [[UDMessage alloc] initWithVoicePath:audioPath voiceDuration:audioDuration timestamp:date];
+    voiceMessage.agent_jid = _agentModel.jid;
+    
+    [self.messageArray addObject:voiceMessage];
+    //通知刷新UI
+    [self updateContent];
+    
+    NSArray *array = @[audioPath,[UDTools stringFromDate:date],voiceMessage.contentId,@"0",@"0",@"2",audioDuration];
+    [UDManager insertTableWithSqlString:InsertAudioMsg params:array];
+    
+    NSData *voiceData = [NSData dataWithContentsOfFile:audioPath];
+    
+    //缓存语音
+    [[UDCache sharedUDCache] storeData:voiceData forKey:voiceMessage.contentId];
+    
+    //发送消息 callback发送状态和消息体
+    [UDManager sendMessage:voiceMessage completion:^(UDMessage *message,BOOL sendStatus) {
+        
+        if (comletion) {
+            comletion(message,sendStatus);
+        }
+    }];
+    
 }
 
 #pragma mark - Alert
@@ -338,11 +477,11 @@
     NSString *ticketButtonTitle = getUDLocalizedString(@"留言");
     UDAlertController *queueAlert = [UDAlertController alertWithTitle:nil message:getUDLocalizedString(@"当前客服正繁忙，如需留言请点击按钮进入表单留言")];
     [queueAlert addCloseActionWithTitle:getUDLocalizedString(@"取消") Handler:NULL];
+    @udWeakify(self);
     [queueAlert addAction:[UDAlertAction actionWithTitle:ticketButtonTitle handler:^(UDAlertAction * _Nonnull action) {
         
-        if ([self.delegate respondsToSelector:@selector(clickSendOffLineTicket)]) {
-            [self.delegate clickSendOffLineTicket];
-        }
+        @udStrongify(self);
+        [self sendOffLineTicket];
     }]];
     
     [queueAlert showWithSender:nil controller:nil animated:YES completion:NULL];
@@ -360,15 +499,22 @@
     UDAlertController *notOnlineAlert = [UDAlertController alertWithTitle:title message:message];
     [notOnlineAlert addCloseActionWithTitle:cancelButtonTitle Handler:NULL];
     
+    @udWeakify(self);
     [notOnlineAlert addAction:[UDAlertAction actionWithTitle:ticketButtonTitle handler:^(UDAlertAction * _Nonnull action) {
         
-        if ([self.delegate respondsToSelector:@selector(clickSendOffLineTicket)]) {
-            [self.delegate clickSendOffLineTicket];
-        }
+        @udStrongify(self);
+        [self sendOffLineTicket];
     }]];
     
     [notOnlineAlert showWithSender:nil controller:nil animated:YES completion:NULL];
     
+}
+//回调离线表单
+- (void)sendOffLineTicket {
+
+    if (self.clickSendOffLineTicket) {
+        self.clickSendOffLineTicket();
+    }
 }
 
 //无网络Alert
@@ -388,20 +534,8 @@
 
 }
 
-#pragma mark - db消息
-- (void)viewModelWithDatabase:(NSArray *)messageArray {
-
-    [self.messageArray removeAllObjects];
-    [messageArray ud_each:^(NSDictionary *dic) {
-        
-        [self.messageArray insertObject:[self dbMessageResolving:dic] atIndex:0];
-        
-    }];
-    
-    [self reloadChatTableView];
-}
-
-- (UDMessage *)dbMessageResolving:(NSDictionary *)dbMessage {
+//NSDictionary转model
+- (UDMessage *)ud_messageModelWithDictionary:(NSDictionary *)dbMessage {
     
     UDMessage *message = [[UDMessage alloc] init];
     message.messageFrom = [[dbMessage objectForKey:@"direction"] integerValue];
@@ -482,142 +616,49 @@
     
 }
 
-#pragma mark - 更多消息
-- (void)viewModelWithMoreMessage:(NSArray *)messageArray {
+#pragma mark - 点击功能栏弹出相应Alert
+- (void)clickInputViewShowAlertView {
 
-    [messageArray ud_each:^(NSDictionary *dic) {
-        [self.messageArray insertObject:[self dbMessageResolving:dic] atIndex:0];
-    }];
-    
+    [self showAlertViewWithAgentCode:self.agentModel.code];
 }
 
-#pragma mark - 点击功能栏弹出相应Alert
-- (void)clickInputView {
+//根据客服code展示alertview
+- (void)showAlertViewWithAgentCode:(NSInteger)code {
 
-    if (self.agentModel.code == 2002) {
+    if (code == 2002) {
         
         [self agentNotOnline];
     }
-    else if (self.agentModel.code == 2003) {
+    else if (code == 2003) {
         
         [self netWorkDisconnectAlertView];
     }
-    else if (self.agentModel.code == 2001) {
+    else if (code == 2001) {
         [self queueStatus];
     }
-    else if (self.agentModel.code == 5050||self.agentModel.code == 5060) {
+    else if (code == 5050||code == 5060) {
         
         [self notExistAgent];
     }
-
-}
-
-#pragma mark - 刷新Tableview
-- (void)reloadChatTableView {
-    if (self.delegate) {
-        if ([self.delegate respondsToSelector:@selector(reloadChatTableView)]) {
-            [self.delegate reloadChatTableView];
-        }
-    }
-}
-#pragma mark - 点击功能栏弹出对应的模块
-- (void)layoutOtherMenuViewHiden:(BOOL)hide
-                        ViewType:(UDInputViewType)viewType
-                        chatView:(UIView *)chatView
-                       tabelView:(UDMessageTableView *)tableview
-                       inputView:(UDMessageInputView *)inputView
-                     emotionView:(UDEmotionManagerView *)emotionView
-                      completion:(void(^)(BOOL finished))completion {
-
-    [inputView.inputTextView resignFirstResponder];
-    
-    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        __block CGRect inputViewFrame = inputView.frame;
-        __block CGRect otherMenuViewFrame;
-        
-        void (^InputViewAnimation)(BOOL hide) = ^(BOOL hide) {
-            inputViewFrame.origin.y = (hide ? (CGRectGetHeight(chatView.bounds) - CGRectGetHeight(inputViewFrame)) : (CGRectGetMinY(otherMenuViewFrame) - CGRectGetHeight(inputViewFrame)));
-            inputView.frame = inputViewFrame;
-        };
-        
-        void (^EmotionManagerViewAnimation)(BOOL hide) = ^(BOOL hide) {
-            otherMenuViewFrame = emotionView.frame;
-            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(chatView.frame) : (CGRectGetHeight(chatView.frame) - CGRectGetHeight(otherMenuViewFrame)));
-            emotionView.alpha = !hide;
-            emotionView.frame = otherMenuViewFrame;
-            
-        };
-        
-        if (hide) {
-            switch (viewType) {
-                case UDInputViewTypeEmotion: {
-                    EmotionManagerViewAnimation(hide);
-                    break;
-                }
-                default:
-                    break;
-            }
-        } else {
-            
-            // 这里需要注意block的执行顺序，因为otherMenuViewFrame是公用的对象，所以对于被隐藏的Menu的frame的origin的y会是最大值
-            switch (viewType) {
-                case UDInputViewTypeEmotion: {
-                    // 2、再显示和自己相关的View
-                    EmotionManagerViewAnimation(hide);
-                    break;
-                }
-                case UDInputViewTypeShareMenu: {
-                    // 1、先隐藏和自己无关的View
-                    EmotionManagerViewAnimation(!hide);
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-        
-        InputViewAnimation(hide);
-        
-        [tableview setTableViewInsetsWithBottomValue:chatView.frame.size.height
-         - inputView.frame.origin.y];
-        
-        [tableview scrollToBottomAnimated:NO];
-        
-    } completion:^(BOOL finished) {
-        
-        if (completion) {
-            completion(finished);
-        }
-    }];
     
 }
 
-#pragma mark - 是否显示时间轴Label
-- (BOOL)shouldDisplayTimeForRowAtIndexPath:(NSIndexPath *)indexPath{
+#pragma mark - 更新消息内容
+- (void)updateContent {
 
-    UDMessage* message=[self.messageArray objectAtIndexCheck:indexPath.row];
-    
-    if(indexPath.row==0 || indexPath.row>=self.messageArray.count){
-        return YES;
-    }  else{
-        
-        UDMessage *previousMessage=[self.messageArray objectAtIndex:indexPath.row-1];
-        NSInteger interval=[message.timestamp timeIntervalSinceDate:previousMessage.timestamp];
-        if(interval>60*3){
-            return YES;
-        }else{
-            return NO;
-        }
+    if (self.updateMessageContentBlock) {
+        self.updateMessageContentBlock();
     }
 }
 
 #pragma mark - 重发失败的消息
 - (void)resendFailedMessage:(void(^)(UDMessage *failedMessage,BOOL sendStatus))completion {
     
-    UDWEAKSELF
+    @udWeakify(self);
     [NSTimer ud_scheduleTimerWithTimeInterval:6.0f repeats:YES usingBlock:^(NSTimer *timer) {
         
-        if (weakSelf.failedMessageArray.count==0) {
+        @udStrongify(self);
+        if (self.failedMessageArray.count==0) {
             
             [timer invalidate];
             timer = nil;
@@ -638,8 +679,7 @@
 
 - (void)sendFailedMessage:(void(^)(UDMessage *failedMessage,BOOL sendStatus))completion {
     
-    UDWEAKSELF
-    [self.failedMessageArray ud_each:^(UDMessage *resendMessage) {
+    for (UDMessage *resendMessage in self.failedMessageArray) {
         
         NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:resendMessage.timestamp];
         
@@ -649,7 +689,7 @@
                 completion(resendMessage,NO);
             }
             
-            [weakSelf.failedMessageArray removeObject:resendMessage];
+            [self.failedMessageArray removeObject:resendMessage];
             
         } else {
             
@@ -661,18 +701,25 @@
             }];
             
         }
-        
-    }];
+
+    }
+
 }
 
 - (NSInteger)numberOfItemsInSection:(NSInteger)section {
 
     return [self.messageArray count];
 }
+
 - (UDMessage *)objectAtIndexPath:(NSInteger)row {
 
     return [self.messageArray objectAtIndexCheck:row];
     
+}
+
+- (void)dealloc
+{
+    NSLog(@"%@销毁了",[self class]);
 }
 
 @end

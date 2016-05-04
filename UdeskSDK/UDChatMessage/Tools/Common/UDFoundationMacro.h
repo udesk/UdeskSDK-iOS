@@ -25,8 +25,47 @@
 #define UD_STRETCH_IMAGE(image, edgeInsets) ([image resizableImageWithCapInsets:edgeInsets resizingMode:UIImageResizingModeStretch])
 
 // block self
-#define UDWEAKSELF typeof(self) __weak weakSelf = self;
-#define UDSTRONGSELF typeof(weakSelf) __strong strongSelf = weakSelf;
+
+#ifndef    udWeakify
+#if __has_feature(objc_arc)
+
+#define udWeakify( x ) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wshadow\"") \
+autoreleasepool{} __weak __typeof__(x) __weak_##x##__ = x; \
+_Pragma("clang diagnostic pop")
+
+#else
+
+#define udWeakify( x ) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wshadow\"") \
+autoreleasepool{} __block __typeof__(x) __block_##x##__ = x; \
+_Pragma("clang diagnostic pop")
+
+#endif
+#endif
+
+#ifndef    udStrongify
+#if __has_feature(objc_arc)
+
+#define udStrongify( x ) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wshadow\"") \
+try{} @finally{} __typeof__(x) x = __weak_##x##__; \
+_Pragma("clang diagnostic pop")
+
+#else
+
+#define udStrongify( x ) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wshadow\"") \
+try{} @finally{} __typeof__(x) x = __block_##x##__; \
+_Pragma("clang diagnostic pop")
+
+#endif
+#endif
+
 
 // Size
 #define UD_SCREEN_WIDTH  [[UIScreen mainScreen] bounds].size.width
