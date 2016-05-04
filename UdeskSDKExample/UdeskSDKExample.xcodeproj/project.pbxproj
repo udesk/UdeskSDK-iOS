@@ -924,10 +924,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				OTHER_LDFLAGS = (
-					"-lxml2",
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "0b94a6d6-558a-4ee7-99ed-ea5fa1c1586c";
@@ -949,10 +946,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				OTHER_LDFLAGS = (
-					"-lxml2",
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "0b94a6d6-558a-4ee7-99ed-ea5fa1c1586c";
