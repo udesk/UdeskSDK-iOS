@@ -25,7 +25,7 @@ libsqlite3.tbd
 把SDK文件夹中的Udesk文件夹拖到你的工程里
 ```
 点击的你工程targets->Build Settings 
-搜索Other Linker Flags 加入 –lxml2 -ObjC，
+搜索Other Linker Flags 加入 -lxml2 -ObjC，
 搜索header search paths 加入/usr/include/libxml2。
 ```
 
@@ -146,7 +146,7 @@ NSDictionary *parameters = @{
 
 ### 3）、推出聊天页面
 ```
-UDChatViewController *chat = [[UDChatViewController alloc] init];
+UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
 
 [self.navigationController pushViewController:chat animated:YES];
 
@@ -154,7 +154,7 @@ UDChatViewController *chat = [[UDChatViewController alloc] init];
 
 ### 4）、推出帮助中心
 ```
-UDFaqController *faq = [[UDFaqController alloc] init];
+UdeskFaqController *faq = [[UdeskFaqController alloc] init];
 
 [self.navigationController pushViewController:faq animated:YES];
 
@@ -162,7 +162,7 @@ UDFaqController *faq = [[UDFaqController alloc] init];
 
 ### 5）、推出机器人页面
 ```
-UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
+UdeskRobotIMViewController *robot = [[UdeskRobotIMViewController alloc] init];
 
 [self.navigationController pushViewController:robot animated:YES];
 
@@ -271,8 +271,8 @@ completion:(void (^)(BOOL status))completion;
 *  @param message    UDMessage类型消息体
 *  @param completion 发送回调
 */
-+ (void)sendMessage:(UDMessage *)message
-completion:(void (^) (UDMessage *message,BOOL sendStatus))completion;
++ (void)sendMessage:(UdeskMessage *)message
+completion:(void (^) (UdeskMessage *message,BOOL sendStatus))completion;
 
 /**
 *  获取用户自定义字段
