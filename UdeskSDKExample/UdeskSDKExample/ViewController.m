@@ -7,12 +7,12 @@
 //
 
 #import "ViewController.h"
-#import "UDChatViewController.h"
-#import "UDFaqController.h"
-#import "UDRobotIMViewController.h"
-#import "UDAgentNavigationMenu.h"
-#import "UDFoundationMacro.h"
-#import "UDTableViewController.h"
+#import "UdeskChatViewController.h"
+#import "UdeskFaqController.h"
+#import "UdeskRobotIMViewController.h"
+#import "UdeskAgentNavigationMenu.h"
+#import "UdeskFoundationMacro.h"
+#import "UdeskTableViewController.h"
 #import "UDManager.h"
 
 @interface ViewController ()
@@ -116,7 +116,7 @@
 
 - (void)faqButtonAction {
     
-    UDFaqController *faq = [[UDFaqController alloc] init];
+    UdeskFaqController *faq = [[UdeskFaqController alloc] init];
     
     [self.navigationController pushViewController:faq animated:YES];
     
@@ -124,7 +124,7 @@
 
 - (void)contactUsButtonAction {
     
-    UDChatViewController *chat = [[UDChatViewController alloc] init];
+    UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
     
     [self.navigationController pushViewController:chat animated:YES];
     
@@ -132,7 +132,7 @@
 
 - (void)robotButtonAction {
     
-    UDRobotIMViewController *robot = [[UDRobotIMViewController alloc] init];
+    UdeskRobotIMViewController *robot = [[UdeskRobotIMViewController alloc] init];
     
     [self.navigationController pushViewController:robot animated:YES];
     
@@ -140,7 +140,7 @@
 
 - (void)otherAPIButtonAction {
 
-    UDTableViewController *udTab = [[UDTableViewController alloc] init];
+    UdeskTableViewController *udTab = [[UdeskTableViewController alloc] init];
     
     [self.navigationController pushViewController:udTab animated:YES];
     
@@ -150,10 +150,10 @@
     [super viewWillAppear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskConfig.iMNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
-        self.navigationController.navigationBar.tintColor = Config.iMBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = UdeskConfig.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskConfig.iMBackButtonColor;
     }
 }
 
@@ -162,9 +162,9 @@
     
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = UdeskConfig.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = UdeskConfig.oneSelfNavcigtionColor;
     }
     
 }

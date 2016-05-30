@@ -1,5 +1,5 @@
 //
-//  UDManager.h
+//  UdeskManager.h
 //  UdeskSDK
 //
 //  Created by xuchen on 16/1/12.
@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "UDMessage.h"
+#import "UdeskMessage.h"
 
 #define MessageDB @"Message"
 
@@ -154,8 +154,8 @@
  *  @param message    UDMessage类型消息体
  *  @param completion 发送回调
  */
-+ (void)sendMessage:(UDMessage *)message
-         completion:(void (^) (UDMessage *message,BOOL sendStatus))completion;
++ (void)sendMessage:(UdeskMessage *)message
+         completion:(void (^) (UdeskMessage *message,BOOL sendStatus))completion;
 
 /**
  *  获取用户自定义字段

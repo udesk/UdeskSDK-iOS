@@ -7,8 +7,8 @@
 //
 
 #import "DomainKeyViewController.h"
-#import "UDFoundationMacro.h"
-#import "UDViewExt.h"
+#import "UdeskFoundationMacro.h"
+#import "UdeskViewExt.h"
 #import "ViewController.h"
 #import "UDManager.h"
 
@@ -128,10 +128,10 @@
     [super viewWillAppear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskConfig.iMNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
-        self.navigationController.navigationBar.tintColor = Config.iMBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = UdeskConfig.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskConfig.iMBackButtonColor;
     }
 }
 
@@ -140,9 +140,9 @@
     
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = UdeskConfig.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = UdeskConfig.oneSelfNavcigtionColor;
     }
     
 }
