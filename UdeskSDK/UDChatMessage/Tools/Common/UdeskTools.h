@@ -10,9 +10,6 @@
 
 @interface UdeskTools : NSObject
 
-//获取当前时间
-+ (NSString *)nowDate;
-
 //字符串转字典
 + (id)dictionaryWithJsonString:(NSString *)jsonString;
 
@@ -33,10 +30,6 @@
 + (NSString *)sendTextEmoji:(NSString *)text;
 + (NSString *)receiveTextEmoji:(NSString *)text;
 
-//NSString转NSDate
-+ (NSDate *)dateFromString:(NSString *)string;
-//NSDate转NSString
-+ (NSString *)stringFromDate:(NSDate *)date;
 //压缩图片
 + (UIImage *)compressImageWith:(UIImage *)image;
 

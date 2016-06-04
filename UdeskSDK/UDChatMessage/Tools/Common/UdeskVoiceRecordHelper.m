@@ -38,7 +38,7 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.maxRecordTime = UdeskVoiceRecorderTotalTime;
+        self.maxRecordTime = kVoiceRecorderTotalTime;
         self.recordDuration = @"0";
 
     }

@@ -16,17 +16,6 @@
 
 @implementation UdeskTools
 
-//获取当前时间字符串
-+ (NSString *)nowDate {
-    
-    NSDateFormatter *nsdf2=[[NSDateFormatter alloc] init];
-    [nsdf2 setDateStyle:NSDateFormatterShortStyle];
-    [nsdf2 setDateFormat:@"yyyy-MM-dd HH:mm:ss Z"];
-    
-    return [nsdf2 stringFromDate:[NSDate date]];
-    
-}
-
 //同步获取网络状态
 + (NSString *)internetStatus {
     
@@ -51,6 +40,7 @@
     }
     
     return net;
+    
 }
 
 //字符串转字典
@@ -396,29 +386,6 @@
     
 }
 
-//NSString转NSDate
-+ (NSDate *)dateFromString:(NSString *)string
-{
-    //设置转换格式
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
-    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    //NSString转NSDate
-    NSDate *date=[formatter dateFromString:string];
-    return date;
-}
-
-+ (NSString *)stringFromDate:(NSDate *)date
-{
-    //用于格式化NSDate对象
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    //设置格式：zzz表示时区
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    //NSDate转NSString
-    NSString *currentDateString = [dateFormatter stringFromDate:date];
-    //输出currentDateString
-    return currentDateString;
-}
-
 //判断是否允许使用麦克风7.0新增的方法requestRecordPermission
 + (BOOL)canRecord
 {
@@ -447,6 +414,5 @@
     
     return bCanRecord;
 }
-
 
 @end

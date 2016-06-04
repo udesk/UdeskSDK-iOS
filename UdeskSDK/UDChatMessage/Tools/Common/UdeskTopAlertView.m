@@ -103,7 +103,7 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
 
 - (void)setTypeWithAgentModel:(UdeskAgentModel *)agentModel {
     _autoHide = YES;
-    _duration = 3;
+    _duration = 1.8;
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
     [self setFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width - width)*0.5, -60, width, 40)];
     self.alpha = .9f;
@@ -164,8 +164,6 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
                 }];
             }];
         }
-        
-        
         
         [self performSelector:@selector(hide) withObject:nil afterDelay:_duration];
     };

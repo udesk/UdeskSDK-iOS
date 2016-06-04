@@ -14,12 +14,13 @@
 #import "UdeskCache.h"
 #import <AVFoundation/AVFoundation.h>
 #import "UdeskHpple.h"
+#import "UdeskDateFormatter.h"
 
 @implementation UdeskReceiveMessage
 
-+ (void)ud_messageModelWithDictionary:(NSDictionary *)messageDictionary
-                           completion:(void(^)(UdeskMessage *message))completion
-                        redirectAgent:(UDAgentDataCallBack)redirectAgent {
++ (void)ud_modelWithDictionary:(NSDictionary *)messageDictionary
+                    completion:(void(^)(UdeskMessage *message))completion
+                 redirectAgent:(UDAgentDataCallBack)redirectAgent {
 
     UdeskMessage *message = [[UdeskMessage alloc] init];
     NSString *content_id = [UdeskTools soleString];
@@ -35,12 +36,10 @@
     NSString *content = [[messageDictionary objectForKey:@"data"] objectForKey:@"content"];
     
     //消息时间
-    NSString *created_at = [UdeskTools nowDate];
-    NSString *subString = [created_at substringWithRange:NSMakeRange(0, 19)];
+    NSDate *date = [NSDate date];
+    NSString *dateString = [[UdeskDateFormatter sharedFormatter].dateFormatter stringFromDate:date];
     
-    NSDate *lastDate = [UdeskTools dateFromString:subString];
-    
-    message.timestamp = lastDate;
+    message.timestamp = date;
     message.messageFrom = UDMessageTypeReceiving;
     
     //这里文件类型是个地址 所以归类到message了
@@ -48,7 +47,7 @@
         message.text = [UdeskTools receiveTextEmoji:content];
         message.messageType = UDMessageMediaTypeText;
         
-        NSArray *textDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeText]];
+        NSArray *textDBArray = @[content,dateString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeText]];
         [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
         
         if (completion) {
@@ -76,7 +75,7 @@
                 message.width = newWidth;
                 message.height = newHeight;
                 //存db
-                NSArray *photoDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypePhoto],newWidth,newHeight];
+                NSArray *photoDBArray = @[content,dateString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypePhoto],newWidth,newHeight];
                 [UDManager insertTableWithSqlString:InsertPhotoMsg params:photoDBArray];
                 
                 if (completion) {
@@ -101,7 +100,7 @@
         //缓存语音
         [[UdeskCache sharedUDCache] storeData:audioData forKey:message.contentId];
         
-        NSArray *audioDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeVoice],[NSString stringWithFormat:@"%.f",pl.duration]];
+        NSArray *audioDBArray = @[content,dateString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeVoice],[NSString stringWithFormat:@"%.f",pl.duration]];
         
         [UDManager insertTableWithSqlString:InsertAudioMsg params:audioDBArray];
         
@@ -125,7 +124,7 @@
                 message.text = [NSString stringWithFormat:@"客服转接成功，%@ 为您服务",nick];
                 
                 //存储转移信息
-                NSArray *textDBArray = @[message.text,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeCenter],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeRedirect]];
+                NSArray *textDBArray = @[message.text,dateString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeCenter],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeRedirect]];
                 
                 [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
                 //block传出
@@ -193,7 +192,7 @@
         
         message.messageType = UDMessageMediaTypeRich;
         
-        NSArray *textDBArray = @[content,subString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeRich]];
+        NSArray *textDBArray = @[content,dateString,content_id,[NSString stringWithFormat:@"%ld",(long)UDMessageSuccess],[NSString stringWithFormat:@"%ld",(long)UDMessageTypeReceiving],[NSString stringWithFormat:@"%ld",(long)UDMessageMediaTypeRich]];
         
         [UDManager insertTableWithSqlString:InsertTextMsg params:textDBArray];
         

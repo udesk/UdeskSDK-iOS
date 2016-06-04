@@ -32,11 +32,11 @@
         
         [searchBar setPlaceholder:getUDLocalizedString(@"搜索")];
         
-        searchBar.tintColor = UdeskConfig.searchCancleButtonColor;
+        searchBar.tintColor = Config.searchCancleButtonColor;
         
         UIButton *contactUs = [UIButton buttonWithType:UIButtonTypeCustom];
         contactUs.frame = CGRectMake((UD_SCREEN_WIDTH-250)/2, 50, 250, 40);
-        [contactUs setTitleColor:UdeskConfig.searchContactUsColor forState:0];
+        [contactUs setTitleColor:Config.searchContactUsColor forState:0];
         [contactUs setTitle:getUDLocalizedString(@"联系我们") forState:0];
         [contactUs addTarget:self action:@selector(contactUsButton) forControlEvents:UIControlEventTouchUpInside];
         
@@ -44,13 +44,13 @@
         [contactUs.layer setCornerRadius:5.0]; //设置矩圆角半径
         [contactUs.layer setBorderWidth:1.5];   //边框宽度
         contactUs.titleLabel.font = [UIFont systemFontOfSize:19];
-        [contactUs.layer setBorderColor:(UdeskConfig.contactUsBorderColor).CGColor];//边框颜色
+        [contactUs.layer setBorderColor:(Config.contactUsBorderColor).CGColor];//边框颜色
         
         
         UILabel *notFound = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-230)/2, 0, 230, contactUs.frame.origin.y)];
         notFound.textAlignment = NSTextAlignmentCenter;
         notFound.font = [UIFont systemFontOfSize:17];
-        notFound.textColor = UdeskConfig.promptTextColor;
+        notFound.textColor = Config.promptTextColor;
         notFound.text = getUDLocalizedString(@"无法找到你搜索的内容吗?");
         
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-69)];

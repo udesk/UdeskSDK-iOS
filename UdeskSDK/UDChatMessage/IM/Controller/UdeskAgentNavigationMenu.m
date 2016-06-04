@@ -143,7 +143,7 @@
     self.menuTitleLabel.text = getUDLocalizedString(@"请选择客服组");
     self.menuTitleLabel.backgroundColor = [UIColor clearColor];
     self.menuTitleLabel.textAlignment = NSTextAlignmentCenter;
-    self.menuTitleLabel.textColor = UdeskConfig.faqTitleColor;
+    self.menuTitleLabel.textColor = Config.faqTitleColor;
     self.navigationItem.titleView = self.menuTitleLabel;
 }
 #pragma mark - 请求客服组选择菜单
@@ -436,10 +436,10 @@
     self.menuTitleLabel.text = getUDLocalizedString(@"请选择客服组");
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.agentMenuNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.agentMenuNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.agentMenuNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskConfig.agentMenuBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = Config.agentMenuNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.agentMenuBackButtonColor;
     }
 }
 
@@ -449,9 +449,9 @@
     self.menuTitleLabel.text = nil;
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
     }
     
 }

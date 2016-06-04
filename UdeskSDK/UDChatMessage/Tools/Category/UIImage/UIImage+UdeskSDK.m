@@ -108,7 +108,7 @@
 
 + (UIImage *)ud_defaultBackImage {
 
-    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_back")];
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_back.png")];
 }
 
 @end

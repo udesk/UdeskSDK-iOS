@@ -37,7 +37,7 @@
     UILabel *robotTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
     robotTitle.text = getUDLocalizedString(@"智能机器人对话");
     robotTitle.backgroundColor = [UIColor clearColor];
-    robotTitle.textColor = UdeskConfig.robotTitleColor;
+    robotTitle.textColor = Config.robotTitleColor;
     self.navigationItem.titleView = robotTitle;
     
     [UDManager getRobotURL:^(NSURL *robotUrl) {
@@ -116,10 +116,10 @@
     [super viewWillAppear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.robotNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.robotNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.robotNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskConfig.robotBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = Config.robotNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.robotBackButtonColor;
     }
 }
 
@@ -128,9 +128,9 @@
     [super viewWillDisappear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
     }
 }
 

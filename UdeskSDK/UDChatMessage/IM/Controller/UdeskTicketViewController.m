@@ -30,7 +30,7 @@
     
     self.title = getUDLocalizedString(@"提交问题");
     
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:UdeskConfig.ticketTitleColor}];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:Config.ticketTitleColor}];
     
     NSString *key = [UDManager key];
     NSString *domain = [UDManager domain];
@@ -63,9 +63,9 @@
     [super viewWillDisappear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
     }
 }
 
@@ -74,10 +74,10 @@
     [super viewWillAppear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.ticketNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.ticketNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.ticketNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskConfig.ticketBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = Config.ticketNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.ticketBackButtonColor;
     }
     
 }

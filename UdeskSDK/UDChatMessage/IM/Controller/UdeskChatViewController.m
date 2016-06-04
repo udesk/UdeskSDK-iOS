@@ -23,35 +23,25 @@
 #import "UdeskFoundationMacro.h"
 #import <AVFoundation/AVFoundation.h>
 #import "UdeskViewExt.h"
-#import "UDManager.h"
 #import "UdeskUtils.h"
 #import "UdeskTools.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskAudioPlayerHelper.h"
 #import "UdeskPhotoManeger.h"
+#import "UDManager.h"
 
 @interface UdeskChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UDAudioPlayerHelperDelegate>
 
-@property (nonatomic, assign) UDInputViewType        textViewInputViewType;//输入消息类型
-
-@property (nonatomic, strong) UdeskMessageTableViewCell *currentSelectedCell;//cell
-
+@property (nonatomic, assign) UDInputViewType           textViewInputViewType;//输入消息类型
+@property (nonatomic, assign) BOOL                      isMaxTimeStop;//判断是不是超出了录音最大时长
 @property (nonatomic, weak  ) UdeskMessageTableView     *messageTableView;//用于显示消息的TableView
-
 @property (nonatomic, weak  ) UdeskMessageInputView     *messageInputView;//用于显示发送消息类型控制的工具条，在底部
-
 @property (nonatomic, weak  ) UdeskAgentStatusView      *agentStatusView;//客服状态view
-
+@property (nonatomic, weak  ) UdeskEmotionManagerView   *emotionManagerView;//管理表情的控件
+@property (nonatomic, strong) UdeskMessageTableViewCell *currentSelectedCell;//cell
 @property (nonatomic, strong) UdeskVoiceRecordHelper    *voiceRecordHelper;//管理录音工具对象
-
 @property (nonatomic, strong) UdeskVoiceRecordHUD       *voiceRecordHUD;//语音录制动画
-
-@property (nonatomic, strong) UdeskEmotionManagerView   *emotionManagerView;//管理表情的控件
-
 @property (nonatomic, strong) UdeskPhotographyHelper    *photographyHelper;//管理本机的摄像和图片库的工具对象
-
-@property (nonatomic, assign) BOOL                   isMaxTimeStop;//判断是不是超出了录音最大时长
-
 @property (nonatomic, strong) UdeskChatViewModel        *chatViewModel;//viewModel
 
 @end
@@ -65,7 +55,7 @@
         
         self.hidesBottomBarWhenPushed = YES;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resendClickFailedMessage:) name:UdeskClickResendMessage object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resendClickFailedMessage:) name:ClickResendMessage object:nil];
         
     }
     return self;
@@ -122,7 +112,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-//初始化viewModel
+#pragma mark - 初始化viewModel
 - (void)initViewModel {
     
     self.chatViewModel = [[UdeskChatViewModel alloc] initWithAgentId:self.agent_id withGroupId:self.group_id];
@@ -232,7 +222,7 @@
     [self.view bringSubviewToFront:_emotionManagerView];
 }
 
-#pragma mark - Table View Data Source
+#pragma mark - TableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.chatViewModel numberOfItemsInSection:section];
 }
@@ -250,14 +240,11 @@
     if (!messageTableViewCell) {
         
         messageTableViewCell = [[UdeskMessageTableViewCell alloc] initWithMessage:message displaysTimestamp:displayTimestamp reuseIdentifier:cellIdentifier];
-        
         messageTableViewCell.delegate = self;
     }
     
     messageTableViewCell.indexPath = indexPath;
-    
     [messageTableViewCell configureCellWithMessage:message displaysTimestamp:displayTimestamp];
-    [messageTableViewCell setBackgroundColor:tableView.backgroundColor];
     
     return messageTableViewCell;
 }
@@ -411,7 +398,7 @@
             @udStrongify(self);
             self.voiceRecordHUD.peakPower = peakPowerForChannel;
         };
-        _voiceRecordHelper.maxRecordTime = UdeskVoiceRecorderTotalTime;
+        _voiceRecordHelper.maxRecordTime = kVoiceRecorderTotalTime;
     }
     return _voiceRecordHelper;
 }
@@ -770,10 +757,10 @@
     [self subscribeToKeyboard];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.iMNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.iMNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskConfig.iMBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.iMBackButtonColor;
     }
     //设置客户在线
     [UDManager setCustomerOnline];
@@ -789,9 +776,9 @@
     [[UdeskAudioPlayerHelper shareInstance] stopAudio];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
     }
     
 }
@@ -804,13 +791,14 @@
 - (void)dealloc {
     
     NSLog(@"UDMsgTableViewController销毁了");
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UdeskClickResendMessage object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:ClickResendMessage object:nil];
     _messageTableView.delegate = nil;
     _messageTableView.dataSource = nil;
     _messageTableView = nil;
     _messageInputView.delegate = nil;
     _messageInputView = nil;
     _emotionManagerView.delegate = nil;
+    _emotionManagerView = nil;
     _photographyHelper = nil;
     _agentStatusView = nil;
     _chatViewModel = nil;

@@ -53,7 +53,7 @@
     faqLabel.text = getUDLocalizedString(@"常见问题");
     faqLabel.backgroundColor = [UIColor clearColor];
     faqLabel.textAlignment = NSTextAlignmentCenter;
-    faqLabel.textColor = UdeskConfig.faqTitleColor;
+    faqLabel.textColor = Config.faqTitleColor;
     self.navigationItem.titleView = faqLabel;
 }
 #pragma mark - 添加帮助中心TableView和搜索
@@ -161,9 +161,9 @@
     [super viewWillDisappear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
     }
     
 }
@@ -173,10 +173,10 @@
     [super viewWillAppear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.faqNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.faqNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.faqNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskConfig.faqBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = Config.faqNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.faqBackButtonColor;
     }
 
 }

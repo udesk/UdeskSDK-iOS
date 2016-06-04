@@ -46,7 +46,7 @@
     
     titleLabel.text = getUDLocalizedString(@"会话");
     titleLabel.font = [UIFont systemFontOfSize:18];
-    titleLabel.textColor = UdeskConfig.iMTitleColor;
+    titleLabel.textColor = Config.iMTitleColor;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.backgroundColor = [UIColor clearColor];
     [self addSubview:titleLabel];
@@ -54,7 +54,7 @@
     
     UILabel *describeTitle = [[UILabel alloc] init];
     describeTitle.font = [UIFont systemFontOfSize:11];
-    describeTitle.textColor = UdeskConfig.agentStatusTitleColor;
+    describeTitle.textColor = Config.agentStatusTitleColor;
     describeTitle.textAlignment = NSTextAlignmentCenter;
     describeTitle.backgroundColor = [UIColor clearColor];
     [self addSubview:describeTitle];

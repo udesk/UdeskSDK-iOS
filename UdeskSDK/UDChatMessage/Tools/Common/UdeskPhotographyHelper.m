@@ -29,18 +29,23 @@
 }
 
 - (void)showImagePickerControllerSourceType:(UIImagePickerControllerSourceType)sourceType onViewController:(UIViewController *)viewController compled:(DidFinishTakeMediaCompledBlock)compled {
+    
     if (![UIImagePickerController isSourceTypeAvailable:sourceType]) {
         compled(nil);
         return;
     }
     self.didFinishTakeMediaCompled = [compled copy];
-        
-    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
-    imagePickerController.editing = YES;
-    imagePickerController.delegate = self;
-    imagePickerController.sourceType = sourceType;
     
-    [viewController presentViewController:imagePickerController animated:YES completion:NULL];
+    //兼容ipad打不开相册问题，使用队列延迟
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+        imagePickerController.editing = YES;
+        imagePickerController.delegate = self;
+        imagePickerController.sourceType = sourceType;
+        
+        [viewController presentViewController:imagePickerController animated:YES completion:NULL];
+    }];
 }
 
 - (void)dismissPickerViewController:(UIImagePickerController *)picker {

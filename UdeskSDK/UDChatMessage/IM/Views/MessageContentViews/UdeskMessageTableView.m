@@ -34,7 +34,6 @@
         [headView addSubview:activity];
         
         self.tableHeaderView = headView;
-//        headView.hidden = YES;
         
         _headView = headView;
         _activity = activity;

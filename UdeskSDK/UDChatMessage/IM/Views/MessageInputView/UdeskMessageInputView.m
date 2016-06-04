@@ -68,7 +68,6 @@
     // 当别的地方需要add的时候，就会调用这里
     if (newSuperview) {
         [self setupMessageInputViewBarWithStyle];
-        
     }
 }
 
@@ -127,11 +126,11 @@
     self.inputTextView = textView;
     
     _inputTextView.frame = CGRectMake(voiceChangeButton.frame.origin.x+voiceChangeButton.frame.size.width+6, (self.frame.size.height-37)/2, (faceSendButton.frame.origin.x)-(voiceChangeButton.frame.origin.x+voiceChangeButton.frame.size.width+13), 37);
-    _inputTextView.backgroundColor = UdeskConfig.textViewColor;
+    _inputTextView.backgroundColor = Config.textViewColor;
     _inputTextView.layer.borderColor = [UIColor colorWithWhite:0.8f alpha:1.0f].CGColor;
     _inputTextView.layer.borderWidth = 0.65f;
     _inputTextView.layer.cornerRadius = 4.5f;
-    self.backgroundColor = UdeskConfig.inputViewColor;
+    self.backgroundColor = Config.inputViewColor;
     
     // KVO 检查contentSize
     [self.inputTextView addObserver:self

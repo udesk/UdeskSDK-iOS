@@ -9,17 +9,17 @@
 #ifndef UDFoundationMacro_pch
 #define UDFoundationMacro_pch
 
-#import "UdeskUIConfig.h"
+#import "UdeskConfig.h"
 
 #pragma mark - Funtion Method (宏 方法)
 //SDK-UI配置
-#define UdeskConfig [UdeskUIConfig sharedUDConfig]
+#define  Config [UdeskConfig sharedUDConfig]
 
 //语音最大时长
-#define UdeskVoiceRecorderTotalTime 60.0
+#define kVoiceRecorderTotalTime 60.0
 
 //通知重发消息
-#define UdeskClickResendMessage                    @"ClickResendMessage"
+#define ClickResendMessage                    @"ClickResendMessage"
 
 // image STRETCH
 #define UD_STRETCH_IMAGE(image, edgeInsets) ([image resizableImageWithCapInsets:edgeInsets resizingMode:UIImageResizingModeStretch])
@@ -95,6 +95,8 @@ _Pragma("clang diagnostic pop")
                                 [[UIScreen mainScreen] currentMode].size) : \
                                 NO)
 
+// 是否IOS8
+#define ud_isIOS8                  ([[[UIDevice currentDevice]systemVersion]floatValue] >= 8.0)
 // 是否IOS7
 #define ud_isIOS7                  ([[[UIDevice currentDevice]systemVersion]floatValue] >= 7.0)
 // 是否IOS6

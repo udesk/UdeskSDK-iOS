@@ -8,12 +8,10 @@
 
 #import "UdeskMessageContentView.h"
 #import "UdeskMessageTextView.h"
-#import "UdeskMessageInputView.h"
 #import "UdeskMessageVoiceFactory.h"
 #import "UdeskGeneral.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskTools.h"
-#import "UDManager.h"
 #import "UdeskCache.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskAlertController.h"
@@ -43,9 +41,9 @@
 // 计算文本实际的大小
 + (CGSize)neededSizeForText:(NSString *)text {
     
-    CGSize textSize = [UdeskGeneral.store textSize:text fontOfSize:[UIFont systemFontOfSize:UdeskConfig.contentFontSize] ToSize:CGSizeMake(UD_SCREEN_WIDTH>320?235:180, CGFLOAT_MAX)];
+    CGSize textSize = [UdeskGeneral.store textSize:text fontOfSize:[UIFont systemFontOfSize:Config.contentFontSize] ToSize:CGSizeMake(UD_SCREEN_WIDTH>320?235:180, CGFLOAT_MAX)];
     
-    float textfloat = [UdeskLabel getAttributedStringHeightWithString:text WidthValue:UD_SCREEN_WIDTH>320?235:180 delegate:nil font:[UIFont systemFontOfSize:UdeskConfig.contentFontSize]];
+    float textfloat = [UdeskLabel getAttributedStringHeightWithString:text WidthValue:UD_SCREEN_WIDTH>320?235:180 delegate:nil font:[UIFont systemFontOfSize:Config.contentFontSize]];
 
     return CGSizeMake(textSize.width, textfloat);
 }
@@ -278,10 +276,10 @@
     if (message.messageType == UDMessageMediaTypeText) {
         
         if (message.messageFrom == UDMessageTypeSending) {
-            _textLabel.textColor = UdeskConfig.userTextColor;
+            _textLabel.textColor = Config.userTextColor;
         }
         else if (message.messageFrom == UDMessageTypeReceiving) {
-            _textLabel.textColor = UdeskConfig.agentTextColor;
+            _textLabel.textColor = Config.agentTextColor;
         }
         _textLabel.text = message.text;
 
@@ -330,7 +328,7 @@
     }
     else if (message.messageType == UDMessageMediaTypeRich) {
         
-        _textLabel.textColor = UdeskConfig.agentTextColor;
+        _textLabel.textColor = Config.agentTextColor;
         
         _textLabel.text = message.text;
         if (message.richURLDictionary.count>0) {
@@ -393,6 +391,7 @@
         // 1、初始化气泡的背景
         if (!_bubbleImageView) {
             UIImageView *bubbleImageView = [[UIImageView alloc] init];
+            bubbleImageView.backgroundColor = [UIColor clearColor];
             bubbleImageView.frame = self.bounds;
             bubbleImageView.userInteractionEnabled = YES;
             [self addSubview:bubbleImageView];
@@ -405,7 +404,7 @@
             textLabel.backgroundColor = [UIColor clearColor];
             textLabel.numberOfLines = 0;
             textLabel.udLabelDelegate = self;
-            textLabel.font = [UIFont systemFontOfSize:UdeskConfig.contentFontSize];
+            textLabel.font = [UIFont systemFontOfSize:Config.contentFontSize];
             [self addSubview:textLabel];
             _textLabel = textLabel;
             
@@ -414,9 +413,9 @@
         // 3、初始化显示图片的控件
         if (!_photoImageView) {
             UIImageView *photoImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-
-            [self addSubview:photoImageView];
+            photoImageView.backgroundColor = [UIColor clearColor];
             photoImageView.userInteractionEnabled = YES;
+            [self addSubview:photoImageView];
             _photoImageView = photoImageView;
             
         }
@@ -480,7 +479,7 @@
             self.indicatorView.hidden = NO;
             [self.indicatorView startAnimating];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:UdeskClickResendMessage object:nil userInfo:@{@"failedMessage":self.message}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ClickResendMessage object:nil userInfo:@{@"failedMessage":self.message}];
             
         }
         else {

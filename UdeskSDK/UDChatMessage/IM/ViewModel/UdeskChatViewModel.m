@@ -19,6 +19,7 @@
 #import "UdeskHpple.h"
 #import "UdeskAgentHttpData.h"
 #import "UdeskReachability.h"
+#import "UdeskDateFormatter.h"
 #import "UDManager.h"
 
 @interface UdeskChatViewModel()<UDManagerDelegate>
@@ -142,7 +143,7 @@
     
     for (NSDictionary *dbMessage in dbArray) {
         
-        [self.messageArray insertObject:[self ud_messageModelWithDictionary:dbMessage] atIndex:0];
+        [self.messageArray insertObject:[self ud_modelWithDictionary:dbMessage] atIndex:0];
     }
     
     //更新UI
@@ -168,7 +169,7 @@
     
     NSArray *dbArray = [UDManager queryTabelWithSqlString:sql params:nil];
     for (NSDictionary *dbMoreMessage in dbArray) {
-        [self.messageArray insertObject:[self ud_messageModelWithDictionary:dbMoreMessage] atIndex:0];
+        [self.messageArray insertObject:[self ud_modelWithDictionary:dbMoreMessage] atIndex:0];
     }
     
     //更新UI
@@ -268,9 +269,10 @@
 #pragma mark - UDManagerDelegate
 - (void)didReceiveMessages:(NSDictionary *)message {
     
-    NSDictionary *messageDictionary = [UdeskTools dictionaryWithJsonString:[message objectForKey:@"strContent"]];
+    NSDictionary *messageDict = (NSDictionary *)[UdeskTools dictionaryWithJsonString:[message objectForKey:@"strContent"]];
+    
     @udWeakify(self);
-    [UdeskReceiveMessage ud_messageModelWithDictionary:messageDictionary completion:^(UdeskMessage *message) {
+    [UdeskReceiveMessage ud_modelWithDictionary:messageDict completion:^(UdeskMessage *message) {
         
         //刷新UI
         @udStrongify(self);
@@ -389,7 +391,9 @@
     //通知刷新UI
     [self updateContent];
     
-    NSArray *array = @[text,[UdeskTools stringFromDate:date],textMessage.contentId,@"0",@"0",@"0"];
+    NSString *dateString = [[UdeskDateFormatter sharedFormatter].dateFormatter stringFromDate:date];
+    
+    NSArray *array = @[text,dateString,textMessage.contentId,@"0",@"0",@"0"];
     
     [UDManager insertTableWithSqlString:InsertTextMsg params:array];
     
@@ -438,8 +442,9 @@
     //缓存图片
     [[UdeskCache sharedUDCache] storeImage:photoMessage.photo forKey:photoMessage.contentId];
     
+    NSString *dateString = [[UdeskDateFormatter sharedFormatter].dateFormatter stringFromDate:date];
     //存储
-    NSArray *array = @[@"image",[UdeskTools stringFromDate:date],photoMessage.contentId,@"0",@"0",@"1",newWidth,newHeight];
+    NSArray *array = @[@"image",dateString,photoMessage.contentId,@"0",@"0",@"1",newWidth,newHeight];
     
     [UDManager insertTableWithSqlString:InsertPhotoMsg params:array];
     
@@ -474,7 +479,10 @@
     //通知刷新UI
     [self updateContent];
     
-    NSArray *array = @[audioPath,[UdeskTools stringFromDate:date],voiceMessage.contentId,@"0",@"0",@"2",audioDuration];
+    NSString *dateString = [[UdeskDateFormatter sharedFormatter].dateFormatter stringFromDate:date];
+    
+    NSArray *array = @[audioPath,dateString,voiceMessage.contentId,@"0",@"0",@"2",audioDuration];
+    
     [UDManager insertTableWithSqlString:InsertAudioMsg params:array];
     
     NSData *voiceData = [NSData dataWithContentsOfFile:audioPath];
@@ -556,15 +564,23 @@
 
 }
 
+//未知错误
+- (void)notConnected {
+    
+    UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertWithTitle:nil message:@"连接Udesk失败,请查看控制台LOG"];
+    [notExistAgentAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+    [notExistAgentAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+}
+
 //NSDictionary转model
-- (UdeskMessage *)ud_messageModelWithDictionary:(NSDictionary *)dbMessage {
+- (UdeskMessage *)ud_modelWithDictionary:(NSDictionary *)dbMessage {
     
     UdeskMessage *message = [[UdeskMessage alloc] init];
     message.messageFrom = [[dbMessage objectForKey:@"direction"] integerValue];
     message.messageType = [[dbMessage objectForKey:@"mesType"] integerValue];
     message.contentId = [dbMessage objectForKey:@"msgid"];
     message.messageStatus = [[dbMessage objectForKey:@"sendflag"] integerValue];
-    message.timestamp = [UdeskTools dateFromString:[dbMessage objectForKey:@"replied_at"]];
+    message.timestamp = [[UdeskDateFormatter sharedFormatter].dateFormatter dateFromString:[dbMessage objectForKey:@"replied_at"]];
     
     NSString *content = [dbMessage objectForKey:@"content"];
     
@@ -662,6 +678,10 @@
         
         [self notExistAgent];
     }
+    else {
+    
+        [self notConnected];
+    }
     
 }
 
@@ -742,6 +762,7 @@
 - (void)dealloc
 {
     NSLog(@"%@销毁了",[self class]);
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUdeskReachabilityChangedNotification object:nil];
 }
 
 @end

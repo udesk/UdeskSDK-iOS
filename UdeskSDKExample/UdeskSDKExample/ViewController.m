@@ -7,13 +7,9 @@
 //
 
 #import "ViewController.h"
-#import "UdeskChatViewController.h"
-#import "UdeskFaqController.h"
-#import "UdeskRobotIMViewController.h"
-#import "UdeskAgentNavigationMenu.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskTableViewController.h"
-#import "UDManager.h"
+#import "Udesk.h"
 
 @interface ViewController ()
 
@@ -150,10 +146,10 @@
     [super viewWillAppear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.iMNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.iMNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskConfig.iMBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = Config.iMBackButtonColor;
     }
 }
 
@@ -162,9 +158,9 @@
     
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = UdeskConfig.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
     }
     
 }

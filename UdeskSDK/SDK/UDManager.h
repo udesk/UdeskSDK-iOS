@@ -104,7 +104,7 @@
  *
  *  @param completion 回调客服信息
  */
-+ (void)getRedirectAgentInformation:(NSDictionary *)agentId
++ (void)getRedirectAgentInformation:(NSDictionary *)redirectAgent
                          completion:(void (^)(id responseObject,NSError *error))completion;
 
 /**
@@ -337,7 +337,7 @@
                 completion:(void (^) (id responseObject,NSError *error))completion;
 
 /**
- *  取消所有操作
+ *  取消所有网络操作
  */
 + (void)ud_cancelAllOperations;
 

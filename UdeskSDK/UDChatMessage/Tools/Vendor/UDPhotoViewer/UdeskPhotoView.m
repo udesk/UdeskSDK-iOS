@@ -33,7 +33,6 @@
 
 -(void)setPhotoData:(UIImageView *)photoImageView withImageMessage:(UdeskMessage *)message {
     
-        
     //传值给单个滚动器
     UdeskOneScrollView *oneScroll = [[UdeskOneScrollView alloc]init];
     oneScroll.mydelegate = self;

@@ -14,8 +14,8 @@ typedef void (^UDAgentDataCallBack) (UdeskAgentModel *udAgent);
 
 @interface UdeskReceiveMessage : NSObject
 
-+ (void)ud_messageModelWithDictionary:(NSDictionary *)messageDictionary
-                           completion:(void(^)(UdeskMessage *message))completion
-                        redirectAgent:(UDAgentDataCallBack)redirectAgent;
++ (void)ud_modelWithDictionary:(NSDictionary *)messageDictionary
+                    completion:(void(^)(UdeskMessage *message))completion
+                 redirectAgent:(UDAgentDataCallBack)redirectAgent;
 
 @end

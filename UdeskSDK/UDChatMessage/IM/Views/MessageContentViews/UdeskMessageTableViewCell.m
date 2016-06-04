@@ -10,6 +10,7 @@
 #import "UdeskFoundationMacro.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskLabel.h"
+#import "UdeskDateFormatter.h"
 
 //时间 Y
 static const CGFloat kUDLabelPadding         = 5.0f;
@@ -70,30 +71,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
     self.timestampLabel.hidden = !self.displayTimestamp;
     if (displayTimestamp) {
         
-        NSString *dateText = nil;
-        NSString *timeText = nil;
-        
-        NSDate *today = [NSDate date];
-        NSDateComponents *components = [[NSDateComponents alloc] init];
-        [components setDay:-1];
-        NSDate *yesterday = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:today options:0];
-        
-        NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:message.timestamp];
-        NSDateComponents *todayComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:today];
-        NSDateComponents *yesterdayComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:yesterday];
-        
-        if (dateComponents.year == todayComponents.year && dateComponents.month == todayComponents.month && dateComponents.day == todayComponents.day) {
-            dateText = @"今天";
-        } else if (dateComponents.year == yesterdayComponents.year && dateComponents.month == yesterdayComponents.month && dateComponents.day == yesterdayComponents.day) {
-            dateText = @"昨天";
-        } else {
-            dateText = [NSDateFormatter localizedStringFromDate:message.timestamp dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
-        }
-        
-        timeText = [NSDateFormatter localizedStringFromDate:message.timestamp dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle];
-        
-        self.timestampLabel.text = [NSString stringWithFormat:@"%@ %@",dateText,timeText];
-        
+        self.timestampLabel.text = [[UdeskDateFormatter sharedFormatter] ud_styleDateForDate:message.timestamp];
     }
 }
 
@@ -103,8 +81,8 @@ static CGFloat const kUDHeadImageSize = 40.0f;
     switch (message.messageFrom) {
         case UDMessageTypeSending:
             
-            if (UdeskConfig.headImage != nil) {
-                _headImageView.image = UdeskConfig.headImage;
+            if (Config.headImage != nil) {
+                _headImageView.image = Config.headImage;
             } else {
                 _headImageView.image = [UIImage ud_defaultCustomerImage];
             }
@@ -266,8 +244,8 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             
             UILabel *timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kUDLabelPadding, UD_SCREEN_WIDTH, kUDTimeStampLabelHeight)];
             timestampLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin;
-            timestampLabel.textColor = UdeskConfig.chatTimeColor;
-            timestampLabel.font = [UIFont systemFontOfSize:UdeskConfig.timeFontSize];
+            timestampLabel.textColor = Config.chatTimeColor;
+            timestampLabel.font = [UIFont systemFontOfSize:Config.timeFontSize];
             timestampLabel.center = CGPointMake(CGRectGetWidth([[UIScreen mainScreen] bounds]) / 2.0, timestampLabel.center.y);
             timestampLabel.textAlignment = NSTextAlignmentCenter;
             timestampLabel.backgroundColor = [UIColor clearColor];
