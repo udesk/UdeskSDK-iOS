@@ -23,7 +23,7 @@ Pod::Spec.new do |spec|
     spec.subspec 'UdeskSDK' do |ss|
       ss.frameworks =  'AVFoundation', 'CoreTelephony', 'SystemConfiguration', 'MobileCoreServices'
       ss.libraries  =  'z', 'xml2', 'resolv', 'sqlite3'
-      ss.vendored_libraries = 'UdeskSDK/SDK/*.a'
+      ss.vendored_libraries = 'UdeskSDK/SDK/libUdesk.a'
       ss.source_files = 'UdeskSDK/SDK/UDManager.h'
       ss.xcconfig     = {
                         "LIBRARY_SEARCH_PATHS" => "\"$(PODS_ROOT)/**\"",
