@@ -34,7 +34,7 @@ Pod::Spec.new do |spec|
   end
 
     spec.subspec 'UdeskSDKUI' do |ss|
-      ss.dependency 'UdeskSDKTest/UdeskSDK'
+      ss.dependency 'Udesk/UdeskSDK'
       ss.source_files = 'UdeskSDK/UDChatMessage/**/*.{h,m}'
       ss.resource     = 'UdeskSDK/Resource/UdeskBundle.bundle'
 
