@@ -6,7 +6,7 @@ UdeskSDK-iOS
 > Udesk为了让开发者更好的集成移动SDK,与企业业务结合更加紧密，我们开源了SDK的UI界面。用户可以根据自身业务以及APP不同风格重写页面。当然开发者也可以直接用我们提供的默认的界面。
 
 
-## 1、SDK工作流程
+## SDK工作流程
 
 
 Udesk-SDK的工作流程如下图所示。
@@ -14,7 +14,7 @@ Udesk-SDK的工作流程如下图所示。
 ![udesk](http://7xr0de.com2.z0.glb.qiniucdn.com/ios-new-1.png)
 
 
-## 2、导入SDK依赖的框架
+## 导入SDK依赖的框架
 ```
 libz.tbd
 libxml2.tbd
@@ -27,6 +27,16 @@ libsqlite3.tbd
 点击的你工程targets->Build Settings 
 搜索Other Linker Flags 加入 -lxml2 -ObjC，
 搜索header search paths 加入/usr/include/libxml2。
+```
+## CocoaPods 导入
+在 Podfile 中加入：
+
+```
+pod 'UdeskSDK'
+```
+在 控制器 中引入：
+```
+#import "Udesk.h"
 ```
 
 文件介绍
@@ -163,7 +173,7 @@ UdeskRobotIMViewController *robot = [[UdeskRobotIMViewController alloc] init];
 ```
 至此，你已经为你的 APP 添加Udesk提供的客服服务。而Udesk SDK 还提供其他强大的功能，可以帮助提高服务效率，提升用户使用体验。接下来为你详细介绍如何使用其他功能
 
-## 5、接口说明
+## 接口说明
 
 ```
 
