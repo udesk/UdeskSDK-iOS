@@ -29,8 +29,6 @@ libsqlite3.tbd
 搜索header search paths 加入/usr/include/libxml2。
 ```
 
-在你需要的地方引入
-
 文件介绍
 
 |Demo中的文件 |说明 |
