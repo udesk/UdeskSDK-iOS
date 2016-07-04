@@ -81,11 +81,7 @@ static CGFloat const kUDHeadImageSize = 40.0f;
     switch (message.messageFrom) {
         case UDMessageTypeSending:
             
-            if (Config.headImage != nil) {
-                _headImageView.image = Config.headImage;
-            } else {
-                _headImageView.image = [UIImage ud_defaultCustomerImage];
-            }
+            _headImageView.image = [UIImage ud_defaultCustomerImage];
             
             break;
         case UDMessageTypeReceiving:
@@ -244,8 +240,8 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             
             UILabel *timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kUDLabelPadding, UD_SCREEN_WIDTH, kUDTimeStampLabelHeight)];
             timestampLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin;
-            timestampLabel.textColor = Config.chatTimeColor;
-            timestampLabel.font = [UIFont systemFontOfSize:Config.timeFontSize];
+            timestampLabel.textColor = UdeskUIConfig.chatTimeColor;
+            timestampLabel.font = [UIFont systemFontOfSize:UdeskUIConfig.timeFontSize];
             timestampLabel.center = CGPointMake(CGRectGetWidth([[UIScreen mainScreen] bounds]) / 2.0, timestampLabel.center.y);
             timestampLabel.textAlignment = NSTextAlignmentCenter;
             timestampLabel.backgroundColor = [UIColor clearColor];

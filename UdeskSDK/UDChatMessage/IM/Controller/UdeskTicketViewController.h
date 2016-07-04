@@ -6,9 +6,9 @@
 //  Copyright (c) 2015年 xuchen. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "UdeskBaseViewController.h"
 
-@interface UdeskTicketViewController : UIViewController<UIWebViewDelegate>
+@interface UdeskTicketViewController : UdeskBaseViewController<UIWebViewDelegate>
 
 /**
  *  ticket webView

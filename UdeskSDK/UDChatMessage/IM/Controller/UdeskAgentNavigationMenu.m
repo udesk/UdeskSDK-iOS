@@ -15,7 +15,7 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskGeneral.h"
 #import "UdeskTools.h"
-#import "UDManager.h"
+#import "UdeskManager.h"
 
 @interface UdeskAgentNavigationMenu () <UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
 
@@ -48,15 +48,19 @@
  */
 @property (nonatomic, strong) UIButton       *backButton;
 
+@property (nonatomic, strong) NSArray        *agentMenu;
+
 @end
 
 @implementation UdeskAgentNavigationMenu
 
-- (instancetype)init
+- (instancetype)initWithMenuArray:(NSArray *)menu
 {
     self = [super init];
     if (self) {
         self.hidesBottomBarWhenPushed = YES;
+        
+        self.agentMenu = menu;
         
         self.allAgentMenuData = [NSMutableArray array];
         
@@ -68,63 +72,27 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
-        self.automaticallyAdjustsScrollViewInsets = NO;
-    }
-    
-    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
+    [self.udNavView changeTitle:getUDLocalizedString(@"请选择客服组")];
     
     self.view.backgroundColor = [UIColor colorWithRed:0.918f  green:0.922f  blue:0.925f alpha:1];
     
     [self setAgentMenuScrollView];
     
-    [self setNavigationTitleName];
-    
-    [self requestAgentMenu];
-    
-    [self setBackNavigationItem];
-}
-
-#pragma mark - 设置返回按钮
-- (void)setBackNavigationItem {
-    
-    //返回按钮
-    self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.backButton.frame = CGRectMake(0, 0, 70, 40);
-    [self.backButton setTitle:getUDLocalizedString(@"返回") forState:UIControlStateNormal];
-    
-    [self.backButton setImage:[UIImage ud_defaultBackImage] forState:UIControlStateNormal];
-    [self.backButton addTarget:self action:@selector(backButtonAction) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIBarButtonItem *closeNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:self.backButton];
-    
-    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
-                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                       target:nil action:nil];
-    
-    // 调整 leftBarButtonItem 在 iOS7 下面的位置
-    if((FUDSystemVersion>=7.0)){
-        
-        negativeSpacer.width = -19;
-        self.navigationItem.leftBarButtonItems = @[negativeSpacer,closeNavigationItem];
-    }else
-        self.navigationItem.leftBarButtonItem = closeNavigationItem;
-    
+    [self requestAgentMenu:self.agentMenu];
 }
 
 - (void)backButtonAction {
     
-    //返回到指定控制器
+    [super backButtonAction];
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - 设置MenuScrollView
 - (void)setAgentMenuScrollView {
     
-    _agentMenuScrollView= [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    CGRect scrollViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
+    _agentMenuScrollView= [[UIScrollView alloc] initWithFrame:scrollViewRect];
     _agentMenuScrollView.delegate = self;
     _agentMenuScrollView.showsHorizontalScrollIndicator = NO;
     _agentMenuScrollView.showsVerticalScrollIndicator = NO;
@@ -136,94 +104,59 @@
     [self.view addSubview:_agentMenuScrollView];
 }
 
-#pragma mark - 设置标题
-- (void)setNavigationTitleName {
-    
-    self.menuTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 0, 100, 44)];
-    self.menuTitleLabel.text = getUDLocalizedString(@"请选择客服组");
-    self.menuTitleLabel.backgroundColor = [UIColor clearColor];
-    self.menuTitleLabel.textAlignment = NSTextAlignmentCenter;
-    self.menuTitleLabel.textColor = Config.faqTitleColor;
-    self.navigationItem.titleView = self.menuTitleLabel;
-}
 #pragma mark - 请求客服组选择菜单
-- (void)requestAgentMenu {
+- (void)requestAgentMenu:(NSArray *)result {
     
-    [UDManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
+    for (NSDictionary *menuDict in result) {
         
-        if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
-            
-            NSArray *result = [responseObject objectForKey:@"result"];
-            
-            if (result.count > 0) {
-                
-                for (NSDictionary *menuDict in result) {
-                    
-                    UdeskAgentMenuModel *agentMenuModel = [[UdeskAgentMenuModel alloc] initWithContentsOfDic:menuDict];
-                    
-                    [self.allAgentMenuData addObject:agentMenuModel];
-                    
-                }
-                
-                NSMutableArray *rootMenuArray = [NSMutableArray array];
-                
-                int tableViewCount = 1;
-                //寻找树状的根
-                for (UdeskAgentMenuModel *agentMenuModel in self.allAgentMenuData) {
-                    
-                    if ([agentMenuModel.parentId isEqualToString:@"item_0"]) {
-                        
-                        [rootMenuArray addObject:agentMenuModel];
-                    }
-                    
-                    tableViewCount += [agentMenuModel.has_next intValue];
-                    
-                }
-                //根据最大的级数设置ScrollView.contentSize
-                self.agentMenuScrollView.contentSize = CGSizeMake(tableViewCount*UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT);
-                
-                //根据最大的级数循环添加tableView
-                for (int i = 0; i<tableViewCount;i++) {
-                    
-                    UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStylePlain];
-                    agentMenuTableView.delegate = self;
-                    agentMenuTableView.dataSource = self;
-                    agentMenuTableView.tag = 100+i;
-                    agentMenuTableView.backgroundColor = self.view.backgroundColor;
-                    
-                    [self.agentMenuScrollView addSubview:agentMenuTableView];
-                    
-                    //删除多余的cell
-                    UIView *footerView = [[UIView alloc] initWithFrame:CGRectZero];
-                    [agentMenuTableView setTableFooterView:footerView];
-                    
-                }
-                //装载数据 刷新第一个tableView
-                self.agentMenuData = rootMenuArray;
-                
-                UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:100];
-                
-                [tableview reloadData];
-            }
-            else {
-                
-                [self pushChatViewController];
-            }
-            
-        }
-        else {
+        UdeskAgentMenuModel *agentMenuModel = [[UdeskAgentMenuModel alloc] initWithContentsOfDic:menuDict];
         
-            [self pushChatViewController];
+        [self.allAgentMenuData addObject:agentMenuModel];
+    }
+    
+    NSMutableArray *rootMenuArray = [NSMutableArray array];
+    
+    int tableViewCount = 1;
+    //寻找树状的根
+    for (UdeskAgentMenuModel *agentMenuModel in self.allAgentMenuData) {
+        
+        if ([agentMenuModel.parentId isEqualToString:@"item_0"]) {
+            
+            [rootMenuArray addObject:agentMenuModel];
         }
         
-    }];
+        tableViewCount += [agentMenuModel.has_next intValue];
+        
+    }
+    //根据最大的级数设置ScrollView.contentSize
+    self.agentMenuScrollView.contentSize = CGSizeMake(tableViewCount*UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT);
+    
+    //根据最大的级数循环添加tableView
+    for (int i = 0; i<tableViewCount;i++) {
+        
+        UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStylePlain];
+        agentMenuTableView.delegate = self;
+        agentMenuTableView.dataSource = self;
+        agentMenuTableView.tag = 100+i;
+        agentMenuTableView.backgroundColor = self.view.backgroundColor;
+        
+        [self.agentMenuScrollView addSubview:agentMenuTableView];
+        
+        //删除多余的cell
+        UIView *footerView = [[UIView alloc] initWithFrame:CGRectZero];
+        [agentMenuTableView setTableFooterView:footerView];
+        
+    }
+    //装载数据 刷新第一个tableView
+    self.agentMenuData = rootMenuArray;
+    
+    UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:100];
+    
+    [tableview reloadData];
+    
 }
 
 - (void)pushChatViewController {
-
-    self.menuTitleLabel.text = nil;
-    
-    self.backButton.hidden = YES;
     
     UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
     
@@ -432,28 +365,29 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
- 
-    self.menuTitleLabel.text = getUDLocalizedString(@"请选择客服组");
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.agentMenuNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.agentMenuNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.agentMenuNavigationColor;
-        self.navigationController.navigationBar.tintColor = Config.agentMenuBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.agentMenuNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.agentMenuBackButtonColor;
     }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    self.menuTitleLabel.text = nil;
-    
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     }
     
+}
+
+- (void)dealloc
+{
+    NSLog(@"%@销毁了",[self class]);
 }
 
 - (void)didReceiveMemoryWarning {

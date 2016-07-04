@@ -93,7 +93,7 @@
 
 + (UIImage *)ud_defaultVoiceSpeakImage {
 
-    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_speak_Button.png")];
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voicerecord.png")];
 }
 
 + (UIImage *)ud_defaultRecordingImage {
@@ -103,12 +103,17 @@
 
 + (UIImage *)ud_defaultVoiceRevokeImage {
 
-    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voice_revoke.png")];
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voicecancelsend.png")];
 }
 
 + (UIImage *)ud_defaultBackImage {
 
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_back.png")];
+}
+
++ (UIImage *)ud_defaultVoiceTooShortImage {
+
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_voicetooshort.png")];
 }
 
 @end

@@ -8,7 +8,7 @@
 
 #import "UdeskOneScrollView.h"
 #import "UdeskFoundationMacro.h"
-#import "UdeskCache.h"
+#import "UdeskManager.h"
 
 #define AnimationTime 0.25
 
@@ -114,7 +114,7 @@
         imageW  = imageView.image.size.width;
         imageH = imageView.image.size.height;
         //放大的图片 显示原图片 不缩小
-        self.mainImageView.image = [[UdeskCache sharedUDCache] imageFromDiskCacheForKey:message.contentId];
+        self.mainImageView.image = [UdeskManager imageFromDiskCacheForKey:message.contentId];
     }
     
     //设置主图片Frame 与缩小比例

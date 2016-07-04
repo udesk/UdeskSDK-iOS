@@ -6,8 +6,8 @@
 //  Copyright (c) 2015年 xuchen. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "UdeskBaseViewController.h"
 
-@interface UdeskRobotIMViewController : UIViewController
+@interface UdeskRobotIMViewController : UdeskBaseViewController
 
 @end

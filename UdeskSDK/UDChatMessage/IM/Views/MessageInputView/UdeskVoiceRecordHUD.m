@@ -30,6 +30,8 @@
  */
 @property (nonatomic, weak) UIImageView *recordingHUDImageView;
 
+@property (nonatomic, weak) UIImageView *tooShortRecordImageView;
+
 
 @end
 
@@ -45,26 +47,57 @@
 }
 
 - (void)setup {
-    self.backgroundColor = [UIColor blackColor];
-    self.alpha = .6f;
-    UDViewRadius(self, 5);
+//    self.backgroundColor = [UIColor blackColor];
+//    self.alpha = .6f;
+//    UDViewRadius(self, 5);
+//    
+//    if (!_remindLabel) {
+//        UILabel *remindLabel= [[UILabel alloc] initWithFrame:CGRectMake(14.0, 117.0, 120.0, 21.0)];
+//        remindLabel.textColor = [UIColor whiteColor];
+//        remindLabel.font = [UIFont systemFontOfSize:13];
+//        remindLabel.layer.masksToBounds = YES;
+//        remindLabel.layer.cornerRadius = 4;
+//        remindLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+//        remindLabel.backgroundColor = [UIColor clearColor];
+//        remindLabel.text = @"手指上滑，取消发送";
+//        remindLabel.textAlignment = NSTextAlignmentCenter;
+//        [self addSubview:remindLabel];
+//        _remindLabel = remindLabel;
+//    }
+//    
+//    if (!_microPhoneImageView) {
+//        UIImageView *microPhoneImageView = [[UIImageView alloc] initWithFrame:CGRectMake(11.0, 28.0, 80, 80)];
+//        microPhoneImageView.image = [UIImage ud_defaultVoiceSpeakImage];
+//        microPhoneImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+//        microPhoneImageView.contentMode = UIViewContentModeScaleToFill;
+//        [self addSubview:microPhoneImageView];
+//        _microPhoneImageView = microPhoneImageView;
+//    }
+//    
+//    if (!_recordingHUDImageView) {
+//        UIImageView *recordHUDImageView = [[UIImageView alloc] initWithFrame:CGRectMake(97.0, 14.0, 38, 100)];
+//        recordHUDImageView.image = [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_Recording_Signal001.png")];
+//        recordHUDImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+//        recordHUDImageView.contentMode = UIViewContentModeScaleToFill;
+//        [self addSubview:recordHUDImageView];
+//        _recordingHUDImageView = recordHUDImageView;
+//    }
+//    
+//    if (!_cancelRecordImageView) {
+//        UIImageView *cancelRecordImageView = [[UIImageView alloc] initWithFrame:CGRectMake(30.0, 20.0, 80, 80)];
+//        cancelRecordImageView.image = [UIImage ud_defaultVoiceRevokeImage];
+//        cancelRecordImageView.hidden = YES;
+//        cancelRecordImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+//        cancelRecordImageView.contentMode = UIViewContentModeScaleToFill;
+//        [self addSubview:cancelRecordImageView];
+//        _cancelRecordImageView = cancelRecordImageView;
+//    }
     
-    if (!_remindLabel) {
-        UILabel *remindLabel= [[UILabel alloc] initWithFrame:CGRectMake(14.0, 117.0, 120.0, 21.0)];
-        remindLabel.textColor = [UIColor whiteColor];
-        remindLabel.font = [UIFont systemFontOfSize:13];
-        remindLabel.layer.masksToBounds = YES;
-        remindLabel.layer.cornerRadius = 4;
-        remindLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
-        remindLabel.backgroundColor = [UIColor clearColor];
-        remindLabel.text = @"手指上滑，取消发送";
-        remindLabel.textAlignment = NSTextAlignmentCenter;
-        [self addSubview:remindLabel];
-        _remindLabel = remindLabel;
-    }
     
+    
+    self.backgroundColor = [UIColor clearColor];
     if (!_microPhoneImageView) {
-        UIImageView *microPhoneImageView = [[UIImageView alloc] initWithFrame:CGRectMake(11.0, 28.0, 80, 80)];
+        UIImageView *microPhoneImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 160, 160)];
         microPhoneImageView.image = [UIImage ud_defaultVoiceSpeakImage];
         microPhoneImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
         microPhoneImageView.contentMode = UIViewContentModeScaleToFill;
@@ -82,7 +115,7 @@
     }
     
     if (!_cancelRecordImageView) {
-        UIImageView *cancelRecordImageView = [[UIImageView alloc] initWithFrame:CGRectMake(30.0, 20.0, 80, 80)];
+        UIImageView *cancelRecordImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 160, 160)];
         cancelRecordImageView.image = [UIImage ud_defaultVoiceRevokeImage];
         cancelRecordImageView.hidden = YES;
         cancelRecordImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
@@ -90,6 +123,17 @@
         [self addSubview:cancelRecordImageView];
         _cancelRecordImageView = cancelRecordImageView;
     }
+    
+    if (!_tooShortRecordImageView) {
+        UIImageView *tooShortRecordImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 160, 160)];
+        tooShortRecordImageView.image = [UIImage ud_defaultVoiceTooShortImage];
+        tooShortRecordImageView.hidden = YES;
+        tooShortRecordImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+        tooShortRecordImageView.contentMode = UIViewContentModeScaleToFill;
+        [self addSubview:tooShortRecordImageView];
+        _tooShortRecordImageView = tooShortRecordImageView;
+    }
+
 }
 
 - (void)startRecordingHUDAtView:(UIView *)view {
@@ -173,6 +217,15 @@
     _peakPower = peakPower;
     [self configRecordingHUDImageWithPeakPower:peakPower];
 }
+
+- (void)tooShortRecord {
+    
+    self.microPhoneImageView.hidden = YES;
+    self.recordingHUDImageView.hidden = YES;
+    self.cancelRecordImageView.hidden = YES;
+    self.tooShortRecordImageView.hidden = NO;
+}
+
 
 /*
 // Only override drawRect: if you perform custom drawing.

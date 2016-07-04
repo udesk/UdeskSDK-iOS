@@ -76,6 +76,29 @@ CGRect CGRectMoveToCenter(CGRect rect, CGPoint center)
 	return CGPointMake(x, y);
 }
 
+- (CGFloat)ud_x {
+
+    return self.frame.origin.x;
+}
+
+- (void)setUd_x:(CGFloat)ud_x {
+
+    CGRect newframe = self.frame;
+    newframe.origin.x = ud_x;
+    self.frame = newframe;
+}
+
+- (CGFloat)ud_y {
+
+    return self.frame.origin.y;
+}
+
+- (void)setUd_y:(CGFloat)ud_y {
+
+    CGRect newframe = self.frame;
+    newframe.origin.y = ud_y;
+    self.frame = newframe;
+}
 
 // Retrieve and set height, width, top, bottom, left, right
 - (CGFloat) ud_height

@@ -29,11 +29,7 @@ libsqlite3.tbd
 搜索header search paths 加入/usr/include/libxml2。
 ```
 
-.pch 引入 
-```
-#import <UIKit/UIKit.h>
-#import <Foundation/Foundation.h>
-```
+在你需要的地方引入
 
 文件介绍
 
@@ -51,7 +47,7 @@ libsqlite3.tbd
 //初始化Udesk
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 // Override point for customization after application launch.
-[UDManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
+[UdeskManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
 return YES;
 }
 ```
@@ -96,7 +92,7 @@ NSDictionary *parameters = @{
 调用用户自定义字段函数：
 ```
 //获取用户自定义字段
-[UDManager getCustomerFields:^(id responseObject, NSError *error) {
+[UdeskManager getCustomerFields:^(id responseObject, NSError *error) {
 
 //NSLog(@"用户自定义字段：%@",responseObject);
 }];
@@ -139,7 +135,7 @@ NSDictionary *parameters = @{
 ```
 创建用户
 ```
-[UDManager createCustomerWithCustomerInfo:parameters];
+[UdeskManager createCustomerWithCustomerInfo:parameters];
 
 ```
 
@@ -172,6 +168,12 @@ UdeskRobotIMViewController *robot = [[UdeskRobotIMViewController alloc] init];
 ## 5、接口说明
 
 ```
+
+/**
+*  Udesk客服系统当前有新消息，开发者可实现该协议方法，通过此方法显示小红点未读标识
+*/
+UD_RECEIVED_NEW_MESSAGES_NOTIFICATION
+
 /**
 *  初始化Udesk
 *
@@ -268,7 +270,7 @@ completion:(void (^)(BOOL status))completion;
 /**
 *  发送消息
 *
-*  @param message    UDMessage类型消息体
+*  @param message    UdeskMessage类型消息体
 *  @param completion 发送回调
 */
 + (void)sendMessage:(UdeskMessage *)message
@@ -457,5 +459,56 @@ completion:(void (^) (id responseObject,NSError *error))completion;
 *  取消所有操作
 */
 + (void)ud_cancelAllOperations;
+
+/**
+*  获取未读消息数量
+*
+*  @return 未读消息数量
+*/
++ (NSInteger)getLocalUnreadeMessagesCount;
+
+/**
+*  获取缓存的聊天语音数据
+*
+*  @param key 语音消息id
+*
+*  @return 语音
+*/
++ (NSData *)dataFromDiskCacheForKey:(NSString *)key;
+
+/**
+*  获取缓存的聊天图片数据
+*
+*  @param key 图片消息id
+*
+*  @return 图片
+*/
++ (UIImage *)imageFromDiskCacheForKey:(NSString *)key;
+
+/**
+*  异步获取缓存里的聊天图片数据
+*
+*  @param key       图片消息id
+*  @param doneBlock 回调
+*
+*  @return NSOperation
+*/
++ (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(void(^)(UIImage *image))doneBlock;
+
+/**
+*  存储图片信息
+*
+*  @param image 图片
+*  @param key   图片id
+*/
++ (void)storeImage:(UIImage *)image forKey:(NSString *)key;
+
+/**
+*  存储data数据
+*
+*  @param data data
+*  @param key  data id
+*/
++ (void)storeData:(NSData *)data forKey:(NSString *)key;
 
 ```

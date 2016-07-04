@@ -7,9 +7,7 @@
 //
 
 #import "UdeskTableViewController.h"
-#import "UDManager.h"
-#import "UdeskAgentNavigationMenu.h"
-#import "UdeskChatViewController.h"
+#import "Udesk.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskTools.h"
 #import "UdeskAlertController.h"
@@ -41,9 +39,15 @@
                                 @"指定客服 id 进行分配",
                                 @"指定客服组 id 进行分配",
                                 @"指引客户选择客服组",
-                                @"查看当前 SDK 版本号"
+                                @"查看当前 SDK 版本号",
+                                @"获取消息未读数"
                                 ];
     
+}
+
+- (void)backButtonAction {
+    
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -54,7 +58,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-
+    
     return self.udeskOtherApiArray.count;
 }
 
@@ -79,7 +83,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //取消点击效果
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
+    
     switch (indexPath.row) {
         case 0: {
             
@@ -88,31 +92,24 @@
             UdeskAlertController *inputAgentIdAlert = [UdeskAlertController alertWithTitle:title message:nil];
             __weak UdeskAlertController *weakInputAgentIdAlert = inputAgentIdAlert;
             
-            [inputAgentIdAlert addAction:[UdeskAlertAction actionWithTitle:@"确定" style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+            [inputAgentIdAlert addCloseActionWithTitle:@"确定" Handler:^(UdeskAlertAction * _Nonnull action) {
                 
                 [weakInputAgentIdAlert.textField resignFirstResponder];
                 
-                if (weakInputAgentIdAlert.textField.text.length>0) {
+                if (weakInputAgentIdAlert.textField.text.length) {
                     
                     UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
                     
                     chat.agent_id = weakInputAgentIdAlert.textField.text;
                     
                     [self.navigationController pushViewController:chat animated:YES];
-
                 }
                 else {
-                    
-                    UdeskAlertController *completionAlert = [UdeskAlertController alertWithTitle:nil message:@"请正确输入id"];
-                    [completionAlert addCloseActionWithTitle:@"确定" Handler:NULL];
-                    
-                    [completionAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请输入ID" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                    [alertView show];
                 }
-
                 
-            }]];
-            
-            [inputAgentIdAlert addCloseActionWithTitle:@"取消" Handler:nil];
+            }];
             [inputAgentIdAlert addTextFieldWithConfigurationHandler:nil];
             
             [inputAgentIdAlert showWithSender:nil controller:nil animated:YES completion:NULL];
@@ -126,12 +123,11 @@
             UdeskAlertController *inputGroupIdAlert = [UdeskAlertController alertWithTitle:title message:nil];
             __weak UdeskAlertController *weakInputGroupIdAlert = inputGroupIdAlert;
             
-            [inputGroupIdAlert addAction:[UdeskAlertAction actionWithTitle:@"确定" style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+            [inputGroupIdAlert addCloseActionWithTitle:@"确定" Handler:^(UdeskAlertAction * _Nonnull action) {
                 
                 [weakInputGroupIdAlert.textField resignFirstResponder];
                 
-                
-                if (weakInputGroupIdAlert.textField.text.length>0) {
+                if (weakInputGroupIdAlert.textField.text.length) {
                     
                     UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
                     
@@ -140,18 +136,13 @@
                     [self.navigationController pushViewController:chat animated:YES];
                 }
                 else {
-                
-                    UdeskAlertController *completionAlert = [UdeskAlertController alertWithTitle:nil message:@"请正确输入id"];
-                    [completionAlert addCloseActionWithTitle:@"确定" Handler:NULL];
                     
-                    [completionAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请输入ID" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                    [alertView show];
                 }
                 
                 
-            }]];
-             
-            [inputGroupIdAlert addCloseActionWithTitle:@"取消" Handler:nil];
-             
+            }];
             [inputGroupIdAlert addTextFieldWithConfigurationHandler:nil];
             
             [inputGroupIdAlert showWithSender:nil controller:nil animated:YES completion:NULL];
@@ -160,17 +151,43 @@
         }
         case 2: {
             
-            UdeskAgentNavigationMenu *agentMenu = [[UdeskAgentNavigationMenu alloc] init];
-            
-            [self.navigationController pushViewController:agentMenu animated:YES];
-            
+            [UdeskManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
+                
+                if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+                    
+                    NSArray *result = [responseObject objectForKey:@"result"];
+                    if (result.count) {
+                        
+                        UdeskAgentNavigationMenu *agentMenu = [[UdeskAgentNavigationMenu alloc] initWithMenuArray:result];
+                        
+                        [self.navigationController pushViewController:agentMenu animated:YES];
+                    }
+                    else {
+                        
+                        UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
+                        [self.navigationController pushViewController:chat animated:YES];
+                    }
+                }
+                
+            }];
             
             break;
         }
             
         case 3: {
             
-            NSString *title = [NSString stringWithFormat:@"当前Udesk SDK 版本号是：%@ ",[UDManager udeskSDKVersion]];
+            NSString *title = [NSString stringWithFormat:@"当前Udesk SDK 版本号是：%@ ",[UdeskManager udeskSDKVersion]];
+            
+            UdeskAlertController *notNetworkAlert = [UdeskAlertController alertWithTitle:title message:nil];
+            [notNetworkAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+            [notNetworkAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+            
+            break;
+        }
+            
+        case 4: {
+            
+            NSString *title = [NSString stringWithFormat:@"当前会话有 %ld 条未读",(long)[UdeskManager getLocalUnreadeMessagesCount]];
             
             UdeskAlertController *notNetworkAlert = [UdeskAlertController alertWithTitle:title message:nil];
             [notNetworkAlert addCloseActionWithTitle:@"确定" Handler:NULL];
@@ -184,6 +201,7 @@
     }
     
 }
+
 
 - (void)viewWillAppear:(BOOL)animated {
     
@@ -203,9 +221,9 @@
     [super viewWillDisappear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     }
 }
 

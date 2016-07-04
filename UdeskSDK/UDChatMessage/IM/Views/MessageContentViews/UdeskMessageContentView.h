@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 @class UdeskMessage;
 @class UdeskLabel;
+@class UdeskProductView;
 
 @interface UdeskMessageContentView : UIView
 
@@ -55,6 +56,8 @@
  *  转移tag
  */
 @property (nonatomic, weak  ) UILabel                              *redirectTagLabel;
+
+@property (nonatomic, weak  ) UdeskProductView                     *productView;
 
 /**
  *  初始化消息内容显示控件的方法

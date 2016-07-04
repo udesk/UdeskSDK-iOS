@@ -28,9 +28,12 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskAudioPlayerHelper.h"
 #import "UdeskPhotoManeger.h"
-#import "UDManager.h"
+#import "UdeskManager.h"
 
-@interface UdeskChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UDAudioPlayerHelperDelegate>
+@interface UdeskChatViewController ()<UIGestureRecognizerDelegate,UDMessageInputViewDelegate,UDMessageTableViewCellDelegate,UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UDAudioPlayerHelperDelegate> {
+
+    UdeskMessage *_productMessage;
+}
 
 @property (nonatomic, assign) UDInputViewType           textViewInputViewType;//输入消息类型
 @property (nonatomic, assign) BOOL                      isMaxTimeStop;//判断是不是超出了录音最大时长
@@ -55,8 +58,8 @@
         
         self.hidesBottomBarWhenPushed = YES;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resendClickFailedMessage:) name:ClickResendMessage object:nil];
-        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resendClickFailedMessage:) name:UdeskClickResendMessage object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendProductMessageURL:) name:UdeskTouchProductUrlSendButton object:nil];
     }
     return self;
 }
@@ -64,50 +67,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //设置标题
+    [self.udNavView changeTitle:getUDLocalizedString(@"会话")];
     //初始化viewModel
     [self initViewModel];
     //初始化消息页面布局
     [self initilzer];
-    //重写返回按钮
-    [self setCloseNavigationItem];
 }
 
-#pragma mark - 添加左侧导航栏按钮
-- (void)setCloseNavigationItem {
-    //取消按钮
-    UIButton * closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    closeButton.frame = CGRectMake(0, 0, 70, 40);
-    [closeButton setTitle:getUDLocalizedString(@"返回") forState:UIControlStateNormal];
-    [closeButton setImage:[UIImage ud_defaultBackImage] forState:UIControlStateNormal];
-    [closeButton addTarget:self action:@selector(closeButtonAction) forControlEvents:UIControlEventTouchUpInside];
+- (void)backButtonAction {
     
-    UIBarButtonItem *closeNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
-    
-    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
-                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                       target:nil action:nil];
-    
-    // 调整 leftBarButtonItem 在 iOS7 下面的位置
-    if((FUDSystemVersion>=7.0)){
-        
-        negativeSpacer.width = -19;
-        self.navigationItem.leftBarButtonItems = @[negativeSpacer,closeNavigationItem];
-    }else
-        self.navigationItem.leftBarButtonItem = closeNavigationItem;
-    
-}
-
-- (void)closeButtonAction {
-    
+    [super backButtonAction];
     //取消所有请求
     [self.chatViewModel cancelPollingAgent];
-    [UDManager ud_cancelAllOperations];
-    
+    [UdeskManager ud_cancelAllOperations];
     //用过返回上级页面了，发送中的消息改为发送失败，如果有需求，开发者可自定义
-    [UDManager updateTableWithSqlString:@"update Message set sendflag='1' where sendflag = '0'" params:nil];
-    
-    //返回上级页面，设置客户离线
-    [UDManager setCustomerOffline];
+    [UdeskManager updateTableWithSqlString:@"update Message set sendflag='1' where sendflag = '0'" params:nil];
     
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -116,6 +91,12 @@
 - (void)initViewModel {
     
     self.chatViewModel = [[UdeskChatViewModel alloc] initWithAgentId:self.agent_id withGroupId:self.group_id];
+    
+    [self.chatViewModel requestQueue];
+    
+    if (_productMessage) {
+        [self.chatViewModel saveProductMessage:_productMessage];
+    }
     @udWeakify(self);
     //接收客服信息
     self.chatViewModel.fetchAgentDataBlock = ^(UdeskAgentModel *agentModel){
@@ -124,9 +105,9 @@
         @udStrongify(self);
         if (agentModel.code) {
             
-            [self.agentStatusView bindDataWithAgentModel:agentModel];
+            [self.udNavView showAgentOnlineStatus:agentModel];
             //显示top AlertView
-            [UdeskTopAlertView showWithAgentModel:agentModel parentView:self.view];
+            [UdeskTopAlertView showWithAgentModel:agentModel parentView:self.view navView:self.udNavView];
             //底部功能栏根据客服状态code做操作
             self.messageInputView.agentCode = agentModel.code;
         }
@@ -149,14 +130,6 @@
 #pragma mark - 初始化视图
 - (void)initilzer {
     
-    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
-        self.automaticallyAdjustsScrollViewInsets = NO;
-    }
-    
-    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
-    
     // 提示用户允许访问麦克风
     if (ud_isIOS7) {
         [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
@@ -164,8 +137,10 @@
         }];
     }
     
+    CGRect tableViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
+    
     // 初始化message tableView
-	UdeskMessageTableView *messageTableView = [[UdeskMessageTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+	UdeskMessageTableView *messageTableView = [[UdeskMessageTableView alloc] initWithFrame:tableViewRect style:UITableViewStylePlain];
     messageTableView.delegate = self;
     messageTableView.dataSource = self;
     [messageTableView finishLoadingMoreMessages:self.chatViewModel.message_count];
@@ -200,15 +175,6 @@
     [self.view bringSubviewToFront:inputView];
     
     _messageInputView = inputView;
-    
-    //客服标题
-    CGFloat agentStatusTitleLength = [[UIScreen mainScreen] bounds].size.width>320?200:170;
-    
-    UdeskAgentStatusView *agentStatusView = [[UdeskAgentStatusView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-agentStatusTitleLength)/2, 20, agentStatusTitleLength, 44)];
-    
-    self.navigationItem.titleView = agentStatusView;
-    
-    _agentStatusView = agentStatusView;
     
     //表情view
     if (!_emotionManagerView) {
@@ -331,7 +297,7 @@
             } else {
                 self.currentSelectedCell = messageTableViewCell;
                 [messageTableViewCell.messageContentView.animationVoiceImageView startAnimating];
-                [[UdeskAudioPlayerHelper shareInstance] playAudioWithMessage:message];
+                [[UdeskAudioPlayerHelper shareInstance] playAudioWithMessage:message.contentId withAudioUrl:message.voiceUrl];
             }
             
             break;
@@ -398,14 +364,14 @@
             @udStrongify(self);
             self.voiceRecordHUD.peakPower = peakPowerForChannel;
         };
-        _voiceRecordHelper.maxRecordTime = kVoiceRecorderTotalTime;
+        _voiceRecordHelper.maxRecordTime = UdeskVoiceRecorderTotalTime;
     }
     return _voiceRecordHelper;
 }
 #pragma mark - 录制语音动画
 - (UdeskVoiceRecordHUD *)voiceRecordHUD {
     if (!_voiceRecordHUD) {
-        _voiceRecordHUD = [[UdeskVoiceRecordHUD alloc] initWithFrame:CGRectMake(0, 0, 150, 150)];
+        _voiceRecordHUD = [[UdeskVoiceRecordHUD alloc] initWithFrame:CGRectMake(0, 0, 160, 160)];
     }
     return _voiceRecordHUD;
 }
@@ -546,11 +512,18 @@
     UdeskMessage *failedMessage = [notif.userInfo objectForKey:@"failedMessage"];
     failedMessage.agent_jid = self.chatViewModel.agentModel.jid;
     @udWeakify(self);
-    [UDManager sendMessage:failedMessage completion:^(UdeskMessage *message, BOOL sendStatus) {
+    [UdeskManager sendMessage:failedMessage completion:^(UdeskMessage *message, BOOL sendStatus) {
         //处理发送结果UI
         @udStrongify(self);
         [self sendMessageStatus:sendStatus message:message];
     }];
+}
+
+#pragma mark - 发送咨询对象url
+- (void)sendProductMessageURL:(NSNotification *)notif {
+
+    NSString *productUrl = [notif.userInfo objectForKey:@"productUrl"];
+    [self didSendTextAction:productUrl];
 }
 
 //根据发送状态更新UI
@@ -592,7 +565,7 @@
             
             cell.messageContentView.messageAgainButton.hidden = sendStatus?YES:NO;
             
-            [UDManager updateTableWithSqlString:[NSString stringWithFormat:@"update Message set sendflag='%d' where msgid='%@'",sendStatus?2:1,message.contentId] params:nil];
+            [UdeskManager updateTableWithSqlString:[NSString stringWithFormat:@"update Message set sendflag='%d' where msgid='%@'",sendStatus?2:1,message.contentId] params:nil];
         }
 
     }
@@ -684,6 +657,11 @@
         @udStrongify(self);
         [self didSendMessageWithAudio:self.voiceRecordHelper.recordPath audioDuration:self.voiceRecordHelper.recordDuration];
     }];
+    
+    [self.voiceRecordHelper tooShortRecordWithFailue:^{
+        @udStrongify(self);
+        [self.voiceRecordHUD tooShortRecord];
+    }];
 }
 
 #pragma mark - UDEmotionManagerView Delegate
@@ -750,6 +728,16 @@
     
 }
 
+//显示咨询对象
+- (void)showProductViewWithDictionary:(NSDictionary *)productDic {
+    
+    if (productDic.count) {
+        //这里viewModel还没创建，所以先做记录
+        UdeskMessage *productMessage = [[UdeskMessage alloc] initWithProduct:productDic];
+        _productMessage = productMessage;
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
@@ -757,13 +745,13 @@
     [self subscribeToKeyboard];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.iMNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
-        self.navigationController.navigationBar.tintColor = Config.iMBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.iMBackButtonColor;
     }
     //设置客户在线
-    [UDManager setCustomerOnline];
+    [UdeskManager setCustomerOnline];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -776,9 +764,9 @@
     [[UdeskAudioPlayerHelper shareInstance] stopAudio];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     }
     
 }
@@ -790,8 +778,9 @@
 
 - (void)dealloc {
     
-    NSLog(@"UDMsgTableViewController销毁了");
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:ClickResendMessage object:nil];
+    NSLog(@"%@销毁了",[self class]);
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UdeskClickResendMessage object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UdeskTouchProductUrlSendButton object:nil];
     _messageTableView.delegate = nil;
     _messageTableView.dataSource = nil;
     _messageTableView = nil;

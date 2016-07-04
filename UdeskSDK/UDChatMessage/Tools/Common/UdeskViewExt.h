@@ -17,6 +17,9 @@ CGRect  CGRectMoveToCenter(CGRect rect, CGPoint center);
 @property (readonly) CGPoint ud_bottomRight;
 @property (readonly) CGPoint ud_topRight;
 
+@property CGFloat ud_x;
+@property CGFloat ud_y;
+
 @property CGFloat ud_height;
 @property CGFloat ud_width;
 

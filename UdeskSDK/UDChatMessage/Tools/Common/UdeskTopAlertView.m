@@ -84,42 +84,54 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
     }
 }
 
-+ (UdeskTopAlertView *)showWithAgentModel:(UdeskAgentModel *)agentModel parentView:(UIView*)parentView {
++ (UdeskTopAlertView *)showWithAgentModel:(UdeskAgentModel *)agentModel parentView:(UIView*)parentView navView:(UIView *)navView {
 
-    UdeskTopAlertView *alertView = [[UdeskTopAlertView alloc]initWithAgentModel:agentModel];
+    UdeskTopAlertView *alertView = [[UdeskTopAlertView alloc]initWithAgentModel:agentModel navView:navView];
     [parentView addSubview:alertView];
+    [parentView bringSubviewToFront:navView];
     [alertView show];
     return alertView;
 }
 
-- (instancetype)initWithAgentModel:(UdeskAgentModel *)agentModel // parentView:(UIView*)parentView
+- (instancetype)initWithAgentModel:(UdeskAgentModel *)agentModel navView:(UIView *)navView// parentView:(UIView*)parentView
 {
     self = [super init];
     if (self) {
-        [self setTypeWithAgentModel:agentModel];
+        [self setTypeWithAgentModel:agentModel navView:navView];
     }
     return self;
 }
 
-- (void)setTypeWithAgentModel:(UdeskAgentModel *)agentModel {
+- (void)setTypeWithAgentModel:(UdeskAgentModel *)agentModel navView:(UIView *)navView{
     _autoHide = YES;
     _duration = 1.8;
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    [self setFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width - width)*0.5, -60, width, 40)];
+    
+    CGFloat topViewY;
+    if (navView.frame.size.height == 64) {
+        
+        topViewY = 24;
+    }
+    else {
+    
+        topViewY = -40;
+    }
+    
+    [self setFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width - width)*0.5, topViewY, width, 40)];
     self.alpha = .9f;
     UIColor *doBtnColor = FlatSkyBlueDark;
     
-    if (agentModel.code == 2000) {
+    if (agentModel.code.integerValue == 2000) {
         
         self.backgroundColor = FlatGreen;
         doBtnColor = FlatGreenDark;
     }
-    else if (agentModel.code == 2001) {
+    else if (agentModel.code.integerValue == 2001) {
     
         self.backgroundColor = hsb(204, 76, 86);;
         doBtnColor = FlatSkyBlueDark;
     }
-    else if (agentModel.code == 2002) {
+    else if (agentModel.code.integerValue == 2002) {
         
         self.backgroundColor = hsb(28, 85, 90);
         doBtnColor = FlatOrangeDark;
@@ -147,7 +159,7 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
         if (ud_isIOS6) {
             
             [UIView animateWithDuration:0.65f delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
-                self.layer.position = CGPointMake(self.layer.position.x, self.layer.position.y + 60);
+                self.layer.position = CGPointMake(self.layer.position.x, self.layer.position.y + 40);
             } completion:^(BOOL finished) {
 
                 [UIView animateWithDuration:0.65 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
@@ -156,7 +168,7 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
         } else {
         
             [UIView animateWithDuration:0.65 delay:0 usingSpringWithDamping:.9 initialSpringVelocity:1 options:UIViewAnimationOptionCurveLinear animations:^{
-                self.layer.position = CGPointMake(self.layer.position.x, self.layer.position.y + 60);
+                self.layer.position = CGPointMake(self.layer.position.x, self.layer.position.y + 40);
             } completion:^(BOOL finished) {
                 
                 [UIView animateWithDuration:.65 delay:0 usingSpringWithDamping:0.9 initialSpringVelocity:1 options:UIViewAnimationOptionCurveLinear animations:^{
@@ -182,7 +194,7 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
 - (void)hide{
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hide) object:nil];
     [UIView animateWithDuration:0.35 animations:^{
-        self.layer.position = CGPointMake(self.layer.position.x, self.layer.position.y - 60);
+        self.layer.position = CGPointMake(self.layer.position.x, self.layer.position.y - 40);
     } completion:^(BOOL finished) {
         if (_nextTopAlertBlock) {
             _nextTopAlertBlock();

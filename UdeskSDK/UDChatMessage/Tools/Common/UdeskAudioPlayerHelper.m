@@ -8,16 +8,16 @@
 
 #import "UdeskAudioPlayerHelper.h"
 #import <AVFoundation/AVFoundation.h>
-#import "UdeskCache.h"
+#import "UdeskManager.h"
 
 @implementation UdeskAudioPlayerHelper
 
 #pragma mark - action
 
 //播放转换后wav
-- (void)playAudioWithMessage:(UdeskMessage *)message {
+- (void)playAudioWithMessage:(NSString *)contentId withAudioUrl:(NSString *)url {
     
-    if (message.contentId.length > 0) {
+    if (contentId.length > 0) {
         
         //不随着静音键和屏幕关闭而静音。code by Aevit
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
@@ -27,14 +27,14 @@
             self.player = nil;
         }
         
-        NSData *audioData = [[UdeskCache sharedUDCache] dataFromDiskCacheForKey:message.contentId];
+        NSData *audioData = [UdeskManager dataFromDiskCacheForKey:contentId];
         
         if (audioData) {
             [self playAudio:audioData];
         }
         else {
             
-            NSString *newURL = [message.voiceUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSString *newURL = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:newURL]];
             
             NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -43,7 +43,7 @@
                     
                     [self playAudio:data];
                     
-                    [[UdeskCache sharedUDCache] storeData:data forKey:message.contentId];
+                    [UdeskManager storeData:data forKey:contentId];
                 }
                 
             }];
@@ -51,6 +51,7 @@
             [dataTask resume];
             
         }
+        
         
     }
 }

@@ -9,13 +9,13 @@
 #import "UdeskAgentHttpData.h"
 #import "UdeskAgentModel.h"
 #import "NSTimer+UdeskSDK.h"
-#import "UDManager.h"
+#import "UdeskManager.h"
 
 typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
 
 @implementation UdeskAgentHttpData
 
-static double agentHttpDelayInSeconds = 25.0f;
+static double agentHttpDelayInSeconds = 5.0f;
 
 + (instancetype)sharedAgentHttpData {
     
@@ -32,7 +32,7 @@ static double agentHttpDelayInSeconds = 25.0f;
 //请求客服信息
 - (void)requestRandomAgent:(void(^)(UdeskAgentModel *agentModel,NSError *error))completion {
     
-    [UDManager requestRandomAgent:^(id responseObject, NSError *error) {
+    [UdeskManager requestRandomAgent:^(id responseObject, NSError *error) {
         
         NSDictionary *result = [responseObject objectForKey:@"result"];
         
@@ -64,7 +64,7 @@ static double agentHttpDelayInSeconds = 25.0f;
                    withGroupId:(NSString *)group_id
                     completion:(void(^)(UdeskAgentModel *agentModel,NSError *error))completion; {
     
-    [UDManager assignAgentOrGroup:agent_id groupID:group_id completion:^(id responseObject, NSError *error) {
+    [UdeskManager assignAgentOrGroup:agent_id groupID:group_id completion:^(id responseObject, NSError *error) {
         
         NSDictionary *result = [responseObject objectForKey:@"result"];
         
@@ -104,11 +104,11 @@ static double agentHttpDelayInSeconds = 25.0f;
         
         agentModel = [[UdeskAgentModel alloc] initWithContentsOfDic:agent];
         
-        agentModel.code = [[result objectForKey:@"code"] integerValue];
+        agentModel.code = [NSNumber numberWithInteger:[[result objectForKey:@"code"] integerValue]];
         
         agentModel.message = [result objectForKey:@"message"];
         
-        if (agentModel.code == 2000) {
+        if (agentModel.code.integerValue == 2000) {
             
             NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",agentModel.nick];
             
@@ -119,7 +119,7 @@ static double agentHttpDelayInSeconds = 25.0f;
     else {
     
         agentModel = [[UdeskAgentModel alloc] initWithContentsOfDic:responseObject];
-        agentModel.code = [[responseObject objectForKey:@"code"] integerValue];
+        agentModel.code = [NSNumber numberWithInteger:[[responseObject objectForKey:@"code"] integerValue]];
     }
     
     return agentModel;

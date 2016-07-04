@@ -1,15 +1,18 @@
 //
 //  Udesk.h
-//  UdeskSDKExample
+//  UdeskSDK
 //
-//  Created by xuchen on 16/6/4.
+//  Created by xuchen on 16/6/15.
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#ifndef Udesk_h
+#define Udesk_h
 
-#import "UDManager.h"
+#import "UdeskManager.h"
 #import "UdeskChatViewController.h"
-#import "UdeskFaqController.h"
+#import "UdeskFAQViewController.h"
 #import "UdeskRobotIMViewController.h"
 #import "UdeskAgentNavigationMenu.h"
+
+#endif /* Udesk_h */

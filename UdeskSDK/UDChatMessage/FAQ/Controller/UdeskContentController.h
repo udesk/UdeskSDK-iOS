@@ -6,8 +6,9 @@
 //  Copyright (c) 2015年 xuchen. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-@interface UdeskContentController : UIViewController<UIWebViewDelegate>
+#import "UdeskBaseViewController.h"
+
+@interface UdeskContentController : UdeskBaseViewController<UIWebViewDelegate>
 
 /**
  *  文章ID

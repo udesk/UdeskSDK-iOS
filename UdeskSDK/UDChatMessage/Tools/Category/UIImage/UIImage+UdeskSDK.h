@@ -126,6 +126,13 @@
 + (UIImage *)ud_defaultVoiceRevokeImage;
 
 /**
+ *  提示语音过短图片
+ *
+ *  @return 短
+ */
++ (UIImage *)ud_defaultVoiceTooShortImage;
+
+/**
  *  导航栏左侧返回图片
  *
  *  @return 返回图片

@@ -38,7 +38,7 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.maxRecordTime = kVoiceRecorderTotalTime;
+        self.maxRecordTime = UdeskVoiceRecorderTotalTime;
         self.recordDuration = @"0";
 
     }
@@ -178,7 +178,15 @@
     _isPause = NO;
     [self stopRecord];
     [self getVoiceDuration:_recordPath];
-    dispatch_async(dispatch_get_main_queue(), stopRecorderCompletion);
+    if (self.currentTimeInterval>1.5f) {
+        dispatch_async(dispatch_get_main_queue(), stopRecorderCompletion);
+    }
+    else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.tooShortRecorderFailue();
+        });
+    }
+    
 }
 //取消录音
 - (void)cancelledDeleteWithCompletion:(UDCancellRecorderDeleteFileCompletion)cancelledDeleteCompletion {
@@ -241,6 +249,11 @@
     } else {
         self.recordDuration = [NSString stringWithFormat:@"%.f", play.duration];
     }
+}
+
+- (void)tooShortRecordWithFailue:(UDTooShortRecorderFailue)tooShortRecorderFailue {
+
+    _tooShortRecorderFailue = tooShortRecorderFailue;
 }
 
 @end

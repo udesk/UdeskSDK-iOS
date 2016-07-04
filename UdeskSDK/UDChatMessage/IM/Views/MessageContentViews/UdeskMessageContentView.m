@@ -8,15 +8,17 @@
 
 #import "UdeskMessageContentView.h"
 #import "UdeskMessageTextView.h"
+#import "UdeskMessageInputView.h"
 #import "UdeskMessageVoiceFactory.h"
 #import "UdeskGeneral.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskTools.h"
-#import "UdeskCache.h"
+#import "UdeskManager.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskAlertController.h"
 #import "UdeskUtils.h"
 #import "UdeskLabel.h"
+#import "UdeskProductView.h"
 
 #define kUDHaveBubbleMargin 10.0f // 距离气泡上下边的间隙
 
@@ -41,10 +43,10 @@
 // 计算文本实际的大小
 + (CGSize)neededSizeForText:(NSString *)text {
     
-    CGSize textSize = [UdeskGeneral.store textSize:text fontOfSize:[UIFont systemFontOfSize:Config.contentFontSize] ToSize:CGSizeMake(UD_SCREEN_WIDTH>320?235:180, CGFLOAT_MAX)];
+    CGSize textSize = [UdeskGeneral.store textSize:text fontOfSize:[UIFont systemFontOfSize:UdeskUIConfig.contentFontSize] ToSize:CGSizeMake(UD_SCREEN_WIDTH>320?235:180, CGFLOAT_MAX)];
     
-    float textfloat = [UdeskLabel getAttributedStringHeightWithString:text WidthValue:UD_SCREEN_WIDTH>320?235:180 delegate:nil font:[UIFont systemFontOfSize:Config.contentFontSize]];
-
+    float textfloat = [UdeskLabel getAttributedStringHeightWithString:text WidthValue:UD_SCREEN_WIDTH>320?235:180 delegate:nil font:[UIFont systemFontOfSize:UdeskUIConfig.contentFontSize]];
+    
     return CGSizeMake(textSize.width, textfloat);
 }
 
@@ -75,7 +77,7 @@
 + (CGSize)getBubbleFrameWithMessage:(UdeskMessage *)message {
     
     CGSize bubbleSize;
-
+    
     switch (message.messageType) {
         case UDMessageMediaTypeRich:
         case UDMessageMediaTypeText: {
@@ -102,10 +104,16 @@
             
             break;
         }
+        case UDMessageMediaTypeProduct: {
+            
+            bubbleSize = CGSizeMake(UD_SCREEN_WIDTH, 100);
+            
+            break;
+        }
             
         default:
             break;
-  
+            
     }
     
     return bubbleSize;
@@ -127,9 +135,9 @@
     }
     
     CGRect bubbleRect = CGRectMake(paddingX,kUDHaveBubbleMargin,bubbleSize.width,bubbleSize.height);
-
+    
     return bubbleRect;
-
+    
 }
 
 #pragma mark - Configure Methods
@@ -142,10 +150,11 @@
     [self configureBubbleImageView:message];
     //消息内容
     [self configureMessageDisplayMediaWithMessage:message];
-
+    
 }
 //消息类型展示的空间
 - (void)configureBubbleImageView:(UdeskMessage *)message {
+    
     
     if (message.messageFrom == UDMessageTypeSending) {
         
@@ -167,6 +176,14 @@
             [_indicatorView stopAnimating];
             _messageAgainButton.hidden = YES;
         }
+
+    }
+    else {
+        
+        //隐藏重发按钮，隐藏菊花
+        _indicatorView.hidden = YES;
+        [_indicatorView stopAnimating];
+        _messageAgainButton.hidden = YES;
     }
     
     switch (message.messageType) {
@@ -181,6 +198,8 @@
             _voiceDurationLabel.hidden = NO;
             //隐藏转接tag
             _redirectTagLabel.hidden = YES;
+            //非咨询对象消息隐藏
+            _productView.hidden = YES;
             
         }
         case UDMessageMediaTypeRich:
@@ -191,7 +210,7 @@
             _bubbleImageView.hidden = NO;
             // 隐藏图片
             _photoImageView.hidden = YES;
-
+            
             if (message.messageType == UDMessageMediaTypeText||message.messageType==UDMessageMediaTypeRich) {
                 //显示文本消息的控件
                 _textLabel.hidden = NO;
@@ -201,6 +220,8 @@
                 _voiceDurationLabel.hidden = YES;
                 //隐藏转接tag
                 _redirectTagLabel.hidden = YES;
+                //非咨询对象消息隐藏
+                _productView.hidden = YES;
                 
             } else {
                 //隐藏文本消息的控件
@@ -223,7 +244,9 @@
                 
                 //隐藏转接tag
                 _redirectTagLabel.hidden = YES;
-
+                //非咨询对象消息隐藏
+                _productView.hidden = YES;
+                
             }
             
             break;
@@ -242,11 +265,13 @@
             
             //隐藏转接tag
             _redirectTagLabel.hidden = YES;
+            //非咨询对象消息隐藏
+            _productView.hidden = YES;
             
             break;
         }
         case UDMessageMediaTypeRedirect: {
-        
+            
             // 显示图片
             _photoImageView.hidden = YES;
             //隐藏其它控件
@@ -261,13 +286,37 @@
             
             //隐藏转接tag
             _redirectTagLabel.hidden = NO;
+            //非咨询对象消息隐藏
+            _productView.hidden = YES;
+            
+            break;
+        }
+        case UDMessageMediaTypeProduct: {
+            
+            // 显示图片
+            _photoImageView.hidden = YES;
+            //隐藏其它控件
+            _textLabel.hidden = YES;
+            //显示图片气泡
+            _bubbleImageView.hidden = YES;
+            //隐藏语音播放动画
+            _animationVoiceImageView.hidden = YES;
+            
+            //隐藏转接tag
+            _redirectTagLabel.hidden = YES;
+            
+            //隐藏转接tag
+            _redirectTagLabel.hidden = YES;
+            
+            _productView.hidden = NO;
             
             break;
         }
             
+            
         default:
             break;
-   
+            
     }
 }
 //设置内容
@@ -276,17 +325,17 @@
     if (message.messageType == UDMessageMediaTypeText) {
         
         if (message.messageFrom == UDMessageTypeSending) {
-            _textLabel.textColor = Config.userTextColor;
+            _textLabel.textColor = UdeskUIConfig.userTextColor;
         }
         else if (message.messageFrom == UDMessageTypeReceiving) {
-            _textLabel.textColor = Config.agentTextColor;
+            _textLabel.textColor = UdeskUIConfig.agentTextColor;
         }
         _textLabel.text = message.text;
-
+        
     }
     else if (message.messageType == UDMessageMediaTypePhoto) {
         
-        [[UdeskCache sharedUDCache] queryDiskCacheForKey:message.contentId done:^(UIImage *image, UDImageCacheType cacheType) {
+        [UdeskManager queryDiskCacheForKey:message.contentId done:^(UIImage *image) {
             
             if (image) {
                 
@@ -294,7 +343,7 @@
                 _photoImageView.image = image;
             }
             else {
-            
+                
                 NSString *newURL = [message.photoUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                 NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:newURL]];
                 
@@ -308,36 +357,40 @@
                             _photoImageView.image = [UIImage imageWithData:data];
                         });
                         
-                        [[UdeskCache sharedUDCache] storeImage:_photoImageView.image forKey:message.contentId];
+                        [UdeskManager storeImage:_photoImageView.image forKey:message.contentId];
                     }
                     
                 }];
                 
                 [dataTask resume];
             }
-         
+            
         }];
-    
+        
     }
     else if (message.messageType == UDMessageMediaTypeVoice) {
         _voiceDurationLabel.text = [NSString stringWithFormat:@"%@\'\'", message.voiceDuration];
     }
     else if (message.messageType == UDMessageMediaTypeRedirect) {
-    
+        
         _redirectTagLabel.text = message.text;
     }
     else if (message.messageType == UDMessageMediaTypeRich) {
         
-        _textLabel.textColor = Config.agentTextColor;
+        _textLabel.textColor = UdeskUIConfig.agentTextColor;
         
         _textLabel.text = message.text;
         if (message.richURLDictionary.count>0) {
-
+            
             for (NSString *richContent in message.richArray) {
                 
                 [_textLabel.matchArray addObject:richContent];
             }
         }
+    }
+    else if (message.messageType == UDMessageMediaTypeProduct) {
+        
+        [_productView shouldUpdateProductViewWithObject:message];
     }
     
     [self setNeedsLayout];
@@ -348,10 +401,10 @@
     NSString *httpUrl = context;
     
     if (self.message.messageType == UDMessageMediaTypeRich) {
-
+        
         httpUrl = [self.message.richURLDictionary objectForKey:context];
     }
-        
+    
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:httpUrl]];
     
 }
@@ -372,7 +425,7 @@
 }
 
 - (void)configureMessageSendLoadingFrame:(CGRect)bubbleFrame {
-
+    
     CGRect indicatorViewFrame = _indicatorView.frame;
     indicatorViewFrame.origin.x =  bubbleFrame.origin.x - 15;
     indicatorViewFrame.origin.y = CGRectGetMidY(bubbleFrame);
@@ -391,7 +444,6 @@
         // 1、初始化气泡的背景
         if (!_bubbleImageView) {
             UIImageView *bubbleImageView = [[UIImageView alloc] init];
-            bubbleImageView.backgroundColor = [UIColor clearColor];
             bubbleImageView.frame = self.bounds;
             bubbleImageView.userInteractionEnabled = YES;
             [self addSubview:bubbleImageView];
@@ -404,7 +456,7 @@
             textLabel.backgroundColor = [UIColor clearColor];
             textLabel.numberOfLines = 0;
             textLabel.udLabelDelegate = self;
-            textLabel.font = [UIFont systemFontOfSize:Config.contentFontSize];
+            textLabel.font = [UIFont systemFontOfSize:UdeskUIConfig.contentFontSize];
             [self addSubview:textLabel];
             _textLabel = textLabel;
             
@@ -413,9 +465,9 @@
         // 3、初始化显示图片的控件
         if (!_photoImageView) {
             UIImageView *photoImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-            photoImageView.backgroundColor = [UIColor clearColor];
-            photoImageView.userInteractionEnabled = YES;
+            
             [self addSubview:photoImageView];
+            photoImageView.userInteractionEnabled = YES;
             _photoImageView = photoImageView;
             
         }
@@ -453,6 +505,7 @@
             
         }
         
+        //转移
         if (!_redirectTagLabel) {
             UILabel *redirectTagLabel = [[UILabel alloc] initWithFrame:CGRectZero];
             redirectTagLabel.textColor = [UIColor lightGrayColor];
@@ -462,7 +515,17 @@
             [self addSubview:redirectTagLabel];
             _redirectTagLabel = redirectTagLabel;
         }
-
+        
+        //咨询对象
+        if (!_productView) {
+            
+            UdeskProductView *productView = [[UdeskProductView alloc] initWithFrame:CGRectZero];
+            productView.backgroundColor = [UIColor whiteColor];
+            [self addSubview:productView];
+            _productView = productView;
+            
+        }
+        
     }
     return self;
 }
@@ -479,7 +542,7 @@
             self.indicatorView.hidden = NO;
             [self.indicatorView startAnimating];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:ClickResendMessage object:nil userInfo:@{@"failedMessage":self.message}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:UdeskClickResendMessage object:nil userInfo:@{@"failedMessage":self.message}];
             
         }
         else {
@@ -489,7 +552,7 @@
             [notNetWork showWithSender:nil controller:nil animated:YES completion:NULL];
             
         }
-
+        
     }]];
     
     [againMsgController showWithSender:nil controller:nil animated:YES completion:NULL];
@@ -555,12 +618,18 @@
             self.photoImageView.frame = photoImageViewFrame;
             
             [self configureMessageSendLoadingFrame:bubbleFrame];
-
+            
             break;
         }
         case UDMessageMediaTypeRedirect: {
-        
+            
             _redirectTagLabel.frame = [self bubbleFrame];
+            
+            break;
+        }
+        case UDMessageMediaTypeProduct: {
+            
+            _productView.frame = CGRectMake(10, 10, UD_SCREEN_WIDTH-20, 100);
             
             break;
         }

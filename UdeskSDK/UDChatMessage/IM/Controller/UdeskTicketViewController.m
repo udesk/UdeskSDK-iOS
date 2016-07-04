@@ -7,7 +7,7 @@
 //
 
 #import "UdeskTicketViewController.h"
-#import "UDManager.h"
+#import "UdeskManager.h"
 #import "UdeskUtils.h"
 #import "UdeskTools.h"
 #import "UdeskFoundationMacro.h"
@@ -21,41 +21,40 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
 
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.title = getUDLocalizedString(@"提交问题");
+    [self.udNavView changeTitle:getUDLocalizedString(@"提交问题")];
     
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:Config.ticketTitleColor}];
-    
-    NSString *key = [UDManager key];
-    NSString *domain = [UDManager domain];
+    NSString *key = [UdeskManager key];
+    NSString *domain = [UdeskManager domain];
     
     if (![UdeskTools isBlankString:key]||[UdeskTools isBlankString:domain]) {
         
-        _ticketWebView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+        CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
+        _ticketWebView = [[UIWebView alloc] initWithFrame:webViewRect];
         _ticketWebView.backgroundColor=[UIColor whiteColor];
         
-        NSURL *ticketURL = [UDManager getSubmitTicketURL];
+        NSURL *ticketURL = [UdeskManager getSubmitTicketURL];
         
         [_ticketWebView loadRequest:[NSURLRequest requestWithURL:ticketURL]];
         
         [self.view addSubview:_ticketWebView];
         
         [_ticketWebView stringByEvaluatingJavaScriptFromString:@"ticketCallBack()"];
-
     }
 
+}
+
+- (void)backButtonAction {
+
+    [super backButtonAction];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     [self.navigationController popViewControllerAnimated:YES];
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -63,9 +62,9 @@
     [super viewWillDisappear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     }
 }
 
@@ -74,13 +73,17 @@
     [super viewWillAppear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.ticketNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.ticketNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.ticketNavigationColor;
-        self.navigationController.navigationBar.tintColor = Config.ticketBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.ticketNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.ticketBackButtonColor;
     }
     
 }
 
+- (void)dealloc
+{
+    NSLog(@"%@销毁了",[self class]);
+}
 
 @end

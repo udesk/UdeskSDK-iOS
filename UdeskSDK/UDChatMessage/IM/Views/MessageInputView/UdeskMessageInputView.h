@@ -121,7 +121,7 @@
  */
 @property (nonatomic, weak) UIButton *holdDownButton;
 
-@property (nonatomic, assign) NSInteger agentCode;
+@property (nonatomic, strong) NSNumber *agentCode;
 
 /**
  *  在切换语音和文本消息的时候，需要保存原本已经输入的文本，这样达到一个好的UE

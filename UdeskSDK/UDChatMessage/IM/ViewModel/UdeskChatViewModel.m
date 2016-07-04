@@ -7,12 +7,10 @@
 //
 
 #import "UdeskChatViewModel.h"
-#import "UdeskReceiveMessage.h"
 #import "UdeskAgentModel.h"
 #import "NSTimer+UdeskSDK.h"
 #import "UdeskTools.h"
 #import "UdeskAlertController.h"
-#import "UdeskCache.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskUtils.h"
 #import "NSArray+UdeskSDK.h"
@@ -20,9 +18,20 @@
 #import "UdeskAgentHttpData.h"
 #import "UdeskReachability.h"
 #import "UdeskDateFormatter.h"
-#import "UDManager.h"
+#import "UdeskManager.h"
 
-@interface UdeskChatViewModel()<UDManagerDelegate>
+//DB-Insert
+#define InsertTextMsg [NSString stringWithFormat:@"insert into %@ ('content','replied_at','msgid','sendflag','direction','mesType') values(?,?,?,?,?,?)",UD_Message_DB]
+
+#define InsertAudioMsg [NSString stringWithFormat:@"insert into %@ ('content','replied_at','msgid','sendflag','direction','mesType','duration') values(?,?,?,?,?,?,?)",UD_Message_DB]
+
+#define InsertPhotoMsg [NSString stringWithFormat:@"insert into %@ ('content','replied_at','msgid','sendflag','direction','mesType','width','height') values(?,?,?,?,?,?,?,?)",UD_Message_DB]
+
+@interface UdeskChatViewModel()<UDManagerDelegate> {
+
+    UdeskMessage *_productMessage;
+    UdeskAlertController *_optionsAlert;
+}
 
 @property (nonatomic, strong,readwrite) NSMutableArray    *messageArray;//消息数据
 @property (nonatomic, strong,readwrite) NSMutableArray    *failedMessageArray;//发送失败的消息
@@ -30,6 +39,7 @@
 @property (nonatomic, assign          ) NSInteger         message_number;//消息数
 @property (nonatomic, strong          ) NSString          *agent_id;//客服id
 @property (nonatomic, strong          ) NSString          *group_id;//客服组id
+@property (nonatomic, strong          ) UdeskMessage      *productMessage;
 @property (nonatomic                  ) UdeskReachability *reachability;
 
 @end
@@ -47,26 +57,26 @@
         self.messageArray = [NSMutableArray array];
         self.failedMessageArray = [NSMutableArray array];
         
-        [UDManager receiveUdeskDelegate:self];
+        [UdeskManager receiveUdeskDelegate:self];
         
         @udWeakify(self);
         //获取db消息
         [self requestDataBaseMessageContent];
         
         //获取客户信息
-        [UDManager createServerCustomer:^(id responseObject) {
+        [UdeskManager createServerCustomer:^(id responseObject) {
             
-            @udStrongify(self);
-            //提交设备信息
-            [self submitCustomerDevicesInfo];
-            //请求客服数据
-            [self requestAgentWithAgentId:agent_id withGroupId:group_id];
+            [UdeskManager submitCustomerDevicesInfo:^(id responseObject, NSError *error) {
+                NSLog(@"设备信息提交成功");
+                @udStrongify(self);
+                //请求客服数据
+                [self requestAgentWithAgentId:agent_id withGroupId:group_id];
+            }];
             
         } failure:^(NSError *error) {
             
             NSLog(@"用户信息获取失败：%@",error);
         }];
-        
         
         //网络监测
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kUdeskReachabilityChangedNotification object:nil];
@@ -102,7 +112,7 @@
             @udStrongify(self);
             self.netWorkChange = YES;
             self.agentModel.message = @"网络断开连接了";
-            self.agentModel.code = 2003;
+            self.agentModel.code = @2003;
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 
@@ -121,7 +131,7 @@
 - (void)requestDataBaseMessageContent {
 
     //获取db条数
-    NSInteger messageContent = [UDManager dbMessageCount];
+    NSInteger messageContent = [UdeskManager dbMessageCount];
     
     self.message_count = messageContent;
     self.message_total_pages = messageContent;
@@ -129,17 +139,17 @@
     NSString *sql;
     if (self.message_total_pages<20) {
         
-        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%ld",MessageDB,(long)self.message_number,(long)self.message_total_pages];
+        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%ld",UD_Message_DB,(long)self.message_number,(long)self.message_total_pages];
     }
     else {
         
-        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%d",MessageDB,(long)self.message_number,20];
+        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%d",UD_Message_DB,(long)self.message_number,20];
         self.message_total_pages-=20;
         self.message_number += 20;
     }
     
     //查询db数据
-    NSArray *dbArray = [UDManager queryTabelWithSqlString:sql params:nil];
+    NSArray *dbArray = [UdeskManager queryTabelWithSqlString:sql params:nil];
     
     for (NSDictionary *dbMessage in dbArray) {
         
@@ -157,17 +167,17 @@
     NSString *sql;
     if (self.message_total_pages<20) {
         
-        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%ld",MessageDB,(long)self.message_number,(long)self.message_total_pages];
+        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%ld",UD_Message_DB,(long)self.message_number,(long)self.message_total_pages];
     }
     else {
         
-        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%d",MessageDB,(long)self.message_number,20];
+        sql = [NSString stringWithFormat:@"select *from %@ order by replied_at desc Limit %ld,%d",UD_Message_DB,(long)self.message_number,20];
         self.message_total_pages-=20;
         self.message_number += 20;
 
     }
     
-    NSArray *dbArray = [UDManager queryTabelWithSqlString:sql params:nil];
+    NSArray *dbArray = [UdeskManager queryTabelWithSqlString:sql params:nil];
     for (NSDictionary *dbMoreMessage in dbArray) {
         [self.messageArray insertObject:[self ud_modelWithDictionary:dbMoreMessage] atIndex:0];
     }
@@ -224,11 +234,16 @@
     [UdeskAgentHttpData sharedAgentHttpData].stopRequest = YES;
 }
 
+- (void)requestQueue {
+
+    [UdeskAgentHttpData sharedAgentHttpData].stopRequest = NO;
+}
+
 #pragma mark - 获取用户登录信息
 - (void)requestCustomerLoginInfo {
 
     @udWeakify(self);
-    [UDManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
+    [UdeskManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
         
         //登录Udesk
         @udStrongify(self);
@@ -237,54 +252,53 @@
 
 }
 
-#pragma mark - 提交设备信息
-- (void)submitCustomerDevicesInfo {
-
-    //提交设备信息
-    [UDManager submitCustomerDevicesInfo:^(id responseObject, NSError *error) {
-        
-        NSLog(@"设备信息提交成功");
-    }];
-}
-
 #pragma mark - 登录Udesk
-- (void)loginUdeskWithAgentCode:(NSInteger)code {
+- (void)loginUdeskWithAgentCode:(NSNumber *)code {
 
-    if (code != 2000 && code != 2001) {
+    if (code.integerValue != 2000 && code.integerValue != 2001) {
         
         [self showAlertViewWithAgentCode:code];
         return;
     }
     //只有客服在线才登录
-    if (code == 2000) {
+    if (code.integerValue == 2000) {
+        
+        [self sendProductMessage];
         //登录
-        [UDManager loginUdesk:^(BOOL status) {
-            
+        @udWeakify(self);
+        [UdeskManager loginUdesk:^(BOOL status) {
             NSLog(@"登录Udesk成功");
+            @udStrongify(self);
+            [self sendProductMessage];
         }];
         
     }
 }
 
 #pragma mark - UDManagerDelegate
-- (void)didReceiveMessages:(NSDictionary *)message {
+- (void)didReceiveMessages:(id )message {
     
-    NSDictionary *messageDict = (NSDictionary *)[UdeskTools dictionaryWithJsonString:[message objectForKey:@"strContent"]];
-    
-    @udWeakify(self);
-    [UdeskReceiveMessage ud_modelWithDictionary:messageDict completion:^(UdeskMessage *message) {
+    if ([message isKindOfClass:[UdeskMessage class]]) {
         
-        //刷新UI
-        @udStrongify(self);
-        [self.messageArray addObject:message];
+        UdeskMessage *newMessage = (UdeskMessage *)message;
+        
+        if (newMessage.messageType == UDMessageMediaTypeText) {
+            newMessage.text = [UdeskTools receiveTextEmoji:newMessage.text];
+        }
+        if (newMessage.messageType == UDMessageMediaTypeRich) {
+            newMessage = [self modelWithRich:newMessage];
+        }
+        
+        [self.messageArray addObject:newMessage];
         [self updateContent];
+    }
+    else if ([message isKindOfClass:[NSDictionary class]]) {
+    
+        NSDictionary *newMessage = (NSDictionary *)message;
+        UdeskAgentModel *agentModel = [[UdeskAgentModel alloc] initWithContentsOfDic:newMessage];
         
-    } redirectAgent:^(UdeskAgentModel *agentModel) {
-        
-        //把获取到的新客服回调给vc
-        @udStrongify(self);
         [self callbackAgentModel:agentModel];
-    }];
+    }
     
 }
 //接收客服状态
@@ -306,9 +320,9 @@
     }
     
     //与上次不同的code才抛给vc
-    if (self.agentModel.code != agentCode) {
+    if (self.agentModel.code.integerValue != agentCode) {
         
-        self.agentModel.code = agentCode;
+        self.agentModel.code = [NSNumber numberWithInteger:agentCode];
         self.agentModel.message = agentMessage;
         [self callbackAgentModel:self.agentModel];
     }
@@ -318,40 +332,48 @@
 //接收客服发送的满意度调查
 - (void)didReceiveSurvey:(NSString *)isSurvey withAgentId:(NSString *)agentId {
     
-    //客服发送满意度调查
-    if ([isSurvey isEqualToString:@"true"]) {
+    if (_optionsAlert==nil) {
         
-        [UDManager getSurveyOptions:^(id responseObject, NSError *error) {
-            //解析数据
-            NSDictionary *result = [responseObject objectForKey:@"result"];
-            NSString *title = [result objectForKey:@"title"];
-            NSString *desc = [result objectForKey:@"desc"];
-            NSArray *options = [result objectForKey:@"options"];
+        //客服发送满意度调查
+        if ([isSurvey isEqualToString:@"true"]) {
             
-            if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
-                //根据返回的信息填充Alert数据
-                UdeskAlertController *optionsAlert = [UdeskAlertController alertWithTitle:title message:desc];
-                [optionsAlert addCloseActionWithTitle:@"关闭" Handler:NULL];
-                //遍历选项数组
-                for (NSDictionary *option in options) {
-                    //依次添加选项
-                    [optionsAlert addAction:[UdeskAlertAction actionWithTitle:[option objectForKey:@"text"] handler:^(UdeskAlertAction * _Nonnull action) {
-                        //根据点击的选项 提交到Udesk
-                        [UDManager survetVoteWithAgentId:agentId withOptionId:[option objectForKey:@"id"] completion:^(id responseObject, NSError *error) {
+            [UdeskManager getSurveyOptions:^(id responseObject, NSError *error) {
+                //解析数据
+                NSDictionary *result = [responseObject objectForKey:@"result"];
+                NSString *title = [result objectForKey:@"title"];
+                NSString *desc = [result objectForKey:@"desc"];
+                NSArray *options = [result objectForKey:@"options"];
+                
+                if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+                    //根据返回的信息填充Alert数据
+                    _optionsAlert = [UdeskAlertController alertWithTitle:title message:desc];
+                    [_optionsAlert addCloseActionWithTitle:@"关闭" Handler:^(UdeskAlertAction * _Nonnull action) {
+                        _optionsAlert = nil;
+                    }];
+                    //遍历选项数组
+                    for (NSDictionary *option in options) {
+                        //依次添加选项
+                        [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:[option objectForKey:@"text"] handler:^(UdeskAlertAction * _Nonnull action) {
                             
-                            //评价提交成功Alert
-                            [self surveyCompletion];
+                            _optionsAlert = nil;
+                            //根据点击的选项 提交到Udesk
+                            [UdeskManager survetVoteWithAgentId:agentId withOptionId:[option objectForKey:@"id"] completion:^(id responseObject, NSError *error) {
+                                
+                                //评价提交成功Alert
+                                [self surveyCompletion];
+                                
+                            }];
                             
-                        }];
-                        
-                    }]];
+                        }]];
+                    }
+                    //展示Alert
+                    [_optionsAlert showWithSender:nil controller:nil animated:YES completion:NULL];
                 }
-                //展示Alert
-                [optionsAlert showWithSender:nil controller:nil animated:YES completion:NULL];
-            }
-            
-        }];
+                
+            }];
+        }
     }
+    
 }
 //评价提交成功Alert
 - (void)surveyCompletion {
@@ -366,7 +388,7 @@
 - (void)sendTextMessage:(NSString *)text
              completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
     
-    if (_agentModel.code != 2000) {
+    if (_agentModel.code.integerValue != 2000) {
         
         [self showAlertViewWithAgentCode:_agentModel.code];
         
@@ -391,14 +413,8 @@
     //通知刷新UI
     [self updateContent];
     
-    NSString *dateString = [[UdeskDateFormatter sharedFormatter].dateFormatter stringFromDate:date];
-    
-    NSArray *array = @[text,dateString,textMessage.contentId,@"0",@"0",@"0"];
-    
-    [UDManager insertTableWithSqlString:InsertTextMsg params:array];
-    
     //发送消息 callback发送状态和消息体
-    [UDManager sendMessage:textMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
+    [UdeskManager sendMessage:textMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
         
         if (completion) {
             completion(message,sendStatus);
@@ -412,16 +428,12 @@
 - (void)sendImageMessage:(UIImage *)image
               completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
 
-    if (_agentModel.code != 2000) {
+    if (_agentModel.code.integerValue != 2000) {
         
         [self showAlertViewWithAgentCode:_agentModel.code];
         
         return;
     }
-    
-    //限制图片的size
-    NSString *newWidth = [NSString stringWithFormat:@"%f",[UdeskTools setImageSize:image].width];
-    NSString *newHeight = [NSString stringWithFormat:@"%f",[UdeskTools setImageSize:image].height];
     
     NSDate *date = [NSDate date];
     //大于1M的照片需要压缩
@@ -432,24 +444,13 @@
     
     UdeskMessage *photoMessage = [[UdeskMessage alloc] initWithPhoto:image timestamp:date];
     photoMessage.agent_jid = _agentModel.jid;
-    photoMessage.width = newWidth;
-    photoMessage.height = newHeight;
     
     [self.messageArray addObject:photoMessage];
     //通知刷新UI
     [self updateContent];
     
-    //缓存图片
-    [[UdeskCache sharedUDCache] storeImage:photoMessage.photo forKey:photoMessage.contentId];
-    
-    NSString *dateString = [[UdeskDateFormatter sharedFormatter].dateFormatter stringFromDate:date];
-    //存储
-    NSArray *array = @[@"image",dateString,photoMessage.contentId,@"0",@"0",@"1",newWidth,newHeight];
-    
-    [UDManager insertTableWithSqlString:InsertPhotoMsg params:array];
-    
     //发送消息 callback发送状态和消息体
-    [UDManager sendMessage:photoMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
+    [UdeskManager sendMessage:photoMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
         
         if (completion) {
             completion(message,sendStatus);
@@ -463,7 +464,7 @@
            audioDuration:(NSString *)audioDuration
               completion:(void (^)(UdeskMessage *, BOOL sendStatus))comletion {
     
-    if (_agentModel.code != 2000) {
+    if (_agentModel.code.integerValue != 2000) {
         
         [self showAlertViewWithAgentCode:_agentModel.code];
         
@@ -479,19 +480,8 @@
     //通知刷新UI
     [self updateContent];
     
-    NSString *dateString = [[UdeskDateFormatter sharedFormatter].dateFormatter stringFromDate:date];
-    
-    NSArray *array = @[audioPath,dateString,voiceMessage.contentId,@"0",@"0",@"2",audioDuration];
-    
-    [UDManager insertTableWithSqlString:InsertAudioMsg params:array];
-    
-    NSData *voiceData = [NSData dataWithContentsOfFile:audioPath];
-    
-    //缓存语音
-    [[UdeskCache sharedUDCache] storeData:voiceData forKey:voiceMessage.contentId];
-    
     //发送消息 callback发送状态和消息体
-    [UDManager sendMessage:voiceMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
+    [UdeskManager sendMessage:voiceMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
         
         if (comletion) {
             comletion(message,sendStatus);
@@ -567,9 +557,49 @@
 //未知错误
 - (void)notConnected {
     
-    UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertWithTitle:nil message:@"连接Udesk失败,请查看控制台LOG"];
+    UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertWithTitle:nil message:@"正在连接，请稍后..."];
     [notExistAgentAlert addCloseActionWithTitle:@"确定" Handler:NULL];
     [notExistAgentAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+}
+
+- (UdeskMessage *)modelWithRich:(UdeskMessage *)message {
+
+    NSData *htmlData = [message.text dataUsingEncoding:NSUTF8StringEncoding];
+    UdeskHpple *xpathParser = [[UdeskHpple alloc] initWithHTMLData:htmlData];
+    
+    NSArray *dataPArray = [xpathParser searchWithXPathQuery:@"//p"];
+    NSArray *dataAArray = [xpathParser searchWithXPathQuery:@"//a"];
+    
+    NSString *newText;
+    for (UdeskHppleElement *happleElement in dataPArray) {
+        
+        if ([UdeskTools isBlankString:newText]) {
+            newText = happleElement.content;
+        }
+        else {
+            
+            newText = [newText stringByAppendingString:[NSString stringWithFormat:@"\n%@",happleElement.content]];
+        }
+        
+    }
+    
+    message.text = newText;
+    
+    NSMutableDictionary *richURLDictionary = [NSMutableDictionary dictionary];
+    NSMutableArray *richContetnArray = [NSMutableArray array];
+    
+    for (UdeskHppleElement *happleElement in dataAArray) {
+        
+        [richURLDictionary setObject:[NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]] forKey:happleElement.content];
+        [richContetnArray addObject:happleElement.content];
+        
+        message.richArray = [NSArray arrayWithArray:richContetnArray];
+        
+        message.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
+        
+    }
+
+    return message;
 }
 
 //NSDictionary转model
@@ -661,20 +691,20 @@
 }
 
 //根据客服code展示alertview
-- (void)showAlertViewWithAgentCode:(NSInteger)code {
+- (void)showAlertViewWithAgentCode:(NSNumber *)code {
 
-    if (code == 2002) {
+    if (code.integerValue == 2002) {
         
         [self agentNotOnline];
     }
-    else if (code == 2003) {
+    else if (code.integerValue == 2003) {
         
         [self netWorkDisconnectAlertView];
     }
-    else if (code == 2001) {
+    else if (code.integerValue == 2001) {
         [self queueStatus];
     }
-    else if (code == 5050||code == 5060) {
+    else if (code.integerValue == 5050||code.integerValue == 5060) {
         
         [self notExistAgent];
     }
@@ -735,7 +765,7 @@
             
         } else {
             
-            [UDManager sendMessage:resendMessage completion:^(UdeskMessage *message, BOOL sendStatus) {
+            [UdeskManager sendMessage:resendMessage completion:^(UdeskMessage *message, BOOL sendStatus) {
                 
                 if (completion) {
                     completion(message,sendStatus);
@@ -763,6 +793,22 @@
 {
     NSLog(@"%@销毁了",[self class]);
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUdeskReachabilityChangedNotification object:nil];
+}
+
+- (void)saveProductMessage:(UdeskMessage *)message {
+
+    _productMessage = message;
+    //添加到数组，并刷新
+    [self.messageArray addObject:message];
+    [self updateContent];
+}
+
+- (void)sendProductMessage {
+
+    if (self.productMessage) {
+        self.productMessage.agent_jid = self.agentModel.jid;
+        [UdeskManager sendMessage:self.productMessage completion:nil];
+    }
 }
 
 @end

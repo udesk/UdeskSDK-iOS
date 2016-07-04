@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface UdeskConfig : NSObject
 
@@ -102,10 +103,6 @@
 
 /*** 客服菜单选择器导航栏颜色 */
 @property (nonatomic, strong) UIColor  *agentMenuTitleColor;
-/**
- *  用户头像
- */
-@property (nonatomic, strong) UIImage *headImage;
 
 + (instancetype)sharedUDConfig;
 

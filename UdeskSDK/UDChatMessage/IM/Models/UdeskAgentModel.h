@@ -23,7 +23,7 @@
 @property (nonatomic, copy  ) NSString  *message;
 
 /*** 客服状态code */
-@property (nonatomic, assign) NSInteger code;
+@property (nonatomic, strong) NSNumber  *code;
 
 
 @end

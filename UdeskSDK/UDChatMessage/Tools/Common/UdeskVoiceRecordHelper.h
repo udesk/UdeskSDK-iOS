@@ -11,6 +11,7 @@
 typedef BOOL(^UDPrepareRecorderCompletion)();
 typedef void(^UDStartRecorderCompletion)();
 typedef void(^UDStopRecorderCompletion)();
+typedef void(^UDTooShortRecorderFailue)();
 typedef void(^UDPauseRecorderCompletion)();
 typedef void(^UDResumeRecorderCompletion)();
 typedef void(^UDCancellRecorderDeleteFileCompletion)();
@@ -23,6 +24,10 @@ typedef void(^UDPeakPowerForChannel)(float peakPowerForChannel);
  *  录音到最大时长callback结束录音
  */
 @property (nonatomic, copy) UDStopRecorderCompletion maxTimeStopRecorderCompletion;
+/**
+ *  时间太短
+ */
+@property (nonatomic, copy) UDTooShortRecorderFailue tooShortRecorderFailue;
 /**
  *  录音进度callback
  */
@@ -84,5 +89,11 @@ typedef void(^UDPeakPowerForChannel)(float peakPowerForChannel);
  *  @param cancelledDeleteCompletion 取消callback
  */
 - (void)cancelledDeleteWithCompletion:(UDCancellRecorderDeleteFileCompletion)cancelledDeleteCompletion;
+/**
+ *  录音失败
+ *
+ *  @param tooShortRecorderFailue tooShortRecorderFailue
+ */
+- (void)tooShortRecordWithFailue:(UDTooShortRecorderFailue)tooShortRecorderFailue;
 
 @end

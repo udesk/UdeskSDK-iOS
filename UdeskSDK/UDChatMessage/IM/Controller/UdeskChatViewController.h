@@ -6,9 +6,9 @@
 //  Copyright (c) 2015年 xuchen. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "UdeskBaseViewController.h"
 
-@interface UdeskChatViewController : UIViewController
+@interface UdeskChatViewController : UdeskBaseViewController
 /**
  *  客服组id
  */
@@ -17,5 +17,12 @@
  *  客服id
  */
 @property (nonatomic, strong) NSString             *agent_id;
+
+/**
+ *  展示咨询对象
+ *
+ *  @param productDic 咨询对象信息
+ */
+- (void)showProductViewWithDictionary:(NSDictionary *)productDic;
 
 @end

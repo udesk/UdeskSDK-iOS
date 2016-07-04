@@ -7,66 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		442650681D02DE44008358DE /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 442650671D02DE44008358DE /* libUdesk.a */; };
 		4440A1AB1C9A829400610BA8 /* UdeskTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4440A1AA1C9A829400610BA8 /* UdeskTableViewController.m */; };
 		4440A1AD1C9A8DD400610BA8 /* udesk.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4440A1AC1C9A8DD400610BA8 /* udesk.jpg */; };
-		444298B91D029CFC003DD77B /* UdeskBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4442982F1D029CFC003DD77B /* UdeskBundle.bundle */; };
-		444298BA1D029CFC003DD77B /* UdeskContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298341D029CFC003DD77B /* UdeskContentController.m */; };
-		444298BB1D029CFC003DD77B /* UdeskFaqController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298361D029CFC003DD77B /* UdeskFaqController.m */; };
-		444298BC1D029CFC003DD77B /* UdeskSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298381D029CFC003DD77B /* UdeskSearchController.m */; };
-		444298BD1D029CFC003DD77B /* UdeskProblemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442983B1D029CFC003DD77B /* UdeskProblemModel.m */; };
-		444298BE1D029CFC003DD77B /* UdeskAgentNavigationMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442983F1D029CFC003DD77B /* UdeskAgentNavigationMenu.m */; };
-		444298BF1D029CFC003DD77B /* UdeskChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298411D029CFC003DD77B /* UdeskChatViewController.m */; };
-		444298C01D029CFC003DD77B /* UdeskRobotIMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298431D029CFC003DD77B /* UdeskRobotIMViewController.m */; };
-		444298C11D029CFC003DD77B /* UdeskTicketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298451D029CFC003DD77B /* UdeskTicketViewController.m */; };
-		444298C21D029CFC003DD77B /* UdeskAgentHttpData.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298481D029CFC003DD77B /* UdeskAgentHttpData.m */; };
-		444298C31D029CFC003DD77B /* UdeskAgentMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442984A1D029CFC003DD77B /* UdeskAgentMenuModel.m */; };
-		444298C41D029CFC003DD77B /* UdeskAgentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442984C1D029CFC003DD77B /* UdeskAgentModel.m */; };
-		444298C51D029CFC003DD77B /* UdeskMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442984E1D029CFC003DD77B /* UdeskMessage.m */; };
-		444298C61D029CFC003DD77B /* UdeskReceiveMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298501D029CFC003DD77B /* UdeskReceiveMessage.m */; };
-		444298C71D029CFC003DD77B /* UdeskChatViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298531D029CFC003DD77B /* UdeskChatViewModel.m */; };
-		444298C81D029CFC003DD77B /* UdeskAgentStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298571D029CFC003DD77B /* UdeskAgentStatusView.m */; };
-		444298C91D029CFC003DD77B /* UdeskMessageContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442985A1D029CFC003DD77B /* UdeskMessageContentView.m */; };
-		444298CA1D029CFC003DD77B /* UdeskMessageTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442985C1D029CFC003DD77B /* UdeskMessageTableView.m */; };
-		444298CB1D029CFC003DD77B /* UdeskMessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442985E1D029CFC003DD77B /* UdeskMessageTableViewCell.m */; };
-		444298CC1D029CFC003DD77B /* UdeskEmotionManagerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298611D029CFC003DD77B /* UdeskEmotionManagerView.m */; };
-		444298CD1D029CFC003DD77B /* UdeskMessageInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298641D029CFC003DD77B /* UdeskMessageInputView.m */; };
-		444298CE1D029CFC003DD77B /* UdeskMessageTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298661D029CFC003DD77B /* UdeskMessageTextView.m */; };
-		444298CF1D029CFC003DD77B /* UdeskVoiceRecordHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298681D029CFC003DD77B /* UdeskVoiceRecordHUD.m */; };
-		444298D01D029CFC003DD77B /* NSArray+UdeskSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442986D1D029CFC003DD77B /* NSArray+UdeskSDK.m */; };
-		444298D11D029CFC003DD77B /* NSTimer+UdeskSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298701D029CFC003DD77B /* NSTimer+UdeskSDK.m */; };
-		444298D21D029CFC003DD77B /* UIImage+UdeskSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298731D029CFC003DD77B /* UIImage+UdeskSDK.m */; };
-		444298D31D029CFC003DD77B /* UIViewController+UdeskKeyboardAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298761D029CFC003DD77B /* UIViewController+UdeskKeyboardAnimation.m */; };
-		444298D41D029CFC003DD77B /* UdeskAudioPlayerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298791D029CFC003DD77B /* UdeskAudioPlayerHelper.m */; };
-		444298D51D029CFC003DD77B /* UdeskBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442987B1D029CFC003DD77B /* UdeskBaseModel.m */; };
-		444298D61D029CFC003DD77B /* UdeskConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442987D1D029CFC003DD77B /* UdeskConfig.m */; };
-		444298D71D029CFC003DD77B /* UdeskConfigurationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442987F1D029CFC003DD77B /* UdeskConfigurationHelper.m */; };
-		444298D81D029CFC003DD77B /* UdeskDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298811D029CFC003DD77B /* UdeskDateFormatter.m */; };
-		444298D91D029CFC003DD77B /* UdeskGeneral.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298841D029CFC003DD77B /* UdeskGeneral.m */; };
-		444298DA1D029CFC003DD77B /* UdeskKeywordRegularParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298861D029CFC003DD77B /* UdeskKeywordRegularParser.m */; };
-		444298DB1D029CFC003DD77B /* UdeskLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298881D029CFC003DD77B /* UdeskLabel.m */; };
-		444298DC1D029CFC003DD77B /* UdeskPaserdKeyword.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442988A1D029CFC003DD77B /* UdeskPaserdKeyword.m */; };
-		444298DD1D029CFC003DD77B /* UdeskPhotographyHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442988C1D029CFC003DD77B /* UdeskPhotographyHelper.m */; };
-		444298DE1D029CFC003DD77B /* UdeskReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442988E1D029CFC003DD77B /* UdeskReachability.m */; };
-		444298DF1D029CFC003DD77B /* UdeskTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298901D029CFC003DD77B /* UdeskTools.m */; };
-		444298E01D029CFC003DD77B /* UdeskTopAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298921D029CFC003DD77B /* UdeskTopAlertView.m */; };
-		444298E11D029CFC003DD77B /* UdeskUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298941D029CFC003DD77B /* UdeskUtils.m */; };
-		444298E21D029CFC003DD77B /* UdeskViewExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298961D029CFC003DD77B /* UdeskViewExt.m */; };
-		444298E31D029CFC003DD77B /* UdeskVoiceRecordHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298981D029CFC003DD77B /* UdeskVoiceRecordHelper.m */; };
-		444298E41D029CFC003DD77B /* UdeskMessageBubbleFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442989B1D029CFC003DD77B /* UdeskMessageBubbleFactory.m */; };
-		444298E51D029CFC003DD77B /* UdeskMessageVoiceFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4442989D1D029CFC003DD77B /* UdeskMessageVoiceFactory.m */; };
-		444298E61D029CFC003DD77B /* UdeskAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298A11D029CFC003DD77B /* UdeskAlertController.m */; };
-		444298E71D029CFC003DD77B /* UdeskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298A41D029CFC003DD77B /* UdeskCache.m */; };
-		444298E81D029CFC003DD77B /* UdeskImageCompat.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298A61D029CFC003DD77B /* UdeskImageCompat.m */; };
-		444298E91D029CFC003DD77B /* UdeskImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298A81D029CFC003DD77B /* UdeskImageDecoder.m */; };
-		444298EA1D029CFC003DD77B /* UIImage+UdeskMultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298AA1D029CFC003DD77B /* UIImage+UdeskMultiFormat.m */; };
-		444298EB1D029CFC003DD77B /* UdeskHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298AD1D029CFC003DD77B /* UdeskHpple.m */; };
-		444298EC1D029CFC003DD77B /* UdeskHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298AF1D029CFC003DD77B /* UdeskHppleElement.m */; };
-		444298ED1D029CFC003DD77B /* UdeskXPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298B11D029CFC003DD77B /* UdeskXPathQuery.m */; };
-		444298EE1D029CFC003DD77B /* UdeskOneScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298B41D029CFC003DD77B /* UdeskOneScrollView.m */; };
-		444298EF1D029CFC003DD77B /* UdeskPhotoManeger.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298B61D029CFC003DD77B /* UdeskPhotoManeger.m */; };
-		444298F01D029CFC003DD77B /* UdeskPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 444298B81D029CFC003DD77B /* UdeskPhotoView.m */; };
-		4450AC861CA50AAC004CBE2C /* DomainKeyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4450AC851CA50AAC004CBE2C /* DomainKeyViewController.m */; };
 		448CD8921C979EE40049DE3F /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 448CD8911C979EE40049DE3F /* libxml2.tbd */; };
 		44C3A0611C93ADCE004BDB2B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 44C3A0601C93ADCE004BDB2B /* main.m */; };
 		44C3A0641C93ADCE004BDB2B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 44C3A0631C93ADCE004BDB2B /* AppDelegate.m */; };
@@ -77,130 +19,67 @@
 		44C3A0771C93ADFF004BDB2B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C3A0761C93ADFF004BDB2B /* libsqlite3.tbd */; };
 		44C3A0791C93AE05004BDB2B /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C3A0781C93AE05004BDB2B /* libresolv.tbd */; };
 		44C3A07D1C93AE11004BDB2B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C3A07C1C93AE11004BDB2B /* libz.tbd */; };
+		44CE92281D29FF69000790F2 /* UdeskBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91A41D29FF69000790F2 /* UdeskBaseViewController.m */; };
+		44CE92291D29FF69000790F2 /* UdeskNavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91A61D29FF69000790F2 /* UdeskNavigationView.m */; };
+		44CE922A1D29FF69000790F2 /* UdeskContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91AA1D29FF69000790F2 /* UdeskContentController.m */; };
+		44CE922B1D29FF69000790F2 /* UdeskFAQViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91AC1D29FF69000790F2 /* UdeskFAQViewController.m */; };
+		44CE922C1D29FF69000790F2 /* UdeskSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91AE1D29FF69000790F2 /* UdeskSearchController.m */; };
+		44CE922D1D29FF69000790F2 /* UdeskProblemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91B11D29FF69000790F2 /* UdeskProblemModel.m */; };
+		44CE922E1D29FF69000790F2 /* UdeskAgentNavigationMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91B51D29FF69000790F2 /* UdeskAgentNavigationMenu.m */; };
+		44CE922F1D29FF69000790F2 /* UdeskChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91B71D29FF69000790F2 /* UdeskChatViewController.m */; };
+		44CE92301D29FF69000790F2 /* UdeskRobotIMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91B91D29FF69000790F2 /* UdeskRobotIMViewController.m */; };
+		44CE92311D29FF69000790F2 /* UdeskTicketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91BB1D29FF69000790F2 /* UdeskTicketViewController.m */; };
+		44CE92321D29FF69000790F2 /* UdeskAgentHttpData.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91BE1D29FF69000790F2 /* UdeskAgentHttpData.m */; };
+		44CE92331D29FF69000790F2 /* UdeskAgentMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91C01D29FF69000790F2 /* UdeskAgentMenuModel.m */; };
+		44CE92341D29FF69000790F2 /* UdeskAgentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91C21D29FF69000790F2 /* UdeskAgentModel.m */; };
+		44CE92351D29FF69000790F2 /* UdeskChatViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91C51D29FF69000790F2 /* UdeskChatViewModel.m */; };
+		44CE92361D29FF69000790F2 /* UdeskAgentStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91C91D29FF69000790F2 /* UdeskAgentStatusView.m */; };
+		44CE92371D29FF69000790F2 /* UdeskMessageContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91CC1D29FF69000790F2 /* UdeskMessageContentView.m */; };
+		44CE92381D29FF69000790F2 /* UdeskMessageTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91CE1D29FF69000790F2 /* UdeskMessageTableView.m */; };
+		44CE92391D29FF69000790F2 /* UdeskMessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91D01D29FF69000790F2 /* UdeskMessageTableViewCell.m */; };
+		44CE923A1D29FF69000790F2 /* UdeskEmotionManagerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91D31D29FF69000790F2 /* UdeskEmotionManagerView.m */; };
+		44CE923B1D29FF69000790F2 /* UdeskMessageInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91D61D29FF69000790F2 /* UdeskMessageInputView.m */; };
+		44CE923C1D29FF69000790F2 /* UdeskMessageTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91D81D29FF69000790F2 /* UdeskMessageTextView.m */; };
+		44CE923D1D29FF69000790F2 /* UdeskVoiceRecordHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91DA1D29FF69000790F2 /* UdeskVoiceRecordHUD.m */; };
+		44CE923E1D29FF69000790F2 /* UdeskProductView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91DD1D29FF69000790F2 /* UdeskProductView.m */; };
+		44CE923F1D29FF69000790F2 /* NSArray+UdeskSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91E21D29FF69000790F2 /* NSArray+UdeskSDK.m */; };
+		44CE92401D29FF69000790F2 /* NSTimer+UdeskSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91E51D29FF69000790F2 /* NSTimer+UdeskSDK.m */; };
+		44CE92411D29FF69000790F2 /* UIImage+UdeskSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91E81D29FF69000790F2 /* UIImage+UdeskSDK.m */; };
+		44CE92421D29FF69000790F2 /* UIViewController+UdeskBackButtonHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91EB1D29FF69000790F2 /* UIViewController+UdeskBackButtonHandler.m */; };
+		44CE92431D29FF69000790F2 /* UIViewController+UdeskKeyboardAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91ED1D29FF69000790F2 /* UIViewController+UdeskKeyboardAnimation.m */; };
+		44CE92441D29FF69000790F2 /* UdeskAudioPlayerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91F01D29FF69000790F2 /* UdeskAudioPlayerHelper.m */; };
+		44CE92451D29FF69000790F2 /* UdeskBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91F21D29FF69000790F2 /* UdeskBaseModel.m */; };
+		44CE92461D29FF69000790F2 /* UdeskConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91F41D29FF69000790F2 /* UdeskConfig.m */; };
+		44CE92471D29FF69000790F2 /* UdeskConfigurationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91F61D29FF69000790F2 /* UdeskConfigurationHelper.m */; };
+		44CE92481D29FF69000790F2 /* UdeskDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91F81D29FF69000790F2 /* UdeskDateFormatter.m */; };
+		44CE92491D29FF69000790F2 /* UdeskGeneral.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91FB1D29FF69000790F2 /* UdeskGeneral.m */; };
+		44CE924A1D29FF69000790F2 /* UdeskKeywordRegularParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91FD1D29FF69000790F2 /* UdeskKeywordRegularParser.m */; };
+		44CE924B1D29FF69000790F2 /* UdeskLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE91FF1D29FF69000790F2 /* UdeskLabel.m */; };
+		44CE924C1D29FF69000790F2 /* UdeskPaserdKeyword.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92011D29FF69000790F2 /* UdeskPaserdKeyword.m */; };
+		44CE924D1D29FF69000790F2 /* UdeskPhotographyHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92031D29FF69000790F2 /* UdeskPhotographyHelper.m */; };
+		44CE924E1D29FF69000790F2 /* UdeskReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92051D29FF69000790F2 /* UdeskReachability.m */; };
+		44CE924F1D29FF69000790F2 /* UdeskTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92071D29FF69000790F2 /* UdeskTools.m */; };
+		44CE92501D29FF69000790F2 /* UdeskTopAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92091D29FF69000790F2 /* UdeskTopAlertView.m */; };
+		44CE92511D29FF69000790F2 /* UdeskUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE920B1D29FF69000790F2 /* UdeskUtils.m */; };
+		44CE92521D29FF69000790F2 /* UdeskViewExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE920D1D29FF69000790F2 /* UdeskViewExt.m */; };
+		44CE92531D29FF69000790F2 /* UdeskVoiceRecordHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE920F1D29FF69000790F2 /* UdeskVoiceRecordHelper.m */; };
+		44CE92541D29FF69000790F2 /* UdeskMessageBubbleFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92121D29FF69000790F2 /* UdeskMessageBubbleFactory.m */; };
+		44CE92551D29FF69000790F2 /* UdeskMessageVoiceFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92141D29FF69000790F2 /* UdeskMessageVoiceFactory.m */; };
+		44CE92561D29FF69000790F2 /* UdeskAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92181D29FF69000790F2 /* UdeskAlertController.m */; };
+		44CE92571D29FF69000790F2 /* UdeskHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE921B1D29FF69000790F2 /* UdeskHpple.m */; };
+		44CE92581D29FF69000790F2 /* UdeskHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE921D1D29FF69000790F2 /* UdeskHppleElement.m */; };
+		44CE92591D29FF69000790F2 /* UdeskXPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE921F1D29FF69000790F2 /* UdeskXPathQuery.m */; };
+		44CE925A1D29FF69000790F2 /* UdeskOneScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92221D29FF69000790F2 /* UdeskOneScrollView.m */; };
+		44CE925B1D29FF69000790F2 /* UdeskPhotoManeger.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92241D29FF69000790F2 /* UdeskPhotoManeger.m */; };
+		44CE925C1D29FF69000790F2 /* UdeskPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE92261D29FF69000790F2 /* UdeskPhotoView.m */; };
+		44CE92691D2A0368000790F2 /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44CE92681D2A0368000790F2 /* libUdesk.a */; };
+		44CE926B1D2A0648000790F2 /* UdeskBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 44CE926A1D2A0648000790F2 /* UdeskBundle.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		440C5BD71CDA09BC006A093B /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
-		442650671D02DE44008358DE /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
 		4440A1A91C9A829400610BA8 /* UdeskTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskTableViewController.h; sourceTree = "<group>"; };
 		4440A1AA1C9A829400610BA8 /* UdeskTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskTableViewController.m; sourceTree = "<group>"; };
 		4440A1AC1C9A8DD400610BA8 /* udesk.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = udesk.jpg; sourceTree = "<group>"; };
-		4442982F1D029CFC003DD77B /* UdeskBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UdeskBundle.bundle; sourceTree = "<group>"; };
-		444298331D029CFC003DD77B /* UdeskContentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskContentController.h; sourceTree = "<group>"; };
-		444298341D029CFC003DD77B /* UdeskContentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskContentController.m; sourceTree = "<group>"; };
-		444298351D029CFC003DD77B /* UdeskFaqController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskFaqController.h; sourceTree = "<group>"; };
-		444298361D029CFC003DD77B /* UdeskFaqController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskFaqController.m; sourceTree = "<group>"; };
-		444298371D029CFC003DD77B /* UdeskSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskSearchController.h; sourceTree = "<group>"; };
-		444298381D029CFC003DD77B /* UdeskSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskSearchController.m; sourceTree = "<group>"; };
-		4442983A1D029CFC003DD77B /* UdeskProblemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskProblemModel.h; sourceTree = "<group>"; };
-		4442983B1D029CFC003DD77B /* UdeskProblemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskProblemModel.m; sourceTree = "<group>"; };
-		4442983E1D029CFC003DD77B /* UdeskAgentNavigationMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentNavigationMenu.h; sourceTree = "<group>"; };
-		4442983F1D029CFC003DD77B /* UdeskAgentNavigationMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentNavigationMenu.m; sourceTree = "<group>"; };
-		444298401D029CFC003DD77B /* UdeskChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskChatViewController.h; sourceTree = "<group>"; };
-		444298411D029CFC003DD77B /* UdeskChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskChatViewController.m; sourceTree = "<group>"; };
-		444298421D029CFC003DD77B /* UdeskRobotIMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskRobotIMViewController.h; sourceTree = "<group>"; };
-		444298431D029CFC003DD77B /* UdeskRobotIMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskRobotIMViewController.m; sourceTree = "<group>"; };
-		444298441D029CFC003DD77B /* UdeskTicketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskTicketViewController.h; sourceTree = "<group>"; };
-		444298451D029CFC003DD77B /* UdeskTicketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskTicketViewController.m; sourceTree = "<group>"; };
-		444298471D029CFC003DD77B /* UdeskAgentHttpData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentHttpData.h; sourceTree = "<group>"; };
-		444298481D029CFC003DD77B /* UdeskAgentHttpData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentHttpData.m; sourceTree = "<group>"; };
-		444298491D029CFC003DD77B /* UdeskAgentMenuModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentMenuModel.h; sourceTree = "<group>"; };
-		4442984A1D029CFC003DD77B /* UdeskAgentMenuModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentMenuModel.m; sourceTree = "<group>"; };
-		4442984B1D029CFC003DD77B /* UdeskAgentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentModel.h; sourceTree = "<group>"; };
-		4442984C1D029CFC003DD77B /* UdeskAgentModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentModel.m; sourceTree = "<group>"; };
-		4442984D1D029CFC003DD77B /* UdeskMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessage.h; sourceTree = "<group>"; };
-		4442984E1D029CFC003DD77B /* UdeskMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessage.m; sourceTree = "<group>"; };
-		4442984F1D029CFC003DD77B /* UdeskReceiveMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskReceiveMessage.h; sourceTree = "<group>"; };
-		444298501D029CFC003DD77B /* UdeskReceiveMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskReceiveMessage.m; sourceTree = "<group>"; };
-		444298521D029CFC003DD77B /* UdeskChatViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskChatViewModel.h; sourceTree = "<group>"; };
-		444298531D029CFC003DD77B /* UdeskChatViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskChatViewModel.m; sourceTree = "<group>"; };
-		444298561D029CFC003DD77B /* UdeskAgentStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentStatusView.h; sourceTree = "<group>"; };
-		444298571D029CFC003DD77B /* UdeskAgentStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentStatusView.m; sourceTree = "<group>"; };
-		444298591D029CFC003DD77B /* UdeskMessageContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageContentView.h; sourceTree = "<group>"; };
-		4442985A1D029CFC003DD77B /* UdeskMessageContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageContentView.m; sourceTree = "<group>"; };
-		4442985B1D029CFC003DD77B /* UdeskMessageTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageTableView.h; sourceTree = "<group>"; };
-		4442985C1D029CFC003DD77B /* UdeskMessageTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageTableView.m; sourceTree = "<group>"; };
-		4442985D1D029CFC003DD77B /* UdeskMessageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageTableViewCell.h; sourceTree = "<group>"; };
-		4442985E1D029CFC003DD77B /* UdeskMessageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageTableViewCell.m; sourceTree = "<group>"; };
-		444298601D029CFC003DD77B /* UdeskEmotionManagerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskEmotionManagerView.h; sourceTree = "<group>"; };
-		444298611D029CFC003DD77B /* UdeskEmotionManagerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskEmotionManagerView.m; sourceTree = "<group>"; };
-		444298631D029CFC003DD77B /* UdeskMessageInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageInputView.h; sourceTree = "<group>"; };
-		444298641D029CFC003DD77B /* UdeskMessageInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageInputView.m; sourceTree = "<group>"; };
-		444298651D029CFC003DD77B /* UdeskMessageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageTextView.h; sourceTree = "<group>"; };
-		444298661D029CFC003DD77B /* UdeskMessageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageTextView.m; sourceTree = "<group>"; };
-		444298671D029CFC003DD77B /* UdeskVoiceRecordHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskVoiceRecordHUD.h; sourceTree = "<group>"; };
-		444298681D029CFC003DD77B /* UdeskVoiceRecordHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskVoiceRecordHUD.m; sourceTree = "<group>"; };
-		4442986C1D029CFC003DD77B /* NSArray+UdeskSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+UdeskSDK.h"; sourceTree = "<group>"; };
-		4442986D1D029CFC003DD77B /* NSArray+UdeskSDK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+UdeskSDK.m"; sourceTree = "<group>"; };
-		4442986F1D029CFC003DD77B /* NSTimer+UdeskSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+UdeskSDK.h"; sourceTree = "<group>"; };
-		444298701D029CFC003DD77B /* NSTimer+UdeskSDK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+UdeskSDK.m"; sourceTree = "<group>"; };
-		444298721D029CFC003DD77B /* UIImage+UdeskSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+UdeskSDK.h"; sourceTree = "<group>"; };
-		444298731D029CFC003DD77B /* UIImage+UdeskSDK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+UdeskSDK.m"; sourceTree = "<group>"; };
-		444298751D029CFC003DD77B /* UIViewController+UdeskKeyboardAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+UdeskKeyboardAnimation.h"; sourceTree = "<group>"; };
-		444298761D029CFC003DD77B /* UIViewController+UdeskKeyboardAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+UdeskKeyboardAnimation.m"; sourceTree = "<group>"; };
-		444298781D029CFC003DD77B /* UdeskAudioPlayerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAudioPlayerHelper.h; sourceTree = "<group>"; };
-		444298791D029CFC003DD77B /* UdeskAudioPlayerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAudioPlayerHelper.m; sourceTree = "<group>"; };
-		4442987A1D029CFC003DD77B /* UdeskBaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskBaseModel.h; sourceTree = "<group>"; };
-		4442987B1D029CFC003DD77B /* UdeskBaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskBaseModel.m; sourceTree = "<group>"; };
-		4442987C1D029CFC003DD77B /* UdeskConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskConfig.h; sourceTree = "<group>"; };
-		4442987D1D029CFC003DD77B /* UdeskConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskConfig.m; sourceTree = "<group>"; };
-		4442987E1D029CFC003DD77B /* UdeskConfigurationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskConfigurationHelper.h; sourceTree = "<group>"; };
-		4442987F1D029CFC003DD77B /* UdeskConfigurationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskConfigurationHelper.m; sourceTree = "<group>"; };
-		444298801D029CFC003DD77B /* UdeskDateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskDateFormatter.h; sourceTree = "<group>"; };
-		444298811D029CFC003DD77B /* UdeskDateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskDateFormatter.m; sourceTree = "<group>"; };
-		444298821D029CFC003DD77B /* UdeskFoundationMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskFoundationMacro.h; sourceTree = "<group>"; };
-		444298831D029CFC003DD77B /* UdeskGeneral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskGeneral.h; sourceTree = "<group>"; };
-		444298841D029CFC003DD77B /* UdeskGeneral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskGeneral.m; sourceTree = "<group>"; };
-		444298851D029CFC003DD77B /* UdeskKeywordRegularParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskKeywordRegularParser.h; sourceTree = "<group>"; };
-		444298861D029CFC003DD77B /* UdeskKeywordRegularParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskKeywordRegularParser.m; sourceTree = "<group>"; };
-		444298871D029CFC003DD77B /* UdeskLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskLabel.h; sourceTree = "<group>"; };
-		444298881D029CFC003DD77B /* UdeskLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskLabel.m; sourceTree = "<group>"; };
-		444298891D029CFC003DD77B /* UdeskPaserdKeyword.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskPaserdKeyword.h; sourceTree = "<group>"; };
-		4442988A1D029CFC003DD77B /* UdeskPaserdKeyword.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskPaserdKeyword.m; sourceTree = "<group>"; };
-		4442988B1D029CFC003DD77B /* UdeskPhotographyHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskPhotographyHelper.h; sourceTree = "<group>"; };
-		4442988C1D029CFC003DD77B /* UdeskPhotographyHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskPhotographyHelper.m; sourceTree = "<group>"; };
-		4442988D1D029CFC003DD77B /* UdeskReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskReachability.h; sourceTree = "<group>"; };
-		4442988E1D029CFC003DD77B /* UdeskReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskReachability.m; sourceTree = "<group>"; };
-		4442988F1D029CFC003DD77B /* UdeskTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskTools.h; sourceTree = "<group>"; };
-		444298901D029CFC003DD77B /* UdeskTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskTools.m; sourceTree = "<group>"; };
-		444298911D029CFC003DD77B /* UdeskTopAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskTopAlertView.h; sourceTree = "<group>"; };
-		444298921D029CFC003DD77B /* UdeskTopAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskTopAlertView.m; sourceTree = "<group>"; };
-		444298931D029CFC003DD77B /* UdeskUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskUtils.h; sourceTree = "<group>"; };
-		444298941D029CFC003DD77B /* UdeskUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskUtils.m; sourceTree = "<group>"; };
-		444298951D029CFC003DD77B /* UdeskViewExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskViewExt.h; sourceTree = "<group>"; };
-		444298961D029CFC003DD77B /* UdeskViewExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskViewExt.m; sourceTree = "<group>"; };
-		444298971D029CFC003DD77B /* UdeskVoiceRecordHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskVoiceRecordHelper.h; sourceTree = "<group>"; };
-		444298981D029CFC003DD77B /* UdeskVoiceRecordHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskVoiceRecordHelper.m; sourceTree = "<group>"; };
-		4442989A1D029CFC003DD77B /* UdeskMessageBubbleFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageBubbleFactory.h; sourceTree = "<group>"; };
-		4442989B1D029CFC003DD77B /* UdeskMessageBubbleFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageBubbleFactory.m; sourceTree = "<group>"; };
-		4442989C1D029CFC003DD77B /* UdeskMessageVoiceFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageVoiceFactory.h; sourceTree = "<group>"; };
-		4442989D1D029CFC003DD77B /* UdeskMessageVoiceFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageVoiceFactory.m; sourceTree = "<group>"; };
-		444298A01D029CFC003DD77B /* UdeskAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAlertController.h; sourceTree = "<group>"; };
-		444298A11D029CFC003DD77B /* UdeskAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAlertController.m; sourceTree = "<group>"; };
-		444298A31D029CFC003DD77B /* UdeskCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskCache.h; sourceTree = "<group>"; };
-		444298A41D029CFC003DD77B /* UdeskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCache.m; sourceTree = "<group>"; };
-		444298A51D029CFC003DD77B /* UdeskImageCompat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskImageCompat.h; sourceTree = "<group>"; };
-		444298A61D029CFC003DD77B /* UdeskImageCompat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskImageCompat.m; sourceTree = "<group>"; };
-		444298A71D029CFC003DD77B /* UdeskImageDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskImageDecoder.h; sourceTree = "<group>"; };
-		444298A81D029CFC003DD77B /* UdeskImageDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskImageDecoder.m; sourceTree = "<group>"; };
-		444298A91D029CFC003DD77B /* UIImage+UdeskMultiFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+UdeskMultiFormat.h"; sourceTree = "<group>"; };
-		444298AA1D029CFC003DD77B /* UIImage+UdeskMultiFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+UdeskMultiFormat.m"; sourceTree = "<group>"; };
-		444298AC1D029CFC003DD77B /* UdeskHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskHpple.h; sourceTree = "<group>"; };
-		444298AD1D029CFC003DD77B /* UdeskHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskHpple.m; sourceTree = "<group>"; };
-		444298AE1D029CFC003DD77B /* UdeskHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskHppleElement.h; sourceTree = "<group>"; };
-		444298AF1D029CFC003DD77B /* UdeskHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskHppleElement.m; sourceTree = "<group>"; };
-		444298B01D029CFC003DD77B /* UdeskXPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskXPathQuery.h; sourceTree = "<group>"; };
-		444298B11D029CFC003DD77B /* UdeskXPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskXPathQuery.m; sourceTree = "<group>"; };
-		444298B31D029CFC003DD77B /* UdeskOneScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskOneScrollView.h; sourceTree = "<group>"; };
-		444298B41D029CFC003DD77B /* UdeskOneScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskOneScrollView.m; sourceTree = "<group>"; };
-		444298B51D029CFC003DD77B /* UdeskPhotoManeger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskPhotoManeger.h; sourceTree = "<group>"; };
-		444298B61D029CFC003DD77B /* UdeskPhotoManeger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskPhotoManeger.m; sourceTree = "<group>"; };
-		444298B71D029CFC003DD77B /* UdeskPhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskPhotoView.h; sourceTree = "<group>"; };
-		444298B81D029CFC003DD77B /* UdeskPhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskPhotoView.m; sourceTree = "<group>"; };
-		444298F11D029D15003DD77B /* UDManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UDManager.h; sourceTree = "<group>"; };
-		444298F41D029D25003DD77B /* Udesk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Udesk.h; sourceTree = "<group>"; };
-		4450AC841CA50AAC004CBE2C /* DomainKeyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DomainKeyViewController.h; sourceTree = "<group>"; };
-		4450AC851CA50AAC004CBE2C /* DomainKeyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DomainKeyViewController.m; sourceTree = "<group>"; };
 		448CD8911C979EE40049DE3F /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		44C3A05C1C93ADCE004BDB2B /* UdeskSDKExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UdeskSDKExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44C3A0601C93ADCE004BDB2B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -215,6 +94,118 @@
 		44C3A0761C93ADFF004BDB2B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		44C3A0781C93AE05004BDB2B /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		44C3A07C1C93AE11004BDB2B /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		44CE919D1D29FF50000790F2 /* UdeskManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UdeskManager.h; sourceTree = "<group>"; };
+		44CE919E1D29FF50000790F2 /* UdeskMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UdeskMessage.h; sourceTree = "<group>"; };
+		44CE91A31D29FF69000790F2 /* UdeskBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskBaseViewController.h; sourceTree = "<group>"; };
+		44CE91A41D29FF69000790F2 /* UdeskBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskBaseViewController.m; sourceTree = "<group>"; };
+		44CE91A51D29FF69000790F2 /* UdeskNavigationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskNavigationView.h; sourceTree = "<group>"; };
+		44CE91A61D29FF69000790F2 /* UdeskNavigationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskNavigationView.m; sourceTree = "<group>"; };
+		44CE91A91D29FF69000790F2 /* UdeskContentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskContentController.h; sourceTree = "<group>"; };
+		44CE91AA1D29FF69000790F2 /* UdeskContentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskContentController.m; sourceTree = "<group>"; };
+		44CE91AB1D29FF69000790F2 /* UdeskFAQViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskFAQViewController.h; sourceTree = "<group>"; };
+		44CE91AC1D29FF69000790F2 /* UdeskFAQViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskFAQViewController.m; sourceTree = "<group>"; };
+		44CE91AD1D29FF69000790F2 /* UdeskSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskSearchController.h; sourceTree = "<group>"; };
+		44CE91AE1D29FF69000790F2 /* UdeskSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskSearchController.m; sourceTree = "<group>"; };
+		44CE91B01D29FF69000790F2 /* UdeskProblemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskProblemModel.h; sourceTree = "<group>"; };
+		44CE91B11D29FF69000790F2 /* UdeskProblemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskProblemModel.m; sourceTree = "<group>"; };
+		44CE91B41D29FF69000790F2 /* UdeskAgentNavigationMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentNavigationMenu.h; sourceTree = "<group>"; };
+		44CE91B51D29FF69000790F2 /* UdeskAgentNavigationMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentNavigationMenu.m; sourceTree = "<group>"; };
+		44CE91B61D29FF69000790F2 /* UdeskChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskChatViewController.h; sourceTree = "<group>"; };
+		44CE91B71D29FF69000790F2 /* UdeskChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskChatViewController.m; sourceTree = "<group>"; };
+		44CE91B81D29FF69000790F2 /* UdeskRobotIMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskRobotIMViewController.h; sourceTree = "<group>"; };
+		44CE91B91D29FF69000790F2 /* UdeskRobotIMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskRobotIMViewController.m; sourceTree = "<group>"; };
+		44CE91BA1D29FF69000790F2 /* UdeskTicketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskTicketViewController.h; sourceTree = "<group>"; };
+		44CE91BB1D29FF69000790F2 /* UdeskTicketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskTicketViewController.m; sourceTree = "<group>"; };
+		44CE91BD1D29FF69000790F2 /* UdeskAgentHttpData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentHttpData.h; sourceTree = "<group>"; };
+		44CE91BE1D29FF69000790F2 /* UdeskAgentHttpData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentHttpData.m; sourceTree = "<group>"; };
+		44CE91BF1D29FF69000790F2 /* UdeskAgentMenuModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentMenuModel.h; sourceTree = "<group>"; };
+		44CE91C01D29FF69000790F2 /* UdeskAgentMenuModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentMenuModel.m; sourceTree = "<group>"; };
+		44CE91C11D29FF69000790F2 /* UdeskAgentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentModel.h; sourceTree = "<group>"; };
+		44CE91C21D29FF69000790F2 /* UdeskAgentModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentModel.m; sourceTree = "<group>"; };
+		44CE91C41D29FF69000790F2 /* UdeskChatViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskChatViewModel.h; sourceTree = "<group>"; };
+		44CE91C51D29FF69000790F2 /* UdeskChatViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskChatViewModel.m; sourceTree = "<group>"; };
+		44CE91C81D29FF69000790F2 /* UdeskAgentStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentStatusView.h; sourceTree = "<group>"; };
+		44CE91C91D29FF69000790F2 /* UdeskAgentStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentStatusView.m; sourceTree = "<group>"; };
+		44CE91CB1D29FF69000790F2 /* UdeskMessageContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageContentView.h; sourceTree = "<group>"; };
+		44CE91CC1D29FF69000790F2 /* UdeskMessageContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageContentView.m; sourceTree = "<group>"; };
+		44CE91CD1D29FF69000790F2 /* UdeskMessageTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageTableView.h; sourceTree = "<group>"; };
+		44CE91CE1D29FF69000790F2 /* UdeskMessageTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageTableView.m; sourceTree = "<group>"; };
+		44CE91CF1D29FF69000790F2 /* UdeskMessageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageTableViewCell.h; sourceTree = "<group>"; };
+		44CE91D01D29FF69000790F2 /* UdeskMessageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageTableViewCell.m; sourceTree = "<group>"; };
+		44CE91D21D29FF69000790F2 /* UdeskEmotionManagerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskEmotionManagerView.h; sourceTree = "<group>"; };
+		44CE91D31D29FF69000790F2 /* UdeskEmotionManagerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskEmotionManagerView.m; sourceTree = "<group>"; };
+		44CE91D51D29FF69000790F2 /* UdeskMessageInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageInputView.h; sourceTree = "<group>"; };
+		44CE91D61D29FF69000790F2 /* UdeskMessageInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageInputView.m; sourceTree = "<group>"; };
+		44CE91D71D29FF69000790F2 /* UdeskMessageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageTextView.h; sourceTree = "<group>"; };
+		44CE91D81D29FF69000790F2 /* UdeskMessageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageTextView.m; sourceTree = "<group>"; };
+		44CE91D91D29FF69000790F2 /* UdeskVoiceRecordHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskVoiceRecordHUD.h; sourceTree = "<group>"; };
+		44CE91DA1D29FF69000790F2 /* UdeskVoiceRecordHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskVoiceRecordHUD.m; sourceTree = "<group>"; };
+		44CE91DC1D29FF69000790F2 /* UdeskProductView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskProductView.h; sourceTree = "<group>"; };
+		44CE91DD1D29FF69000790F2 /* UdeskProductView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskProductView.m; sourceTree = "<group>"; };
+		44CE91E11D29FF69000790F2 /* NSArray+UdeskSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+UdeskSDK.h"; sourceTree = "<group>"; };
+		44CE91E21D29FF69000790F2 /* NSArray+UdeskSDK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+UdeskSDK.m"; sourceTree = "<group>"; };
+		44CE91E41D29FF69000790F2 /* NSTimer+UdeskSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+UdeskSDK.h"; sourceTree = "<group>"; };
+		44CE91E51D29FF69000790F2 /* NSTimer+UdeskSDK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+UdeskSDK.m"; sourceTree = "<group>"; };
+		44CE91E71D29FF69000790F2 /* UIImage+UdeskSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+UdeskSDK.h"; sourceTree = "<group>"; };
+		44CE91E81D29FF69000790F2 /* UIImage+UdeskSDK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+UdeskSDK.m"; sourceTree = "<group>"; };
+		44CE91EA1D29FF69000790F2 /* UIViewController+UdeskBackButtonHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+UdeskBackButtonHandler.h"; sourceTree = "<group>"; };
+		44CE91EB1D29FF69000790F2 /* UIViewController+UdeskBackButtonHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+UdeskBackButtonHandler.m"; sourceTree = "<group>"; };
+		44CE91EC1D29FF69000790F2 /* UIViewController+UdeskKeyboardAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+UdeskKeyboardAnimation.h"; sourceTree = "<group>"; };
+		44CE91ED1D29FF69000790F2 /* UIViewController+UdeskKeyboardAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+UdeskKeyboardAnimation.m"; sourceTree = "<group>"; };
+		44CE91EF1D29FF69000790F2 /* UdeskAudioPlayerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAudioPlayerHelper.h; sourceTree = "<group>"; };
+		44CE91F01D29FF69000790F2 /* UdeskAudioPlayerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAudioPlayerHelper.m; sourceTree = "<group>"; };
+		44CE91F11D29FF69000790F2 /* UdeskBaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskBaseModel.h; sourceTree = "<group>"; };
+		44CE91F21D29FF69000790F2 /* UdeskBaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskBaseModel.m; sourceTree = "<group>"; };
+		44CE91F31D29FF69000790F2 /* UdeskConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskConfig.h; sourceTree = "<group>"; };
+		44CE91F41D29FF69000790F2 /* UdeskConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskConfig.m; sourceTree = "<group>"; };
+		44CE91F51D29FF69000790F2 /* UdeskConfigurationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskConfigurationHelper.h; sourceTree = "<group>"; };
+		44CE91F61D29FF69000790F2 /* UdeskConfigurationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskConfigurationHelper.m; sourceTree = "<group>"; };
+		44CE91F71D29FF69000790F2 /* UdeskDateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskDateFormatter.h; sourceTree = "<group>"; };
+		44CE91F81D29FF69000790F2 /* UdeskDateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskDateFormatter.m; sourceTree = "<group>"; };
+		44CE91F91D29FF69000790F2 /* UdeskFoundationMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskFoundationMacro.h; sourceTree = "<group>"; };
+		44CE91FA1D29FF69000790F2 /* UdeskGeneral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskGeneral.h; sourceTree = "<group>"; };
+		44CE91FB1D29FF69000790F2 /* UdeskGeneral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskGeneral.m; sourceTree = "<group>"; };
+		44CE91FC1D29FF69000790F2 /* UdeskKeywordRegularParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskKeywordRegularParser.h; sourceTree = "<group>"; };
+		44CE91FD1D29FF69000790F2 /* UdeskKeywordRegularParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskKeywordRegularParser.m; sourceTree = "<group>"; };
+		44CE91FE1D29FF69000790F2 /* UdeskLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskLabel.h; sourceTree = "<group>"; };
+		44CE91FF1D29FF69000790F2 /* UdeskLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskLabel.m; sourceTree = "<group>"; };
+		44CE92001D29FF69000790F2 /* UdeskPaserdKeyword.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskPaserdKeyword.h; sourceTree = "<group>"; };
+		44CE92011D29FF69000790F2 /* UdeskPaserdKeyword.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskPaserdKeyword.m; sourceTree = "<group>"; };
+		44CE92021D29FF69000790F2 /* UdeskPhotographyHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskPhotographyHelper.h; sourceTree = "<group>"; };
+		44CE92031D29FF69000790F2 /* UdeskPhotographyHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskPhotographyHelper.m; sourceTree = "<group>"; };
+		44CE92041D29FF69000790F2 /* UdeskReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskReachability.h; sourceTree = "<group>"; };
+		44CE92051D29FF69000790F2 /* UdeskReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskReachability.m; sourceTree = "<group>"; };
+		44CE92061D29FF69000790F2 /* UdeskTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskTools.h; sourceTree = "<group>"; };
+		44CE92071D29FF69000790F2 /* UdeskTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskTools.m; sourceTree = "<group>"; };
+		44CE92081D29FF69000790F2 /* UdeskTopAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskTopAlertView.h; sourceTree = "<group>"; };
+		44CE92091D29FF69000790F2 /* UdeskTopAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskTopAlertView.m; sourceTree = "<group>"; };
+		44CE920A1D29FF69000790F2 /* UdeskUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskUtils.h; sourceTree = "<group>"; };
+		44CE920B1D29FF69000790F2 /* UdeskUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskUtils.m; sourceTree = "<group>"; };
+		44CE920C1D29FF69000790F2 /* UdeskViewExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskViewExt.h; sourceTree = "<group>"; };
+		44CE920D1D29FF69000790F2 /* UdeskViewExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskViewExt.m; sourceTree = "<group>"; };
+		44CE920E1D29FF69000790F2 /* UdeskVoiceRecordHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskVoiceRecordHelper.h; sourceTree = "<group>"; };
+		44CE920F1D29FF69000790F2 /* UdeskVoiceRecordHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskVoiceRecordHelper.m; sourceTree = "<group>"; };
+		44CE92111D29FF69000790F2 /* UdeskMessageBubbleFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageBubbleFactory.h; sourceTree = "<group>"; };
+		44CE92121D29FF69000790F2 /* UdeskMessageBubbleFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageBubbleFactory.m; sourceTree = "<group>"; };
+		44CE92131D29FF69000790F2 /* UdeskMessageVoiceFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessageVoiceFactory.h; sourceTree = "<group>"; };
+		44CE92141D29FF69000790F2 /* UdeskMessageVoiceFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageVoiceFactory.m; sourceTree = "<group>"; };
+		44CE92171D29FF69000790F2 /* UdeskAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAlertController.h; sourceTree = "<group>"; };
+		44CE92181D29FF69000790F2 /* UdeskAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAlertController.m; sourceTree = "<group>"; };
+		44CE921A1D29FF69000790F2 /* UdeskHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskHpple.h; sourceTree = "<group>"; };
+		44CE921B1D29FF69000790F2 /* UdeskHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskHpple.m; sourceTree = "<group>"; };
+		44CE921C1D29FF69000790F2 /* UdeskHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskHppleElement.h; sourceTree = "<group>"; };
+		44CE921D1D29FF69000790F2 /* UdeskHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskHppleElement.m; sourceTree = "<group>"; };
+		44CE921E1D29FF69000790F2 /* UdeskXPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskXPathQuery.h; sourceTree = "<group>"; };
+		44CE921F1D29FF69000790F2 /* UdeskXPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskXPathQuery.m; sourceTree = "<group>"; };
+		44CE92211D29FF69000790F2 /* UdeskOneScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskOneScrollView.h; sourceTree = "<group>"; };
+		44CE92221D29FF69000790F2 /* UdeskOneScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskOneScrollView.m; sourceTree = "<group>"; };
+		44CE92231D29FF69000790F2 /* UdeskPhotoManeger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskPhotoManeger.h; sourceTree = "<group>"; };
+		44CE92241D29FF69000790F2 /* UdeskPhotoManeger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskPhotoManeger.m; sourceTree = "<group>"; };
+		44CE92251D29FF69000790F2 /* UdeskPhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskPhotoView.h; sourceTree = "<group>"; };
+		44CE92261D29FF69000790F2 /* UdeskPhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskPhotoView.m; sourceTree = "<group>"; };
+		44CE92271D29FF69000790F2 /* Udesk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Udesk.h; sourceTree = "<group>"; };
+		44CE92681D2A0368000790F2 /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
+		44CE926A1D2A0648000790F2 /* UdeskBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UdeskBundle.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -223,7 +214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				44C3A07D1C93AE11004BDB2B /* libz.tbd in Frameworks */,
-				442650681D02DE44008358DE /* libUdesk.a in Frameworks */,
+				44CE92691D2A0368000790F2 /* libUdesk.a in Frameworks */,
 				448CD8921C979EE40049DE3F /* libxml2.tbd in Frameworks */,
 				44C3A0791C93AE05004BDB2B /* libresolv.tbd in Frameworks */,
 				44C3A0771C93ADFF004BDB2B /* libsqlite3.tbd in Frameworks */,
@@ -236,328 +227,9 @@
 		4442982E1D029CFC003DD77B /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				4442982F1D029CFC003DD77B /* UdeskBundle.bundle */,
+				44CE926A1D2A0648000790F2 /* UdeskBundle.bundle */,
 			);
 			path = Resource;
-			sourceTree = "<group>";
-		};
-		444298301D029CFC003DD77B /* UDChatMessage */ = {
-			isa = PBXGroup;
-			children = (
-				444298F41D029D25003DD77B /* Udesk.h */,
-				444298311D029CFC003DD77B /* FAQ */,
-				4442983C1D029CFC003DD77B /* IM */,
-				444298691D029CFC003DD77B /* Tools */,
-			);
-			path = UDChatMessage;
-			sourceTree = "<group>";
-		};
-		444298311D029CFC003DD77B /* FAQ */ = {
-			isa = PBXGroup;
-			children = (
-				444298321D029CFC003DD77B /* Controller */,
-				444298391D029CFC003DD77B /* Models */,
-			);
-			path = FAQ;
-			sourceTree = "<group>";
-		};
-		444298321D029CFC003DD77B /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				444298331D029CFC003DD77B /* UdeskContentController.h */,
-				444298341D029CFC003DD77B /* UdeskContentController.m */,
-				444298351D029CFC003DD77B /* UdeskFaqController.h */,
-				444298361D029CFC003DD77B /* UdeskFaqController.m */,
-				444298371D029CFC003DD77B /* UdeskSearchController.h */,
-				444298381D029CFC003DD77B /* UdeskSearchController.m */,
-			);
-			path = Controller;
-			sourceTree = "<group>";
-		};
-		444298391D029CFC003DD77B /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				4442983A1D029CFC003DD77B /* UdeskProblemModel.h */,
-				4442983B1D029CFC003DD77B /* UdeskProblemModel.m */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		4442983C1D029CFC003DD77B /* IM */ = {
-			isa = PBXGroup;
-			children = (
-				4442983D1D029CFC003DD77B /* Controller */,
-				444298461D029CFC003DD77B /* Models */,
-				444298511D029CFC003DD77B /* ViewModel */,
-				444298541D029CFC003DD77B /* Views */,
-			);
-			path = IM;
-			sourceTree = "<group>";
-		};
-		4442983D1D029CFC003DD77B /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				4442983E1D029CFC003DD77B /* UdeskAgentNavigationMenu.h */,
-				4442983F1D029CFC003DD77B /* UdeskAgentNavigationMenu.m */,
-				444298401D029CFC003DD77B /* UdeskChatViewController.h */,
-				444298411D029CFC003DD77B /* UdeskChatViewController.m */,
-				444298421D029CFC003DD77B /* UdeskRobotIMViewController.h */,
-				444298431D029CFC003DD77B /* UdeskRobotIMViewController.m */,
-				444298441D029CFC003DD77B /* UdeskTicketViewController.h */,
-				444298451D029CFC003DD77B /* UdeskTicketViewController.m */,
-			);
-			path = Controller;
-			sourceTree = "<group>";
-		};
-		444298461D029CFC003DD77B /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				444298471D029CFC003DD77B /* UdeskAgentHttpData.h */,
-				444298481D029CFC003DD77B /* UdeskAgentHttpData.m */,
-				444298491D029CFC003DD77B /* UdeskAgentMenuModel.h */,
-				4442984A1D029CFC003DD77B /* UdeskAgentMenuModel.m */,
-				4442984B1D029CFC003DD77B /* UdeskAgentModel.h */,
-				4442984C1D029CFC003DD77B /* UdeskAgentModel.m */,
-				4442984D1D029CFC003DD77B /* UdeskMessage.h */,
-				4442984E1D029CFC003DD77B /* UdeskMessage.m */,
-				4442984F1D029CFC003DD77B /* UdeskReceiveMessage.h */,
-				444298501D029CFC003DD77B /* UdeskReceiveMessage.m */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		444298511D029CFC003DD77B /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				444298521D029CFC003DD77B /* UdeskChatViewModel.h */,
-				444298531D029CFC003DD77B /* UdeskChatViewModel.m */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		444298541D029CFC003DD77B /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				444298551D029CFC003DD77B /* AgentView */,
-				444298581D029CFC003DD77B /* MessageContentViews */,
-				4442985F1D029CFC003DD77B /* MessageEmotionViews */,
-				444298621D029CFC003DD77B /* MessageInputView */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		444298551D029CFC003DD77B /* AgentView */ = {
-			isa = PBXGroup;
-			children = (
-				444298561D029CFC003DD77B /* UdeskAgentStatusView.h */,
-				444298571D029CFC003DD77B /* UdeskAgentStatusView.m */,
-			);
-			path = AgentView;
-			sourceTree = "<group>";
-		};
-		444298581D029CFC003DD77B /* MessageContentViews */ = {
-			isa = PBXGroup;
-			children = (
-				444298591D029CFC003DD77B /* UdeskMessageContentView.h */,
-				4442985A1D029CFC003DD77B /* UdeskMessageContentView.m */,
-				4442985B1D029CFC003DD77B /* UdeskMessageTableView.h */,
-				4442985C1D029CFC003DD77B /* UdeskMessageTableView.m */,
-				4442985D1D029CFC003DD77B /* UdeskMessageTableViewCell.h */,
-				4442985E1D029CFC003DD77B /* UdeskMessageTableViewCell.m */,
-			);
-			path = MessageContentViews;
-			sourceTree = "<group>";
-		};
-		4442985F1D029CFC003DD77B /* MessageEmotionViews */ = {
-			isa = PBXGroup;
-			children = (
-				444298601D029CFC003DD77B /* UdeskEmotionManagerView.h */,
-				444298611D029CFC003DD77B /* UdeskEmotionManagerView.m */,
-			);
-			path = MessageEmotionViews;
-			sourceTree = "<group>";
-		};
-		444298621D029CFC003DD77B /* MessageInputView */ = {
-			isa = PBXGroup;
-			children = (
-				444298631D029CFC003DD77B /* UdeskMessageInputView.h */,
-				444298641D029CFC003DD77B /* UdeskMessageInputView.m */,
-				444298651D029CFC003DD77B /* UdeskMessageTextView.h */,
-				444298661D029CFC003DD77B /* UdeskMessageTextView.m */,
-				444298671D029CFC003DD77B /* UdeskVoiceRecordHUD.h */,
-				444298681D029CFC003DD77B /* UdeskVoiceRecordHUD.m */,
-			);
-			path = MessageInputView;
-			sourceTree = "<group>";
-		};
-		444298691D029CFC003DD77B /* Tools */ = {
-			isa = PBXGroup;
-			children = (
-				4442986A1D029CFC003DD77B /* Category */,
-				444298771D029CFC003DD77B /* Common */,
-				444298991D029CFC003DD77B /* Factorys */,
-				4442989E1D029CFC003DD77B /* Vendor */,
-			);
-			path = Tools;
-			sourceTree = "<group>";
-		};
-		4442986A1D029CFC003DD77B /* Category */ = {
-			isa = PBXGroup;
-			children = (
-				4442986B1D029CFC003DD77B /* NSArray */,
-				4442986E1D029CFC003DD77B /* NSTimer */,
-				444298711D029CFC003DD77B /* UIImage */,
-				444298741D029CFC003DD77B /* UIViewController */,
-			);
-			path = Category;
-			sourceTree = "<group>";
-		};
-		4442986B1D029CFC003DD77B /* NSArray */ = {
-			isa = PBXGroup;
-			children = (
-				4442986C1D029CFC003DD77B /* NSArray+UdeskSDK.h */,
-				4442986D1D029CFC003DD77B /* NSArray+UdeskSDK.m */,
-			);
-			path = NSArray;
-			sourceTree = "<group>";
-		};
-		4442986E1D029CFC003DD77B /* NSTimer */ = {
-			isa = PBXGroup;
-			children = (
-				4442986F1D029CFC003DD77B /* NSTimer+UdeskSDK.h */,
-				444298701D029CFC003DD77B /* NSTimer+UdeskSDK.m */,
-			);
-			path = NSTimer;
-			sourceTree = "<group>";
-		};
-		444298711D029CFC003DD77B /* UIImage */ = {
-			isa = PBXGroup;
-			children = (
-				444298721D029CFC003DD77B /* UIImage+UdeskSDK.h */,
-				444298731D029CFC003DD77B /* UIImage+UdeskSDK.m */,
-			);
-			path = UIImage;
-			sourceTree = "<group>";
-		};
-		444298741D029CFC003DD77B /* UIViewController */ = {
-			isa = PBXGroup;
-			children = (
-				444298751D029CFC003DD77B /* UIViewController+UdeskKeyboardAnimation.h */,
-				444298761D029CFC003DD77B /* UIViewController+UdeskKeyboardAnimation.m */,
-			);
-			path = UIViewController;
-			sourceTree = "<group>";
-		};
-		444298771D029CFC003DD77B /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				444298781D029CFC003DD77B /* UdeskAudioPlayerHelper.h */,
-				444298791D029CFC003DD77B /* UdeskAudioPlayerHelper.m */,
-				4442987A1D029CFC003DD77B /* UdeskBaseModel.h */,
-				4442987B1D029CFC003DD77B /* UdeskBaseModel.m */,
-				4442987C1D029CFC003DD77B /* UdeskConfig.h */,
-				4442987D1D029CFC003DD77B /* UdeskConfig.m */,
-				4442987E1D029CFC003DD77B /* UdeskConfigurationHelper.h */,
-				4442987F1D029CFC003DD77B /* UdeskConfigurationHelper.m */,
-				444298801D029CFC003DD77B /* UdeskDateFormatter.h */,
-				444298811D029CFC003DD77B /* UdeskDateFormatter.m */,
-				444298821D029CFC003DD77B /* UdeskFoundationMacro.h */,
-				444298831D029CFC003DD77B /* UdeskGeneral.h */,
-				444298841D029CFC003DD77B /* UdeskGeneral.m */,
-				444298851D029CFC003DD77B /* UdeskKeywordRegularParser.h */,
-				444298861D029CFC003DD77B /* UdeskKeywordRegularParser.m */,
-				444298871D029CFC003DD77B /* UdeskLabel.h */,
-				444298881D029CFC003DD77B /* UdeskLabel.m */,
-				444298891D029CFC003DD77B /* UdeskPaserdKeyword.h */,
-				4442988A1D029CFC003DD77B /* UdeskPaserdKeyword.m */,
-				4442988B1D029CFC003DD77B /* UdeskPhotographyHelper.h */,
-				4442988C1D029CFC003DD77B /* UdeskPhotographyHelper.m */,
-				4442988D1D029CFC003DD77B /* UdeskReachability.h */,
-				4442988E1D029CFC003DD77B /* UdeskReachability.m */,
-				4442988F1D029CFC003DD77B /* UdeskTools.h */,
-				444298901D029CFC003DD77B /* UdeskTools.m */,
-				444298911D029CFC003DD77B /* UdeskTopAlertView.h */,
-				444298921D029CFC003DD77B /* UdeskTopAlertView.m */,
-				444298931D029CFC003DD77B /* UdeskUtils.h */,
-				444298941D029CFC003DD77B /* UdeskUtils.m */,
-				444298951D029CFC003DD77B /* UdeskViewExt.h */,
-				444298961D029CFC003DD77B /* UdeskViewExt.m */,
-				444298971D029CFC003DD77B /* UdeskVoiceRecordHelper.h */,
-				444298981D029CFC003DD77B /* UdeskVoiceRecordHelper.m */,
-			);
-			path = Common;
-			sourceTree = "<group>";
-		};
-		444298991D029CFC003DD77B /* Factorys */ = {
-			isa = PBXGroup;
-			children = (
-				4442989A1D029CFC003DD77B /* UdeskMessageBubbleFactory.h */,
-				4442989B1D029CFC003DD77B /* UdeskMessageBubbleFactory.m */,
-				4442989C1D029CFC003DD77B /* UdeskMessageVoiceFactory.h */,
-				4442989D1D029CFC003DD77B /* UdeskMessageVoiceFactory.m */,
-			);
-			path = Factorys;
-			sourceTree = "<group>";
-		};
-		4442989E1D029CFC003DD77B /* Vendor */ = {
-			isa = PBXGroup;
-			children = (
-				4442989F1D029CFC003DD77B /* UDAlertController */,
-				444298A21D029CFC003DD77B /* UDCache */,
-				444298AB1D029CFC003DD77B /* UDHpple */,
-				444298B21D029CFC003DD77B /* UDPhotoViewer */,
-			);
-			path = Vendor;
-			sourceTree = "<group>";
-		};
-		4442989F1D029CFC003DD77B /* UDAlertController */ = {
-			isa = PBXGroup;
-			children = (
-				444298A01D029CFC003DD77B /* UdeskAlertController.h */,
-				444298A11D029CFC003DD77B /* UdeskAlertController.m */,
-			);
-			path = UDAlertController;
-			sourceTree = "<group>";
-		};
-		444298A21D029CFC003DD77B /* UDCache */ = {
-			isa = PBXGroup;
-			children = (
-				444298A31D029CFC003DD77B /* UdeskCache.h */,
-				444298A41D029CFC003DD77B /* UdeskCache.m */,
-				444298A51D029CFC003DD77B /* UdeskImageCompat.h */,
-				444298A61D029CFC003DD77B /* UdeskImageCompat.m */,
-				444298A71D029CFC003DD77B /* UdeskImageDecoder.h */,
-				444298A81D029CFC003DD77B /* UdeskImageDecoder.m */,
-				444298A91D029CFC003DD77B /* UIImage+UdeskMultiFormat.h */,
-				444298AA1D029CFC003DD77B /* UIImage+UdeskMultiFormat.m */,
-			);
-			path = UDCache;
-			sourceTree = "<group>";
-		};
-		444298AB1D029CFC003DD77B /* UDHpple */ = {
-			isa = PBXGroup;
-			children = (
-				444298AC1D029CFC003DD77B /* UdeskHpple.h */,
-				444298AD1D029CFC003DD77B /* UdeskHpple.m */,
-				444298AE1D029CFC003DD77B /* UdeskHppleElement.h */,
-				444298AF1D029CFC003DD77B /* UdeskHppleElement.m */,
-				444298B01D029CFC003DD77B /* UdeskXPathQuery.h */,
-				444298B11D029CFC003DD77B /* UdeskXPathQuery.m */,
-			);
-			path = UDHpple;
-			sourceTree = "<group>";
-		};
-		444298B21D029CFC003DD77B /* UDPhotoViewer */ = {
-			isa = PBXGroup;
-			children = (
-				444298B31D029CFC003DD77B /* UdeskOneScrollView.h */,
-				444298B41D029CFC003DD77B /* UdeskOneScrollView.m */,
-				444298B51D029CFC003DD77B /* UdeskPhotoManeger.h */,
-				444298B61D029CFC003DD77B /* UdeskPhotoManeger.m */,
-				444298B71D029CFC003DD77B /* UdeskPhotoView.h */,
-				444298B81D029CFC003DD77B /* UdeskPhotoView.m */,
-			);
-			path = UDPhotoViewer;
 			sourceTree = "<group>";
 		};
 		44C3A0531C93ADCE004BDB2B = {
@@ -589,8 +261,6 @@
 				44C3A0631C93ADCE004BDB2B /* AppDelegate.m */,
 				44C3A0651C93ADCE004BDB2B /* ViewController.h */,
 				44C3A0661C93ADCE004BDB2B /* ViewController.m */,
-				4450AC841CA50AAC004CBE2C /* DomainKeyViewController.h */,
-				4450AC851CA50AAC004CBE2C /* DomainKeyViewController.m */,
 				4440A1A91C9A829400610BA8 /* UdeskTableViewController.h */,
 				4440A1AA1C9A829400610BA8 /* UdeskTableViewController.m */,
 				44C3A0681C93ADCE004BDB2B /* Main.storyboard */,
@@ -606,7 +276,6 @@
 			isa = PBXGroup;
 			children = (
 				44C3A0601C93ADCE004BDB2B /* main.m */,
-				440C5BD71CDA09BC006A093B /* PrefixHeader.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -614,8 +283,8 @@
 		44C3A1BB1C93AF51004BDB2B /* UdeskSDK */ = {
 			isa = PBXGroup;
 			children = (
+				44CE91A11D29FF69000790F2 /* UDChatMessage */,
 				4442982E1D029CFC003DD77B /* Resource */,
-				444298301D029CFC003DD77B /* UDChatMessage */,
 				44C3A1BE1C93AF51004BDB2B /* SDK */,
 			);
 			name = UdeskSDK;
@@ -625,10 +294,334 @@
 		44C3A1BE1C93AF51004BDB2B /* SDK */ = {
 			isa = PBXGroup;
 			children = (
-				442650671D02DE44008358DE /* libUdesk.a */,
-				444298F11D029D15003DD77B /* UDManager.h */,
+				44CE92681D2A0368000790F2 /* libUdesk.a */,
+				44CE919D1D29FF50000790F2 /* UdeskManager.h */,
+				44CE919E1D29FF50000790F2 /* UdeskMessage.h */,
 			);
 			path = SDK;
+			sourceTree = "<group>";
+		};
+		44CE91A11D29FF69000790F2 /* UDChatMessage */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91A21D29FF69000790F2 /* Base */,
+				44CE91A71D29FF69000790F2 /* FAQ */,
+				44CE91B21D29FF69000790F2 /* IM */,
+				44CE91DE1D29FF69000790F2 /* Tools */,
+				44CE92271D29FF69000790F2 /* Udesk.h */,
+			);
+			path = UDChatMessage;
+			sourceTree = "<group>";
+		};
+		44CE91A21D29FF69000790F2 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91A31D29FF69000790F2 /* UdeskBaseViewController.h */,
+				44CE91A41D29FF69000790F2 /* UdeskBaseViewController.m */,
+				44CE91A51D29FF69000790F2 /* UdeskNavigationView.h */,
+				44CE91A61D29FF69000790F2 /* UdeskNavigationView.m */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		44CE91A71D29FF69000790F2 /* FAQ */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91A81D29FF69000790F2 /* Controller */,
+				44CE91AF1D29FF69000790F2 /* Models */,
+			);
+			path = FAQ;
+			sourceTree = "<group>";
+		};
+		44CE91A81D29FF69000790F2 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91A91D29FF69000790F2 /* UdeskContentController.h */,
+				44CE91AA1D29FF69000790F2 /* UdeskContentController.m */,
+				44CE91AB1D29FF69000790F2 /* UdeskFAQViewController.h */,
+				44CE91AC1D29FF69000790F2 /* UdeskFAQViewController.m */,
+				44CE91AD1D29FF69000790F2 /* UdeskSearchController.h */,
+				44CE91AE1D29FF69000790F2 /* UdeskSearchController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		44CE91AF1D29FF69000790F2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91B01D29FF69000790F2 /* UdeskProblemModel.h */,
+				44CE91B11D29FF69000790F2 /* UdeskProblemModel.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		44CE91B21D29FF69000790F2 /* IM */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91B31D29FF69000790F2 /* Controller */,
+				44CE91BC1D29FF69000790F2 /* Models */,
+				44CE91C31D29FF69000790F2 /* ViewModel */,
+				44CE91C61D29FF69000790F2 /* Views */,
+			);
+			path = IM;
+			sourceTree = "<group>";
+		};
+		44CE91B31D29FF69000790F2 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91B41D29FF69000790F2 /* UdeskAgentNavigationMenu.h */,
+				44CE91B51D29FF69000790F2 /* UdeskAgentNavigationMenu.m */,
+				44CE91B61D29FF69000790F2 /* UdeskChatViewController.h */,
+				44CE91B71D29FF69000790F2 /* UdeskChatViewController.m */,
+				44CE91B81D29FF69000790F2 /* UdeskRobotIMViewController.h */,
+				44CE91B91D29FF69000790F2 /* UdeskRobotIMViewController.m */,
+				44CE91BA1D29FF69000790F2 /* UdeskTicketViewController.h */,
+				44CE91BB1D29FF69000790F2 /* UdeskTicketViewController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		44CE91BC1D29FF69000790F2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91BD1D29FF69000790F2 /* UdeskAgentHttpData.h */,
+				44CE91BE1D29FF69000790F2 /* UdeskAgentHttpData.m */,
+				44CE91BF1D29FF69000790F2 /* UdeskAgentMenuModel.h */,
+				44CE91C01D29FF69000790F2 /* UdeskAgentMenuModel.m */,
+				44CE91C11D29FF69000790F2 /* UdeskAgentModel.h */,
+				44CE91C21D29FF69000790F2 /* UdeskAgentModel.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		44CE91C31D29FF69000790F2 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91C41D29FF69000790F2 /* UdeskChatViewModel.h */,
+				44CE91C51D29FF69000790F2 /* UdeskChatViewModel.m */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		44CE91C61D29FF69000790F2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91C71D29FF69000790F2 /* AgentView */,
+				44CE91CA1D29FF69000790F2 /* MessageContentViews */,
+				44CE91D11D29FF69000790F2 /* MessageEmotionViews */,
+				44CE91D41D29FF69000790F2 /* MessageInputView */,
+				44CE91DB1D29FF69000790F2 /* ProductView */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		44CE91C71D29FF69000790F2 /* AgentView */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91C81D29FF69000790F2 /* UdeskAgentStatusView.h */,
+				44CE91C91D29FF69000790F2 /* UdeskAgentStatusView.m */,
+			);
+			path = AgentView;
+			sourceTree = "<group>";
+		};
+		44CE91CA1D29FF69000790F2 /* MessageContentViews */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91CB1D29FF69000790F2 /* UdeskMessageContentView.h */,
+				44CE91CC1D29FF69000790F2 /* UdeskMessageContentView.m */,
+				44CE91CD1D29FF69000790F2 /* UdeskMessageTableView.h */,
+				44CE91CE1D29FF69000790F2 /* UdeskMessageTableView.m */,
+				44CE91CF1D29FF69000790F2 /* UdeskMessageTableViewCell.h */,
+				44CE91D01D29FF69000790F2 /* UdeskMessageTableViewCell.m */,
+			);
+			path = MessageContentViews;
+			sourceTree = "<group>";
+		};
+		44CE91D11D29FF69000790F2 /* MessageEmotionViews */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91D21D29FF69000790F2 /* UdeskEmotionManagerView.h */,
+				44CE91D31D29FF69000790F2 /* UdeskEmotionManagerView.m */,
+			);
+			path = MessageEmotionViews;
+			sourceTree = "<group>";
+		};
+		44CE91D41D29FF69000790F2 /* MessageInputView */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91D51D29FF69000790F2 /* UdeskMessageInputView.h */,
+				44CE91D61D29FF69000790F2 /* UdeskMessageInputView.m */,
+				44CE91D71D29FF69000790F2 /* UdeskMessageTextView.h */,
+				44CE91D81D29FF69000790F2 /* UdeskMessageTextView.m */,
+				44CE91D91D29FF69000790F2 /* UdeskVoiceRecordHUD.h */,
+				44CE91DA1D29FF69000790F2 /* UdeskVoiceRecordHUD.m */,
+			);
+			path = MessageInputView;
+			sourceTree = "<group>";
+		};
+		44CE91DB1D29FF69000790F2 /* ProductView */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91DC1D29FF69000790F2 /* UdeskProductView.h */,
+				44CE91DD1D29FF69000790F2 /* UdeskProductView.m */,
+			);
+			path = ProductView;
+			sourceTree = "<group>";
+		};
+		44CE91DE1D29FF69000790F2 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91DF1D29FF69000790F2 /* Category */,
+				44CE91EE1D29FF69000790F2 /* Common */,
+				44CE92101D29FF69000790F2 /* Factorys */,
+				44CE92151D29FF69000790F2 /* Vendor */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		44CE91DF1D29FF69000790F2 /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91E01D29FF69000790F2 /* NSArray */,
+				44CE91E31D29FF69000790F2 /* NSTimer */,
+				44CE91E61D29FF69000790F2 /* UIImage */,
+				44CE91E91D29FF69000790F2 /* UIViewController */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		44CE91E01D29FF69000790F2 /* NSArray */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91E11D29FF69000790F2 /* NSArray+UdeskSDK.h */,
+				44CE91E21D29FF69000790F2 /* NSArray+UdeskSDK.m */,
+			);
+			path = NSArray;
+			sourceTree = "<group>";
+		};
+		44CE91E31D29FF69000790F2 /* NSTimer */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91E41D29FF69000790F2 /* NSTimer+UdeskSDK.h */,
+				44CE91E51D29FF69000790F2 /* NSTimer+UdeskSDK.m */,
+			);
+			path = NSTimer;
+			sourceTree = "<group>";
+		};
+		44CE91E61D29FF69000790F2 /* UIImage */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91E71D29FF69000790F2 /* UIImage+UdeskSDK.h */,
+				44CE91E81D29FF69000790F2 /* UIImage+UdeskSDK.m */,
+			);
+			path = UIImage;
+			sourceTree = "<group>";
+		};
+		44CE91E91D29FF69000790F2 /* UIViewController */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91EA1D29FF69000790F2 /* UIViewController+UdeskBackButtonHandler.h */,
+				44CE91EB1D29FF69000790F2 /* UIViewController+UdeskBackButtonHandler.m */,
+				44CE91EC1D29FF69000790F2 /* UIViewController+UdeskKeyboardAnimation.h */,
+				44CE91ED1D29FF69000790F2 /* UIViewController+UdeskKeyboardAnimation.m */,
+			);
+			path = UIViewController;
+			sourceTree = "<group>";
+		};
+		44CE91EE1D29FF69000790F2 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				44CE91EF1D29FF69000790F2 /* UdeskAudioPlayerHelper.h */,
+				44CE91F01D29FF69000790F2 /* UdeskAudioPlayerHelper.m */,
+				44CE91F11D29FF69000790F2 /* UdeskBaseModel.h */,
+				44CE91F21D29FF69000790F2 /* UdeskBaseModel.m */,
+				44CE91F31D29FF69000790F2 /* UdeskConfig.h */,
+				44CE91F41D29FF69000790F2 /* UdeskConfig.m */,
+				44CE91F51D29FF69000790F2 /* UdeskConfigurationHelper.h */,
+				44CE91F61D29FF69000790F2 /* UdeskConfigurationHelper.m */,
+				44CE91F71D29FF69000790F2 /* UdeskDateFormatter.h */,
+				44CE91F81D29FF69000790F2 /* UdeskDateFormatter.m */,
+				44CE91F91D29FF69000790F2 /* UdeskFoundationMacro.h */,
+				44CE91FA1D29FF69000790F2 /* UdeskGeneral.h */,
+				44CE91FB1D29FF69000790F2 /* UdeskGeneral.m */,
+				44CE91FC1D29FF69000790F2 /* UdeskKeywordRegularParser.h */,
+				44CE91FD1D29FF69000790F2 /* UdeskKeywordRegularParser.m */,
+				44CE91FE1D29FF69000790F2 /* UdeskLabel.h */,
+				44CE91FF1D29FF69000790F2 /* UdeskLabel.m */,
+				44CE92001D29FF69000790F2 /* UdeskPaserdKeyword.h */,
+				44CE92011D29FF69000790F2 /* UdeskPaserdKeyword.m */,
+				44CE92021D29FF69000790F2 /* UdeskPhotographyHelper.h */,
+				44CE92031D29FF69000790F2 /* UdeskPhotographyHelper.m */,
+				44CE92041D29FF69000790F2 /* UdeskReachability.h */,
+				44CE92051D29FF69000790F2 /* UdeskReachability.m */,
+				44CE92061D29FF69000790F2 /* UdeskTools.h */,
+				44CE92071D29FF69000790F2 /* UdeskTools.m */,
+				44CE92081D29FF69000790F2 /* UdeskTopAlertView.h */,
+				44CE92091D29FF69000790F2 /* UdeskTopAlertView.m */,
+				44CE920A1D29FF69000790F2 /* UdeskUtils.h */,
+				44CE920B1D29FF69000790F2 /* UdeskUtils.m */,
+				44CE920C1D29FF69000790F2 /* UdeskViewExt.h */,
+				44CE920D1D29FF69000790F2 /* UdeskViewExt.m */,
+				44CE920E1D29FF69000790F2 /* UdeskVoiceRecordHelper.h */,
+				44CE920F1D29FF69000790F2 /* UdeskVoiceRecordHelper.m */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		44CE92101D29FF69000790F2 /* Factorys */ = {
+			isa = PBXGroup;
+			children = (
+				44CE92111D29FF69000790F2 /* UdeskMessageBubbleFactory.h */,
+				44CE92121D29FF69000790F2 /* UdeskMessageBubbleFactory.m */,
+				44CE92131D29FF69000790F2 /* UdeskMessageVoiceFactory.h */,
+				44CE92141D29FF69000790F2 /* UdeskMessageVoiceFactory.m */,
+			);
+			path = Factorys;
+			sourceTree = "<group>";
+		};
+		44CE92151D29FF69000790F2 /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				44CE92161D29FF69000790F2 /* UDAlertController */,
+				44CE92191D29FF69000790F2 /* UDHpple */,
+				44CE92201D29FF69000790F2 /* UDPhotoViewer */,
+			);
+			path = Vendor;
+			sourceTree = "<group>";
+		};
+		44CE92161D29FF69000790F2 /* UDAlertController */ = {
+			isa = PBXGroup;
+			children = (
+				44CE92171D29FF69000790F2 /* UdeskAlertController.h */,
+				44CE92181D29FF69000790F2 /* UdeskAlertController.m */,
+			);
+			path = UDAlertController;
+			sourceTree = "<group>";
+		};
+		44CE92191D29FF69000790F2 /* UDHpple */ = {
+			isa = PBXGroup;
+			children = (
+				44CE921A1D29FF69000790F2 /* UdeskHpple.h */,
+				44CE921B1D29FF69000790F2 /* UdeskHpple.m */,
+				44CE921C1D29FF69000790F2 /* UdeskHppleElement.h */,
+				44CE921D1D29FF69000790F2 /* UdeskHppleElement.m */,
+				44CE921E1D29FF69000790F2 /* UdeskXPathQuery.h */,
+				44CE921F1D29FF69000790F2 /* UdeskXPathQuery.m */,
+			);
+			path = UDHpple;
+			sourceTree = "<group>";
+		};
+		44CE92201D29FF69000790F2 /* UDPhotoViewer */ = {
+			isa = PBXGroup;
+			children = (
+				44CE92211D29FF69000790F2 /* UdeskOneScrollView.h */,
+				44CE92221D29FF69000790F2 /* UdeskOneScrollView.m */,
+				44CE92231D29FF69000790F2 /* UdeskPhotoManeger.h */,
+				44CE92241D29FF69000790F2 /* UdeskPhotoManeger.m */,
+				44CE92251D29FF69000790F2 /* UdeskPhotoView.h */,
+				44CE92261D29FF69000790F2 /* UdeskPhotoView.m */,
+			);
+			path = UDPhotoViewer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -691,7 +684,7 @@
 			files = (
 				44C3A06F1C93ADCE004BDB2B /* LaunchScreen.storyboard in Resources */,
 				44C3A06C1C93ADCE004BDB2B /* Assets.xcassets in Resources */,
-				444298B91D029CFC003DD77B /* UdeskBundle.bundle in Resources */,
+				44CE926B1D2A0648000790F2 /* UdeskBundle.bundle in Resources */,
 				44C3A06A1C93ADCE004BDB2B /* Main.storyboard in Resources */,
 				4440A1AD1C9A8DD400610BA8 /* udesk.jpg in Resources */,
 			);
@@ -704,66 +697,63 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				444298E01D029CFC003DD77B /* UdeskTopAlertView.m in Sources */,
-				444298C11D029CFC003DD77B /* UdeskTicketViewController.m in Sources */,
-				444298BC1D029CFC003DD77B /* UdeskSearchController.m in Sources */,
-				444298CD1D029CFC003DD77B /* UdeskMessageInputView.m in Sources */,
-				444298E81D029CFC003DD77B /* UdeskImageCompat.m in Sources */,
-				444298C61D029CFC003DD77B /* UdeskReceiveMessage.m in Sources */,
-				444298C81D029CFC003DD77B /* UdeskAgentStatusView.m in Sources */,
-				444298BA1D029CFC003DD77B /* UdeskContentController.m in Sources */,
-				444298E91D029CFC003DD77B /* UdeskImageDecoder.m in Sources */,
-				4450AC861CA50AAC004CBE2C /* DomainKeyViewController.m in Sources */,
+				44CE92411D29FF69000790F2 /* UIImage+UdeskSDK.m in Sources */,
+				44CE922E1D29FF69000790F2 /* UdeskAgentNavigationMenu.m in Sources */,
+				44CE92431D29FF69000790F2 /* UIViewController+UdeskKeyboardAnimation.m in Sources */,
+				44CE92451D29FF69000790F2 /* UdeskBaseModel.m in Sources */,
+				44CE923B1D29FF69000790F2 /* UdeskMessageInputView.m in Sources */,
 				4440A1AB1C9A829400610BA8 /* UdeskTableViewController.m in Sources */,
-				444298EE1D029CFC003DD77B /* UdeskOneScrollView.m in Sources */,
-				444298D61D029CFC003DD77B /* UdeskConfig.m in Sources */,
-				444298D91D029CFC003DD77B /* UdeskGeneral.m in Sources */,
-				444298EC1D029CFC003DD77B /* UdeskHppleElement.m in Sources */,
-				444298E41D029CFC003DD77B /* UdeskMessageBubbleFactory.m in Sources */,
-				444298C91D029CFC003DD77B /* UdeskMessageContentView.m in Sources */,
-				444298E51D029CFC003DD77B /* UdeskMessageVoiceFactory.m in Sources */,
-				444298DE1D029CFC003DD77B /* UdeskReachability.m in Sources */,
-				444298EA1D029CFC003DD77B /* UIImage+UdeskMultiFormat.m in Sources */,
-				444298EB1D029CFC003DD77B /* UdeskHpple.m in Sources */,
-				444298BD1D029CFC003DD77B /* UdeskProblemModel.m in Sources */,
-				444298D31D029CFC003DD77B /* UIViewController+UdeskKeyboardAnimation.m in Sources */,
-				444298CE1D029CFC003DD77B /* UdeskMessageTextView.m in Sources */,
-				444298BE1D029CFC003DD77B /* UdeskAgentNavigationMenu.m in Sources */,
-				444298DC1D029CFC003DD77B /* UdeskPaserdKeyword.m in Sources */,
-				444298DF1D029CFC003DD77B /* UdeskTools.m in Sources */,
-				444298DB1D029CFC003DD77B /* UdeskLabel.m in Sources */,
-				444298CA1D029CFC003DD77B /* UdeskMessageTableView.m in Sources */,
-				444298D41D029CFC003DD77B /* UdeskAudioPlayerHelper.m in Sources */,
-				444298EF1D029CFC003DD77B /* UdeskPhotoManeger.m in Sources */,
-				444298C01D029CFC003DD77B /* UdeskRobotIMViewController.m in Sources */,
-				444298C41D029CFC003DD77B /* UdeskAgentModel.m in Sources */,
-				444298DD1D029CFC003DD77B /* UdeskPhotographyHelper.m in Sources */,
+				44CE925B1D29FF69000790F2 /* UdeskPhotoManeger.m in Sources */,
+				44CE92361D29FF69000790F2 /* UdeskAgentStatusView.m in Sources */,
+				44CE922D1D29FF69000790F2 /* UdeskProblemModel.m in Sources */,
+				44CE92591D29FF69000790F2 /* UdeskXPathQuery.m in Sources */,
+				44CE92331D29FF69000790F2 /* UdeskAgentMenuModel.m in Sources */,
+				44CE92531D29FF69000790F2 /* UdeskVoiceRecordHelper.m in Sources */,
+				44CE92491D29FF69000790F2 /* UdeskGeneral.m in Sources */,
+				44CE924E1D29FF69000790F2 /* UdeskReachability.m in Sources */,
+				44CE92321D29FF69000790F2 /* UdeskAgentHttpData.m in Sources */,
+				44CE92371D29FF69000790F2 /* UdeskMessageContentView.m in Sources */,
 				44C3A0671C93ADCE004BDB2B /* ViewController.m in Sources */,
-				444298C51D029CFC003DD77B /* UdeskMessage.m in Sources */,
-				444298F01D029CFC003DD77B /* UdeskPhotoView.m in Sources */,
-				444298E61D029CFC003DD77B /* UdeskAlertController.m in Sources */,
-				444298D21D029CFC003DD77B /* UIImage+UdeskSDK.m in Sources */,
+				44CE923C1D29FF69000790F2 /* UdeskMessageTextView.m in Sources */,
 				44C3A0641C93ADCE004BDB2B /* AppDelegate.m in Sources */,
-				444298C21D029CFC003DD77B /* UdeskAgentHttpData.m in Sources */,
-				444298E11D029CFC003DD77B /* UdeskUtils.m in Sources */,
-				444298CC1D029CFC003DD77B /* UdeskEmotionManagerView.m in Sources */,
-				444298BB1D029CFC003DD77B /* UdeskFaqController.m in Sources */,
-				444298D81D029CFC003DD77B /* UdeskDateFormatter.m in Sources */,
-				444298E71D029CFC003DD77B /* UdeskCache.m in Sources */,
-				444298CB1D029CFC003DD77B /* UdeskMessageTableViewCell.m in Sources */,
+				44CE92401D29FF69000790F2 /* NSTimer+UdeskSDK.m in Sources */,
+				44CE92501D29FF69000790F2 /* UdeskTopAlertView.m in Sources */,
+				44CE92551D29FF69000790F2 /* UdeskMessageVoiceFactory.m in Sources */,
+				44CE92381D29FF69000790F2 /* UdeskMessageTableView.m in Sources */,
+				44CE92301D29FF69000790F2 /* UdeskRobotIMViewController.m in Sources */,
+				44CE92581D29FF69000790F2 /* UdeskHppleElement.m in Sources */,
+				44CE922C1D29FF69000790F2 /* UdeskSearchController.m in Sources */,
+				44CE92311D29FF69000790F2 /* UdeskTicketViewController.m in Sources */,
+				44CE925C1D29FF69000790F2 /* UdeskPhotoView.m in Sources */,
+				44CE92471D29FF69000790F2 /* UdeskConfigurationHelper.m in Sources */,
+				44CE924B1D29FF69000790F2 /* UdeskLabel.m in Sources */,
+				44CE92281D29FF69000790F2 /* UdeskBaseViewController.m in Sources */,
+				44CE92511D29FF69000790F2 /* UdeskUtils.m in Sources */,
+				44CE925A1D29FF69000790F2 /* UdeskOneScrollView.m in Sources */,
+				44CE92421D29FF69000790F2 /* UIViewController+UdeskBackButtonHandler.m in Sources */,
+				44CE92481D29FF69000790F2 /* UdeskDateFormatter.m in Sources */,
+				44CE923F1D29FF69000790F2 /* NSArray+UdeskSDK.m in Sources */,
+				44CE92541D29FF69000790F2 /* UdeskMessageBubbleFactory.m in Sources */,
+				44CE92441D29FF69000790F2 /* UdeskAudioPlayerHelper.m in Sources */,
+				44CE92341D29FF69000790F2 /* UdeskAgentModel.m in Sources */,
+				44CE924F1D29FF69000790F2 /* UdeskTools.m in Sources */,
+				44CE92521D29FF69000790F2 /* UdeskViewExt.m in Sources */,
+				44CE92291D29FF69000790F2 /* UdeskNavigationView.m in Sources */,
+				44CE923A1D29FF69000790F2 /* UdeskEmotionManagerView.m in Sources */,
+				44CE922B1D29FF69000790F2 /* UdeskFAQViewController.m in Sources */,
+				44CE923E1D29FF69000790F2 /* UdeskProductView.m in Sources */,
+				44CE92391D29FF69000790F2 /* UdeskMessageTableViewCell.m in Sources */,
+				44CE92461D29FF69000790F2 /* UdeskConfig.m in Sources */,
+				44CE922A1D29FF69000790F2 /* UdeskContentController.m in Sources */,
+				44CE922F1D29FF69000790F2 /* UdeskChatViewController.m in Sources */,
 				44C3A0611C93ADCE004BDB2B /* main.m in Sources */,
-				444298BF1D029CFC003DD77B /* UdeskChatViewController.m in Sources */,
-				444298DA1D029CFC003DD77B /* UdeskKeywordRegularParser.m in Sources */,
-				444298ED1D029CFC003DD77B /* UdeskXPathQuery.m in Sources */,
-				444298E31D029CFC003DD77B /* UdeskVoiceRecordHelper.m in Sources */,
-				444298C31D029CFC003DD77B /* UdeskAgentMenuModel.m in Sources */,
-				444298D11D029CFC003DD77B /* NSTimer+UdeskSDK.m in Sources */,
-				444298D71D029CFC003DD77B /* UdeskConfigurationHelper.m in Sources */,
-				444298E21D029CFC003DD77B /* UdeskViewExt.m in Sources */,
-				444298CF1D029CFC003DD77B /* UdeskVoiceRecordHUD.m in Sources */,
-				444298D51D029CFC003DD77B /* UdeskBaseModel.m in Sources */,
-				444298D01D029CFC003DD77B /* NSArray+UdeskSDK.m in Sources */,
-				444298C71D029CFC003DD77B /* UdeskChatViewModel.m in Sources */,
+				44CE923D1D29FF69000790F2 /* UdeskVoiceRecordHUD.m in Sources */,
+				44CE92571D29FF69000790F2 /* UdeskHpple.m in Sources */,
+				44CE924A1D29FF69000790F2 /* UdeskKeywordRegularParser.m in Sources */,
+				44CE92351D29FF69000790F2 /* UdeskChatViewModel.m in Sources */,
+				44CE92561D29FF69000790F2 /* UdeskAlertController.m in Sources */,
+				44CE924C1D29FF69000790F2 /* UdeskPaserdKeyword.m in Sources */,
+				44CE924D1D29FF69000790F2 /* UdeskPhotographyHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -881,7 +871,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
-				GCC_PREFIX_HEADER = UdeskSDKExample/PrefixHeader.pch;
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = UdeskSDKExample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
@@ -906,7 +896,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
-				GCC_PREFIX_HEADER = UdeskSDKExample/PrefixHeader.pch;
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = UdeskSDKExample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;

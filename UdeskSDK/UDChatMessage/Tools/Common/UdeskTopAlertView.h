@@ -31,6 +31,6 @@ typedef enum : NSUInteger {
 + (UdeskTopAlertView*)viewWithParentView:(UIView*)parentView;
 
 //+ (UDTopAlertView*)showWithType:(UDAlertType)type text:(NSString*)text parentView:(UIView*)parentView;
-+ (UdeskTopAlertView *)showWithAgentModel:(UdeskAgentModel *)agentModel parentView:(UIView*)parentView;
++ (UdeskTopAlertView *)showWithAgentModel:(UdeskAgentModel *)agentModel parentView:(UIView*)parentView navView:(UIView *)navView;
 
 @end

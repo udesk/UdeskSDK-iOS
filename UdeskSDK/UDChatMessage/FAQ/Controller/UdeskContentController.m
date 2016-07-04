@@ -10,7 +10,7 @@
 #import "UdeskFoundationMacro.h"
 #import "UdeskUtils.h"
 #import "UdeskGeneral.h"
-#import "UDManager.h"
+#import "UdeskManager.h"
 
 @interface UdeskContentController (){
     
@@ -40,22 +40,14 @@
     [super viewDidLoad];
     
     //设置导航栏不透明
-    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
-    
-    UILabel *faqLabel = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 0, 100, 44)];
-    faqLabel.text = getUDLocalizedString(@"问题详情");
-    faqLabel.backgroundColor = [UIColor clearColor];
-    faqLabel.textAlignment = NSTextAlignmentCenter;
-    faqLabel.textColor = Config.articleContentTitleColor;
-    self.navigationItem.titleView = faqLabel;
+    [self.udNavView changeTitle:getUDLocalizedString(@"问题详情")];
     
     self.view.backgroundColor = [UIColor whiteColor];
     
     CGSize contentTitleSize = [UdeskGeneral.store textSize:self.ArticlesTitle fontOfSize:[UIFont systemFontOfSize:17] ToSize:CGSizeMake(UD_SCREEN_WIDTH, MAXFLOAT)];
     
-    _labelTitle = [[UILabel alloc] initWithFrame:CGRectMake(10, 12, UD_SCREEN_WIDTH-30, contentTitleSize.height)];
+    CGFloat faqContentY = self.navigationController.navigationBarHidden?64:0;
+    _labelTitle = [[UILabel alloc] initWithFrame:CGRectMake(10, 12+faqContentY, UD_SCREEN_WIDTH-30, contentTitleSize.height)];
     _labelTitle.text = self.ArticlesTitle;
     _labelTitle.hidden = YES;
     _labelTitle.textColor = [UIColor blackColor];
@@ -66,15 +58,21 @@
     [self initLoad];
 }
 
+- (void)backButtonAction {
+
+    [super backButtonAction];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.articleContentNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.articleContentNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.articleContentNavigationColor;
-        self.navigationController.navigationBar.tintColor = Config.articleBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.articleContentNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.articleBackButtonColor;
     }
 
 }
@@ -85,9 +83,9 @@
     [super viewDidDisappear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     }
     
 }
@@ -96,7 +94,7 @@
 - (void)initLoad {
     
     
-    [UDManager getFaqArticlesContent:self.Article_Id completion:^(id responseObject, NSError *error) {
+    [UdeskManager getFaqArticlesContent:self.Article_Id completion:^(id responseObject, NSError *error) {
         
         if (!error) {
             
@@ -107,7 +105,7 @@
             //加载html内容
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                [self loadHtmlContent:content baseUrl:[UDManager domain]];
+                [self loadHtmlContent:content baseUrl:[UdeskManager domain]];
             });
             
             _labelTitle.hidden = NO;

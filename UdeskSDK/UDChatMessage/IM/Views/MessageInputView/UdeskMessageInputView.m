@@ -13,17 +13,18 @@
 #import "UdeskFoundationMacro.h"
 #import "UdeskUtils.h"
 #import "UdeskTools.h"
+#import "UdeskManager.h"
 
 #define ViewHeight 30 //图标大小
 
 @interface UdeskMessageInputView () <UITextViewDelegate,UIActionSheetDelegate>
 /**
- *  是否取消錄音
+ *  是否取消录音
  */
 @property (nonatomic, assign, readwrite) BOOL isCancelled;
 
 /**
- *  是否正在錄音
+ *  是否正在录音
  */
 @property (nonatomic, assign, readwrite) BOOL isRecording;
 /**
@@ -35,6 +36,8 @@
  */
 @property (nonatomic, strong) UdeskMessageTableView *messageTableView;
 
+@property (nonatomic, strong) NSDate  *sendDate;
+
 @end
 
 @implementation UdeskMessageInputView
@@ -45,6 +48,7 @@
     if (self) {
         
         _messageTableView = tabelView;
+        self.sendDate = [NSDate date];
         
         [self setup];
     }
@@ -126,11 +130,11 @@
     self.inputTextView = textView;
     
     _inputTextView.frame = CGRectMake(voiceChangeButton.frame.origin.x+voiceChangeButton.frame.size.width+6, (self.frame.size.height-37)/2, (faceSendButton.frame.origin.x)-(voiceChangeButton.frame.origin.x+voiceChangeButton.frame.size.width+13), 37);
-    _inputTextView.backgroundColor = Config.textViewColor;
+    _inputTextView.backgroundColor = UdeskUIConfig.textViewColor;
     _inputTextView.layer.borderColor = [UIColor colorWithWhite:0.8f alpha:1.0f].CGColor;
     _inputTextView.layer.borderWidth = 0.65f;
     _inputTextView.layer.cornerRadius = 4.5f;
-    self.backgroundColor = Config.inputViewColor;
+    self.backgroundColor = UdeskUIConfig.inputViewColor;
     
     // KVO 检查contentSize
     [self.inputTextView addObserver:self
@@ -167,7 +171,7 @@
 
 - (void)messageStyleButtonClicked:(UIButton *)sender {
     
-    if (_agentCode==2000) {
+    if (_agentCode.integerValue==2000) {
         
         NSInteger index = sender.tag;
         switch (index) {
@@ -391,7 +395,7 @@
 
 #pragma mark - Text view delegate
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
-    if (_agentCode == 2000) {
+    if (_agentCode.integerValue == 2000) {
         
         if ([self.delegate respondsToSelector:@selector(inputTextViewWillBeginEditing:)]) {
             [self.delegate inputTextViewWillBeginEditing:self.inputTextView];
@@ -412,7 +416,7 @@
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
     [textView becomeFirstResponder];
-    if (_agentCode == 2000) {
+    if (_agentCode.integerValue == 2000) {
         
         if (!self.textViewHeight)
             self.textViewHeight = [self getTextViewContentH:textView];
@@ -424,9 +428,25 @@
     [textView resignFirstResponder];
 }
 
+- (void)textViewDidChange:(UITextView *)textView {
+
+    NSDate *nowDate = [NSDate date];
+    NSTimeInterval time = [nowDate timeIntervalSinceDate:self.sendDate];
+    if (time>0.5) {
+        self.sendDate = nowDate;
+        [UdeskManager sendClientInputtingWithContent:textView.text];
+    }
+    //输入预知
+    if ([UdeskTools isBlankString:textView.text]) {
+        [UdeskManager sendClientInputtingWithContent:textView.text];
+    }
+}
+
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     
     if ([text isEqualToString:@"\n"]) {
+        //发送出去以后置空输入预知
+        [UdeskManager sendClientInputtingWithContent:@""];
         if ([self.delegate respondsToSelector:@selector(didSendTextAction:)]) {
             [self.delegate didSendTextAction:textView.text];
         }

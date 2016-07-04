@@ -43,5 +43,9 @@
  *  @param compled 取消录音完成后的回调
  */
 - (void)cancelRecordCompled:(void(^)(BOOL fnished))compled;
+/**
+ *  语音短提示UI
+ */
+- (void)tooShortRecord;
 
 @end

@@ -90,4 +90,7 @@
 - (NSInteger)numberOfItemsInSection:(NSInteger)section;
 - (UdeskMessage *)objectAtIndexPath:(NSInteger)row;
 
+- (void)saveProductMessage:(UdeskMessage *)message;
+- (void)requestQueue;
+
 @end

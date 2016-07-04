@@ -78,7 +78,7 @@
         self.headView.hidden = YES;
         [self.headView removeFromSuperview];
         [self.activity removeFromSuperview];
-        self.tableHeaderView = nil;
+        self.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];;
         
         _isRefresh = NO;
         

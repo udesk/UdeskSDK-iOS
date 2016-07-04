@@ -11,7 +11,10 @@
 #import "UdeskTableViewController.h"
 #import "Udesk.h"
 
-@interface ViewController ()
+@interface ViewController () {
+
+    UIButton *contactUsButton;
+}
 
 @end
 
@@ -44,7 +47,7 @@
     [faqButton addTarget:self action:@selector(faqButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:faqButton];
     
-    UIButton *contactUsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    contactUsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     contactUsButton.frame = CGRectMake((UD_SCREEN_WIDTH-130)/2, faqButton.frame.origin.y + faqButton.frame.size.height+20, 130, 40);
     [contactUsButton setTitle:@"联系我们" forState:0];
     contactUsButton.backgroundColor = UDRGBCOLOR(31, 166, 255);
@@ -74,53 +77,66 @@
 
 - (void)setNewConfigUdesk {
     
-    //获取用户自定义字段
-    [UDManager getCustomerFields:^(id responseObject, NSError *error) {
-        
+    //获取用户自定义字段（根据需求请求，如果没有用到用户自定义字段，这个请求可以删除）
+//    [UdeskManager getCustomerFields:^(id responseObject, NSError *error) {
+//        
 //        NSLog(@"用户自定义字段：%@",responseObject);
-    }];
+//    }];
     
 #warning sdk_token参数必填，其它参数可选（有的最好都写上）
     NSString *nick_name = [NSString stringWithFormat:@"sdk用户%u",arc4random()];
     NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
+    NSString *email = [NSString stringWithFormat:@"%u@qq.com",arc4random()];
+    NSString *cellphone = [NSString stringWithFormat:@"%u",arc4random()];
     
     
-    //添加用户自定义字段
-//    NSDictionary *parameters = @{
-//                                 @"user": @{
-//                                         @"sdk_token": sdk_token,
-//                                         @"nick_name":nick_name,
-//                                         @"customer_field":@{
-//                                                 @"TextField_390":@"测试测试",
-//                                                 @"SelectField_455":@[@"1"]
-//                                                 }
-//                                         }
-//                                 };
-
+    //添加用户自定义字段 (只有sdk_token是必填参数，其他参数可以不填但不能写空值)
     NSDictionary *parameters = @{
                                  @"user": @{
                                          @"sdk_token": sdk_token,
-                                         @"nick_name":nick_name
+                                         @"nick_name":nick_name,
+                                         @"email":email,
+                                         @"cellphone":cellphone,
+                                         @"weixin_id":@"xiaoming888",
+                                         @"weibo_name":@"xmwb888",
+                                         @"qq":@"8888888",
+                                         @"description":@"用户描述",
+                                         @"customer_field":@{
+                                                 @"TextField_390":@"测试测试",
+                                                 @"SelectField_455":@[@"1"]
+                                                 }
                                          }
                                  };
-
     
     //创建用户
-    [UDManager createCustomerWithCustomerInfo:parameters];
-    
+    [UdeskManager createCustomerWithCustomerInfo:parameters];
 }
 
 - (void)faqButtonAction {
     
-    UdeskFaqController *faq = [[UdeskFaqController alloc] init];
+    UdeskFAQViewController *faq = [[UdeskFAQViewController alloc] init];
     
     [self.navigationController pushViewController:faq animated:YES];
-    
 }
 
 - (void)contactUsButtonAction {
     
+    [contactUsButton setTitle:@"联系我们" forState:0];
     UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
+    
+    //在聊天界面不需要通知
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UD_RECEIVED_NEW_MESSAGES_NOTIFICATION object:nil];
+    
+    //咨询对象（根据需求选择显示或着不显示，默认不显示）
+//    NSDictionary *product =  @{
+//                               @"product_imageUrl":@"http://img.club.pchome.net/kdsarticle/2013/11small/21/fd548da909d64a988da20fa0ec124ef3_1000x750.jpg",
+//                               @"product_title":@"测试测试测试测你测试测试测你测试测试测你测试测试测你！",
+//                               @"product_detail":@"¥88888.0",
+//                               @"product_url":@"http://www.baidu.com"
+//                               
+//                               };
+//    
+//    [chat showProductViewWithDictionary:product];
     
     [self.navigationController pushViewController:chat animated:YES];
     
@@ -146,11 +162,13 @@
     [super viewWillAppear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.iMNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.iMNavigationColor;
-        self.navigationController.navigationBar.tintColor = Config.iMBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.iMNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.iMBackButtonColor;
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveUdeskMessage:) name:UD_RECEIVED_NEW_MESSAGES_NOTIFICATION object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -158,11 +176,16 @@
     
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     }
     
+}
+
+- (void)receiveUdeskMessage:(NSNotification *)notif {
+    
+    [contactUsButton setTitle:[NSString stringWithFormat:@"联系我们(%ld)",[UdeskManager getLocalUnreadeMessagesCount]] forState:0];
 }
 
 - (void)didReceiveMemoryWarning {

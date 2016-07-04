@@ -67,20 +67,6 @@
     self.agentMenuBackButtonColor = [UIColor whiteColor];
     self.agentMenuNavigationColor = [UdeskTools colorWithHexString:@"3565df"];
     self.agentMenuTitleColor = [UIColor whiteColor];
-//    NSString *imageUrl = @"http://img5.duitang.com/uploads/item/201409/15/20140915205358_tz8Y3.jpeg";
-//    
-//    //缓存image
-//    NSString *newURL = [imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:newURL]];
-//    
-//    NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//        
-//        self.headImage = [UIImage imageWithData:data];
-//        //缓存头像
-//        [[UDCache sharedUDCache] storeImage:self.headImage forKey:imageUrl];
-//    }];
-//    
-//    [dataTask resume];
     
 //    self.oneSelfNavcigtionColor
 }

@@ -10,7 +10,7 @@
 #import "UdeskChatViewController.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskUtils.h"
-#import "UDManager.h"
+#import "UdeskManager.h"
 #import "UdeskAlertController.h"
 #import "UdeskAgentNavigationMenu.h"
 
@@ -25,26 +25,14 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
-        self.automaticallyAdjustsScrollViewInsets = NO;
-    }
+    [self.udNavView changeTitle:getUDLocalizedString(@"智能机器人对话")];
     
-    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
-    
-    
-    UILabel *robotTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-    robotTitle.text = getUDLocalizedString(@"智能机器人对话");
-    robotTitle.backgroundColor = [UIColor clearColor];
-    robotTitle.textColor = Config.robotTitleColor;
-    self.navigationItem.titleView = robotTitle;
-    
-    [UDManager getRobotURL:^(NSURL *robotUrl) {
+    [UdeskManager getRobotURL:^(NSURL *robotUrl) {
         
         if (robotUrl) {
             
-            UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:self.view.bounds];
+            CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
+            UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:webViewRect];
             intelligenceWeb.backgroundColor=[UIColor whiteColor];
             
             NSURL *ticketURL = robotUrl;
@@ -53,14 +41,23 @@
             
             [self.view addSubview:intelligenceWeb];
             
-            [self transferButton];
+            if ([UdeskManager supportTransfer]) {
+                
+                if (self.navigationController.navigationBarHidden) {
+                    [self.udNavView showRightButtonWithName:@"转人工"];
+                }
+                else {
+                    
+                    [self transferButton];
+                }
+            }
+            
             
         } else {
             
             UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
             
             [self.navigationController pushViewController:chat animated:NO];
-            
         }
         
     }];
@@ -71,19 +68,24 @@
     self.navigationItem.backBarButtonItem = barButtonItem;
 }
 
-- (void)transferButton {
+- (void)backButtonAction {
+
+    [super backButtonAction];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)rightButtonAction {
+
+    [super rightButtonAction];
     
-    BOOL transfer;
-    if ([UDManager supportTransfer]) {
-        transfer = YES;
-    } else {
-        transfer = NO;
-    }
+    [self transferButtonAction];
+}
+
+- (void)transferButton {
     
     //取消按钮
     UIButton * informationButton = [UIButton buttonWithType:UIButtonTypeCustom];
     informationButton.frame = CGRectMake(0, 0, 80, 40);
-    informationButton.hidden = !transfer;
     informationButton.titleLabel.font = [UIFont systemFontOfSize:16];
     [informationButton setTitle:getUDLocalizedString(@"转人工") forState:UIControlStateNormal];
     [informationButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -106,9 +108,26 @@
 
 - (void)transferButtonAction {
 
-    UdeskAgentNavigationMenu *agentMenu = [[UdeskAgentNavigationMenu alloc] init];
-    
-    [self.navigationController pushViewController:agentMenu animated:YES];
+    [UdeskManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
+        
+        if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+         
+            NSArray *result = [responseObject objectForKey:@"result"];
+            if (result.count) {
+                
+                UdeskAgentNavigationMenu *agentMenu = [[UdeskAgentNavigationMenu alloc] initWithMenuArray:result];
+                
+                [self.navigationController pushViewController:agentMenu animated:YES];
+            }
+            else {
+            
+                UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
+                [self.navigationController pushViewController:chat animated:YES];
+            }
+        }
+        
+    }];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -116,10 +135,10 @@
     [super viewWillAppear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.robotNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.robotNavigationColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.robotNavigationColor;
-        self.navigationController.navigationBar.tintColor = Config.robotBackButtonColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.robotNavigationColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.robotBackButtonColor;
     }
 }
 
@@ -128,15 +147,15 @@
     [super viewWillDisappear:animated];
     
     if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     } else {
-        self.navigationController.navigationBar.barTintColor = Config.oneSelfNavcigtionColor;
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     }
 }
 
 - (void)dealloc
 {
-
+    NSLog(@"%@销毁了",[self class]);
 }
 
 - (void)didReceiveMemoryWarning {

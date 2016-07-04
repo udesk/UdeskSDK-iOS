@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVAudioPlayer.h>
-#import "UdeskMessage.h"
 
 @protocol UDAudioPlayerHelperDelegate <NSObject>
 
@@ -28,8 +27,8 @@
 
 - (AVAudioPlayer*)player;
 - (BOOL)isPlaying;
-- (void)playAudioWithMessage:(UdeskMessage *)message;
 - (void)stopAudio;//停止
+- (void)playAudioWithMessage:(NSString *)contentId withAudioUrl:(NSString *)url;
 
 @end
 

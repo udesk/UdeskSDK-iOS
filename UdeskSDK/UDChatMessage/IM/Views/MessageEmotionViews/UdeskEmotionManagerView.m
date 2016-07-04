@@ -30,10 +30,16 @@ static CGFloat EmojiFontSize;
 - (void)setup {
     if (UD_SCREEN_WIDTH<375) {
         
-        EmojiWidth = 45;
+        EmojiWidth = 46;
         EmojiHeight = 45;
         EmojiFontSize = 30;
         
+    }
+    else if (UD_SCREEN_WIDTH>375) {
+        
+        EmojiWidth = 59;
+        EmojiHeight = 50;
+        EmojiFontSize = 32;
     }
     else {
         
@@ -48,6 +54,7 @@ static CGFloat EmojiFontSize;
     //
     NSInteger rowNum = (CGRectGetHeight(self.bounds) / EmojiHeight);
     NSInteger colNum = (CGRectGetWidth(self.bounds) / EmojiWidth);
+    colNum = 8;
     NSInteger numOfPage = ceil((float)[self.emojis count] / (float)(rowNum * colNum));
     
     // init scrollview

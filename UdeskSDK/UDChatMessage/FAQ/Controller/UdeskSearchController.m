@@ -12,7 +12,8 @@
 #import "UdeskChatViewController.h"
 #import "UdeskUtils.h"
 #import "UdeskFoundationMacro.h"
-#import "UDManager.h"
+#import "UdeskManager.h"
+#import "UdeskViewExt.h"
 
 @interface UdeskSearchController()<UISearchDisplayDelegate, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource>
 
@@ -29,14 +30,16 @@
 {
     self = [super init];
     if (self) {
+
+        self.searchContentsController = viewController;
         
         [searchBar setPlaceholder:getUDLocalizedString(@"搜索")];
         
-        searchBar.tintColor = Config.searchCancleButtonColor;
+        searchBar.tintColor = UdeskUIConfig.searchCancleButtonColor;
         
         UIButton *contactUs = [UIButton buttonWithType:UIButtonTypeCustom];
         contactUs.frame = CGRectMake((UD_SCREEN_WIDTH-250)/2, 50, 250, 40);
-        [contactUs setTitleColor:Config.searchContactUsColor forState:0];
+        [contactUs setTitleColor:UdeskUIConfig.searchContactUsColor forState:0];
         [contactUs setTitle:getUDLocalizedString(@"联系我们") forState:0];
         [contactUs addTarget:self action:@selector(contactUsButton) forControlEvents:UIControlEventTouchUpInside];
         
@@ -44,13 +47,13 @@
         [contactUs.layer setCornerRadius:5.0]; //设置矩圆角半径
         [contactUs.layer setBorderWidth:1.5];   //边框宽度
         contactUs.titleLabel.font = [UIFont systemFontOfSize:19];
-        [contactUs.layer setBorderColor:(Config.contactUsBorderColor).CGColor];//边框颜色
+        [contactUs.layer setBorderColor:(UdeskUIConfig.contactUsBorderColor).CGColor];//边框颜色
         
         
         UILabel *notFound = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-230)/2, 0, 230, contactUs.frame.origin.y)];
         notFound.textAlignment = NSTextAlignmentCenter;
         notFound.font = [UIFont systemFontOfSize:17];
-        notFound.textColor = Config.promptTextColor;
+        notFound.textColor = UdeskUIConfig.promptTextColor;
         notFound.text = getUDLocalizedString(@"无法找到你搜索的内容吗?");
         
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-69)];
@@ -74,21 +77,24 @@
 
 - (void)contactUsButton {
     
-    UdeskChatViewController *UdeskIM = [[UdeskChatViewController alloc] init];
-
-    [self.searchContentsController.navigationController pushViewController:UdeskIM animated:YES];
+    self.searchContentsController.navigationController.navigationBarHidden = NO;
+    UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
     
+    [self.searchContentsController.navigationController pushViewController:chat animated:YES];
+}
+
+- (void) searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+
+    NSLog(@"%@",controller.searchBar);
 }
 
 //隐藏搜索无结果字样
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
-
-{
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
     
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.001);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         for (UIView * subview in self.searchDisplayController.searchResultsTableView.subviews) {
-            if ([subview isKindOfClass: [UILabel class]])
+            if ([subview isKindOfClass:[UILabel class]])
             {
                 subview.hidden = YES;
             }
@@ -96,19 +102,12 @@
     });
     
     return YES;
-    
 }
 
 - (UISearchBar *)searchBar
 {
     return self.searchDisplayController.searchBar;
 }
-
-- (UIViewController *)searchContentsController
-{
-    return self.searchDisplayController.searchContentsController;
-}
-
 
 #pragma mark UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectionIndex
@@ -142,19 +141,15 @@
     content.ArticlesTitle = model.subject;
     
     [self.searchContentsController.navigationController pushViewController:content animated:YES];
-    
 }
 
 #pragma mark - UIScrollViewDelegate
-
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     [self.searchBar resignFirstResponder];
 }
 
 #pragma mark - UISearchBarDelegate
-
-
 //搜索按钮
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
@@ -177,7 +172,7 @@
 //加载数据
 - (void)initProblemLoad:(NSString *)searchText {
     
-    [UDManager searchFaqArticles:searchText completion:^(id responseObject, NSError *error) {
+    [UdeskManager searchFaqArticles:searchText completion:^(id responseObject, NSError *error) {
         
         if (!error) {
             

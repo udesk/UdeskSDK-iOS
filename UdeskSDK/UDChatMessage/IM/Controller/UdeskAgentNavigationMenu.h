@@ -6,10 +6,12 @@
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "UdeskBaseViewController.h"
 
-@interface UdeskAgentNavigationMenu : UIViewController
+@interface UdeskAgentNavigationMenu : UdeskBaseViewController
 
 @property (nonatomic, strong) NSArray *agentMenuData;
+
+- (instancetype)initWithMenuArray:(NSArray *)menu;
 
 @end
