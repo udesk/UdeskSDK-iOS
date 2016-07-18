@@ -10,12 +10,13 @@
 #import "UdeskAgentModel.h"
 #import "NSTimer+UdeskSDK.h"
 #import "UdeskManager.h"
+#import "UdeskUtils.h"
 
 typedef void (^UDAgentDataCallBack) (id responseObject, NSError *error);
 
 @implementation UdeskAgentHttpData
 
-static double agentHttpDelayInSeconds = 5.0f;
+static double agentHttpDelayInSeconds = 25.0f;
 
 + (instancetype)sharedAgentHttpData {
     
@@ -118,7 +119,7 @@ static double agentHttpDelayInSeconds = 5.0f;
     }
     else {
     
-        agentModel = [[UdeskAgentModel alloc] initWithContentsOfDic:responseObject];
+        agentModel.message = getUDLocalizedString(@"正在连接，请稍后...");
         agentModel.code = [NSNumber numberWithInteger:[[responseObject objectForKey:@"code"] integerValue]];
     }
     

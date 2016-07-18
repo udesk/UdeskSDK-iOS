@@ -68,9 +68,13 @@
             
             [UdeskManager submitCustomerDevicesInfo:^(id responseObject, NSError *error) {
                 NSLog(@"设备信息提交成功");
-                @udStrongify(self);
-                //请求客服数据
-                [self requestAgentWithAgentId:agent_id withGroupId:group_id];
+                [UdeskManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
+                    
+                    @udStrongify(self);
+                    //请求客服数据
+                    [self requestAgentWithAgentId:agent_id withGroupId:group_id];
+                }];
+                
             }];
             
         } failure:^(NSError *error) {
@@ -82,7 +86,6 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kUdeskReachabilityChangedNotification object:nil];
         self.reachability  = [UdeskReachability reachabilityWithHostName:@"www.baidu.com"];
         [self.reachability startNotifier];
-
     }
     return self;
 }
@@ -216,8 +219,8 @@
 
     //回调客服信息到vc显示
     [self callbackAgentModel:agentModel];
-    //获取用户登录信息
-    [self requestCustomerLoginInfo];
+    //用户登录
+    [self loginUdeskWithAgentCode:agentModel.code];
 }
 
 //回调客服信息到vc显示
@@ -239,22 +242,9 @@
     [UdeskAgentHttpData sharedAgentHttpData].stopRequest = NO;
 }
 
-#pragma mark - 获取用户登录信息
-- (void)requestCustomerLoginInfo {
-
-    @udWeakify(self);
-    [UdeskManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
-        
-        //登录Udesk
-        @udStrongify(self);
-        [self loginUdeskWithAgentCode:self.agentModel.code];
-    }];
-
-}
-
 #pragma mark - 登录Udesk
 - (void)loginUdeskWithAgentCode:(NSNumber *)code {
-
+    
     if (code.integerValue != 2000 && code.integerValue != 2001) {
         
         [self showAlertViewWithAgentCode:code];
@@ -379,7 +369,7 @@
 - (void)surveyCompletion {
     
     UdeskAlertController *completionAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"感谢您的评价")];
-    [completionAlert addCloseActionWithTitle:getUDLocalizedString(@"关闭") Handler:NULL];
+    [completionAlert addCloseActionWithTitle:@"关闭" Handler:NULL];
     
     [completionAlert showWithSender:nil controller:nil animated:YES completion:NULL];
 }
@@ -494,9 +484,9 @@
 //排队Alert
 - (void)queueStatus {
     
-    NSString *ticketButtonTitle = getUDLocalizedString(@"留言");
+    NSString *ticketButtonTitle = @"留言";
     UdeskAlertController *queueAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"当前客服正繁忙，如需留言请点击按钮进入表单留言")];
-    [queueAlert addCloseActionWithTitle:getUDLocalizedString(@"取消") Handler:NULL];
+    [queueAlert addCloseActionWithTitle:@"取消" Handler:NULL];
     @udWeakify(self);
     [queueAlert addAction:[UdeskAlertAction actionWithTitle:ticketButtonTitle handler:^(UdeskAlertAction * _Nonnull action) {
         
@@ -512,8 +502,8 @@
 - (void)agentNotOnline {
     
     NSString *title = getUDLocalizedString(@"客服不在线");
-    NSString *message = getUDLocalizedString(@"您可以选择提交表单来描述您的问题，稍后我们会和您联系。");
-    NSString *cancelButtonTitle = getUDLocalizedString(@"取消");
+    NSString *message = getUDLocalizedString(@"您可以选择提交表单来描述您的问题，稍后我们会和您联系");
+    NSString *cancelButtonTitle = @"取消";
     NSString *ticketButtonTitle = getUDLocalizedString(@"留言");
     
     UdeskAlertController *notOnlineAlert = [UdeskAlertController alertWithTitle:title message:message];
@@ -540,7 +530,7 @@
 //无网络Alert
 - (void)netWorkDisconnectAlertView {
     
-    UdeskAlertController *notNetworkAlert = [UdeskAlertController alertWithTitle:nil message:@"网络断开连接，请先连接网络"];
+    UdeskAlertController *notNetworkAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"网络断开连接，请先连接网络")];
     [notNetworkAlert addCloseActionWithTitle:@"确定" Handler:NULL];
     [notNetworkAlert showWithSender:nil controller:nil animated:YES completion:NULL];
 }
@@ -557,7 +547,7 @@
 //未知错误
 - (void)notConnected {
     
-    UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertWithTitle:nil message:@"正在连接，请稍后..."];
+    UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"正在连接，请稍后...")];
     [notExistAgentAlert addCloseActionWithTitle:@"确定" Handler:NULL];
     [notExistAgentAlert showWithSender:nil controller:nil animated:YES completion:NULL];
 }
@@ -692,7 +682,7 @@
 
 //根据客服code展示alertview
 - (void)showAlertViewWithAgentCode:(NSNumber *)code {
-
+    
     if (code.integerValue == 2002) {
         
         [self agentNotOnline];

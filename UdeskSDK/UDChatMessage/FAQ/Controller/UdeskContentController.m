@@ -93,7 +93,6 @@
 //加载数据
 - (void)initLoad {
     
-    
     [UdeskManager getFaqArticlesContent:self.Article_Id completion:^(id responseObject, NSError *error) {
         
         if (!error) {
@@ -110,7 +109,6 @@
             
             _labelTitle.hidden = NO;
         }
-        
     }];
     
 }
@@ -143,7 +141,6 @@
 #pragma mark - UIWebViewDelegate
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    
     for (UIView *_aView in [htmlWebView subviews])
     {
         if ([_aView isKindOfClass:[UIScrollView class]])
@@ -162,6 +159,18 @@
             }
         }
     }
+}
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        
+        [[UIApplication sharedApplication] openURL:request.URL];
+        
+        return NO;
+    }
+    
+    return YES;
 }
 
 @end

@@ -111,7 +111,7 @@ static CGFloat EmojiFontSize;
     }
     
     UIButton *sendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [sendBtn setTitle:getUDLocalizedString(@"发送") forState:UIControlStateNormal];
+    [sendBtn setTitle:@"发送" forState:UIControlStateNormal];
     sendBtn.frame = CGRectMake(UD_SCREEN_WIDTH-90, UD_SCREEN_WIDTH<375?150:166, 75, 38);;
     sendBtn.backgroundColor = UDRGBACOLOR(8, 125, 253, 1);
     UDViewRadius(sendBtn, 4);

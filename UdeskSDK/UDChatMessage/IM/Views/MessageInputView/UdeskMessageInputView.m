@@ -232,7 +232,7 @@
                     [self.delegate didSelectedMultipleMediaAction];
                 }
                 
-                NSString *cancelTitle = getUDLocalizedString(@"取消");
+                NSString *cancelTitle = @"取消";
                 NSString *albumTitle = getUDLocalizedString(@"从相册选取");
                 NSString *cameraTitle = getUDLocalizedString(@"拍照");
                 

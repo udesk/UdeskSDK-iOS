@@ -65,7 +65,7 @@
     //取消按钮
     UIButton * closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     closeButton.frame = CGRectMake(0, 0, 70, 40);
-    [closeButton setTitle:getUDLocalizedString(@"返回") forState:UIControlStateNormal];
+    [closeButton setTitle:@"返回" forState:UIControlStateNormal];
     [closeButton setImage:[UIImage ud_defaultBackImage] forState:UIControlStateNormal];
     [closeButton addTarget:self action:@selector(backButtonAction) forControlEvents:UIControlEventTouchUpInside];
     

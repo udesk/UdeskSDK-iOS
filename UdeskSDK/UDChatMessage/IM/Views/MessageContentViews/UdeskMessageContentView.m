@@ -533,8 +533,8 @@
 - (void)againButtonAction {
     
     UdeskAlertController *againMsgController = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"重发该消息？")];
-    [againMsgController addCloseActionWithTitle:getUDLocalizedString(@"取消") Handler:NULL];
-    [againMsgController addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"确定") handler:^(UdeskAlertAction * _Nonnull action) {
+    [againMsgController addCloseActionWithTitle:@"取消" Handler:NULL];
+    [againMsgController addAction:[UdeskAlertAction actionWithTitle:@"确定" handler:^(UdeskAlertAction * _Nonnull action) {
         
         if (![[UdeskTools internetStatus] isEqualToString:@"notReachable"]) {
             
@@ -548,7 +548,7 @@
         else {
             
             UdeskAlertController *notNetWork = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"网络断开链接了！")];
-            [notNetWork addCloseActionWithTitle:getUDLocalizedString(@"取消") Handler:NULL];
+            [notNetWork addCloseActionWithTitle:@"取消" Handler:NULL];
             [notNetWork showWithSender:nil controller:nil animated:YES completion:NULL];
             
         }

@@ -42,7 +42,7 @@
         backButton.frame = CGRectMake(5, (frame.size.height-30)/2+backButtonY, 60, 30);
         [backButton setTitleColor:UdeskUIConfig.iMBackButtonColor forState:UIControlStateNormal];
         [backButton setImage:[UIImage ud_defaultBackImage] forState:UIControlStateNormal];
-        [backButton setTitle:getUDLocalizedString(@"返回") forState:UIControlStateNormal];
+        [backButton setTitle:@"返回" forState:UIControlStateNormal];
         backButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         [backButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:backButton];

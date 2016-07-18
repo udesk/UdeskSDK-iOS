@@ -60,6 +60,8 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resendClickFailedMessage:) name:UdeskClickResendMessage object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendProductMessageURL:) name:UdeskTouchProductUrlSendButton object:nil];
+        //在聊天界面不需要通知
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UD_RECEIVED_NEW_MESSAGES_NOTIFICATION object:nil];
     }
     return self;
 }
@@ -160,7 +162,6 @@
     
     // 设置整体背景颜色
     [self setBackgroundColor:[UIColor colorWithRed:0.918f  green:0.922f  blue:0.925f alpha:1]];
-    
     
     // 输入工具条的frame
     CGRect inputFrame = CGRectMake(0.0f,
@@ -305,7 +306,7 @@
         default:
             break;
     }
-    
+
 }
 
 #pragma mark - UDAudioPlayerHelper Delegate
@@ -768,7 +769,6 @@
     } else {
         self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     }
-    
 }
 
 - (void)didReceiveMemoryWarning {

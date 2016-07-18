@@ -27,45 +27,58 @@
     
     [self.udNavView changeTitle:getUDLocalizedString(@"智能机器人对话")];
     
-    [UdeskManager getRobotURL:^(NSURL *robotUrl) {
+    [UdeskManager createServerCustomer:^(id responseObject) {
         
-        if (robotUrl) {
-            
-            CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
-            UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:webViewRect];
-            intelligenceWeb.backgroundColor=[UIColor whiteColor];
-            
-            NSURL *ticketURL = robotUrl;
-            
-            [intelligenceWeb loadRequest:[NSURLRequest requestWithURL:ticketURL]];
-            
-            [self.view addSubview:intelligenceWeb];
-            
-            if ([UdeskManager supportTransfer]) {
+        if ([[responseObject objectForKey:@"status"] integerValue] == 0) {
+         
+            [UdeskManager getRobotURL:^(NSURL *robotUrl) {
                 
-                if (self.navigationController.navigationBarHidden) {
-                    [self.udNavView showRightButtonWithName:@"转人工"];
-                }
-                else {
+                if (robotUrl) {
                     
-                    [self transferButton];
+                    CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
+                    UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:webViewRect];
+                    intelligenceWeb.backgroundColor=[UIColor whiteColor];
+                    
+                    NSURL *ticketURL = robotUrl;
+                    
+                    [intelligenceWeb loadRequest:[NSURLRequest requestWithURL:ticketURL]];
+                    
+                    [self.view addSubview:intelligenceWeb];
+                    
+                    if ([UdeskManager supportTransfer]) {
+                        
+                        if (self.navigationController.navigationBarHidden) {
+                            [self.udNavView showRightButtonWithName:getUDLocalizedString(@"转人工")];
+                        }
+                        else {
+                            
+                            [self transferButton];
+                        }
+                    }
+                    
+                    
+                } else {
+                    
+                    UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
+                    
+                    [self.navigationController pushViewController:chat animated:NO];
+                    
                 }
-            }
-            
-            
-        } else {
-            
-            UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
-            
-            [self.navigationController pushViewController:chat animated:NO];
+                
+            }];
+
         }
         
+    } failure:^(NSError *error) {
+        
+        NSLog(@"用户创建失败:%@",error);
     }];
     
     //设置返回按钮文字（在A控制器写代码）
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] init];
     barButtonItem.title = @"返回";
     self.navigationItem.backBarButtonItem = barButtonItem;
+    
 }
 
 - (void)backButtonAction {
