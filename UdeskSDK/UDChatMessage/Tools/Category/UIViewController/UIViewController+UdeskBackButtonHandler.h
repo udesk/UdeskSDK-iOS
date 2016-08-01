@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIViewController (BackButtonHandler)
+@interface UIViewController (UdeskBackButtonHandler)
 
 @end

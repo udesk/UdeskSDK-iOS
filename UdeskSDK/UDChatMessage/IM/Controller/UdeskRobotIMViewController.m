@@ -29,7 +29,7 @@
     
     [UdeskManager createServerCustomer:^(id responseObject) {
         
-        if ([[responseObject objectForKey:@"status"] integerValue] == 0) {
+        if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
          
             [UdeskManager getRobotURL:^(NSURL *robotUrl) {
                 
@@ -51,18 +51,16 @@
                             [self.udNavView showRightButtonWithName:getUDLocalizedString(@"转人工")];
                         }
                         else {
-                            
+
                             [self transferButton];
                         }
                     }
-                    
                     
                 } else {
                     
                     UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
                     
                     [self.navigationController pushViewController:chat animated:NO];
-                    
                 }
                 
             }];
@@ -97,7 +95,7 @@
 - (void)transferButton {
     
     //取消按钮
-    UIButton * informationButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIButton *informationButton = [UIButton buttonWithType:UIButtonTypeCustom];
     informationButton.frame = CGRectMake(0, 0, 80, 40);
     informationButton.titleLabel.font = [UIFont systemFontOfSize:16];
     [informationButton setTitle:getUDLocalizedString(@"转人工") forState:UIControlStateNormal];
@@ -129,7 +127,6 @@
             if (result.count) {
                 
                 UdeskAgentNavigationMenu *agentMenu = [[UdeskAgentNavigationMenu alloc] initWithMenuArray:result];
-                
                 [self.navigationController pushViewController:agentMenu animated:YES];
             }
             else {

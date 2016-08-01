@@ -19,7 +19,6 @@ static CGFloat EmojiFontSize;
 @interface UdeskEmotionManagerView ()
 
 @property (nonatomic, strong) NSArray      *emojis;
-@property (nonatomic, strong) UIScrollView *scrollView;
 
 @end
 
@@ -57,14 +56,10 @@ static CGFloat EmojiFontSize;
     colNum = 8;
     NSInteger numOfPage = ceil((float)[self.emojis count] / (float)(rowNum * colNum));
     
-    // init scrollview
-    self.scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
-    self.scrollView.pagingEnabled = YES;
-    self.scrollView.showsHorizontalScrollIndicator = NO;
-    self.scrollView.showsVerticalScrollIndicator = NO;
-    self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.bounds) * numOfPage,
-                                             CGRectGetHeight(self.bounds));
-    [self addSubview:self.scrollView];
+    // init backGroundView
+    
+    UIView *backGroundView = [[UIView alloc] initWithFrame:self.bounds];
+    [self addSubview:backGroundView];
     
     // add emojis
     
@@ -104,7 +99,7 @@ static CGFloat EmojiFontSize;
             [emojiButton addTarget:self action:@selector(emojiButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
             
             emojiButton.frame = currentRect;
-            [self.scrollView addSubview:emojiButton];
+            [backGroundView addSubview:emojiButton];
         }
         
         column++;
@@ -128,7 +123,7 @@ static CGFloat EmojiFontSize;
     [deleteButton setBackgroundImage:deleteImage forState:UIControlStateNormal];
     [deleteButton setBackgroundImage:deleteImageh forState:UIControlStateHighlighted];
     deleteButton.tintColor = [UIColor blackColor];
-    [self.scrollView addSubview:deleteButton];}
+    [backGroundView addSubview:deleteButton];}
 
 - (void)awakeFromNib {
     [self setup];
@@ -178,7 +173,6 @@ static CGFloat EmojiFontSize;
 - (void)sendAction:(UIButton *)button {
     
     [self.delegate didEmotionViewSendAction];
-    
 }
 
 @end

@@ -11,7 +11,7 @@
 
 @interface UdeskBaseViewController : UIViewController
 
-@property (nonatomic, weak)UdeskNavigationView *udNavView;
+@property (nonatomic, strong)UdeskNavigationView *udNavView;
 
 - (void)backButtonAction;
 - (void)rightButtonAction;

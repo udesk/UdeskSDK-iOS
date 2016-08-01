@@ -20,13 +20,6 @@
 #import "UdeskDateFormatter.h"
 #import "UdeskManager.h"
 
-//DB-Insert
-#define InsertTextMsg [NSString stringWithFormat:@"insert into %@ ('content','replied_at','msgid','sendflag','direction','mesType') values(?,?,?,?,?,?)",UD_Message_DB]
-
-#define InsertAudioMsg [NSString stringWithFormat:@"insert into %@ ('content','replied_at','msgid','sendflag','direction','mesType','duration') values(?,?,?,?,?,?,?)",UD_Message_DB]
-
-#define InsertPhotoMsg [NSString stringWithFormat:@"insert into %@ ('content','replied_at','msgid','sendflag','direction','mesType','width','height') values(?,?,?,?,?,?,?,?)",UD_Message_DB]
-
 @interface UdeskChatViewModel()<UDManagerDelegate> {
 
     UdeskMessage *_productMessage;
@@ -63,18 +56,15 @@
         //获取db消息
         [self requestDataBaseMessageContent];
         
-        //获取客户信息
+        //创建用户(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
         [UdeskManager createServerCustomer:^(id responseObject) {
             
-            [UdeskManager submitCustomerDevicesInfo:^(id responseObject, NSError *error) {
-                NSLog(@"设备信息提交成功");
-                [UdeskManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
-                    
-                    @udStrongify(self);
-                    //请求客服数据
-                    [self requestAgentWithAgentId:agent_id withGroupId:group_id];
-                }];
+            //获取客户信息(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
+            [UdeskManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
                 
+                @udStrongify(self);
+                //请求客服数据(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
+                [self requestAgentWithAgentId:agent_id withGroupId:group_id];
             }];
             
         } failure:^(NSError *error) {
@@ -161,7 +151,6 @@
     
     //更新UI
     [self updateContent];
-
 }
 
 //加载更多DB消息
@@ -286,7 +275,6 @@
     
         NSDictionary *newMessage = (NSDictionary *)message;
         UdeskAgentModel *agentModel = [[UdeskAgentModel alloc] initWithContentsOfDic:newMessage];
-        
         [self callbackAgentModel:agentModel];
     }
     
@@ -396,8 +384,7 @@
     NSDate *date = [NSDate date];
     
     UdeskMessage *textMessage = [[UdeskMessage alloc] initWithText:text timestamp:date];
-    
-    textMessage.agent_jid = _agentModel.jid;
+    textMessage.agentJid = _agentModel.jid;
     
     [self.messageArray addObject:textMessage];
     //通知刷新UI
@@ -433,7 +420,7 @@
     }
     
     UdeskMessage *photoMessage = [[UdeskMessage alloc] initWithPhoto:image timestamp:date];
-    photoMessage.agent_jid = _agentModel.jid;
+    photoMessage.agentJid = _agentModel.jid;
     
     [self.messageArray addObject:photoMessage];
     //通知刷新UI
@@ -464,7 +451,7 @@
     NSDate *date = [NSDate date];
     
     UdeskMessage *voiceMessage = [[UdeskMessage alloc] initWithVoicePath:audioPath voiceDuration:audioDuration timestamp:date];
-    voiceMessage.agent_jid = _agentModel.jid;
+    voiceMessage.agentJid = _agentModel.jid;
     
     [self.messageArray addObject:voiceMessage];
     //通知刷新UI
@@ -588,7 +575,7 @@
         message.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
         
     }
-
+    
     return message;
 }
 
@@ -601,6 +588,22 @@
     message.contentId = [dbMessage objectForKey:@"msgid"];
     message.messageStatus = [[dbMessage objectForKey:@"sendflag"] integerValue];
     message.timestamp = [[UdeskDateFormatter sharedFormatter].dateFormatter dateFromString:[dbMessage objectForKey:@"replied_at"]];
+    
+    NSString *avatar = [dbMessage objectForKey:@"avatar"];
+    if ([avatar isEqual:@0]) {
+        message.agentAvatar = @"";
+    }
+    else {
+        message.agentAvatar = [dbMessage objectForKey:@"avatar"];
+    }
+    
+    NSString *agent_name = [dbMessage objectForKey:@"agent_name"];
+    if ([agent_name isEqual:@0]) {
+        message.agentName = @"";
+    }
+    else {
+        message.agentName = [dbMessage objectForKey:@"agent_name"];
+    }
     
     NSString *content = [dbMessage objectForKey:@"content"];
     
@@ -776,7 +779,6 @@
 - (UdeskMessage *)objectAtIndexPath:(NSInteger)row {
 
     return [self.messageArray objectAtIndexCheck:row];
-    
 }
 
 - (void)dealloc
@@ -796,7 +798,7 @@
 - (void)sendProductMessage {
 
     if (self.productMessage) {
-        self.productMessage.agent_jid = self.agentModel.jid;
+        self.productMessage.agentJid = self.agentModel.jid;
         [UdeskManager sendMessage:self.productMessage completion:nil];
     }
 }

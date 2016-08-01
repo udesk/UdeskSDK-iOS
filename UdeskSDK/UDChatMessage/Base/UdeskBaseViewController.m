@@ -30,30 +30,28 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     
-    UdeskNavigationView *udNavView = [[UdeskNavigationView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, ud_isIOS6?44:64)];
+    _udNavView = [[UdeskNavigationView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, ud_isIOS6?44:64)];
     
     if (self.navigationController.navigationBarHidden) {
         
-        [self.view addSubview:udNavView];
-        [self.view bringSubviewToFront:udNavView];
+        [self.view addSubview:_udNavView];
+        [self.view bringSubviewToFront:_udNavView];
     }
     else {
     
         [self setCloseNavigationItem];
-        [udNavView showNativeNavigationView];
-        self.navigationItem.titleView = udNavView;
+        [_udNavView showNativeNavigationView];
+        self.navigationItem.titleView = _udNavView;
     }
     
-    _udNavView = udNavView;
-    
     @udWeakify(self);
-    udNavView.navigationBackBlcok = ^{
+    _udNavView.navigationBackBlcok = ^{
         
         @udStrongify(self);
         [self backButtonAction];
     };
     
-    udNavView.navigationRightBlcok = ^{
+    _udNavView.navigationRightBlcok = ^{
         
         @udStrongify(self);
         [self rightButtonAction];

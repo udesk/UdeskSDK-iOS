@@ -60,12 +60,13 @@
 + (void)createCustomerWithCustomerInfo:(NSDictionary *)customerInfo;
 
 /**
- *  在服务端创建用户。（开发者无需调用此函数）
+ *  更新用户信息
  *
- *  @param completion 成功信息回调
- *  @param failure    失败信息回调
+ *  @param customerInfo 参数跟创建用户信息的结构体一样(不需要传sdk_token)
+ *  @warning 用户自定义字段"customer_field"改为"custom_fields"其他不变
+ *  @warning 请不要使用已经存在的邮箱或者手机号进行更新，否则会更新失败！
  */
-+ (void)createServerCustomer:(void(^)(id responseObject))completion failure:(void(^)(NSError *error))failure;
++ (void)updateUserInformation:(NSDictionary *)customerInfo;
 
 /**
  *  获取用户的登录信息，会返回用户登录Udesk的信息
@@ -75,20 +76,25 @@
 + (void)getCustomerLoginInfo:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
 
 /**
- *  通过开发者存储的用户ID获取用户登录信息
- *
- *  @param customerId 用户ID
- *  @param completion 回调用户信息
- */
-+ (void)getCustomerLoginInfo:(NSString *)customerId
-                  completion:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
-
-/**
- *  获取客服信息
+ *  获取后台分配的客服信息
  *
  *  @param completion 回调客服信息
  */
 + (void)requestRandomAgent:(void (^)(id responseObject,NSError *error))completion;
+
+/**
+ *  指定分配客服或客服组
+ *
+ *  注意：需要先调用createCustomer接口
+ *
+ *  @param agentId    客服id（选择客服组，则客服id可不填）
+ *  @param groupId    客服组id（选择客服，则客服组id可不填）
+ *  @param completion 回调结果
+ */
++ (void)assignAgentOrGroup:(NSString *)agentId
+                   groupID:(NSString *)groupId
+                completion:(void (^) (id responseObject,NSError *error))completion;
+
 /**
  *  获取转接后客服的信息
  *
@@ -96,17 +102,6 @@
  */
 + (void)getRedirectAgentInformation:(NSDictionary *)redirectAgent
                          completion:(void (^)(id responseObject,NSError *error))completion;
-
-/**
- *  登录Udesk
- *
- *  @param userName        用户帐号
- *  @param password        用户密码
- *  @param completion      回调登录状态
- */
-+ (void)loginUdeskWithUserName:(NSString *)userName
-                      password:(NSString *)password
-                    completion:(void (^)(BOOL status))completion;
 
 /**
  *  接收消息代理
@@ -160,22 +155,6 @@
  *  @param completion 回调用户自定义子段信息
  */
 + (void)getCustomerFields:(void (^)(id responseObject, NSError *error))completion;
-/**
- *  提交用户设备信息
- *
- *  @param completion 回调提交状态
- */
-+ (void)submitCustomerDevicesInfo:(void (^)(id responseObject, NSError *error))completion;
-
-/**
- *  通过开发者存储的用户ID提交用户设备信息
- *
- *  @param customerId 用户ID
- *  @param completion 回调提交状态
- */
-+ (void)submitCustomerDevicesInfo:(NSString *)customerId
-                       completion:(void (^)(id responseObject, NSError *error))completion;
-
 /**
  *  获取公司帮助中心文章
  *
@@ -321,19 +300,6 @@
 + (void)getAgentNavigationMenu:(void (^)(id responseObject, NSError *error))completion;
 
 /**
- *  指定分配客服或客服组
- *
- *  注意：需要先调用createCustomer接口
- *
- *  @param agentId    客服id（选择客服组，则客服id可不填）
- *  @param groupId    客服组id（选择客服，则客服组id可不填）
- *  @param completion 回调结果
- */
-+ (void)assignAgentOrGroup:(NSString *)agentId
-                   groupID:(NSString *)groupId
-                completion:(void (^) (id responseObject,NSError *error))completion;
-
-/**
  *  取消所有网络操作
  */
 + (void)ud_cancelAllOperations;
@@ -387,5 +353,13 @@
  *  @param key  data id
  */
 + (void)storeData:(NSData *)data forKey:(NSString *)key;
+
+/**
+ *  在服务端创建用户。（开发者无需调用此函数）
+ *
+ *  @param completion 成功信息回调
+ *  @param failure    失败信息回调
+ */
++ (void)createServerCustomer:(void(^)(id responseObject))completion failure:(void(^)(NSError *error))failure;
 
 @end

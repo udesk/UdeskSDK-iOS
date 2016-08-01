@@ -22,7 +22,7 @@ libresolv.tbd
 libsqlite3.tbd
 ```
 
-把SDK文件夹中的Udesk文件夹拖到你的工程里
+把下载的文件夹中的UdeskSDK文件夹拖到你的工程里
 ```
 点击的你工程targets->Build Settings 
 搜索Other Linker Flags 加入 -lxml2 -ObjC，
@@ -55,8 +55,8 @@ pod 'UdeskSDK'
 //初始化Udesk
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 // Override point for customization after application launch.
-[UdeskManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
-return YES;
+    [UdeskManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
+    return YES;
 }
 ```
 ### 2）、初始化用户信息
@@ -65,18 +65,17 @@ return YES;
 用户系统字段是Udesk已定义好的字段，开发者可以传入这些用户信息，供客服查看。
 ```
 NSDictionary *parameters = @{
-@"user": @{
-
-@"nick_name": @"小明",
-@"cellphone":@"18888888888",
-@"weixin_id":@"xiaoming888",
-@"weibo_name":@"xmwb888",
-@"qq":@"8888888",
-@"email":@"xiaoming@qq.com",
-@"description":@"用户描述",
-@"sdk_token":@"xxxxxxxxxxx"
-}
-}
+                                @"user": @{
+                                            @"nick_name": @"小明",
+                                            @"cellphone":@"18888888888",
+                                            @"weixin_id":@"xiaoming888",
+                                            @"weibo_name":@"xmwb888",
+                                            @"qq":@"8888888",
+                                            @"email":@"xiaoming@qq.com",
+                                            @"description":@"用户描述",
+                                            @"sdk_token":@"xxxxxxxxxxx"
+                                        }
+                            }
 
 ```
 
@@ -102,51 +101,102 @@ NSDictionary *parameters = @{
 //获取用户自定义字段
 [UdeskManager getCustomerFields:^(id responseObject, NSError *error) {
 
-//NSLog(@"用户自定义字段：%@",responseObject);
+    //NSLog(@"用户自定义字段：%@",responseObject);
 }];
 ```
 
 返回信息：
 ```
 fieldsDict:{
-message = success;
-status = 0;
-"user_fields" =     (
-{
-comment = “测试测试”;      
-"content_type" = droplist; 
-"field_label" = "测试";  
-"field_name" = “SelectField_109";   ——————用户自定义字段key
-options =             (    
-{
-0 = "测试用户自定义字段";
-}
-);
-permission = 0;
-requirment = 1;
-};
+    message = success;
+    status = 0;
+    "user_fields" =     (
+        {
+            comment = “测试测试”;      
+            "content_type" = droplist; 
+            "field_label" = "测试";  
+            "field_name" = “SelectField_109";   ——————用户自定义字段key
+    options =             (    
+        {
+            0 = "测试用户自定义字段";
+        }
+    );
+    permission = 0;
+    requirment = 1;
+    };
 }
 ```
 使用:添加key值"customer_field" 类型为字典，根据返回的信息field_name的value 作为key，value根据需求定义。把这个键值对添加到customer_field。最后把customer_field添加到用户信息参数的user字典里
   示例:
 ```
 NSDictionary *parameters = @{
-@"user": @{
-@"sdk_token": sdk_token,
-@"cellphone":cellphone,
-@"customer_field":@{
-@"SelectField_109":@"测试测试"
-}
+                                @"user": @{
+                                            @"sdk_token": sdk_token,
+                                            @"nick_name":nick_name,
+                                            @"email":email,
+                                            @"cellphone":cellphone,
+                                            @"weixin_id":@"xiaoming888",
+                                            @"weibo_name":@"xmwb888",
+                                            @"qq":@"8888888",
+                                            @"description":@"用户描述",
+                                            @"customer_field":@{
+                                                                    @"TextField_390":@"测试测试",
+                                                                    @"SelectField_455":@[@"1"]
+                                                            }
 
-}
-};
+                                    }
+                        };
 ```
-创建用户
+创建用户（此接口为必调用，否则无法使用SDK）
 ```
 [UdeskManager createCustomerWithCustomerInfo:parameters];
 
 ```
+更新用户信息（根据需求自定义，不调用不影响主流程）
+```
+注意：
+    参数跟创建用户信息的结构体大致一样(不需要传sdk_token)  
+    用户自定义字段"customer_field"改为"custom_fields"其他不变
+    请不要使用已经存在的邮箱或者手机号进行更新，否则会更新失败！
 
+NSDictionary *updateParameters = @{
+                                    @"user" : @{
+                                                @"nick_name":@"测试更新10",
+                                                @"cellphone":@"323312110198754326231123",
+                                                @"weixin_id":@"xiaoming91078543628818",
+                                                @"weibo_name":@"xmwb81497810568328",
+                                                @"qq":@"888818682843578910",
+                                                @"description":@"用户10描述",
+                                                @"email":@"889092340491087556233290111@163.com",
+                                                @"custom_fields":@{
+                                                                    @"TextField_390":@"测试测试",
+                                                                    @"SelectField_455":@[@"1"]
+                                                                }
+                                            }
+};
+
+[UdeskManager updateUserInformation:updateParameters];
+
+```
+添加咨询对象（根据需求自定义，不调用不影响主流程）
+```
+在你push事件的时候调用UdeskChatViewController类的 showProductViewWithDictionary方法
+
+UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
+//咨询对象
+NSDictionary *product =  @{
+                            @"product_imageUrl":@"http://img.club.pchome.net/kdsarticle/2013/11small/21/fd548da909d64a988da20fa0ec124ef3_1000x750.jpg",
+                            @"product_title":@"测试咨询对象标题测试咨询对象标题！",
+                            @"product_detail":@"¥88888.0",
+                            @"product_url":@"http://www.baidu.com"
+
+                        };
+
+[chat showProductViewWithDictionary:product];
+
+[self.navigationController pushViewController:chat animated:YES];
+
+```
 
 ### 3）、推出聊天页面
 ```
@@ -178,72 +228,61 @@ UdeskRobotIMViewController *robot = [[UdeskRobotIMViewController alloc] init];
 ```
 
 /**
-*  Udesk客服系统当前有新消息，开发者可实现该协议方法，通过此方法显示小红点未读标识
-*/
-UD_RECEIVED_NEW_MESSAGES_NOTIFICATION
-
-/**
-*  初始化Udesk
+*  初始化Udesk，必须调用此函数，请正确填写参数。
 *
 *  @param key    公司密钥
 *  @param domain 公司域名
 */
 + (void)initWithAppkey:(NSString *)key domianName:(NSString *)domain;
 /**
-*  创建用户
+*  创建用户，必须调用此函数，请正确填写参数
 *
 *  @param customerInfo 用户信息
 */
 + (void)createCustomerWithCustomerInfo:(NSDictionary *)customerInfo;
 
 /**
-*  在服务端创建用户
+*  更新用户信息
 *
-*  @param completion 成功信息回调
-*  @param failure    失败信息回调
+*  @param customerInfo 参数跟创建用户信息的结构体一样(不需要传sdk_token)
+*  @warning 用户自定义字段"customer_field"改为"custom_fields"其他不变
 */
-+ (void)createServerCustomer:(void(^)(id responseObject))completion failure:(void(^)(NSError *error))failure;
++ (void)updateUserInformation:(NSDictionary *)customerInfo;
 
 /**
-*  获取用户的登录信息
+*  获取用户的登录信息，会返回用户登录Udesk的信息
 *
 *  @param completion 回调用户登录信息
 */
 + (void)getCustomerLoginInfo:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
 
 /**
-*  通过开发者存储的用户ID获取用户登录信息
-*
-*  @param customerId 用户ID
-*  @param completion 回调用户信息
-*/
-+ (void)getCustomerLoginInfo:(NSString *)customerId
-completion:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
-
-/**
-*  获取客服信息
+*  获取后台分配的客服信息
 *
 *  @param completion 回调客服信息
 */
 + (void)requestRandomAgent:(void (^)(id responseObject,NSError *error))completion;
+
+/**
+*  指定分配客服或客服组
+*
+*  注意：需要先调用createCustomer接口
+*
+*  @param agentId    客服id（选择客服组，则客服id可不填）
+*  @param groupId    客服组id（选择客服，则客服组id可不填）
+*  @param completion 回调结果
+*/
++ (void)assignAgentOrGroup:(NSString *)agentId
+groupID:(NSString *)groupId
+completion:(void (^) (id responseObject,NSError *error))completion;
+
 /**
 *  获取转接后客服的信息
 *
 *  @param completion 回调客服信息
 */
-+ (void)getRedirectAgentInformation:(NSDictionary *)agentId
++ (void)getRedirectAgentInformation:(NSDictionary *)redirectAgent
 completion:(void (^)(id responseObject,NSError *error))completion;
-
-/**
-*  登录Udesk
-*
-*  @param userName        用户帐号
-*  @param password        用户密码
-*  @param completion      回调登录状态
-*/
-+ (void)loginUdeskWithUserName:(NSString *)userName
-password:(NSString *)password
-completion:(void (^)(BOOL status))completion;
 
 /**
 *  接收消息代理
@@ -266,7 +305,7 @@ completion:(void (^)(BOOL status))completion;
 + (void)logoutUdesk;
 
 /**
-*  设置客户离线 (在用户点击home键后调用此方法)
+*  设置客户离线 (在用户点击home键后调用此方法，如不调用此方法，会造成客服消息发送不出去)
 */
 + (void)setCustomerOffline;
 
@@ -278,11 +317,18 @@ completion:(void (^)(BOOL status))completion;
 /**
 *  发送消息
 *
-*  @param message    UdeskMessage类型消息体
+*  @param message    UDMessage类型消息体
 *  @param completion 发送回调
 */
 + (void)sendMessage:(UdeskMessage *)message
 completion:(void (^) (UdeskMessage *message,BOOL sendStatus))completion;
+
+/**
+* 将用户正在输入的内容，提供给客服查看。该接口没有调用限制，但每1秒内只会向服务器发送一次数据
+* @param content 提供给客服看到的内容
+* @warning 需要在初始化成功后，且客服是在线状态时调用才有效
+*/
++ (void)sendClientInputtingWithContent:(NSString *)content;
 
 /**
 *  获取用户自定义字段
@@ -290,22 +336,6 @@ completion:(void (^) (UdeskMessage *message,BOOL sendStatus))completion;
 *  @param completion 回调用户自定义子段信息
 */
 + (void)getCustomerFields:(void (^)(id responseObject, NSError *error))completion;
-/**
-*  提交用户设备信息
-*
-*  @param completion 回调提交状态
-*/
-+ (void)submitCustomerDevicesInfo:(void (^)(id responseObject, NSError *error))completion;
-
-/**
-*  通过开发者存储的用户ID提交用户设备信息
-*
-*  @param customerId 用户ID
-*  @param completion 回调提交状态
-*/
-+ (void)submitCustomerDevicesInfo:(NSString *)customerId
-completion:(void (^)(id responseObject, NSError *error))completion;
-
 /**
 *  获取公司帮助中心文章
 *
@@ -451,23 +481,9 @@ completion:(void (^)(id responseObject, NSError *error))completion;
 + (void)getAgentNavigationMenu:(void (^)(id responseObject, NSError *error))completion;
 
 /**
-*  指定分配客服或客服组
-*
-*  注意：需要先调用createCustomer接口
-*
-*  @param agentId    客服id（选择客服组，则客服id可不填）
-*  @param groupId    客服组id（选择客服，则客服组id可不填）
-*  @param completion 回调结果
-*/
-+ (void)assignAgentOrGroup:(NSString *)agentId
-groupID:(NSString *)groupId
-completion:(void (^) (id responseObject,NSError *error))completion;
-
-/**
-*  取消所有操作
+*  取消所有网络操作
 */
 + (void)ud_cancelAllOperations;
-
 /**
 *  获取未读消息数量
 *
@@ -518,5 +534,13 @@ completion:(void (^) (id responseObject,NSError *error))completion;
 *  @param key  data id
 */
 + (void)storeData:(NSData *)data forKey:(NSString *)key;
+
+/**
+*  在服务端创建用户。（开发者无需调用此函数）
+*
+*  @param completion 成功信息回调
+*  @param failure    失败信息回调
+*/
++ (void)createServerCustomer:(void(^)(id responseObject))completion failure:(void(^)(NSError *error))failure;
 
 ```

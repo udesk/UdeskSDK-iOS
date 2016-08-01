@@ -19,6 +19,7 @@
 #import "UdeskUtils.h"
 #import "UdeskLabel.h"
 #import "UdeskProductView.h"
+#import "UdeskViewExt.h"
 
 #define kUDHaveBubbleMargin 10.0f // 距离气泡上下边的间隙
 
@@ -70,6 +71,25 @@
 // 计算Cell需要实际Message内容的大小
 + (CGFloat)calculateCellHeightWithMessage:(UdeskMessage *)message {
     CGSize size = [UdeskMessageContentView getBubbleFrameWithMessage:message];
+    
+    if (message.messageFrom == UDMessageTypeReceiving) {
+        
+        switch (message.messageType) {
+            case UDMessageMediaTypeRich:
+            case UDMessageMediaTypeText:
+            case UDMessageMediaTypeVoice:
+            case UDMessageMediaTypePhoto: {
+                
+                size.height += 20;
+                
+                break;
+            }
+
+            default:
+                break;
+        }
+    }
+    
     return size.height;
 }
 
@@ -82,7 +102,7 @@
         case UDMessageMediaTypeRich:
         case UDMessageMediaTypeText: {
             CGSize needTextSize = [UdeskMessageContentView neededSizeForText:message.text];
-            bubbleSize = CGSizeMake(needTextSize.width + kUDTextHorizontalBubblePadding*2 + kUDArrowMarginWidth, needTextSize.height + kUDHaveBubbleMargin * 2);
+            bubbleSize = CGSizeMake(needTextSize.width + kUDTextHorizontalBubblePadding*2 + kUDArrowMarginWidth, needTextSize.height + kUDHaveBubbleMargin * 2.5);
             break;
         }
         case UDMessageMediaTypeVoice: {
@@ -155,7 +175,6 @@
 //消息类型展示的空间
 - (void)configureBubbleImageView:(UdeskMessage *)message {
     
-    
     if (message.messageFrom == UDMessageTypeSending) {
         
         if (message.messageStatus == UDMessageSending) {
@@ -200,7 +219,8 @@
             _redirectTagLabel.hidden = YES;
             //非咨询对象消息隐藏
             _productView.hidden = YES;
-            
+            //客服名字
+             _agentNameLabel.hidden = NO;
         }
         case UDMessageMediaTypeRich:
         case UDMessageMediaTypeText: {
@@ -210,6 +230,8 @@
             _bubbleImageView.hidden = NO;
             // 隐藏图片
             _photoImageView.hidden = YES;
+            //客服名字
+            _agentNameLabel.hidden = NO;
             
             if (message.messageType == UDMessageMediaTypeText||message.messageType==UDMessageMediaTypeRich) {
                 //显示文本消息的控件
@@ -222,6 +244,8 @@
                 _redirectTagLabel.hidden = YES;
                 //非咨询对象消息隐藏
                 _productView.hidden = YES;
+                //客服名字
+                _agentNameLabel.hidden = NO;
                 
             } else {
                 //隐藏文本消息的控件
@@ -233,6 +257,7 @@
                     _animationVoiceImageView = nil;
                     
                     UIImageView *animationVoiceImageView = [UdeskMessageVoiceFactory messageVoiceAnimationImageViewWithBubbleMessageType:message.messageFrom];
+                    animationVoiceImageView.backgroundColor = [UIColor clearColor];
                     [self addSubview:animationVoiceImageView];
                     _animationVoiceImageView = animationVoiceImageView;
                     _animationVoiceImageView.hidden = NO;
@@ -246,6 +271,8 @@
                 _redirectTagLabel.hidden = YES;
                 //非咨询对象消息隐藏
                 _productView.hidden = YES;
+                //客服名字
+                _agentNameLabel.hidden = NO;
                 
             }
             
@@ -262,11 +289,12 @@
             _bubbleImageView.hidden = NO;
             //隐藏语音播放动画
             _animationVoiceImageView.hidden = YES;
-            
             //隐藏转接tag
             _redirectTagLabel.hidden = YES;
             //非咨询对象消息隐藏
             _productView.hidden = YES;
+            //客服名字
+            _agentNameLabel.hidden = NO;
             
             break;
         }
@@ -280,14 +308,14 @@
             _bubbleImageView.hidden = YES;
             //隐藏语音播放动画
             _animationVoiceImageView.hidden = YES;
-            
             //隐藏转接tag
             _redirectTagLabel.hidden = YES;
-            
             //隐藏转接tag
             _redirectTagLabel.hidden = NO;
             //非咨询对象消息隐藏
             _productView.hidden = YES;
+            //客服名字
+            _agentNameLabel.hidden = YES;
             
             break;
         }
@@ -301,14 +329,14 @@
             _bubbleImageView.hidden = YES;
             //隐藏语音播放动画
             _animationVoiceImageView.hidden = YES;
-            
             //隐藏转接tag
             _redirectTagLabel.hidden = YES;
-            
             //隐藏转接tag
             _redirectTagLabel.hidden = YES;
-            
+            //咨询对象
             _productView.hidden = NO;
+            //客服名字
+            _agentNameLabel.hidden = YES;
             
             break;
         }
@@ -321,6 +349,8 @@
 }
 //设置内容
 - (void)configureMessageDisplayMediaWithMessage:(UdeskMessage *)message {
+    
+    _agentNameLabel.text = message.agentName;
     
     if (message.messageType == UDMessageMediaTypeText) {
         
@@ -418,8 +448,9 @@
 }
 
 - (void)configureVoiceDurationLabelFrameWithBubbleFrame:(CGRect)bubbleFrame {
-    CGRect voiceFrame = _voiceDurationLabel.frame;
+    CGRect voiceFrame = self.voiceDurationLabel.frame;
     voiceFrame.origin.x = (self.message.messageFrom == UDMessageTypeSending ? bubbleFrame.origin.x : bubbleFrame.origin.x - CGRectGetWidth(voiceFrame) + bubbleFrame.size.width);
+    voiceFrame.origin.y = self.animationVoiceImageView.ud_y;
     _voiceDurationLabel.frame = voiceFrame;
     _voiceDurationLabel.textAlignment = (self.message.messageFrom == UDMessageTypeSending ? NSTextAlignmentRight : NSTextAlignmentLeft);
 }
@@ -459,7 +490,16 @@
             textLabel.font = [UIFont systemFontOfSize:UdeskUIConfig.contentFontSize];
             [self addSubview:textLabel];
             _textLabel = textLabel;
-            
+        }
+        
+        if (!_agentNameLabel) {
+            UILabel *agentNameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            agentNameLabel.backgroundColor = [UIColor clearColor];
+            agentNameLabel.textColor = [UIColor grayColor];
+            agentNameLabel.numberOfLines = 1;
+            agentNameLabel.font = [UIFont systemFontOfSize:14];
+            [self addSubview:agentNameLabel];
+            _agentNameLabel = agentNameLabel;
         }
         
         // 3、初始化显示图片的控件
@@ -469,12 +509,11 @@
             [self addSubview:photoImageView];
             photoImageView.userInteractionEnabled = YES;
             _photoImageView = photoImageView;
-            
         }
         
         // 4、初始化显示语音时长的label
         if (!_voiceDurationLabel) {
-            UILabel *voiceDurationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, 30, 30)];
+            UILabel *voiceDurationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, 30, 15)];
             voiceDurationLabel.backgroundColor = [UIColor clearColor];
             voiceDurationLabel.font = [UIFont systemFontOfSize:14.f];
             voiceDurationLabel.textAlignment = NSTextAlignmentRight;
@@ -571,17 +610,30 @@
             // 获取实际气泡的大小
             CGRect bubbleFrame = [self bubbleFrame];
             
-            self.bubbleImageView.frame = bubbleFrame;
-            
             CGFloat textX = bubbleFrame.origin.x + kUDTextHorizontalBubblePadding;
+            CGFloat textY = bubbleFrame.origin.y + kUDHaveBubbleMargin*1.3;
+            CGFloat bubbleImagY = bubbleFrame.origin.y;
+            
             if (self.message.messageFrom == UDMessageTypeReceiving) {
                 textX = kUDTextHorizontalBubblePadding;
+                textY += 20;
+                bubbleImagY += 20;
             }
             
+            CGRect agentNameFrame = CGRectMake(bubbleFrame.origin.x+10,
+                                               bubbleFrame.origin.y,
+                                               bubbleFrame.size.width,
+                                               20);
+            
+            
             CGRect textFrame = CGRectMake(textX,
-                                          bubbleFrame.origin.y + kUDHaveBubbleMargin,
+                                          textY,
                                           bubbleFrame.size.width - kUDTextHorizontalBubblePadding*2 - kUDArrowMarginWidth,
                                           bubbleFrame.size.height - kUDHaveBubbleMargin * 2);
+            
+            self.agentNameLabel.frame = agentNameFrame;
+            
+            self.bubbleImageView.frame = CGRectMake(bubbleFrame.origin.x, bubbleImagY, bubbleFrame.size.width, bubbleFrame.size.height);
             
             self.textLabel.frame = CGRectIntegral(textFrame);
             
@@ -590,7 +642,7 @@
             if (self.message.messageFrom == UDMessageTypeReceiving) {
                 voiceImagePaddingX = CGRectGetMinX(bubbleFrame) + kUDVoiceMargin;
             }
-            animationVoiceImageViewFrame.origin = CGPointMake(voiceImagePaddingX, CGRectGetMidY(textFrame) - CGRectGetHeight(animationVoiceImageViewFrame) / 2);  // 垂直居中
+            animationVoiceImageViewFrame.origin = CGPointMake(voiceImagePaddingX, textY);  // 垂直居中
             self.animationVoiceImageView.frame = animationVoiceImageViewFrame;
             
             [self configureVoiceDurationLabelFrameWithBubbleFrame:bubbleFrame];
@@ -603,19 +655,30 @@
             
             CGRect bubbleFrame = [self bubbleFrame];
             
-            self.bubbleImageView.frame = bubbleFrame;
             
             CGSize needPhotoSize = CGSizeMake([self.message.width floatValue], [self.message.height floatValue]);
             
             CGFloat paddingX = 0.0f;
+            CGFloat imageY = kUDHaveBubbleMargin+kUDImageHorizontalBubblePadding-1;
+            CGFloat bubbleImagY = bubbleFrame.origin.y;
+            
             if (self.message.messageFrom == UDMessageTypeSending) {
                 paddingX = CGRectGetWidth(self.bounds) - needPhotoSize.width-kUDImageHorizontalBubblePadding-1;
             } else if (self.message.messageFrom == UDMessageTypeReceiving) {
                 paddingX = kUDImageHorizontalBubblePadding+1;
+                imageY += 20;
+                bubbleImagY += 20;
             }
-            CGRect photoImageViewFrame = CGRectMake(paddingX, kUDHaveBubbleMargin+kUDImageHorizontalBubblePadding-1,needPhotoSize.width, needPhotoSize.height);
+            CGRect photoImageViewFrame = CGRectMake(paddingX, imageY,needPhotoSize.width, needPhotoSize.height);
             
+            CGRect agentNameFrame = CGRectMake(bubbleFrame.origin.x+10,
+                                               bubbleFrame.origin.y,
+                                               bubbleFrame.size.width,
+                                               20);
+            
+            self.bubbleImageView.frame = CGRectMake(bubbleFrame.origin.x, bubbleImagY, bubbleFrame.size.width, bubbleFrame.size.height);
             self.photoImageView.frame = photoImageViewFrame;
+            self.agentNameLabel.frame = agentNameFrame;
             
             [self configureMessageSendLoadingFrame:bubbleFrame];
             

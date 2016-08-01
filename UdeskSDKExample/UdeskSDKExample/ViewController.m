@@ -121,16 +121,15 @@
 
 - (void)contactUsButtonAction {
     
-    [contactUsButton setTitle:@"联系我们" forState:0];
-    UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
-    
     //在聊天界面不需要通知
+    [contactUsButton setTitle:@"联系我们" forState:0];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UD_RECEIVED_NEW_MESSAGES_NOTIFICATION object:nil];
     
+    UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
     //咨询对象（根据需求选择显示或着不显示，默认不显示）
 //    NSDictionary *product =  @{
 //                               @"product_imageUrl":@"http://img.club.pchome.net/kdsarticle/2013/11small/21/fd548da909d64a988da20fa0ec124ef3_1000x750.jpg",
-//                               @"product_title":@"测试测试测试测你测试测试测你测试测试测你测试测试测你！",
+//                               @"product_title":@"测试咨询对象标题测试咨询对象标题！",
 //                               @"product_detail":@"¥88888.0",
 //                               @"product_url":@"http://www.baidu.com"
 //                               
@@ -139,7 +138,6 @@
 //    [chat showProductViewWithDictionary:product];
     
     [self.navigationController pushViewController:chat animated:YES];
-    
 }
 
 - (void)robotButtonAction {

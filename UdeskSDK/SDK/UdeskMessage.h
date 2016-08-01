@@ -93,7 +93,16 @@ typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
 /**
  *  消息发送对象
  */
-@property (nonatomic, strong) NSString                *agent_jid;
+@property (nonatomic, strong) NSString                *agentJid;
+/**
+ *  客服头像
+ */
+@property (nonatomic, strong) NSString                *agentAvatar;
+/**
+ *  客服昵称
+ */
+@property (nonatomic, strong) NSString                *agentName;
+
 /**
  *  咨询对象链接
  */

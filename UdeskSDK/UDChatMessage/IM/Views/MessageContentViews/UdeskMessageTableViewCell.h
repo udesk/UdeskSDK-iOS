@@ -37,7 +37,7 @@
 /**
  *  自定义多媒体消息内容View
  */
-@property (nonatomic, weak  ) UdeskMessageContentView               *messageContentView;
+@property (nonatomic, weak  ) UdeskMessageContentView            *messageContentView;
 
 /**
  *  头像按钮

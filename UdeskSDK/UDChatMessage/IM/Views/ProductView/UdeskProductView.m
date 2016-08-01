@@ -96,24 +96,30 @@
             }
             else {
                 
-                NSString *newURL = [message.product_imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:newURL]];
-                
-                NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                dispatch_async(dispatch_get_global_queue(0, 0), ^{
                     
-                    if (data) {
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            
-                            self.productImageView.image = [UIImage imageWithData:data];
-                        });
-                        
+                    NSString *encodedString = (NSString *)
+                    
+                    CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+                                                                              
+                                                                              (CFStringRef)message.product_imageUrl,
+                                                                              
+                                                                              (CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",
+                                                                              
+                                                                              NULL,
+                                                                              
+                                                                              kCFStringEncodingUTF8));
+                    
+                    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:encodedString]]];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.productImageView.image  = image;
+                        //缓存图片
                         [UdeskManager storeImage:self.productImageView.image forKey:message.product_imageUrl];
-                    }
-                    
-                }];
-                
-                [dataTask resume];
+                        
+                    });
+                });
+
             }
             
         }];

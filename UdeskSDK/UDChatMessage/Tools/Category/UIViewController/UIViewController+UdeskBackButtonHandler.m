@@ -58,6 +58,15 @@ static NSString *const kOriginDelegate = @"kOriginDelegate";
 #pragma mark - 手势
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
+    
+    if (self.viewControllers.count <= 1) {
+        return NO;
+    }
+    
+    if ([[self valueForKey:@"_isTransitioning"] boolValue]) {
+        return NO;
+    }
+    
     if (gestureRecognizer == self.interactivePopGestureRecognizer) {
         id<UIGestureRecognizerDelegate> originDelegate = objc_getAssociatedObject(self, [kOriginDelegate UTF8String]);
         return [originDelegate gestureRecognizerShouldBegin:gestureRecognizer];

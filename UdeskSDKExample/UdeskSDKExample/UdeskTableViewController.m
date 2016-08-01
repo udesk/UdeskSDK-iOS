@@ -40,7 +40,8 @@
                                 @"指定客服组 id 进行分配",
                                 @"指引客户选择客服组",
                                 @"查看当前 SDK 版本号",
-                                @"获取消息未读数"
+                                @"获取消息未读数",
+                                @"更新用户信息"
                                 ];
     
 }
@@ -190,6 +191,29 @@
             NSString *title = [NSString stringWithFormat:@"当前会话有 %ld 条未读",(long)[UdeskManager getLocalUnreadeMessagesCount]];
             
             UdeskAlertController *notNetworkAlert = [UdeskAlertController alertWithTitle:title message:nil];
+            [notNetworkAlert addCloseActionWithTitle:@"确定" Handler:NULL];
+            [notNetworkAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+            
+            break;
+        }
+            
+        case 5: {
+            
+            NSDictionary *parameters = @{
+                                         @"user" :    @{
+                                                 @"nick_name":@"更新昵称",
+                                                 @"cellphone":@"188888881111",
+                                                 @"weixin_id":@"testupdatewechat",
+                                                 @"weibo_name":@"testupdateweibo",
+                                                 @"qq":@"testupdateqq",
+                                                 @"description":@"更新用户描述",
+                                                 @"email":@"testupdateemail@163.com",
+                                                 }
+                                         };
+            
+            [UdeskManager updateUserInformation:parameters];
+            
+            UdeskAlertController *notNetworkAlert = [UdeskAlertController alertWithTitle:@"更新成功" message:@"请重新进入IM会话，客服端刷新后查看"];
             [notNetworkAlert addCloseActionWithTitle:@"确定" Handler:NULL];
             [notNetworkAlert showWithSender:nil controller:nil animated:YES completion:NULL];
             

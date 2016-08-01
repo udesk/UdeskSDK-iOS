@@ -16,6 +16,11 @@
 @class UdeskAgentModel;
 @class UdeskMessage;
 
+//typedef enum : NSUInteger {
+//    <#MyEnumValueA#>,
+//    <#MyEnumValueB#>,
+//    <#MyEnumValueC#>,
+//} UDAgentStatusType;
 
 @interface UdeskChatViewModel : NSObject
 

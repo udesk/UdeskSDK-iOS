@@ -72,7 +72,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self.udNavView changeTitle:getUDLocalizedString(@"请选择客服组")];
+//    [self.udNavView changeTitle:getUDLocalizedString(@"请选择客服组")];
     
     self.view.backgroundColor = [UIColor colorWithRed:0.918f  green:0.922f  blue:0.925f alpha:1];
     

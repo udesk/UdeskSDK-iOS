@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UdeskContentController.h"
+@class UdeskContentController;
 
 @interface UdeskSearchController : NSObject
 /**

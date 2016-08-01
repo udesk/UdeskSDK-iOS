@@ -11,19 +11,21 @@
 @interface UdeskAgentModel : UdeskBaseModel
 
 /*** 客服ID */
-@property (nonatomic, copy  ) NSString  *agent_id;
+@property (nonatomic, strong) NSString  *agent_id;
 
 /*** 客服名字 */
-@property (nonatomic, copy  ) NSString  *nick;
+@property (nonatomic, strong) NSString  *nick;
 
 /*** 客服JID */
-@property (nonatomic, copy  ) NSString  *jid;
+@property (nonatomic, strong) NSString  *jid;
 
 /*** 客服状态消息 */
-@property (nonatomic, copy  ) NSString  *message;
+@property (nonatomic, strong) NSString  *message;
 
 /*** 客服状态code */
 @property (nonatomic, strong) NSNumber  *code;
 
+/*** 客服头像URL */
+@property (nonatomic, strong) NSString  *avatar;
 
 @end

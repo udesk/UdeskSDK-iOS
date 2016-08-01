@@ -11,6 +11,8 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskLabel.h"
 #import "UdeskDateFormatter.h"
+#import "UdeskTools.h"
+#import "UdeskManager.h"
 
 //时间 Y
 static const CGFloat kUDLabelPadding         = 5.0f;
@@ -86,7 +88,36 @@ static CGFloat const kUDHeadImageSize = 40.0f;
             break;
         case UDMessageTypeReceiving:
             
-            _headImageView.image = [UIImage ud_defaultAgentImage];
+            if (message.agentAvatar.length>0) {
+                
+                [UdeskManager queryDiskCacheForKey:message.agentAvatar done:^(UIImage *image) {
+                    
+                    if (image) {
+                            
+                        _headImageView.image = image;
+                    }
+                    else {
+                        
+                        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                            
+                            NSString *newURL = [message.agentAvatar stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                            UIImage *avatarImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:newURL]]];
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                
+                                _headImageView.image = avatarImage;
+                                [UdeskManager storeImage:avatarImage forKey:message.agentAvatar];
+                            });
+                        });
+                        
+                    }
+                }];
+                
+            }
+            else {
+            
+                _headImageView.image = [UIImage ud_defaultAgentImage];
+            }
             
             break;
             

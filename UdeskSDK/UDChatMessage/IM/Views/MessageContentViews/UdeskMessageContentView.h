@@ -16,13 +16,16 @@
 /**
  *  目标消息Model对象
  */
-@property (nonatomic, strong) UdeskMessage                            * message;
-
+@property (nonatomic, strong) UdeskMessage                         *message;
 /**
  *  自定义显示文本消息控件
  */
 
-@property (nonatomic, weak  ) UdeskLabel                              *textLabel;
+@property (nonatomic, weak  ) UdeskLabel                           *textLabel;
+/**
+ *  客服名字
+ */
+@property (nonatomic, weak  ) UILabel                              *agentNameLabel;
 
 /**
  *  用于显示气泡的ImageView控件

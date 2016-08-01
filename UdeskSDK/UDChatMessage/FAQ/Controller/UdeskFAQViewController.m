@@ -11,7 +11,7 @@
 #import "UdeskUtils.h"
 #import "UdeskProblemModel.h"
 #import "UdeskContentController.h"
-#import "Udesk.h"
+#import "UdeskManager.h"
 
 @interface UdeskFAQViewController ()<UISearchBarDelegate,UISearchDisplayDelegate>
 

@@ -9,7 +9,6 @@
 #import "UdeskChatViewController.h"
 #import "UdeskTopAlertView.h"
 #import "UdeskAgentModel.h"
-#import "UdeskAgentStatusView.h"
 #import "UdeskMessageInputView.h"
 #import "UdeskMessageTableView.h"
 #import "UdeskMessageTableViewCell.h"
@@ -39,8 +38,7 @@
 @property (nonatomic, assign) BOOL                      isMaxTimeStop;//判断是不是超出了录音最大时长
 @property (nonatomic, weak  ) UdeskMessageTableView     *messageTableView;//用于显示消息的TableView
 @property (nonatomic, weak  ) UdeskMessageInputView     *messageInputView;//用于显示发送消息类型控制的工具条，在底部
-@property (nonatomic, weak  ) UdeskAgentStatusView      *agentStatusView;//客服状态view
-@property (nonatomic, weak  ) UdeskEmotionManagerView   *emotionManagerView;//管理表情的控件
+@property (nonatomic, strong) UdeskEmotionManagerView   *emotionManagerView;//管理表情的控件
 @property (nonatomic, strong) UdeskMessageTableViewCell *currentSelectedCell;//cell
 @property (nonatomic, strong) UdeskVoiceRecordHelper    *voiceRecordHelper;//管理录音工具对象
 @property (nonatomic, strong) UdeskVoiceRecordHUD       *voiceRecordHUD;//语音录制动画
@@ -68,7 +66,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     //设置标题
     [self.udNavView changeTitle:getUDLocalizedString(@"会话")];
     //初始化viewModel
@@ -177,16 +174,6 @@
     
     _messageInputView = inputView;
     
-    //表情view
-    if (!_emotionManagerView) {
-        UdeskEmotionManagerView *emotionManagerView = [[UdeskEmotionManagerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds), CGRectGetWidth(self.view.bounds), UD_SCREEN_WIDTH<375?200:216)];
-        emotionManagerView.delegate = self;
-        emotionManagerView.backgroundColor = [UIColor colorWithWhite:0.961 alpha:1.000];
-        emotionManagerView.alpha = 0.0;
-        [self.view addSubview:emotionManagerView];
-        _emotionManagerView = emotionManagerView;
-    }
-    [self.view bringSubviewToFront:_emotionManagerView];
 }
 
 #pragma mark - TableViewDataSource
@@ -231,7 +218,6 @@
     CGFloat cellHeight = 0;
     
     BOOL displayTimestamp = [self shouldDisplayTimeForRowAtIndexPath:indexPath];
-    
     cellHeight = [UdeskMessageTableViewCell calculateCellHeightWithMessage:message displaysTimestamp:displayTimestamp];
     
     return cellHeight;
@@ -342,6 +328,22 @@
         });
     }
     
+}
+
+- (UdeskEmotionManagerView *)emotionManagerView {
+
+    //表情view
+    if (!_emotionManagerView) {
+        CGFloat emotionHeight = UD_SCREEN_WIDTH<375?200:216;
+        _emotionManagerView = [[UdeskEmotionManagerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds), CGRectGetWidth(self.view.bounds), emotionHeight)];
+        _emotionManagerView.delegate = self;
+        _emotionManagerView.backgroundColor = [UIColor colorWithWhite:0.961 alpha:1.000];
+        _emotionManagerView.alpha = 0.0;
+        [self.view addSubview:_emotionManagerView];
+    }
+    [self.view bringSubviewToFront:_emotionManagerView];
+    
+    return _emotionManagerView;
 }
 
 #pragma mark - 录制语音
@@ -511,7 +513,7 @@
 - (void)resendClickFailedMessage:(NSNotification *)notif {
     
     UdeskMessage *failedMessage = [notif.userInfo objectForKey:@"failedMessage"];
-    failedMessage.agent_jid = self.chatViewModel.agentModel.jid;
+    failedMessage.agentJid = self.chatViewModel.agentModel.jid;
     @udWeakify(self);
     [UdeskManager sendMessage:failedMessage completion:^(UdeskMessage *message, BOOL sendStatus) {
         //处理发送结果UI
@@ -582,6 +584,7 @@
 - (void)didSendFaceAction:(BOOL)sendFace {
     if (sendFace) {
         self.textViewInputViewType = UDInputViewTypeEmotion;
+        [self emotionManagerView];
         [self layoutOtherMenuViewHiden:NO];
     } else {
         [self.messageInputView.inputTextView becomeFirstResponder];
@@ -720,7 +723,6 @@
             } else {
                 
                 [self.messageInputView.inputTextView resignFirstResponder];
-                
             }
             
         }
@@ -789,9 +791,7 @@
     _emotionManagerView.delegate = nil;
     _emotionManagerView = nil;
     _photographyHelper = nil;
-    _agentStatusView = nil;
     _chatViewModel = nil;
-    
 }
 
 @end
