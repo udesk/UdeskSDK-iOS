@@ -16,29 +16,17 @@
 @class UdeskAgentModel;
 @class UdeskMessage;
 
-//typedef enum : NSUInteger {
-//    <#MyEnumValueA#>,
-//    <#MyEnumValueB#>,
-//    <#MyEnumValueC#>,
-//} UDAgentStatusType;
-
 @interface UdeskChatViewModel : NSObject
 
 @property (nonatomic, strong,readonly) NSMutableArray  *messageArray;//消息数据
-
 @property (nonatomic, strong,readonly) NSMutableArray  *failedMessageArray;//发送失败的消息
-
 @property (nonatomic, strong         ) UdeskAgentModel *agentModel;//客服Model
-
 @property (nonatomic, assign         ) NSInteger       message_total_pages;//消息条数总数
-
 @property (nonatomic, assign         ) NSInteger       message_count;//消息条数总数
-
 @property (nonatomic, copy           ) void(^updateMessageContentBlock)();//消息内容更新
-
 @property (nonatomic, copy           ) void(^fetchAgentDataBlock)(UdeskAgentModel *agentModel);//接收客服数据
-
 @property (nonatomic, copy           ) void(^clickSendOffLineTicket)();//点击发送表单
+@property (nonatomic, copy           ) void(^clickBlacklistedDown)();//点击黑名单提示确定
 
 
 - (instancetype)initWithAgentId:(NSString *)agent_id withGroupId:(NSString *)group_id;

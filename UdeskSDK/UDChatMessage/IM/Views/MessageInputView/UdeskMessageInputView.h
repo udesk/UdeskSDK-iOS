@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UdeskAgentModel.h"
 
 @class UdeskMessageTableView;
 @class UdeskMessageTextView;
@@ -121,7 +122,10 @@
  */
 @property (nonatomic, weak) UIButton *holdDownButton;
 
-@property (nonatomic, strong) NSNumber *agentCode;
+/**
+ *  客服状态
+ */
+@property (nonatomic, assign) UDAgentStatusType agentCode;
 
 /**
  *  在切换语音和文本消息的时候，需要保存原本已经输入的文本，这样达到一个好的UE

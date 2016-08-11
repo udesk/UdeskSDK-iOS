@@ -34,14 +34,15 @@
     self = [super initWithFrame:frame];
     if (self) {
         
-        self.backgroundColor = UdeskUIConfig.iMNavigationColor;
+        self.backgroundColor = [UIColor clearColor];
         
         CGFloat backButtonY = ud_isIOS6?0:10;
         //返回按钮
         UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
         backButton.frame = CGRectMake(5, (frame.size.height-30)/2+backButtonY, 60, 30);
-        [backButton setTitleColor:UdeskUIConfig.iMBackButtonColor forState:UIControlStateNormal];
-        [backButton setImage:[UIImage ud_defaultBackImage] forState:UIControlStateNormal];
+        UIImage *backImage = [UIImage ud_defaultBackImage];
+        backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        [backButton setImage:backImage forState:UIControlStateNormal];
         [backButton setTitle:@"返回" forState:UIControlStateNormal];
         backButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         [backButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
@@ -53,7 +54,6 @@
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, titleLabelY, 0, 44)];
         titleLabel.text = getUDLocalizedString(@"会话");
         titleLabel.font = [UIFont systemFontOfSize:18];
-        titleLabel.textColor = UdeskUIConfig.iMTitleColor;
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:titleLabel];
@@ -73,7 +73,7 @@
         UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
         rightButton.frame = CGRectMake(self.ud_right-70, (frame.size.height-30)/2+backButtonY, 60, 30);
         rightButton.titleLabel.font = [UIFont systemFontOfSize:16];
-        [rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [rightButton setTitleColor:UdeskUIConfig.robotTransferButtonColor forState:UIControlStateNormal];
         [rightButton addTarget:self action:@selector(rightAction) forControlEvents:UIControlEventTouchUpInside];
         rightButton.hidden = YES;
         [self addSubview:rightButton];
@@ -108,12 +108,13 @@
     [self.backButton removeFromSuperview];
 }
 
-- (void)changeTitle:(NSString *)title {
+- (void)changeTitle:(NSString *)title withColor:(UIColor *)color {
 
     CGSize titleSize = [UdeskGeneral.store textSize:title fontOfSize:[UIFont systemFontOfSize:18] ToSize:CGSizeMake(self.ud_width, 44)];
     self.titleLabel.ud_x = (self.ud_width-titleSize.width)/2;
     self.titleLabel.ud_width = titleSize.width;
     self.titleLabel.text = title;
+    self.titleLabel.textColor = color;
 }
 
 - (void)showRightButtonWithName:(NSString *)name {
@@ -195,6 +196,12 @@
     CGRect newframe = _titleLabel.frame;
     newframe.size.height = 30;
     _titleLabel.frame = newframe;
+}
+
+- (void)setBackButtonColor:(UIColor *)color {
+
+    [self.backButton setTitleColor:color forState:UIControlStateNormal];
+    [self.backButton setTintColor:color];
 }
 
 @end

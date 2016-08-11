@@ -14,6 +14,8 @@
 
 @interface UdeskBaseViewController()
 
+@property (nonatomic, weak) UIButton *backButton;
+
 @end
 
 @implementation UdeskBaseViewController
@@ -61,13 +63,17 @@
 
 - (void)setCloseNavigationItem {
     //取消按钮
-    UIButton * closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    closeButton.frame = CGRectMake(0, 0, 70, 40);
-    [closeButton setTitle:@"返回" forState:UIControlStateNormal];
-    [closeButton setImage:[UIImage ud_defaultBackImage] forState:UIControlStateNormal];
-    [closeButton addTarget:self action:@selector(backButtonAction) forControlEvents:UIControlEventTouchUpInside];
+     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    backButton.frame = CGRectMake(0, 0, 70, 40);
+    [backButton setTitle:@"返回" forState:UIControlStateNormal];
+    UIImage *backImage = [UIImage ud_defaultBackImage];
+    backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    [backButton setImage:backImage forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(backButtonAction) forControlEvents:UIControlEventTouchUpInside];
     
-    UIBarButtonItem *closeNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
+    self.backButton = backButton;
+    
+    UIBarButtonItem *closeNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     
     UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
                                        initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
@@ -89,6 +95,36 @@
 
 - (void)rightButtonAction {
 
+}
+
+- (void)setBackButtonColor:(UIColor *)color {
+
+    if (self.navigationController.navigationBarHidden) {
+        
+        [self.udNavView setBackButtonColor:color];
+    }
+    else {
+        
+        [self.backButton setTitleColor:color forState:UIControlStateNormal];
+        [self.backButton setTintColor:color];
+    }
+}
+
+- (void)setNavigationBarBackGroundColor:(UIColor *)color {
+    
+    if (self.navigationController.navigationBarHidden) {
+        
+        self.udNavView.backgroundColor = color;
+    }
+    else {
+        
+        if (ud_isIOS6) {
+            self.navigationController.navigationBar.tintColor = color;
+        } else {
+            self.navigationController.navigationBar.barTintColor = color;
+        }
+    }
+    
 }
 
 @end

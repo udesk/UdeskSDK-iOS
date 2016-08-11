@@ -67,8 +67,7 @@
     self.agentMenuBackButtonColor = [UIColor whiteColor];
     self.agentMenuNavigationColor = [UdeskTools colorWithHexString:@"3565df"];
     self.agentMenuTitleColor = [UIColor whiteColor];
-    
-//    self.oneSelfNavcigtionColor
+    self.robotTransferButtonColor = [UIColor whiteColor];
 }
 
 @end

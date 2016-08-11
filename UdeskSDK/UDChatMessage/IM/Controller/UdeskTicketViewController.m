@@ -22,9 +22,10 @@
 {
     [super viewDidLoad];
 
-    self.view.backgroundColor = [UIColor whiteColor];
+    [self.udNavView changeTitle:getUDLocalizedString(@"提交问题") withColor:UdeskUIConfig.ticketTitleColor];
+    [self setBackButtonColor:UdeskUIConfig.ticketBackButtonColor];
     
-    [self.udNavView changeTitle:getUDLocalizedString(@"提交问题")];
+    self.view.backgroundColor = [UIColor whiteColor];
     
     NSString *key = [UdeskManager key];
     NSString *domain = [UdeskManager domain];
@@ -46,17 +47,6 @@
 
 }
 
-- (void)backButtonAction {
-
-    [super backButtonAction];
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -72,13 +62,19 @@
     
     [super viewWillAppear:animated];
     
-    if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.ticketNavigationColor;
-    } else {
-        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.ticketNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.ticketBackButtonColor;
-    }
+    //设置导航栏颜色
+    [self setNavigationBarBackGroundColor:UdeskUIConfig.ticketNavigationColor];
+}
+
+- (void)backButtonAction {
+
+    [super backButtonAction];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)dealloc

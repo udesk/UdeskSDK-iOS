@@ -25,12 +25,13 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    [self.udNavView changeTitle:getUDLocalizedString(@"智能机器人对话")];
-    
-    [UdeskManager createServerCustomer:^(id responseObject) {
+    [self.udNavView changeTitle:getUDLocalizedString(@"智能机器人对话") withColor:UdeskUIConfig.robotTitleColor];
+    [self setBackButtonColor:UdeskUIConfig.robotBackButtonColor];
+
+    [UdeskManager createServerCustomerCompletion:^(BOOL success, NSError *error) {
         
-        if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
-         
+        if (success) {
+            
             [UdeskManager getRobotURL:^(NSURL *robotUrl) {
                 
                 if (robotUrl) {
@@ -51,9 +52,10 @@
                             [self.udNavView showRightButtonWithName:getUDLocalizedString(@"转人工")];
                         }
                         else {
-
+                            
                             [self transferButton];
                         }
+
                     }
                     
                 } else {
@@ -64,12 +66,9 @@
                 }
                 
             }];
-
+            
         }
         
-    } failure:^(NSError *error) {
-        
-        NSLog(@"用户创建失败:%@",error);
     }];
     
     //设置返回按钮文字（在A控制器写代码）
@@ -77,6 +76,25 @@
     barButtonItem.title = @"返回";
     self.navigationItem.backBarButtonItem = barButtonItem;
     
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    //设置导航栏颜色
+    [self setNavigationBarBackGroundColor:UdeskUIConfig.robotNavigationColor];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    if (ud_isIOS6) {
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
+    } else {
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
+    }
 }
 
 - (void)backButtonAction {
@@ -99,7 +117,7 @@
     informationButton.frame = CGRectMake(0, 0, 80, 40);
     informationButton.titleLabel.font = [UIFont systemFontOfSize:16];
     [informationButton setTitle:getUDLocalizedString(@"转人工") forState:UIControlStateNormal];
-    [informationButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [informationButton setTitleColor:UdeskUIConfig.robotTransferButtonColor forState:UIControlStateNormal];
     [informationButton addTarget:self action:@selector(transferButtonAction) forControlEvents:UIControlEventTouchUpInside];
     
     UIBarButtonItem *otherNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:informationButton];
@@ -116,6 +134,7 @@
     }else
         self.navigationItem.rightBarButtonItem = otherNavigationItem;
 }
+
 
 - (void)transferButtonAction {
 
@@ -138,29 +157,6 @@
         
     }];
 
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-
-    [super viewWillAppear:animated];
-    
-    if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.robotNavigationColor;
-    } else {
-        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.robotNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.robotBackButtonColor;
-    }
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-
-    [super viewWillDisappear:animated];
-    
-    if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
-    } else {
-        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
-    }
 }
 
 - (void)dealloc

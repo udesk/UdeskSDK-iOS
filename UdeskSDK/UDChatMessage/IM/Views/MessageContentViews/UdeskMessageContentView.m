@@ -157,7 +157,6 @@
     CGRect bubbleRect = CGRectMake(paddingX,kUDHaveBubbleMargin,bubbleSize.width,bubbleSize.height);
     
     return bubbleRect;
-    
 }
 
 #pragma mark - Configure Methods
@@ -176,6 +175,8 @@
 - (void)configureBubbleImageView:(UdeskMessage *)message {
     
     if (message.messageFrom == UDMessageTypeSending) {
+        
+        _agentNameLabel.hidden = YES;
         
         if (message.messageStatus == UDMessageSending) {
             //显示菊花，隐藏重发按钮
@@ -203,6 +204,7 @@
         _indicatorView.hidden = YES;
         [_indicatorView stopAnimating];
         _messageAgainButton.hidden = YES;
+        _agentNameLabel.hidden = NO;
     }
     
     switch (message.messageType) {
@@ -219,19 +221,16 @@
             _redirectTagLabel.hidden = YES;
             //非咨询对象消息隐藏
             _productView.hidden = YES;
-            //客服名字
-             _agentNameLabel.hidden = NO;
+
         }
         case UDMessageMediaTypeRich:
         case UDMessageMediaTypeText: {
             //气泡的图片
-            _bubbleImageView.image = [UdeskMessageBubbleFactory bubbleImageViewForType:message.messageFrom style:UDBubbleImageViewStyleUDChat meidaType:message.messageType];
+            _bubbleImageView.image = [UdeskMessageBubbleFactory bubbleImageViewForType:message.messageFrom meidaType:message.messageType];
             // 显示气泡
             _bubbleImageView.hidden = NO;
             // 隐藏图片
             _photoImageView.hidden = YES;
-            //客服名字
-            _agentNameLabel.hidden = NO;
             
             if (message.messageType == UDMessageMediaTypeText||message.messageType==UDMessageMediaTypeRich) {
                 //显示文本消息的控件
@@ -244,8 +243,6 @@
                 _redirectTagLabel.hidden = YES;
                 //非咨询对象消息隐藏
                 _productView.hidden = YES;
-                //客服名字
-                _agentNameLabel.hidden = NO;
                 
             } else {
                 //隐藏文本消息的控件
@@ -271,8 +268,6 @@
                 _redirectTagLabel.hidden = YES;
                 //非咨询对象消息隐藏
                 _productView.hidden = YES;
-                //客服名字
-                _agentNameLabel.hidden = NO;
                 
             }
             
@@ -284,7 +279,7 @@
             //隐藏其它控件
             _textLabel.hidden = YES;
             //设置气泡图片
-            _bubbleImageView.image = [UdeskMessageBubbleFactory bubbleImageViewForType:message.messageFrom style:UDBubbleImageViewStyleUDChat meidaType:message.messageType];
+            _bubbleImageView.image = [UdeskMessageBubbleFactory bubbleImageViewForType:message.messageFrom meidaType:message.messageType];
             //显示图片气泡
             _bubbleImageView.hidden = NO;
             //隐藏语音播放动画
@@ -293,8 +288,6 @@
             _redirectTagLabel.hidden = YES;
             //非咨询对象消息隐藏
             _productView.hidden = YES;
-            //客服名字
-            _agentNameLabel.hidden = NO;
             
             break;
         }
@@ -350,7 +343,13 @@
 //设置内容
 - (void)configureMessageDisplayMediaWithMessage:(UdeskMessage *)message {
     
-    _agentNameLabel.text = message.agentName;
+    if (message.messageFrom == UDMessageTypeReceiving) {
+        
+        if (![UdeskTools isBlankString:message.agentName]) {
+            
+            _agentNameLabel.text = message.agentName;
+        }
+    }
     
     if (message.messageType == UDMessageMediaTypeText) {
         

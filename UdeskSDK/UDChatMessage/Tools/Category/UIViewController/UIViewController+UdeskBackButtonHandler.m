@@ -15,7 +15,11 @@
 
 static NSString *const kOriginDelegate = @"kOriginDelegate";
 
+static NSString *const kBackButtonBlock = @"kBackButtonBlock";
+
 @implementation UINavigationController (UdeskShouldPopOnBackButton)
+
+@dynamic gestureBack;
 
 + (void)load
 {
@@ -66,12 +70,32 @@ static NSString *const kOriginDelegate = @"kOriginDelegate";
     if ([[self valueForKey:@"_isTransitioning"] boolValue]) {
         return NO;
     }
-    
     if (gestureRecognizer == self.interactivePopGestureRecognizer) {
+        
         id<UIGestureRecognizerDelegate> originDelegate = objc_getAssociatedObject(self, [kOriginDelegate UTF8String]);
-        return [originDelegate gestureRecognizerShouldBegin:gestureRecognizer];
+        
+        BOOL gestureBool = [originDelegate gestureRecognizerShouldBegin:gestureRecognizer];
+        
+        if (self.gestureBack) {
+            self.gestureBack();
+        }
+        
+        return gestureBool;
     }
+    
     return YES;
+}
+
+- (void)setGestureBack:(UDGestureBackAnimationBlock)gestureBack {
+
+    objc_setAssociatedObject(self, @selector(gestureBack), gestureBack, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (UDGestureBackAnimationBlock)gestureBack {
+
+    id object = objc_getAssociatedObject(self, @selector(gestureBack));
+    
+    return object;
 }
 
 @end

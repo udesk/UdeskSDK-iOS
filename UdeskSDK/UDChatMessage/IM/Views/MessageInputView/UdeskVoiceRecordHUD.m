@@ -47,53 +47,6 @@
 }
 
 - (void)setup {
-//    self.backgroundColor = [UIColor blackColor];
-//    self.alpha = .6f;
-//    UDViewRadius(self, 5);
-//    
-//    if (!_remindLabel) {
-//        UILabel *remindLabel= [[UILabel alloc] initWithFrame:CGRectMake(14.0, 117.0, 120.0, 21.0)];
-//        remindLabel.textColor = [UIColor whiteColor];
-//        remindLabel.font = [UIFont systemFontOfSize:13];
-//        remindLabel.layer.masksToBounds = YES;
-//        remindLabel.layer.cornerRadius = 4;
-//        remindLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
-//        remindLabel.backgroundColor = [UIColor clearColor];
-//        remindLabel.text = @"手指上滑，取消发送";
-//        remindLabel.textAlignment = NSTextAlignmentCenter;
-//        [self addSubview:remindLabel];
-//        _remindLabel = remindLabel;
-//    }
-//    
-//    if (!_microPhoneImageView) {
-//        UIImageView *microPhoneImageView = [[UIImageView alloc] initWithFrame:CGRectMake(11.0, 28.0, 80, 80)];
-//        microPhoneImageView.image = [UIImage ud_defaultVoiceSpeakImage];
-//        microPhoneImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
-//        microPhoneImageView.contentMode = UIViewContentModeScaleToFill;
-//        [self addSubview:microPhoneImageView];
-//        _microPhoneImageView = microPhoneImageView;
-//    }
-//    
-//    if (!_recordingHUDImageView) {
-//        UIImageView *recordHUDImageView = [[UIImageView alloc] initWithFrame:CGRectMake(97.0, 14.0, 38, 100)];
-//        recordHUDImageView.image = [UIImage imageWithContentsOfFile:getUDBundlePath(@"ud_Recording_Signal001.png")];
-//        recordHUDImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
-//        recordHUDImageView.contentMode = UIViewContentModeScaleToFill;
-//        [self addSubview:recordHUDImageView];
-//        _recordingHUDImageView = recordHUDImageView;
-//    }
-//    
-//    if (!_cancelRecordImageView) {
-//        UIImageView *cancelRecordImageView = [[UIImageView alloc] initWithFrame:CGRectMake(30.0, 20.0, 80, 80)];
-//        cancelRecordImageView.image = [UIImage ud_defaultVoiceRevokeImage];
-//        cancelRecordImageView.hidden = YES;
-//        cancelRecordImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
-//        cancelRecordImageView.contentMode = UIViewContentModeScaleToFill;
-//        [self addSubview:cancelRecordImageView];
-//        _cancelRecordImageView = cancelRecordImageView;
-//    }
-    
-    
     
     self.backgroundColor = [UIColor clearColor];
     if (!_microPhoneImageView) {

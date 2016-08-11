@@ -113,7 +113,7 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
         topViewY = 24;
     }
     else {
-    
+        
         topViewY = -40;
     }
     
@@ -121,17 +121,17 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
     self.alpha = .9f;
     UIColor *doBtnColor = FlatSkyBlueDark;
     
-    if (agentModel.code.integerValue == 2000) {
+    if (agentModel.code == UDAgentStatusResultOnline) {
         
         self.backgroundColor = FlatGreen;
         doBtnColor = FlatGreenDark;
     }
-    else if (agentModel.code.integerValue == 2001) {
+    else if (agentModel.code == UDAgentStatusResultQueue) {
     
         self.backgroundColor = hsb(204, 76, 86);;
         doBtnColor = FlatSkyBlueDark;
     }
-    else if (agentModel.code.integerValue == 2002) {
+    else if (agentModel.code == UDAgentStatusResultOffline) {
         
         self.backgroundColor = hsb(28, 85, 90);
         doBtnColor = FlatOrangeDark;

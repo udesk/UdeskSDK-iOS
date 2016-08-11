@@ -12,7 +12,6 @@
 @implementation UdeskMessageBubbleFactory
 
 + (UIImage *)bubbleImageViewForType:(UDMessageFromType)type
-                                  style:(UDBubbleImageViewStyle)style
                               meidaType:(UDMessageMediaType)mediaType {
     UIImage *bubbleImage;
     

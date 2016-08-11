@@ -73,7 +73,7 @@
  *
  *  @param completion 回调用户登录信息
  */
-+ (void)getCustomerLoginInfo:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
++ (void)getCustomerLoginInfo:(void (^)(BOOL success, NSError *error))completion;
 
 /**
  *  获取后台分配的客服信息
@@ -94,14 +94,6 @@
 + (void)assignAgentOrGroup:(NSString *)agentId
                    groupID:(NSString *)groupId
                 completion:(void (^) (id responseObject,NSError *error))completion;
-
-/**
- *  获取转接后客服的信息
- *
- *  @param completion 回调客服信息
- */
-+ (void)getRedirectAgentInformation:(NSDictionary *)redirectAgent
-                         completion:(void (^)(id responseObject,NSError *error))completion;
 
 /**
  *  接收消息代理
@@ -360,6 +352,12 @@
  *  @param completion 成功信息回调
  *  @param failure    失败信息回调
  */
-+ (void)createServerCustomer:(void(^)(id responseObject))completion failure:(void(^)(NSError *error))failure;
++ (void)createServerCustomerCompletion:(void (^)(BOOL success, NSError *error))completion;
+
+/**
+ * 当前用户是否被加入黑名单
+ *  @warning 需要先调用创建用户接口
+ */
++ (BOOL)isBlacklisted;
 
 @end

@@ -95,9 +95,10 @@ static double agentHttpDelayInSeconds = 25.0f;
 //解析客服信息
 - (UdeskAgentModel *)resolvingAgentData:(NSDictionary *)responseObject {
 
-    UdeskAgentModel *agentModel;
+    UdeskAgentModel *agentModel = [UdeskAgentModel new];
+    NSInteger code = [[responseObject objectForKey:@"code"] integerValue];
 
-    if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+    if (code == 1000) {
         
         NSDictionary *result = [responseObject objectForKey:@"result"];
         
@@ -105,11 +106,11 @@ static double agentHttpDelayInSeconds = 25.0f;
         
         agentModel = [[UdeskAgentModel alloc] initWithContentsOfDic:agent];
         
-        agentModel.code = [NSNumber numberWithInteger:[[result objectForKey:@"code"] integerValue]];
+        agentModel.code = [[result objectForKey:@"code"] integerValue];
         
         agentModel.message = [result objectForKey:@"message"];
         
-        if (agentModel.code.integerValue == 2000) {
+        if (agentModel.code == UDAgentStatusResultOnline) {
             
             NSString *describeTieleStr = [NSString stringWithFormat:@"客服 %@ 在线",agentModel.nick];
             
@@ -117,10 +118,20 @@ static double agentHttpDelayInSeconds = 25.0f;
         }
         
     }
-    else {
+    else if (code == 5050) {
     
+        agentModel.message = [responseObject objectForKey:@"message"];
+        agentModel.code = UDAgentStatusResultNoExist;
+    }
+    else if (code == 5060) {
+        
+        agentModel.message = [responseObject objectForKey:@"message"];
+        agentModel.code = UDAgentGroupStatusResultNoExist;
+    }
+    else {
+        
         agentModel.message = getUDLocalizedString(@"正在连接，请稍后...");
-        agentModel.code = [NSNumber numberWithInteger:[[responseObject objectForKey:@"code"] integerValue]];
+        agentModel.code = code;
     }
     
     return agentModel;

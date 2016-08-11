@@ -16,4 +16,7 @@
 - (void)backButtonAction;
 - (void)rightButtonAction;
 
+- (void)setBackButtonColor:(UIColor *)color;
+- (void)setNavigationBarBackGroundColor:(UIColor *)color;
+
 @end

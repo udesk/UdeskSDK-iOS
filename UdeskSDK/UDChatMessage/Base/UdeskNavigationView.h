@@ -19,6 +19,7 @@
 - (void)showAgentOnlineStatus:(UdeskAgentModel *)agentModel;
 - (void)showRightButtonWithName:(NSString *)name;
 - (void)showNativeNavigationView;
-- (void)changeTitle:(NSString *)title;
+- (void)changeTitle:(NSString *)title withColor:(UIColor *)color;
+- (void)setBackButtonColor:(UIColor *)color;
 
 @end

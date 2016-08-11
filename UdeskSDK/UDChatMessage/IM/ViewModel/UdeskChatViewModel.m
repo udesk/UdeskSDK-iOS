@@ -52,24 +52,24 @@
         
         [UdeskManager receiveUdeskDelegate:self];
         
-        @udWeakify(self);
         //获取db消息
         [self requestDataBaseMessageContent];
-        
+
         //创建用户(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
-        [UdeskManager createServerCustomer:^(id responseObject) {
+        [UdeskManager createServerCustomerCompletion:^(BOOL success, NSError *error) {
             
-            //获取客户信息(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
-            [UdeskManager getCustomerLoginInfo:^(NSDictionary *loginInfoDic, NSError *error) {
+            if (success) {
                 
-                @udStrongify(self);
-                //请求客服数据(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
-                [self requestAgentWithAgentId:agent_id withGroupId:group_id];
-            }];
+                if ([UdeskManager isBlacklisted]) {
+                    //客户在黑名单
+                    [self customerIsBlacklisted];
+                }
+                else {
+                    //获取客户信息(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
+                    [self getCustomerInfo];
+                }
+            }
             
-        } failure:^(NSError *error) {
-            
-            NSLog(@"用户信息获取失败：%@",error);
         }];
         
         //网络监测
@@ -105,7 +105,7 @@
             @udStrongify(self);
             self.netWorkChange = YES;
             self.agentModel.message = @"网络断开连接了";
-            self.agentModel.code = @2003;
+            self.agentModel.code = UDAgentStatusResultNotNetWork;
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 
@@ -178,6 +178,37 @@
     [self updateContent];
 }
 
+//客户在黑名单
+- (void)customerIsBlacklisted {
+    
+    //退出
+    [UdeskManager logoutUdesk];
+    
+    UdeskAgentModel *agentModel = [[UdeskAgentModel alloc] init];
+    agentModel.message = @"你已被加入了黑名单";
+    agentModel.code = UDAgentStatusResultUnKnown;
+    
+    [self callbackAgentModel:agentModel];
+    
+    //显示客户黑名单提示
+    [self showIsBlacklistedAlert];
+}
+
+//获取客户登陆信息
+- (void)getCustomerInfo {
+    
+    @udWeakify(self);
+    //获取客户信息(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
+    [UdeskManager getCustomerLoginInfo:^(BOOL success, NSError *error) {
+        
+        if (success) {
+            @udStrongify(self);
+            //请求客服数据(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
+            [self requestAgentWithAgentId:self.agent_id withGroupId:self.group_id];
+        }
+    }];
+}
+
 #pragma mark - 根据是否有客服id和客服组id请求客服数据
 - (void)requestAgentWithAgentId:(NSString *)agent_id withGroupId:(NSString *)group_id {
 
@@ -232,15 +263,15 @@
 }
 
 #pragma mark - 登录Udesk
-- (void)loginUdeskWithAgentCode:(NSNumber *)code {
+- (void)loginUdeskWithAgentCode:(UDAgentStatusType)code {
     
-    if (code.integerValue != 2000 && code.integerValue != 2001) {
+    if (code != UDAgentStatusResultOnline && code != UDAgentStatusResultQueue) {
         
         [self showAlertViewWithAgentCode:code];
         return;
     }
     //只有客服在线才登录
-    if (code.integerValue == 2000) {
+    if (code == UDAgentStatusResultOnline) {
         
         [self sendProductMessage];
         //登录
@@ -275,6 +306,7 @@
     
         NSDictionary *newMessage = (NSDictionary *)message;
         UdeskAgentModel *agentModel = [[UdeskAgentModel alloc] initWithContentsOfDic:newMessage];
+        agentModel.code = [[newMessage objectForKey:@"code"] integerValue];
         [self callbackAgentModel:agentModel];
     }
     
@@ -284,23 +316,23 @@
     
     NSString *statusType = [presence objectForKey:@"type"];
     
-    NSInteger  agentCode;
+    UDAgentStatusType agentCode;
     NSString  *agentMessage;
     if ([statusType isEqualToString:@"available"]) {
         
-        agentCode = 2000;
+        agentCode = UDAgentStatusResultOnline;
         agentMessage = [NSString stringWithFormat:@"客服 %@ 在线",self.agentModel.nick];
         
     } else {
         
-        agentCode = 2002;
+        agentCode = UDAgentStatusResultOffline;
         agentMessage = [NSString stringWithFormat:@"客服 %@ 离线了",self.agentModel.nick];
     }
     
     //与上次不同的code才抛给vc
-    if (self.agentModel.code.integerValue != agentCode) {
+    if (self.agentModel.code != agentCode) {
         
-        self.agentModel.code = [NSNumber numberWithInteger:agentCode];
+        self.agentModel.code = agentCode;
         self.agentModel.message = agentMessage;
         [self callbackAgentModel:self.agentModel];
     }
@@ -366,7 +398,7 @@
 - (void)sendTextMessage:(NSString *)text
              completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
     
-    if (_agentModel.code.integerValue != 2000) {
+    if (_agentModel.code != UDAgentStatusResultOnline) {
         
         [self showAlertViewWithAgentCode:_agentModel.code];
         
@@ -405,7 +437,7 @@
 - (void)sendImageMessage:(UIImage *)image
               completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
 
-    if (_agentModel.code.integerValue != 2000) {
+    if (_agentModel.code != UDAgentStatusResultOnline) {
         
         [self showAlertViewWithAgentCode:_agentModel.code];
         
@@ -441,7 +473,7 @@
            audioDuration:(NSString *)audioDuration
               completion:(void (^)(UdeskMessage *, BOOL sendStatus))comletion {
     
-    if (_agentModel.code.integerValue != 2000) {
+    if (_agentModel.code != UDAgentStatusResultOnline) {
         
         [self showAlertViewWithAgentCode:_agentModel.code];
         
@@ -469,7 +501,7 @@
 
 #pragma mark - Alert
 //排队Alert
-- (void)queueStatus {
+- (void)showQueueStatusAlert {
     
     NSString *ticketButtonTitle = @"留言";
     UdeskAlertController *queueAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"当前客服正繁忙，如需留言请点击按钮进入表单留言")];
@@ -486,7 +518,7 @@
 }
 
 //客服不在线Alert
-- (void)agentNotOnline {
+- (void)showAgentNotOnlineAlert {
     
     NSString *title = getUDLocalizedString(@"客服不在线");
     NSString *message = getUDLocalizedString(@"您可以选择提交表单来描述您的问题，稍后我们会和您联系");
@@ -515,7 +547,7 @@
 }
 
 //无网络Alert
-- (void)netWorkDisconnectAlertView {
+- (void)showNetWorkDisconnectAlert {
     
     UdeskAlertController *notNetworkAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"网络断开连接，请先连接网络")];
     [notNetworkAlert addCloseActionWithTitle:@"确定" Handler:NULL];
@@ -523,7 +555,7 @@
 }
 
 //不存在客服或客服组
-- (void)notExistAgent {
+- (void)showNotExistAgentAlert {
 
     UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertWithTitle:nil message:self.agentModel.message];
     [notExistAgentAlert addCloseActionWithTitle:@"确定" Handler:NULL];
@@ -531,8 +563,26 @@
 
 }
 
+//不存在客服或客服组
+- (void)showIsBlacklistedAlert {
+    
+    UdeskAlertController *blacklisted = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"抱歉，你已经被加入了黑名单")];
+    
+    @udWeakify(self);
+    [blacklisted addAction:[UdeskAlertAction actionWithTitle:@"确定" handler:^(UdeskAlertAction * _Nonnull action) {
+        @udStrongify(self);
+        if (self.clickBlacklistedDown) {
+            self.clickBlacklistedDown();
+        }
+    }]];
+    
+    [blacklisted addCloseActionWithTitle:@"关闭" Handler:nil];
+    
+    [blacklisted showWithSender:nil controller:nil animated:YES completion:NULL];
+}
+
 //未知错误
-- (void)notConnected {
+- (void)showNotConnectedAlert {
     
     UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"正在连接，请稍后...")];
     [notExistAgentAlert addCloseActionWithTitle:@"确定" Handler:NULL];
@@ -582,128 +632,139 @@
 //NSDictionary转model
 - (UdeskMessage *)ud_modelWithDictionary:(NSDictionary *)dbMessage {
     
-    UdeskMessage *message = [[UdeskMessage alloc] init];
-    message.messageFrom = [[dbMessage objectForKey:@"direction"] integerValue];
-    message.messageType = [[dbMessage objectForKey:@"mesType"] integerValue];
-    message.contentId = [dbMessage objectForKey:@"msgid"];
-    message.messageStatus = [[dbMessage objectForKey:@"sendflag"] integerValue];
-    message.timestamp = [[UdeskDateFormatter sharedFormatter].dateFormatter dateFromString:[dbMessage objectForKey:@"replied_at"]];
+    @try {
     
-    NSString *avatar = [dbMessage objectForKey:@"avatar"];
-    if ([avatar isEqual:@0]) {
-        message.agentAvatar = @"";
-    }
-    else {
-        message.agentAvatar = [dbMessage objectForKey:@"avatar"];
-    }
-    
-    NSString *agent_name = [dbMessage objectForKey:@"agent_name"];
-    if ([agent_name isEqual:@0]) {
-        message.agentName = @"";
-    }
-    else {
-        message.agentName = [dbMessage objectForKey:@"agent_name"];
-    }
-    
-    NSString *content = [dbMessage objectForKey:@"content"];
-    
-    switch (message.messageType) {
-        case UDMessageMediaTypeText:
-            message.text = [UdeskTools receiveTextEmoji:content];
-            
-            break;
-        case UDMessageMediaTypePhoto:{
-            
-            message.width = [dbMessage objectForKey:@"width"];
-            message.height = [dbMessage objectForKey:@"height"];
-            message.photoUrl = [dbMessage objectForKey:@"content"];
-            
-        }
-            break;
-        case UDMessageMediaTypeVoice:
-            message.voiceDuration = [dbMessage objectForKey:@"duration"];
-            message.voiceUrl = [dbMessage objectForKey:@"content"];
-            
-            break;
-        case UDMessageMediaTypeRedirect:{
-            
-            message.text = content;
-            
-            break;
-        }
-        case UDMessageMediaTypeRich: {
+        UdeskMessage *message = [[UdeskMessage alloc] init];
+        message.messageFrom = [[dbMessage objectForKey:@"direction"] integerValue];
+        message.messageType = [[dbMessage objectForKey:@"mesType"] integerValue];
+        message.contentId = [dbMessage objectForKey:@"msgid"];
+        message.messageStatus = [[dbMessage objectForKey:@"sendflag"] integerValue];
+        message.timestamp = [[UdeskDateFormatter sharedFormatter].dateFormatter dateFromString:[dbMessage objectForKey:@"replied_at"]];
+        message.agentJid = [dbMessage objectForKey:@"agent_jid"];
         
-            NSData *htmlData = [content dataUsingEncoding:NSUTF8StringEncoding];
-            UdeskHpple *xpathParser = [[UdeskHpple alloc] initWithHTMLData:htmlData];
-            
-            NSArray *dataPArray = [xpathParser searchWithXPathQuery:@"//p"];
-            NSArray *dataAArray = [xpathParser searchWithXPathQuery:@"//a"];
-            
-            for (UdeskHppleElement *happleElement in dataPArray) {
+        NSString *sql = [NSString stringWithFormat:@"select *from Agent where agent_jid='%@'",message.agentJid];
+        
+        NSArray *agentArray = [UdeskManager queryTabelWithSqlString:sql params:nil];
+        
+        NSDictionary *agentDic = agentArray.firstObject;
+        
+        NSString *avatar = [agentDic objectForKey:@"avatar"];
+        NSString *agentName = [agentDic objectForKey:@"agent_name"];
+        
+        message.agentName = agentName;
+        message.agentAvatar = avatar;
+        
+        NSString *content = [dbMessage objectForKey:@"content"];
+        
+        switch (message.messageType) {
+            case UDMessageMediaTypeText:
+                message.text = [UdeskTools receiveTextEmoji:content];
                 
-                if ([UdeskTools isBlankString:message.text]) {
-                    message.text = happleElement.content;
-                }
-                else {
+                break;
+            case UDMessageMediaTypePhoto:{
+                
+                message.width = [dbMessage objectForKey:@"width"];
+                message.height = [dbMessage objectForKey:@"height"];
+                message.photoUrl = [dbMessage objectForKey:@"content"];
+                
+            }
+                break;
+            case UDMessageMediaTypeVoice:
+                message.voiceDuration = [dbMessage objectForKey:@"duration"];
+                message.voiceUrl = [dbMessage objectForKey:@"content"];
+                
+                break;
+            case UDMessageMediaTypeRedirect:{
+                
+                message.text = content;
+                
+                break;
+            }
+            case UDMessageMediaTypeRich: {
+                
+                NSData *htmlData = [content dataUsingEncoding:NSUTF8StringEncoding];
+                UdeskHpple *xpathParser = [[UdeskHpple alloc] initWithHTMLData:htmlData];
+                
+                NSArray *dataPArray = [xpathParser searchWithXPathQuery:@"//p"];
+                NSArray *dataAArray = [xpathParser searchWithXPathQuery:@"//a"];
+                
+                for (UdeskHppleElement *happleElement in dataPArray) {
                     
-                    message.text = [NSString stringWithFormat:@"%@\n",message.text];
-                    message.text = [message.text stringByAppendingString:happleElement.content];
+                    if ([UdeskTools isBlankString:message.text]) {
+                        message.text = happleElement.content;
+                    }
+                    else {
+                        
+                        message.text = [NSString stringWithFormat:@"%@\n",message.text];
+                        message.text = [message.text stringByAppendingString:happleElement.content];
+                    }
+                    
                 }
                 
+                NSMutableDictionary *richURLDictionary = [NSMutableDictionary dictionary];
+                NSMutableArray *richContetnArray = [NSMutableArray array];
+                
+                for (UdeskHppleElement *happleElement in dataAArray) {
+                    
+                    [richURLDictionary setObject:[NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]] forKey:happleElement.content];
+                    [richContetnArray addObject:happleElement.content];
+                    
+                    message.richArray = [NSArray arrayWithArray:richContetnArray];
+                    
+                    message.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
+                    
+                }
+                
+                break;
             }
-            
-            NSMutableDictionary *richURLDictionary = [NSMutableDictionary dictionary];
-            NSMutableArray *richContetnArray = [NSMutableArray array];
-            
-            for (UdeskHppleElement *happleElement in dataAArray) {
                 
-                [richURLDictionary setObject:[NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]] forKey:happleElement.content];
-                [richContetnArray addObject:happleElement.content];
-                
-                message.richArray = [NSArray arrayWithArray:richContetnArray];
-                
-                message.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
-                
-            }
-            
-            break;
+            default:
+                break;
         }
-            
-        default:
-            break;
+        
+        return message;
+        
+    } @catch (NSException *exception) {
+    } @finally {
     }
-    
-    return message;
     
 }
 
 #pragma mark - 点击功能栏弹出相应Alert
 - (void)clickInputViewShowAlertView {
 
-    [self showAlertViewWithAgentCode:self.agentModel.code];
-}
-
-//根据客服code展示alertview
-- (void)showAlertViewWithAgentCode:(NSNumber *)code {
-    
-    if (code.integerValue == 2002) {
+    if ([UdeskManager isBlacklisted]) {
         
-        [self agentNotOnline];
-    }
-    else if (code.integerValue == 2003) {
-        
-        [self netWorkDisconnectAlertView];
-    }
-    else if (code.integerValue == 2001) {
-        [self queueStatus];
-    }
-    else if (code.integerValue == 5050||code.integerValue == 5060) {
-        
-        [self notExistAgent];
+        [self showIsBlacklistedAlert];
     }
     else {
     
-        [self notConnected];
+        [self showAlertViewWithAgentCode:self.agentModel.code];
+    }
+}
+
+//根据客服code展示alertview
+- (void)showAlertViewWithAgentCode:(UDAgentStatusType)code {
+    
+    if (code == UDAgentStatusResultOffline) {
+        //客服不在线提示
+        [self showAgentNotOnlineAlert];
+    }
+    else if (code == UDAgentStatusResultNotNetWork) {
+        //无网络提示
+        [self showNetWorkDisconnectAlert];
+    }
+    else if (code == UDAgentStatusResultQueue) {
+        //排队提示
+        [self showQueueStatusAlert];
+    }
+    else if (code == UDAgentStatusResultNoExist||code == UDAgentGroupStatusResultNoExist) {
+        //客服或客服组不存在提示
+        [self showNotExistAgentAlert];
+    }
+    else {
+        //正在连接提示
+        [self showNotConnectedAlert];
     }
     
 }

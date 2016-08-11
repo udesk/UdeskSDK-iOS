@@ -39,8 +39,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //设置导航栏不透明
-    [self.udNavView changeTitle:getUDLocalizedString(@"问题详情")];
+    [self.udNavView changeTitle:getUDLocalizedString(@"问题详情") withColor:UdeskUIConfig.articleContentTitleColor];
+    [self setBackButtonColor:UdeskUIConfig.articleBackButtonColor];
     
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -58,25 +58,13 @@
     [self initLoad];
 }
 
-- (void)backButtonAction {
-
-    [super backButtonAction];
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
     
-    if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.articleContentNavigationColor;
-    } else {
-        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.articleContentNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.articleBackButtonColor;
-    }
-
+    //设置导航栏颜色
+    [self setNavigationBarBackGroundColor:UdeskUIConfig.articleContentNavigationColor];
 }
-
 
 - (void)viewDidDisappear:(BOOL)animated {
     
@@ -88,6 +76,12 @@
         self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     }
     
+}
+
+- (void)backButtonAction {
+
+    [super backButtonAction];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 //加载数据

@@ -141,11 +141,10 @@
 }
 
 - (void)robotButtonAction {
-    
+
     UdeskRobotIMViewController *robot = [[UdeskRobotIMViewController alloc] init];
     
     [self.navigationController pushViewController:robot animated:YES];
-    
 }
 
 - (void)otherAPIButtonAction {
@@ -159,25 +158,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.iMNavigationColor;
-    } else {
-        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.iMNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.iMBackButtonColor;
-    }
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveUdeskMessage:) name:UD_RECEIVED_NEW_MESSAGES_NOTIFICATION object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
-    
-    if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
-    } else {
-        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
-    }
     
 }
 

@@ -14,7 +14,7 @@
 
 @property (nonatomic, strong) UdeskAgentModel *agentModel;
 
-@property (nonatomic, assign) BOOL         stopRequest;
+@property (nonatomic, assign) BOOL            stopRequest;
 
 + (instancetype)sharedAgentHttpData;
 

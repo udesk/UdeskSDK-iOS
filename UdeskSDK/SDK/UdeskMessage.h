@@ -15,10 +15,6 @@ typedef NS_ENUM(NSInteger, UDMessageFromType) {
     UDMessageTypeCenter = 2, //自定义
 };
 
-typedef NS_ENUM(NSUInteger, UDBubbleImageViewStyle) {
-    UDBubbleImageViewStyleUDChat = 0
-};
-
 typedef NS_ENUM(NSInteger, UDMessageMediaType) {
     UDMessageMediaTypeText    = 0,
     UDMessageMediaTypePhoto   = 1,

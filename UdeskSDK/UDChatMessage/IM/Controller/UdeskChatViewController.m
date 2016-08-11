@@ -66,8 +66,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //设置标题
-    [self.udNavView changeTitle:getUDLocalizedString(@"会话")];
+    
+    //设置标题和返回按钮颜色
+    [self.udNavView changeTitle:getUDLocalizedString(@"会话") withColor:UdeskUIConfig.iMTitleColor];
+    [self setBackButtonColor:UdeskUIConfig.iMBackButtonColor];
+    
     //初始化viewModel
     [self initViewModel];
     //初始化消息页面布局
@@ -123,6 +126,12 @@
         @udStrongify(self);
         UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] init];
         [self.navigationController pushViewController:offLineTicket animated:YES];
+    };
+    
+    self.chatViewModel.clickBlacklistedDown = ^{
+    
+        @udStrongify(self);
+        [self.navigationController popViewControllerAnimated:YES];
     };
 }
 
@@ -746,13 +755,8 @@
     
     //监听键盘
     [self subscribeToKeyboard];
-    
-    if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.iMNavigationColor;
-    } else {
-        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.iMNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.iMBackButtonColor;
-    }
+    //设置导航栏颜色
+    [self setNavigationBarBackGroundColor:UdeskUIConfig.iMNavigationColor];
     //设置客户在线
     [UdeskManager setCustomerOnline];
 }

@@ -72,13 +72,32 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-//    [self.udNavView changeTitle:getUDLocalizedString(@"请选择客服组")];
+    
+    [self.udNavView changeTitle:getUDLocalizedString(@"请选择客服组") withColor:UdeskUIConfig.agentMenuTitleColor];
+    [self setBackButtonColor:UdeskUIConfig.agentMenuBackButtonColor];
     
     self.view.backgroundColor = [UIColor colorWithRed:0.918f  green:0.922f  blue:0.925f alpha:1];
     
     [self setAgentMenuScrollView];
     
     [self requestAgentMenu:self.agentMenu];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self setNavigationBarBackGroundColor:UdeskUIConfig.agentMenuNavigationColor];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    if (ud_isIOS6) {
+        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
+    } else {
+        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
+    }
+    
 }
 
 - (void)backButtonAction {
@@ -359,28 +378,6 @@
             
         }];
         
-    }
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.agentMenuNavigationColor;
-    } else {
-        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.agentMenuNavigationColor;
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.agentMenuBackButtonColor;
-    }
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    if (ud_isIOS6) {
-        self.navigationController.navigationBar.tintColor = UdeskUIConfig.oneSelfNavcigtionColor;
-    } else {
-        self.navigationController.navigationBar.barTintColor = UdeskUIConfig.oneSelfNavcigtionColor;
     }
     
 }

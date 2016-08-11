@@ -100,6 +100,24 @@ CGRect CGRectMoveToCenter(CGRect rect, CGPoint center)
     self.frame = newframe;
 }
 
+- (CGFloat)ud_centerX {
+    return self.center.x;
+}
+
+- (void)setUd_centerX:(CGFloat)ud_centerX {
+
+    self.center = CGPointMake(ud_centerX, self.center.y);
+}
+
+- (CGFloat)ud_centerY {
+    return self.center.y;
+}
+
+- (void)setUd_centerY:(CGFloat)ud_centerY {
+
+    self.center = CGPointMake(self.center.x, ud_centerY);
+}
+
 // Retrieve and set height, width, top, bottom, left, right
 - (CGFloat) ud_height
 {

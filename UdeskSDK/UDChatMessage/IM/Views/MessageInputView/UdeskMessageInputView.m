@@ -171,7 +171,7 @@
 
 - (void)messageStyleButtonClicked:(UIButton *)sender {
     
-    if (_agentCode.integerValue==2000) {
+    if (_agentCode==UDAgentStatusResultOnline) {
         
         NSInteger index = sender.tag;
         switch (index) {
@@ -395,7 +395,7 @@
 
 #pragma mark - Text view delegate
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
-    if (_agentCode.integerValue == 2000) {
+    if (_agentCode == UDAgentStatusResultOnline) {
         
         if ([self.delegate respondsToSelector:@selector(inputTextViewWillBeginEditing:)]) {
             [self.delegate inputTextViewWillBeginEditing:self.inputTextView];
@@ -416,7 +416,7 @@
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
     [textView becomeFirstResponder];
-    if (_agentCode.integerValue == 2000) {
+    if (_agentCode == UDAgentStatusResultOnline) {
         
         if (!self.textViewHeight)
             self.textViewHeight = [self getTextViewContentH:textView];

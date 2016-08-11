@@ -50,9 +50,6 @@
 /*** 文章内容页面导航栏颜色 */
 @property (nonatomic, strong) UIColor  *articleContentNavigationColor;
 
-/*** 客户app页面导航栏的颜色 */
-@property (nonatomic, strong) UIColor  *oneSelfNavcigtionColor;
-
 /*** 帮助中心标题颜色 */
 @property (nonatomic, strong) UIColor  *faqTitleColor;
 
@@ -103,6 +100,12 @@
 
 /*** 客服菜单选择器导航栏颜色 */
 @property (nonatomic, strong) UIColor  *agentMenuTitleColor;
+
+/*** 机器人转人工按钮颜色 */
+@property (nonatomic, strong) UIColor  *robotTransferButtonColor;
+
+/*** 客户app页面导航栏的颜色 */
+@property (nonatomic, strong) UIColor  *oneSelfNavcigtionColor;
 
 + (instancetype)sharedUDConfig;
 
