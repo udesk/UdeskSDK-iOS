@@ -1,20 +1,34 @@
 # UdeskSDK-iOS
-UdeskSDK-iOS
-
-## iOS新版说明
-
-> Udesk为了让开发者更好的集成移动SDK,与企业业务结合更加紧密，我们开源了SDK的UI界面。用户可以根据自身业务以及APP不同风格重写页面。当然开发者也可以直接用我们提供的默认的界面。
+Udesk为了让开发者更好的集成移动SDK,与企业业务结合更加紧密，我们开源了SDK的UI界面。用户可以根据自身业务以及APP不同风格重写页面。当然开发者也可以直接用我们提供的默认的界面。
 
 
-## SDK工作流程
+## 一、SDK工作流程
 
 
 Udesk-SDK的工作流程如下图所示。
 
 ![udesk](http://7xr0de.com2.z0.glb.qiniucdn.com/ios-new-1.png)
 
+## 二、导入SDK依赖的框架
 
-## 导入SDK依赖的框架
+#### 2.1文件介绍
+
+| Demo中的文件      | 说明                |
+| ------------- | ----------------- |
+| UDChatMessage | Udesk提供的开源聊天界面    |
+| SDK           | Udesk SDK的静态库和头文件 |
+| Resource      | Udesk资源文件         |
+
+|    SDK中的文件     |                    说明                    |
+| :------------: | :--------------------------------------: |
+| UdeskMessage.h |                  实体类：消息                  |
+| UdeskManager.h | Udesk SDK 提供的逻辑 API，开发者可调用其中的逻辑接口，实现自定义在线客服界面 |
+|   libUdesk.a   |       Udesk SDK 提供的静态库，实现了SDK底层逻辑        |
+
+#### 2.2引入依赖库
+
+Udesk SDK 的实现，依赖了一些系统框架，在开发应用时，需要在工程里加入这些框架。开发者首先点击工程右边的工程名,然后在工程名右边依次选择 *TARGETS* -> *BuiLd Phases* -> *Link Binary With Libraries*，展开 *LinkBinary With Libraries* 后点击展开后下面的 *+* 来添加下面的依赖项:
+
 ```
 libz.tbd
 libxml2.tbd
@@ -22,13 +36,16 @@ libresolv.tbd
 libsqlite3.tbd
 ```
 
-把下载的文件夹中的UdeskSDK文件夹拖到你的工程里
-```
-点击的你工程targets->Build Settings 
-搜索Other Linker Flags 加入 -lxml2 -ObjC，
-搜索header search paths 加入/usr/include/libxml2。
-```
-## CocoaPods 导入
+#### 2.3添加SDK到你的工程
+
+把下载的文件夹中的UdeskSDK文件夹拖到你的工程里，并进行以下配置
+
+- 点击的你工程targets->Build Settings 
+- 搜索Other Linker Flags 加入 -lxml2 -ObjC
+- 搜索header search paths 加入/usr/include/libxml2
+
+#### 2.4CocoaPods 导入
+
 在 Podfile 中加入：
 
 ```
@@ -39,508 +56,376 @@ pod 'UdeskSDK'
 #import "Udesk.h"
 ```
 
-文件介绍
+## 三、快速集成SDK
 
-|Demo中的文件 |说明 |
-|--------|:------|
-|UDChatMessage |Udesk提供的开源聊天界面 | 
-|SDK|Udesk SDK的静态库和头文件|
-|Resource|Udesk资源文件|
+Udesk提供了一套开源的聊天界面，帮助开发者快速创建对话窗口和帮助中心，并提供自定义接口，以实现定制需求。
 
-## 4、快速集成SDK
+#### 3.1初始化Udesk  SDK
 
-### 1）、初始化Udesk，获取密钥和公司域名。
-![udesk](http://7xr0de.com2.z0.glb.qiniucdn.com/ios3.png)
+获取密钥和公司域名。
+
+![udesk](http://7xr0de.com1.z0.glb.clouddn.com/key.jpeg)
 ```
 //初始化Udesk
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 // Override point for customization after application launch.
-    [UdeskManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
-    return YES;
+[UdeskManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
+return YES;
 }
 ```
-### 2）、初始化用户信息
-> 注意：若要在SDK中使用 用户自定义字段 需先在网页端设置添加用户自定义字字段。 用户字段包含了一名联系人的所用数据。目前Udesk完全支持自定义用户字段，您可以选择输入型字段和选择型字段。如果是选择型字段，需要提供多个自定义的选项供您的客户进行选择。如果是输入型字段，用户会看到一个文本输入框，在其中输入数据。
+#### 3.2初始化客户信息
 
 用户系统字段是Udesk已定义好的字段，开发者可以传入这些用户信息，供客服查看。
+
 ```
 NSDictionary *parameters = @{
-                                @"user": @{
-                                            @"nick_name": @"小明",
-                                            @"cellphone":@"18888888888",
-                                            @"weixin_id":@"xiaoming888",
-                                            @"weibo_name":@"xmwb888",
-                                            @"qq":@"8888888",
-                                            @"email":@"xiaoming@qq.com",
-                                            @"description":@"用户描述",
-                                            @"sdk_token":@"xxxxxxxxxxx"
-                                        }
-                            }
-
+@"user": @{
+@"nick_name": @"小明",
+@"cellphone":@"18888888888",
+@"email":@"xiaoming@qq.com",
+@"description":@"用户描述",
+@"sdk_token":@"xxxxxxxxxxx"
+}
+}
+[UdeskManager createCustomerWithCustomerInfo:parameters];
 ```
 
-字段说明：
+#### 3.3推出聊天页面
 
-|key |是否必选 |说明 |
-|--------|:------|------|
-|sdk_token|必选|用户唯一标识|
-|cellphone |可选|用户手机号|
-|weixin_id |可选|微信号|
-|weibo_name |可选|微博ID|
-|qq|可选|QQ号|
-|email|可选|邮箱账号|
-|description|可选|用户描述|
+```
+UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
+
+[self.navigationController pushViewController:chat animated:YES];
+```
+
+#### 3.5推出机器人页面
+
+确保管理员后后【管理中心-即时通讯-IM机器人】开启机器人SDK IM渠道。可以设置是否允许转人员。使用此界面，则会根据后台配置显示机器人或人工客服对话界面
+
+```
+UdeskRobotIMViewController *robot = [[UdeskRobotIMViewController alloc] init];
+
+[self.navigationController pushViewController:robot animated:YES];
+```
+#### 3.4推出帮助中心
+
+```
+UdeskFaqController *faq = [[UdeskFaqController alloc] init];
+[self.navigationController pushViewController:faq animated:YES];
+```
+
+#### 3.5推出客服导航
+
+```
+[UdeskManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
+
+if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+
+NSArray *result = [responseObject objectForKey:@"result"];
+//后台配置了客服导航，直接进入客服导航页面
+if (result.count) { 
+UdeskAgentNavigationMenu *agentMenu = [[UdeskAgentNavigationMenu alloc] initWithMenuArray:result];
+
+[self.navigationController pushViewController:agentMenu animated:YES];
+}
+else {
+//后台未配置了客服导航，进入默认聊天页面  
+UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
+[self.navigationController pushViewController:chat animated:YES];
+}
+}
+
+}];
+```
 
 
-用户自定义字段：
-用户自定义字段需要登录Udesk后台，进入“管理中心-用户字段”添加用户自定义字段。
-![udesk](http://7xr0de.com2.z0.glb.qiniucdn.com/ios4.png)
 
-调用用户自定义字段函数：
+## 四、Udesk SDK API说明
+
+注意：以下接口在Udesk开源UI里均有调用，如果你使用Udesk的开源UI则不需要调用以下任何接口
+
+#### 4.1初始化SDK
+
+```
+//初始化Udesk
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+// Override point for customization after application launch.    
+[UdeskManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];   
+return YES;
+}
+```
+
+#### 4.2初始化客户信息
+
+注意：若要在SDK中使用 用户自定义字段 需先在管理员网页端设置添加用户自定义字字段。 用户字段包含了一名客户的所用数据。目前Udesk支持自定义客户字段，您可以选择输入型字段、选择型字段或其他类型字段。
+
+用户系统字段是Udesk已定义好的字段，开发者可以传入这些用户信息，供客服查看。
+
+```
+NSDictionary *parameters = @{
+@"user": @{
+@"nick_name": @"小明",
+@"cellphone":@"18888888888",
+@"email":@"xiaoming@qq.com",
+@"description":@"用户描述",
+@"sdk_token":@"xxxxxxxxxxx"
+}
+}
+[UdeskManager createCustomerWithCustomerInfo:parameters];
+```
+
+默认客户字段说明
+
+| key           | 是否必选   | 说明         |
+| ------------- | ------ | ---------- |
+| **sdk_token** | **必选** | **用户唯一标识** |
+| cellphone     | 可选     | 用户手机号      |
+| email         | 可选     | 邮箱账号       |
+| description   | 可选     | 用户描述       |
+| nick_name     | 可选     | 用户名字       |
+
+##### 4.2.1添加客户自定义字段
+
+客户自定义字段需要管理员登录Udesk后台进入【管理中心-用户字段】添加用户自定义字段。![udesk](http://7xr0de.com1.z0.glb.clouddn.com/custom.jpeg)
+
+调用用户自定义字段函数
+
 ```
 //获取用户自定义字段
 [UdeskManager getCustomerFields:^(id responseObject, NSError *error) {
 
-    //NSLog(@"用户自定义字段：%@",responseObject);
+//NSLog(@"用户自定义字段：%@",responseObject);
 }];
 ```
 
 返回信息：
+
 ```
 fieldsDict:{
-    message = success;
-    status = 0;
-    "user_fields" =     (
-        {
-            comment = “测试测试”;      
-            "content_type" = droplist; 
-            "field_label" = "测试";  
-            "field_name" = “SelectField_109";   ——————用户自定义字段key
-    options =             (    
-        {
-            0 = "测试用户自定义字段";
-        }
-    );
-    permission = 0;
-    requirment = 1;
-    };
+message = success;
+status = 0;
+"user_fields" =     (
+{
+comment = “测试测试”;      
+"content_type" = droplist; 
+"field_label" = "测试";  
+"field_name" = “SelectField_109";   ——————用户自定义字段key
+options =             (    
+{
+0 = "测试用户自定义字段";
+}
+);
+permission = 0;
+requirment = 1;
+};
 }
 ```
-使用:添加key值"customer_field" 类型为字典，根据返回的信息field_name的value 作为key，value根据需求定义。把这个键值对添加到customer_field。最后把customer_field添加到用户信息参数的user字典里
-  示例:
+
+使用:添加key值"customer_field" 类型为字典，根据返回的信息field_name的value 作为key，value根据需求定义。把这个键值对添加到customer_field。最后把customer_field添加到用户信息参数的user字典里  示例:
+
 ```
 NSDictionary *parameters = @{
-                                @"user": @{
-                                            @"sdk_token": sdk_token,
-                                            @"nick_name":nick_name,
-                                            @"email":email,
-                                            @"cellphone":cellphone,
-                                            @"weixin_id":@"xiaoming888",
-                                            @"weibo_name":@"xmwb888",
-                                            @"qq":@"8888888",
-                                            @"description":@"用户描述",
-                                            @"customer_field":@{
-                                                                    @"TextField_390":@"测试测试",
-                                                                    @"SelectField_455":@[@"1"]
-                                                            }
+@"user": @{
+@"sdk_token": sdk_token,
+@"nick_name":nick_name,
+@"email":email,
+@"cellphone":cellphone,
+@"description":@"用户描述",
+@"customer_field":@{
+@"TextField_390":@"测试测试",
+@"SelectField_455":@[@"1"]
+}
 
-                                    }
-                        };
+}
+};
 ```
-创建用户（此接口为必调用，否则无法使用SDK）
+
+**4.2.4创建用户**
+
+此接口为必调用，否则无法使用SDK
+
 ```
 [UdeskManager createCustomerWithCustomerInfo:parameters];
+```
 
-```
-更新用户信息（根据需求自定义，不调用不影响主流程）
-```
+##### 4.2.2更新用户信息
+
+根据需求自定义，不调用不影响主流程
+
 注意：
-    参数跟创建用户信息的结构体大致一样(不需要传sdk_token)  
-    用户自定义字段"customer_field"改为"custom_fields"其他不变
-    请不要使用已经存在的邮箱或者手机号进行更新，否则会更新失败！
 
+- 参数跟创建用户信息的结构体大致一样(不需要传sdk_token)  
+- 用户自定义字段"customer_field"改为"custom_fields"其他不变
+- 请不要使用已经存在的邮箱或者手机号进行更新，否则会更新失败！
+
+```
 NSDictionary *updateParameters = @{
-                                    @"user" : @{
-                                                @"nick_name":@"测试更新10",
-                                                @"cellphone":@"323312110198754326231123",
-                                                @"weixin_id":@"xiaoming91078543628818",
-                                                @"weibo_name":@"xmwb81497810568328",
-                                                @"qq":@"888818682843578910",
-                                                @"description":@"用户10描述",
-                                                @"email":@"889092340491087556233290111@163.com",
-                                                @"custom_fields":@{
-                                                                    @"TextField_390":@"测试测试",
-                                                                    @"SelectField_455":@[@"1"]
-                                                                }
-                                            }
+@"user" : @{
+@"nick_name":@"测试更新10",
+@"cellphone":@"323312110198754326231123",
+@"weixin_id":@"xiaoming91078543628818",
+@"weibo_name":@"xmwb81497810568328",
+@"qq":@"888818682843578910",
+@"description":@"用户10描述",
+@"email":@"889092340491087556233290111@163.com",
+@"custom_fields":@{
+@"TextField_390":@"测试测试",
+@"SelectField_455":@[@"1"]
+}
+}
 };
 
 [UdeskManager updateUserInformation:updateParameters];
-
 ```
-添加咨询对象（根据需求自定义，不调用不影响主流程）
+
+#### **4.3**添加咨询对象
+
+根据需求自定义，不调用不影响主流程
+
 ```
 在你push事件的时候调用UdeskChatViewController类的 showProductViewWithDictionary方法
 
 UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
 //咨询对象
 NSDictionary *product =  @{
-                            @"product_imageUrl":@"http://img.club.pchome.net/kdsarticle/2013/11small/21/fd548da909d64a988da20fa0ec124ef3_1000x750.jpg",
-                            @"product_title":@"测试咨询对象标题测试咨询对象标题！",
-                            @"product_detail":@"¥88888.0",
-                            @"product_url":@"http://www.baidu.com"
+@"product_imageUrl":@"http://img.club.pchome.net/kdsarticle/2013/11small/21/fd548da909d64a988da20fa0ec124ef3_1000x750.jpg",
+@"product_title":@"测试咨询对象标题测试咨询对象标题！",
+@"product_detail":@"¥88888.0",
+@"product_url":@"http://www.baidu.com"
 
-                        };
+};
 
 [chat showProductViewWithDictionary:product];
 
 [self.navigationController pushViewController:chat animated:YES];
-
 ```
 
-### 3）、推出聊天页面
-```
-UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
+SDK 咨询对象展示:
 
-[self.navigationController pushViewController:chat animated:YES];
+![udesk](http://7xr0de.com1.z0.glb.clouddn.com/%E5%92%A8%E8%AF%A2%E5%AF%B9%E8%B1%A1.png)
 
-```
 
-### 4）、推出帮助中心
-```
-UdeskFaqController *faq = [[UdeskFaqController alloc] init];
 
-[self.navigationController pushViewController:faq animated:YES];
+#### 4.4 获取当前客户的帐号信息
 
-```
+在用户创建成功后调用，会获取当前客户的帐号信息，但开发者不可见，在调用**连接Udesk服务器接口**时SDK会自动使用帐号信息，可参考开源UI相关步骤
 
-### 5）、推出机器人页面
-```
-UdeskRobotIMViewController *robot = [[UdeskRobotIMViewController alloc] init];
+[UdeskManager getCustomerLoginInfo:^(BOOL success, NSError *error) {
 
-[self.navigationController pushViewController:robot animated:YES];
+}];
+#### 4.5请求分配客服
+
+在获取当前客户的帐号信息后，调用此接口，请求分配客服，获得客服信息和以及排队信息，可参考开源UI
 
 ```
-至此，你已经为你的 APP 添加Udesk提供的客服服务。而Udesk SDK 还提供其他强大的功能，可以帮助提高服务效率，提升用户使用体验。接下来为你详细介绍如何使用其他功能
+[UdeskManager requestRandomAgent:^(id responseObject, NSError *error) {  
 
-## 接口说明
-
+//返回客服信息
+}];
 ```
 
-/**
-*  初始化Udesk，必须调用此函数，请正确填写参数。
-*
-*  @param key    公司密钥
-*  @param domain 公司域名
-*/
-+ (void)initWithAppkey:(NSString *)key domianName:(NSString *)domain;
-/**
-*  创建用户，必须调用此函数，请正确填写参数
-*
-*  @param customerInfo 用户信息
-*/
-+ (void)createCustomerWithCustomerInfo:(NSDictionary *)customerInfo;
+#### 4.6指定分配客服或客服组 
 
-/**
-*  更新用户信息
-*
-*  @param customerInfo 参数跟创建用户信息的结构体一样(不需要传sdk_token)
-*  @warning 用户自定义字段"customer_field"改为"custom_fields"其他不变
-*/
-+ (void)updateUserInformation:(NSDictionary *)customerInfo;
-
-/**
-*  获取用户的登录信息，会返回用户登录Udesk的信息
-*
-*  @param completion 回调用户登录信息
-*/
-+ (void)getCustomerLoginInfo:(void (^)(NSDictionary *loginInfoDic,NSError *error))completion;
-
-/**
-*  获取后台分配的客服信息
-*
-*  @param completion 回调客服信息
-*/
-+ (void)requestRandomAgent:(void (^)(id responseObject,NSError *error))completion;
-
-/**
-*  指定分配客服或客服组
-*
-*  注意：需要先调用createCustomer接口
-*
-*  @param agentId    客服id（选择客服组，则客服id可不填）
-*  @param groupId    客服组id（选择客服，则客服组id可不填）
-*  @param completion 回调结果
-*/
-+ (void)assignAgentOrGroup:(NSString *)agentId
-groupID:(NSString *)groupId
-completion:(void (^) (id responseObject,NSError *error))completion;
-
-/**
-*  获取转接后客服的信息
-*
-*  @param completion 回调客服信息
-*/
-+ (void)getRedirectAgentInformation:(NSDictionary *)redirectAgent
-completion:(void (^)(id responseObject,NSError *error))completion;
-
-/**
-*  接收消息代理
-*
-*  @param receiveDelegate 接收消息和接收状态代理
-*/
-+ (void)receiveUdeskDelegate:(id<UDManagerDelegate>)receiveDelegate;
-
-/**
-*  登录Udesk
-*
-*  @param completion      回调登录状态
-*  @param receiveDelegate 接收消息和接收状态代理
-*/
-+ (void)loginUdesk:(void (^) (BOOL status))completion;
-
-/**
-*  退出Udesk (切换用户，需要调用此接口)
-*/
-+ (void)logoutUdesk;
-
-/**
-*  设置客户离线 (在用户点击home键后调用此方法，如不调用此方法，会造成客服消息发送不出去)
-*/
-+ (void)setCustomerOffline;
-
-/**
-*  设置客户在线 (用户点击app进入页面时调用此方法)
-*/
-+ (void)setCustomerOnline;
-
-/**
-*  发送消息
-*
-*  @param message    UDMessage类型消息体
-*  @param completion 发送回调
-*/
-+ (void)sendMessage:(UdeskMessage *)message
-completion:(void (^) (UdeskMessage *message,BOOL sendStatus))completion;
-
-/**
-* 将用户正在输入的内容，提供给客服查看。该接口没有调用限制，但每1秒内只会向服务器发送一次数据
-* @param content 提供给客服看到的内容
-* @warning 需要在初始化成功后，且客服是在线状态时调用才有效
-*/
-+ (void)sendClientInputtingWithContent:(NSString *)content;
-
-/**
-*  获取用户自定义字段
-*
-*  @param completion 回调用户自定义子段信息
-*/
-+ (void)getCustomerFields:(void (^)(id responseObject, NSError *error))completion;
-/**
-*  获取公司帮助中心文章
-*
-*  @param completion 回调帮助中心文章信息
-*/
-+ (void)getFaqArticles:(void (^)(id responseObject, NSError *error))completion;
-
-/**
-*  获取公司帮助中心文章内容
-*
-*  @param contentId  文章内容ID
-*  @param completion 回调文章内容信息
-*/
-+ (void)getFaqArticlesContent:(NSString *)contentId
-completion:(void (^)(id responseObject, NSError *error))completion;
-
-/**
-*  搜索帮助中心文章
-*
-*  @param content    搜索内容
-*  @param completion 回调搜索信息
-*/
-+ (void)searchFaqArticles:(NSString *)content
-completion:(void (^)(id responseObject, NSError *error))completion;
-
-/**
-*  获取提交工单URL
-*
-*  @return 提交工单URL
-*/
-+ (NSURL *)getSubmitTicketURL;
-
-/**
-*  获取机器人URL
-*
-*  @return 机器人URL
-*/
-+ (NSURL *)getRobotURL;
-
-/**
-*  异步获取
-*
-*  @param completion 回调机器人URL
-*/
-+ (void)getRobotURL:(void(^)(NSURL *robotUrl))completion;
-
-/**
-*  插入信息到数据库
-*
-*  @param sql    sql语句
-*  @param params 参数
-*
-*  @return 插入状态
-*/
-+ (BOOL)insertTableWithSqlString:(NSString *)sql params:(NSArray *)params;
-
-/**
-*  查询数据库
-*
-*  @param sql    sql语句
-*  @param params 参数
-*
-*  @return 查询结果
-*/
-+ (NSArray *)queryTabelWithSqlString:(NSString *)sql
-params:(NSArray *)params;
-
-/**
-*  数据库消息条数
-*
-*  @return 结果
-*/
-+ (NSInteger)dbMessageCount;
-
-/**
-*  删除数据库内容
-*
-*  @param sql    sql语句
-*  @param params 参数
-*
-*  @return 删除状态
-*/
-+ (BOOL)deleteTableWithSqlString:(NSString *)sql params:(NSArray *)params;
-
-/**
-*  修改数据库内容
-*
-*  @param sql    sql语句
-*  @param params 参数
-*
-*  @return 修改状态
-*/
-+ (BOOL)updateTableWithSqlString:(NSString *)sql params:(NSArray *)params;
-
-/**
-*  获取客服注册的Udesk域名
-*
-*  @return 域名
-*/
-+ (NSString *)domain;
-/**
-*  获取用户Udesk key
-*
-*  @return Udesk key
-*/
-+ (NSString *)key;
-/**
-*  机器人客服是否支持转移
-*
-*  @return 是否支持转移
-*/
-+ (BOOL)supportTransfer;
-
-/**
-*  获取sdk版本
-*
-*  @return sdk版本
-*/
-+ (NSString *)udeskSDKVersion;
-
-/**
-*  获取满意度调查选项
-*
-*  @param completion 回调选项内容
-*/
-+ (void)getSurveyOptions:(void (^)(id responseObject, NSError *error))completion;
-
-/**
-*  满意度调查投票
-*
-*  @param agentId    满意度调查的客服
-*  @param optionId   满意度选项ID
-*  @param completion 回调结果
-*/
-+ (void)survetVoteWithAgentId:(NSString *)agentId
-withOptionId:(NSString *)optionId
-completion:(void (^)(id responseObject, NSError *error))completion;
-/**
-*  获取后台配置的导航菜单
-*
-*  @param completion 回调结果
-*/
-+ (void)getAgentNavigationMenu:(void (^)(id responseObject, NSError *error))completion;
-
-/**
-*  取消所有网络操作
-*/
-+ (void)ud_cancelAllOperations;
-/**
-*  获取未读消息数量
-*
-*  @return 未读消息数量
-*/
-+ (NSInteger)getLocalUnreadeMessagesCount;
-
-/**
-*  获取缓存的聊天语音数据
-*
-*  @param key 语音消息id
-*
-*  @return 语音
-*/
-+ (NSData *)dataFromDiskCacheForKey:(NSString *)key;
-
-/**
-*  获取缓存的聊天图片数据
-*
-*  @param key 图片消息id
-*
-*  @return 图片
-*/
-+ (UIImage *)imageFromDiskCacheForKey:(NSString *)key;
-
-/**
-*  异步获取缓存里的聊天图片数据
-*
-*  @param key       图片消息id
-*  @param doneBlock 回调
-*
-*  @return NSOperation
-*/
-+ (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(void(^)(UIImage *image))doneBlock;
-
-/**
-*  存储图片信息
-*
-*  @param image 图片
-*  @param key   图片id
-*/
-+ (void)storeImage:(UIImage *)image forKey:(NSString *)key;
-
-/**
-*  存储data数据
-*
-*  @param data data
-*  @param key  data id
-*/
-+ (void)storeData:(NSData *)data forKey:(NSString *)key;
-
-/**
-*  在服务端创建用户。（开发者无需调用此函数）
-*
-*  @param completion 成功信息回调
-*  @param failure    失败信息回调
-*/
-+ (void)createServerCustomer:(void(^)(id responseObject))completion failure:(void(^)(NSError *error))failure;
+在获取当前客户的帐号信息后，调用此接口可主动指定分配客服和客服组，获得客服信息和以及排队信息，可参考开源UI
 
 ```
+[UdeskManager assignAgentOrGroup:@"agentId" groupID:@"groupId" completion:^(id responseObject,      NSError *error) {
+
+}];
+```
+
+**获取客服和客服组ID**
+
+使用管理员登陆Udesk系统
+
+![udesk](http://7xr0de.com1.z0.glb.clouddn.com/%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%9C%8Did.jpg)
+
+#### 4.7连接Udesk服务器
+
+获取分配的客服信息之后，调用此接口可以建立客户与Udesk服务器之间的连接
+
+```
+[UdeskManager loginUdesk:^(BOOL status) {
+NSLog(@"登录Udesk成功");
+}];
+```
+
+#### 4.8断开与Udesk服务器连接 
+
+切换用户时，调用此接口断开上一个客户的连接
+
+```
+[UdeskManager logoutUdesk];
+```
+
+#### 4.9设置客户离线 
+
+在客户点击home键后调用此方法，如不调用此方法，可能会造成客服消息发送不出去，或者是退出对话页面时调用。
+
+```
+[UdeskManager setCustomerOffline];
+```
+
+#### 4.10设置客户上线
+
+连接Udesk服务器后客户默认在线，在设置客户离线后，调用此接口可以上客户重新上线。
+
+```
+[UdeskManager setCustomerOnline];
+```
+
+#### 4.11设置接收消息代理
+
+设置接收消息的代理，由代理来接收消息。
+
+设置代理后，实现 `UDManagerDelegate` 中的 `didReceiveMessages:` `didReceivePresence:` `didReceiveSurvey:withAgentId:` 方法，即可通过这些代理函数接收消息。
+
+```
+[UdeskManager receiveUdeskDelegate:self]; 
+```
+
+#### 4.12发送消息
+
+调用此接口开发送各种类型的消息，注意选择正确的消息类型。
+
+//message消息类型为 UdeskMessage
+[UdeskManager sendMessage:message completion:^(UdeskMessage *message,BOOL sendStatus) {    
+
+}];
+#### 4.13输入预知
+
+将用户正在输入的内容，实时显示在客服对话窗口。该接口没有调用限制，但每1秒内只会向服务器发送一次数据）
+
+注意：需要在初始化成功后，且客服是在线状态时调用才有效
+
+```
+[UdeskManager sendClientInputtingWithContent:text];
+```
+
+#### 4.14获取客户本地聊天数据
+
+```
+[UdeskManager queryTabelWithSqlString:sql params:nil];
+```
+
+#### 4.15监听收到未读消息的广播
+
+开发者可在合适的地方，监听收到消息的广播，用于提醒顾客有新消息。广播的名字为 `UD_RECEIVED_NEW_MESSAGES_NOTIFICATION`，定义在 UdeskManager.h 中。
+
+#### 4.16获取未读消息数量
+
+开发者可以在需要显示未读消息数是调用此接口，当用户进入聊天界面后，未读消息将会清零。
+
+```
+[UdeskManager getLocalUnreadeMessagesCount];
+```
+
+#### 4.17获取机器人URL
+
+当前SDK的机器人是web网页来实现，通过此接口可以获取机器人网页的URL，在webview里打开后即可以与机器人对话。
+
+```
+[UdeskManager getRobotURL:^(NSURL *robotUrl) {
+}];
+```
+
