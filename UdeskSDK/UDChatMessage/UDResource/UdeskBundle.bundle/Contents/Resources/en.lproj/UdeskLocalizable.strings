@@ -1,0 +1,57 @@
+/* 
+  UdeskLocalizable.strings
+  UdeskSDK
+
+  Created by xuchen on 16/9/2.
+  Copyright © 2016年 xuchen. All rights reserved.
+*/
+
+//faq
+"udesk_faq_title" = "Help center";
+"udesk_faq_details_title" = "question details";
+"udesk_faq_search" = "Search";
+"udesk_faq_Contactus" = "Contact us";
+"udesk_faq_tips" = "Can not find your search?";
+
+//im
+"udesk_close" = "Close";
+"udesk_back" = "Back";
+"udesk_cancel" = "Cancel";
+"udesk_sure" = "Sure";
+"udesk_alert_view_blocked_list" = "Sorry, your are in blocked list.";
+"udesk_im_title_blocked_list" = "You are blocked";
+"udesk_network_interrupt" = "Network interrupt";
+"udesk_chat_end" = "Chat end";
+"udesk_top_view_thanks_evaluation" = "Thanks for comment.";
+"udesk_no_send_empty" = "No empty message";
+"udesk_resend_msg" = "Resend message";
+"udesk_send" = "Send";
+"udesk_typing" = "Typing...";
+"udesk_hold_to_talk" = "Hold to talk";
+"udesk_release_to_cancel" = "Release to cancel";
+"udesk_microphone_denied" = "Allow app to access your microphone";
+"udesk_leave_msg" = "Leave message";
+"udesk_connecting_agent" = "Connecting agent...";
+"udesk_agent_offline" = "Agent offline";
+"udesk_agent_busy" = "Agent busy";
+"udesk_redirect" = "Operator";
+"udesk_robot_title" = "Intelligent robot";
+"udesk_alert_view_agent_busy_leave_msg" = "Agent is busy, please press button to leave message.";
+"udesk_alert_view_leave_msg" = "Submit list to describe your questions and we will contact you later";
+"udesk_network_disconnect" = "Network disconnect, please connect it first.";
+"udesk_wait_connecting" = "Connecting, please wait...";
+"udesk_thanks" = "Thanks";
+"udesk_reassign_agent"="Reassign agent, please wait...";
+"udesk_agent_not_exist" = "Agent not exist";
+"udesk_group_not_exist" = "Agent group not exist";
+"udesk_copy" = "Copy";
+"udesk_today" = "Today";
+"udesk_yesterday" = "Yesterday";
+"udesk_save" = "Save";
+"udesk_failed_save" = "Failed save";
+"udesk_success_save" = "Successful save";
+"udesk_send_link" = "Send link";
+"udesk_choose_group" = "Please choose agent group";
+"udesk_agent" = "Agent";
+"udesk_online" = "Online";
+"udesk_offline" = "Offline";

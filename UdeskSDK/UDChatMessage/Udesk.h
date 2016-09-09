@@ -10,9 +10,6 @@
 #define Udesk_h
 
 #import "UdeskManager.h"
-#import "UdeskChatViewController.h"
-#import "UdeskFAQViewController.h"
-#import "UdeskRobotIMViewController.h"
-#import "UdeskAgentNavigationMenu.h"
+#import "UdeskSDKManager.h"
 
 #endif /* Udesk_h */

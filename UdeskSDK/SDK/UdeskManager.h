@@ -8,16 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "UdeskMessage.h"
+#import "UdeskAgent.h"
 
 /**
  *  Udesk客服系统当前有新消息，开发者可实现该协议方法，通过此方法显示小红点未读标识
  */
 #define UD_RECEIVED_NEW_MESSAGES_NOTIFICATION @"UD_RECEIVED_NEW_MESSAGES_NOTIFICATION"
-
-/**
- *  消息db table
- */
-#define UD_Message_DB @"Message"
 
 @protocol UDManagerDelegate <NSObject>
 
@@ -26,7 +22,14 @@
  *
  *  @param message 接收的消息
  */
-- (void)didReceiveMessages:(id )message;
+- (void)didReceiveMessages:(UdeskMessage *)message;
+
+/**
+ *  接受转移
+ *
+ *  @param agent 转接之后的客服
+ */
+- (void)didReceiveRedirect:(UdeskAgent *)agent;
 
 /**
  *  接收状态代理
@@ -39,7 +42,7 @@
  *
  *  @param isSurvey 是否调查满意度
  */
-- (void)didReceiveSurvey:(NSString *)isSurvey withAgentId:(NSString *)agentId;
+- (void)didReceiveSurveyWithAgentId:(NSString *)agentId;
 
 @end
 
@@ -58,7 +61,6 @@
  *  @param customerInfo 用户信息
  */
 + (void)createCustomerWithCustomerInfo:(NSDictionary *)customerInfo;
-
 /**
  *  更新用户信息
  *
@@ -69,46 +71,63 @@
 + (void)updateUserInformation:(NSDictionary *)customerInfo;
 
 /**
- *  获取用户的登录信息，会返回用户登录Udesk的信息
- *
- *  @param completion 回调用户登录信息
- */
-+ (void)getCustomerLoginInfo:(void (^)(BOOL success, NSError *error))completion;
-
-/**
  *  获取后台分配的客服信息
  *
  *  @param completion 回调客服信息
  */
-+ (void)requestRandomAgent:(void (^)(id responseObject,NSError *error))completion;
++ (void)requestRandomAgent:(void (^)(UdeskAgent *agent, NSError *error))completion;
+/**
+ *  指定分配客服
+ *
+ *  @param agentId    客服id
+ *  @param completion 完成之后回调
+ */
++ (void)scheduledAgentId:(NSString *)agentId
+              completion:(void (^) (UdeskAgent *agent, NSError *error))completion;
+/**
+ *  指定分配客服组
+ *
+ *  @param agentId    客服组id
+ *  @param completion 完成之后回调
+ */
++ (void)scheduledGroupId:(NSString *)groupId
+              completion:(void (^) (UdeskAgent *agent, NSError *error))completion;
+/**
+ * 根据时间从本地数据库获取历史消息
+ *
+ * @param messageDate        获取该日期之前的历史消息;
+ * @param messagesNumber     获取消息的数量
+ * @param result             回调中，messagesArray:消息数组
+ */
++ (void)getHistoryMessagesFromDatabaseWithMessageDate:(NSDate *)messageDate
+                                       messagesNumber:(NSInteger)messagesNumber
+                                               result:(void (^)(NSArray *messagesArray))result;
+/**
+ *  获取未读消息数量
+ *
+ *  @return 未读消息数量
+ */
++ (NSInteger)getLocalUnreadeMessagesCount;
 
 /**
- *  指定分配客服或客服组
+ *  获取未读消息
  *
- *  注意：需要先调用createCustomer接口
- *
- *  @param agentId    客服id（选择客服组，则客服id可不填）
- *  @param groupId    客服组id（选择客服，则客服组id可不填）
- *  @param completion 回调结果
+ *  @return 未读消息数组
  */
-+ (void)assignAgentOrGroup:(NSString *)agentId
-                   groupID:(NSString *)groupId
-                completion:(void (^) (id responseObject,NSError *error))completion;
++ (NSArray *)getLocalUnreadeMessages;
+
+/**
+ *  将 SDK 本地数据库中的消息都删除
+ */
++ (void)removeAllMessagesFromDatabaseWithCompletion:(void (^)(BOOL success, NSError *error))completion;
 
 /**
  *  接收消息代理
  *
  *  @param receiveDelegate 接收消息和接收状态代理
+ *  @warning 需要在登陆成功后调用才有效
  */
 + (void)receiveUdeskDelegate:(id<UDManagerDelegate>)receiveDelegate;
-
-/**
- *  登录Udesk
- *
- *  @param completion      回调登录状态
- *  @param receiveDelegate 接收消息和接收状态代理
- */
-+ (void)loginUdesk:(void (^) (BOOL status))completion;
 
 /**
  *  退出Udesk (切换用户，需要调用此接口)
@@ -194,54 +213,6 @@
 + (void)getRobotURL:(void(^)(NSURL *robotUrl))completion;
 
 /**
- *  插入信息到数据库
- *
- *  @param sql    sql语句
- *  @param params 参数
- *
- *  @return 插入状态
- */
-+ (BOOL)insertTableWithSqlString:(NSString *)sql params:(NSArray *)params;
-
-/**
- *  查询数据库
- *
- *  @param sql    sql语句
- *  @param params 参数
- *
- *  @return 查询结果
- */
-+ (NSArray *)queryTabelWithSqlString:(NSString *)sql
-                         params:(NSArray *)params;
-
-/**
- *  数据库消息条数
- *
- *  @return 结果
- */
-+ (NSInteger)dbMessageCount;
-
-/**
- *  删除数据库内容
- *
- *  @param sql    sql语句
- *  @param params 参数
- *
- *  @return 删除状态
- */
-+ (BOOL)deleteTableWithSqlString:(NSString *)sql params:(NSArray *)params;
-
-/**
- *  修改数据库内容
- *
- *  @param sql    sql语句
- *  @param params 参数
- *
- *  @return 修改状态
- */
-+ (BOOL)updateTableWithSqlString:(NSString *)sql params:(NSArray *)params;
-
-/**
  *  获取客服注册的Udesk域名
  *
  *  @return 域名
@@ -259,6 +230,12 @@
  *  @return 是否支持转移
  */
 + (BOOL)supportTransfer;
+
+/**
+ * 当前用户是否被加入黑名单
+ *  @warning 需要先调用创建用户接口
+ */
++ (BOOL)isBlacklisted;
 
 /**
  *  获取sdk版本
@@ -295,30 +272,6 @@
  *  取消所有网络操作
  */
 + (void)ud_cancelAllOperations;
-/**
- *  获取未读消息数量
- *
- *  @return 未读消息数量
- */
-+ (NSInteger)getLocalUnreadeMessagesCount;
-
-/**
- *  获取缓存的聊天语音数据
- *
- *  @param key 语音消息id
- *
- *  @return 语音
- */
-+ (NSData *)dataFromDiskCacheForKey:(NSString *)key;
-
-/**
- *  获取缓存的聊天图片数据
- *
- *  @param key 图片消息id
- *
- *  @return 图片
- */
-+ (UIImage *)imageFromDiskCacheForKey:(NSString *)key;
 
 /**
  *  异步获取缓存里的聊天图片数据
@@ -328,23 +281,17 @@
  *
  *  @return NSOperation
  */
-+ (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(void(^)(UIImage *image))doneBlock;
++ (void)downloadMediaWithUrlString:(NSString *)key done:(void(^)(NSString *key, id<NSCoding> object))doneBlock;
 
 /**
- *  存储图片信息
- *
- *  @param image 图片
- *  @param key   图片id
+ *  清除所有Udesk的多媒体缓存
  */
-+ (void)storeImage:(UIImage *)image forKey:(NSString *)key;
++ (void)removeAllUdeskDataWithCompletion:(void (^)())completion;
 
 /**
- *  存储data数据
- *
- *  @param data data
- *  @param key  data id
+ 转换 emoji 别名为 Unicode
  */
-+ (void)storeData:(NSData *)data forKey:(NSString *)key;
++ (NSString *)convertToUnicodeWithEmojiAlias:(NSString *)text;
 
 /**
  *  在服务端创建用户。（开发者无需调用此函数）
@@ -353,11 +300,5 @@
  *  @param failure    失败信息回调
  */
 + (void)createServerCustomerCompletion:(void (^)(BOOL success, NSError *error))completion;
-
-/**
- * 当前用户是否被加入黑名单
- *  @warning 需要先调用创建用户接口
- */
-+ (BOOL)isBlacklisted;
 
 @end

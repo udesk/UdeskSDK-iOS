@@ -7,8 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "ViewController.h"
-#import "Udesk.h"
 
 @interface AppDelegate ()
 
@@ -16,17 +14,8 @@
 
 @implementation AppDelegate
 
-//初始化Udesk
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
-    ViewController *view = [[ViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:view];
-    self.window.rootViewController = nav;
-
-    //    [UDManager initWithAppkey:@"公司密钥" domianName:@"公司域名"];
-    
-    [UdeskManager initWithAppkey:@"6c37f775019907785d85c027e29dae4e" domianName:@"udesksdk.udesk.cn"];
     
     return YES;
 }

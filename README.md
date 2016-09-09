@@ -17,7 +17,6 @@ Udesk-SDK的工作流程如下图所示。
 | ------------- | ----------------- |
 | UDChatMessage | Udesk提供的开源聊天界面    |
 | SDK           | Udesk SDK的静态库和头文件 |
-| Resource      | Udesk资源文件         |
 
 |    SDK中的文件     |                    说明                    |
 | :------------: | :--------------------------------------: |
@@ -92,59 +91,109 @@ NSDictionary *parameters = @{
 
 #### 3.3推出聊天页面
 
-```
-UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
+```objective-c
+//使用push
+UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+[chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
 
-[self.navigationController pushViewController:chat animated:YES];
+//使用present
+[chat presentUdeskViewControllerWithType:UdeskIM viewController:self];
 ```
 
 #### 3.5推出机器人页面
 
 确保管理员后后【管理中心-即时通讯-IM机器人】开启机器人SDK IM渠道。可以设置是否允许转人员。使用此界面，则会根据后台配置显示机器人或人工客服对话界面
 
-```
-UdeskRobotIMViewController *robot = [[UdeskRobotIMViewController alloc] init];
+```objective-c
+//使用push
+UdeskSDKManager *robot = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+[robot pushUdeskViewControllerWithType:UdeskRobot viewController:self];
 
-[self.navigationController pushViewController:robot animated:YES];
+//使用present
+[robot presentUdeskViewControllerWithType:UdeskRobot viewController:self];
 ```
 #### 3.4推出帮助中心
 
-```
-UdeskFaqController *faq = [[UdeskFaqController alloc] init];
-[self.navigationController pushViewController:faq animated:YES];
+```objective-c
+//使用push
+UdeskSDKManager *faq = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+[faq pushUdeskViewControllerWithType:UdeskFAQ viewController:self];
+
+//使用present
+[faq presentUdeskViewControllerWithType:UdeskFAQ viewController:self];
 ```
 
 #### 3.5推出客服导航
 
-```
-[UdeskManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
+```objective-c
+//使用push
+UdeskSDKManager *agentMenu = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+[agentMenu pushUdeskViewControllerWithType:UdeskMenu viewController:self];
 
-if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
-
-NSArray *result = [responseObject objectForKey:@"result"];
-//后台配置了客服导航，直接进入客服导航页面
-if (result.count) { 
-UdeskAgentNavigationMenu *agentMenu = [[UdeskAgentNavigationMenu alloc] initWithMenuArray:result];
-
-[self.navigationController pushViewController:agentMenu animated:YES];
-}
-else {
-//后台未配置了客服导航，进入默认聊天页面  
-UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
-[self.navigationController pushViewController:chat animated:YES];
-}
-}
-
-}];
+//使用present
+[agentMenu presentUdeskViewControllerWithType:UdeskMenu viewController:self];
 ```
 
 
 
-## 四、Udesk SDK API说明
+## 四、Udesk SDK 自定义配置
+
+#### 4.1使用SDK提供的UI
+
+##### 原生
+
+    UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+    [manager pushUdeskViewControllerWithType:UdeskIM viewController:self];
+##### 经典
+
+
+    UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle blueStyle]];
+    [manager pushUdeskViewControllerWithType:UdeskIM viewController:self];
+
+#### 4.2自定义UI
+
+    //此处只是示例，更多UI参数请参看 UdeskSDKStyle.h
+    UdeskSDKStyle *sdkStyle = [UdeskSDKStyle customStyle];
+    sdkStyle.navigationColor = [UIColor yellowColor];
+    sdkStyle.titleColor = [UIColor orangeColor];
+    
+    UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:sdkStyle];
+    [chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
+
+#### 4.3指定客服ID
+
+    UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+    [chat setScheduledAgentId:agentId];
+    [chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
+#### 4.4指定客服组ID
+
+```
+UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+[chat setScheduledGroupId:groupId];
+[chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
+```
+
+#### 4.5设置用户头像
+
+    UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+    //通过URL设置头像
+    [chat setCustomerAvatarWithURL:@"头像URL"];
+    //通过本地图片设置头像
+    [chat setCustomerAvatarWithImage:[UIImage imageNamed:@"customer"]];
+    [chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
+#### 4.6设置SDK语言
+
+```
+#import "UdeskLanguageTool.h"
+//SDK提供两种语言，中文(CNS) 、英文 (EN) ，默认中文
+[[UdeskLanguageTool sharedInstance] setNewLanguage:EN]
+```
+
+## 五、Udesk SDK API说明
 
 注意：以下接口在Udesk开源UI里均有调用，如果你使用Udesk的开源UI则不需要调用以下任何接口
 
-#### 4.1初始化SDK
+#### 5.1初始化SDK
 
 ```
 //初始化Udesk
@@ -155,7 +204,7 @@ return YES;
 }
 ```
 
-#### 4.2初始化客户信息
+#### 5.2初始化客户信息
 
 注意：若要在SDK中使用 用户自定义字段 需先在管理员网页端设置添加用户自定义字字段。 用户字段包含了一名客户的所用数据。目前Udesk支持自定义客户字段，您可以选择输入型字段、选择型字段或其他类型字段。
 
@@ -184,7 +233,7 @@ NSDictionary *parameters = @{
 | description   | 可选     | 用户描述       |
 | nick_name     | 可选     | 用户名字       |
 
-##### 4.2.1添加客户自定义字段
+##### 5.2.1添加客户自定义字段
 
 客户自定义字段需要管理员登录Udesk后台进入【管理中心-用户字段】添加用户自定义字段。![udesk](http://7xr0de.com1.z0.glb.clouddn.com/custom.jpeg)
 
@@ -240,7 +289,7 @@ NSDictionary *parameters = @{
 };
 ```
 
-**4.2.4创建用户**
+**5.2.2创建用户**
 
 此接口为必调用，否则无法使用SDK
 
@@ -248,7 +297,7 @@ NSDictionary *parameters = @{
 [UdeskManager createCustomerWithCustomerInfo:parameters];
 ```
 
-##### 4.2.2更新用户信息
+##### 5.2.3更新用户信息
 
 根据需求自定义，不调用不影响主流程
 
@@ -278,26 +327,20 @@ NSDictionary *updateParameters = @{
 [UdeskManager updateUserInformation:updateParameters];
 ```
 
-#### **4.3**添加咨询对象
+#### **5.3**添加咨询对象
 
 根据需求自定义，不调用不影响主流程
 
-```
-在你push事件的时候调用UdeskChatViewController类的 showProductViewWithDictionary方法
-
-UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
-//咨询对象
-NSDictionary *product =  @{
-@"product_imageUrl":@"http://img.club.pchome.net/kdsarticle/2013/11small/21/fd548da909d64a988da20fa0ec124ef3_1000x750.jpg",
-@"product_title":@"测试咨询对象标题测试咨询对象标题！",
-@"product_detail":@"¥88888.0",
-@"product_url":@"http://www.baidu.com"
-
-};
-
-[chat showProductViewWithDictionary:product];
-
-[self.navigationController pushViewController:chat animated:YES];
+```objective-c
+ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+ 
+ NSDictionary *dict = @{                  											                                   @"productImageUrl":@"http://img.club.pchome.net/kdsarticle/2013/11small/21/fd548da909d64a988da20fa							0ec124ef3_1000x750.jpg",
+                        @"productTitle":@"测试测试测试测你测试测试测你测试测试测你测试测试测你测试测试测									    你测试测试测你！",
+                        @"productDetail":@"¥88888.088888.088888.0",
+                        @"productURL":@"http://www.baidu.com"
+                        };
+ [chat setProductMessage:dict];
+ [chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
 ```
 
 SDK 咨询对象展示:
@@ -306,30 +349,33 @@ SDK 咨询对象展示:
 
 
 
-#### 4.4 获取当前客户的帐号信息
-
-在用户创建成功后调用，会获取当前客户的帐号信息，但开发者不可见，在调用**连接Udesk服务器接口**时SDK会自动使用帐号信息，可参考开源UI相关步骤
-
-[UdeskManager getCustomerLoginInfo:^(BOOL success, NSError *error) {
-
-}];
-#### 4.5请求分配客服
+#### 5.4请求分配客服
 
 在获取当前客户的帐号信息后，调用此接口，请求分配客服，获得客服信息和以及排队信息，可参考开源UI
 
 ```
-[UdeskManager requestRandomAgent:^(id responseObject, NSError *error) {  
+[UdeskManager requestRandomAgent:^(UdeskAgent *agent, NSError *error) {  
 
 //返回客服信息
 }];
 ```
 
-#### 4.6指定分配客服或客服组 
+#### 5.5指定分配客服 
 
-在获取当前客户的帐号信息后，调用此接口可主动指定分配客服和客服组，获得客服信息和以及排队信息，可参考开源UI
+在获取当前客户的帐号信息后，调用此接口可主动指定分配客服，获得客服信息和以及排队信息，可参考开源UI
 
 ```
-[UdeskManager assignAgentOrGroup:@"agentId" groupID:@"groupId" completion:^(id responseObject,      NSError *error) {
+[UdeskManager scheduledAgentId:agentId completion:^(UdeskAgent *agent, NSError *error) {
+
+}];
+```
+
+#### 5.6指定分配客服组
+
+在获取当前客户的帐号信息后，调用此接口可主动指定分配客服组，获得客服信息和以及排队信息，可参考开源UI
+
+```
+[UdeskManager scheduledGroupId:groupId completion:^(UdeskAgent *agent, NSError *error) {
 
 }];
 ```
@@ -340,17 +386,9 @@ SDK 咨询对象展示:
 
 ![udesk](http://7xr0de.com1.z0.glb.clouddn.com/%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%9C%8Did.jpg)
 
-#### 4.7连接Udesk服务器
 
-获取分配的客服信息之后，调用此接口可以建立客户与Udesk服务器之间的连接
 
-```
-[UdeskManager loginUdesk:^(BOOL status) {
-NSLog(@"登录Udesk成功");
-}];
-```
-
-#### 4.8断开与Udesk服务器连接 
+#### 5.7断开与Udesk服务器连接 
 
 切换用户时，调用此接口断开上一个客户的连接
 
@@ -358,7 +396,7 @@ NSLog(@"登录Udesk成功");
 [UdeskManager logoutUdesk];
 ```
 
-#### 4.9设置客户离线 
+#### 5.8设置客户离线 
 
 在客户点击home键后调用此方法，如不调用此方法，可能会造成客服消息发送不出去，或者是退出对话页面时调用。
 
@@ -366,7 +404,7 @@ NSLog(@"登录Udesk成功");
 [UdeskManager setCustomerOffline];
 ```
 
-#### 4.10设置客户上线
+#### 5.9设置客户上线
 
 连接Udesk服务器后客户默认在线，在设置客户离线后，调用此接口可以上客户重新上线。
 
@@ -374,7 +412,7 @@ NSLog(@"登录Udesk成功");
 [UdeskManager setCustomerOnline];
 ```
 
-#### 4.11设置接收消息代理
+#### 5.10设置接收消息代理
 
 设置接收消息的代理，由代理来接收消息。
 
@@ -384,7 +422,7 @@ NSLog(@"登录Udesk成功");
 [UdeskManager receiveUdeskDelegate:self]; 
 ```
 
-#### 4.12发送消息
+#### 5.11发送消息
 
 调用此接口开发送各种类型的消息，注意选择正确的消息类型。
 
@@ -392,7 +430,7 @@ NSLog(@"登录Udesk成功");
 [UdeskManager sendMessage:message completion:^(UdeskMessage *message,BOOL sendStatus) {    
 
 }];
-#### 4.13输入预知
+#### 5.12输入预知
 
 将用户正在输入的内容，实时显示在客服对话窗口。该接口没有调用限制，但每1秒内只会向服务器发送一次数据）
 
@@ -402,22 +440,32 @@ NSLog(@"登录Udesk成功");
 [UdeskManager sendClientInputtingWithContent:text];
 ```
 
-#### 4.14获取客户本地聊天数据
+#### 5.13获取客户本地聊天数据
 
 ```
-[UdeskManager queryTabelWithSqlString:sql params:nil];
+[UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:[NSDate date] messagesNumber:20 result:^(NSArray *messagesArray) {
+        
+}];
 ```
 
-#### 4.15监听收到未读消息的广播
+#### 5.14监听收到未读消息的广播
 
 开发者可在合适的地方，监听收到消息的广播，用于提醒顾客有新消息。广播的名字为 `UD_RECEIVED_NEW_MESSAGES_NOTIFICATION`，定义在 UdeskManager.h 中。
 
-#### 4.16获取未读消息数量
+#### 5.15获取未读消息数量
 
 开发者可以在需要显示未读消息数是调用此接口，当用户进入聊天界面后，未读消息将会清零。
 
 ```
 [UdeskManager getLocalUnreadeMessagesCount];
+```
+
+#### 4.16获取未读消息
+
+开发者可以在需要显示未读消息时调用此接口，当用户进入聊天界面后，未读消息将会清空。
+
+```
+[UdeskManager getLocalUnreadeMessages];
 ```
 
 #### 4.17获取机器人URL
