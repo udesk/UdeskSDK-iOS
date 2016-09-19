@@ -282,6 +282,7 @@
     
     //添加单击手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapChatTableView:)];
+    tap.cancelsTouchesInView = false;
     [_messageTableView addGestureRecognizer:tap];
     
     // 设置Message TableView 的bottom
@@ -444,7 +445,9 @@
 //点击空白处隐藏键盘
 - (void)didTapChatTableView:(UITableView *)tableView {
     
-    [self layoutOtherMenuViewHiden:YES];
+    if ([self.inputBar.inputTextView resignFirstResponder]) {
+        [self layoutOtherMenuViewHiden:YES];
+    }
 }
 
 #pragma mark - 下拉加载更多数据

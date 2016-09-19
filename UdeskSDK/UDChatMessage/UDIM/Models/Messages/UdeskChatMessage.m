@@ -18,6 +18,8 @@
 #import "UdeskHpple.h"
 #import "UdeskTools.h"
 #import "UdeskImageUtil.h"
+#import <CoreText/CoreText.h>
+#import "UdeskSDKConfig.h"
 
 /** 头像距离屏幕水平边沿距离 */
 static CGFloat const kUDAvatarToHorizontalEdgeSpacing = 15.0;
@@ -74,6 +76,10 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
 @property (nonatomic, assign, readwrite) CGRect    failureFrame;
 /** 发送中frame */
 @property (nonatomic, assign, readwrite) CGRect    activityIndicatorFrame;
+/** 消息的文字 */
+@property (nonatomic, copy, readwrite) NSAttributedString *cellText;
+/** 消息的文字属性 */
+@property (nonatomic, copy, readwrite) NSDictionary *cellTextAttributes;
 
 @end
 
@@ -102,6 +108,8 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
         self.messageStatus = message.messageStatus;
         self.mediaURL = message.content;
         self.image = [UIImage ud_defaultLoadingImage];
+        
+
         
         //发送的消息
         if (message.messageFrom == UDMessageTypeSending) {
@@ -214,6 +222,23 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
             if (message.messageType == UDMessageContentTypeText) {
                 
                 self.text = [UdeskManager convertToUnicodeWithEmojiAlias:message.content];
+                [self setAttributedCellText:self.text messageFrom:self.messageFrom];
+                
+                NSMutableDictionary *richURLDictionary = [NSMutableDictionary dictionary];
+                NSMutableArray *richContetnArray = [NSMutableArray array];
+                
+                for (NSString *linkRegex in [UdeskSDKConfig sharedConfig].linkRegexs) {
+                    
+                    NSRange range = [self.text rangeOfString:linkRegex options:NSRegularExpressionSearch];
+                    if (range.location != NSNotFound) {
+                        [richURLDictionary setValue:[NSValue valueWithRange:range] forKey:[self.text substringWithRange:range]];
+                        [richContetnArray addObject:[self.text substringWithRange:range]];
+                    }
+                }
+                
+                self.matchArray = [NSArray arrayWithArray:richContetnArray];
+                self.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
+                
                 CGSize textSize = [self neededSizeForText:self.text];
                 //接收文字气泡frame
                 self.bubbleImageFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
@@ -245,13 +270,14 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
                 }
                 
                 self.text = newText;
+                [self setAttributedCellText:self.text messageFrom:message.messageFrom];
                 
                 NSMutableDictionary *richURLDictionary = [NSMutableDictionary dictionary];
                 NSMutableArray *richContetnArray = [NSMutableArray array];
                 
                 for (UdeskHppleElement *happleElement in dataAArray) {
                     
-                    [richURLDictionary setObject:[NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]] forKey:happleElement.content];
+                    [richURLDictionary setObject:[NSString stringWithFormat:@"%@",happleElement.attributes[@"href"]] forKey:[NSValue valueWithRange:[self.text rangeOfString:happleElement.content]]];
                     [richContetnArray addObject:happleElement.content];
                 }
                 
@@ -328,7 +354,7 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
     
     float textfloat = [UdeskStringSizeUtil getAttributedStringHeightWithString:text WidthValue:UD_SCREEN_WIDTH>320?235:180 font:[UdeskSDKConfig sharedConfig].sdkStyle.messageContentFont];
     
-    return CGSizeMake(textSize.width, textfloat);
+    return CGSizeMake(textSize.width+8, textfloat);
 }
 
 // 计算图片实际大小
@@ -560,8 +586,26 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
 //发送文本消息的组件
 - (void)sendedMessageOfText:(NSString *)text withDateHeight:(CGFloat)dateHeight {
 
+    NSMutableDictionary *richURLDictionary = [NSMutableDictionary dictionary];
+    NSMutableArray *richContetnArray = [NSMutableArray array];
+    
+    for (NSString *linkRegex in [UdeskSDKConfig sharedConfig].linkRegexs) {
+        
+        NSRange range = [text rangeOfString:linkRegex options:NSRegularExpressionSearch];
+        if (range.location != NSNotFound) {
+            [richURLDictionary setValue:[NSValue valueWithRange:range] forKey:[text substringWithRange:range]];
+            [richContetnArray addObject:[text substringWithRange:range]];
+        }
+    }
+    
+    self.matchArray = [NSArray arrayWithArray:richContetnArray];
+    self.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
+    
     //文本
     self.text = text;
+    
+    [self setAttributedCellText:self.text messageFrom:self.messageFrom];
+    
     CGSize textSize = [self neededSizeForText:text];
     //文本气泡frame
     self.bubbleImageFrame = CGRectMake(self.avatarFrame.origin.x-kUDArrowMarginWidth-kUDBubbleToTextHorizontalSpacing*2-kUDAvatarToBubbleSpacing-textSize.width, self.avatarFrame.origin.y, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
@@ -685,4 +729,27 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
     }
 
 }
+
+- (void)setAttributedCellText:(NSString *)text messageFrom:(UDMessageFromType)messageFrom {
+
+    NSMutableParagraphStyle *contentParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    contentParagraphStyle.lineSpacing = 6.0f;
+    contentParagraphStyle.lineHeightMultiple = 1.0f;
+    contentParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    contentParagraphStyle.alignment = NSTextAlignmentLeft;
+    NSMutableDictionary *contentAttributes
+    = [[NSMutableDictionary alloc]
+       initWithDictionary:@{
+                            NSParagraphStyleAttributeName : contentParagraphStyle,
+                            NSFontAttributeName : [UdeskSDKConfig sharedConfig].sdkStyle.messageContentFont
+                            }];
+    if (messageFrom == UDMessageTypeSending) {
+        [contentAttributes setObject:(__bridge id)[UdeskSDKConfig sharedConfig].sdkStyle.customerTextColor.CGColor forKey:(__bridge id)kCTForegroundColorAttributeName];
+    } else {
+        [contentAttributes setObject:(__bridge id)[UdeskSDKConfig sharedConfig].sdkStyle.agentTextColor.CGColor forKey:(__bridge id)kCTForegroundColorAttributeName];
+    }
+    self.cellTextAttributes = [[NSDictionary alloc] initWithDictionary:contentAttributes];
+    self.cellText = [[NSAttributedString alloc] initWithString:text attributes:self.cellTextAttributes];
+}
+
 @end

@@ -8,7 +8,6 @@
 
 #import "UdeskChatCell.h"
 #import "UdeskChatMessage.h"
-#import "UdeskLabel.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskDateFormatter.h"
 #import "UdeskConfigurationHelper.h"
@@ -18,15 +17,16 @@
 #import "UdeskUtils.h"
 #import "UdeskTools.h"
 #import "UdeskFoundationMacro.h"
+#import "UDTTTAttributedLabel.h"
 
 #define VoicePlayHasInterrupt @"VoicePlayHasInterrupt"
 
-@interface UdeskChatCell() <UDLabelDelegate,UDAudioPlayerHelperDelegate> {
+@interface UdeskChatCell() <UDAudioPlayerHelperDelegate,TTTAttributedLabelDelegate> {
 
     UILabel          *dateLabel;//时间
     UIImageView      *avatarImageView;//头像
     UIImageView      *bubbleImageView;//气泡
-    UdeskLabel       *contentLabel;//文字
+    UDTTTAttributedLabel     *contentLabel;//文字
     UIImageView      *contentImageView;//图片
     UIImageView      *animationVoiceImageView;//语音动画
     UdeskChatMessage *_chatMessage;//消息对象
@@ -68,10 +68,12 @@
 
         //文本消息
         if (!contentLabel) {
-            contentLabel = [[UdeskLabel alloc] initWithFrame:CGRectZero];
+            contentLabel = [[UDTTTAttributedLabel alloc] initWithFrame:CGRectZero];
             contentLabel.numberOfLines = 0;
-            contentLabel.udLabelDelegate = self;
-            contentLabel.font = [UdeskSDKConfig sharedConfig].sdkStyle.messageContentFont;
+            contentLabel.delegate = self;
+            contentLabel.textAlignment = NSTextAlignmentLeft;
+            contentLabel.userInteractionEnabled = true;
+            contentLabel.backgroundColor = [UIColor clearColor];
             [self.contentView addSubview:contentLabel];
             
             UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressContentLabelAction:)];
@@ -89,6 +91,7 @@
             [self.contentView addSubview:contentImageView];
             //添加图片点击手势
             UITapGestureRecognizer *tapContentImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapContentImageViewAction:)];
+            tapContentImage.cancelsTouchesInView = false;
             [contentImageView addGestureRecognizer:tapContentImage];
         }
         
@@ -124,6 +127,7 @@
             [self.contentView addSubview:_failureImageView];
             
             UITapGestureRecognizer *tapFailureImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFailureImageViewAction:)];
+            tapFailureImage.cancelsTouchesInView = false;
             [_failureImageView addGestureRecognizer:tapFailureImage];
         }
         
@@ -185,24 +189,33 @@
     if (chatMessage.messageType == UDMessageContentTypeText) {
         
         contentLabel.hidden = NO;
-        contentLabel.text = chatMessage.text;
-        //移除添加的超链接
-        [contentLabel.matchArray removeAllObjects];
+        contentLabel.text = chatMessage.cellText;
+        
+        //设置高亮
+        for (NSString *richContent in chatMessage.matchArray) {
+            
+            if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
+                [contentLabel addLinkToURL:[NSURL URLWithString:richContent] withRange:[chatMessage.richURLDictionary[richContent] rangeValue]];
+            }
+        }
+        
         //隐藏
         contentImageView.hidden = YES;
         self.voiceDurationLabel.hidden = YES;
         animationVoiceImageView.hidden = YES;
     }
-    //欢迎语
     else if (chatMessage.messageType == UDMessageContentTypeRich) {
     
         contentLabel.hidden = NO;
-        contentLabel.text = chatMessage.text;
+        contentLabel.text = chatMessage.cellText;
         
         //设置高亮
         for (NSString *richContent in chatMessage.matchArray) {
             
-            [contentLabel.matchArray addObject:richContent];
+            if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
+                NSURL *url = [NSURL URLWithString:[chatMessage.richURLDictionary objectForKey:[NSValue valueWithRange:[chatMessage.text rangeOfString:richContent]]]];
+                [contentLabel addLinkToURL:url withRange:[chatMessage.text rangeOfString:richContent]];
+            }
         }
         
         //隐藏
@@ -240,12 +253,12 @@
     //昵称
     if (chatMessage.messageFrom == UDMessageTypeReceiving) {
         
-        contentLabel.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.agentTextColor;
         self.voiceDurationLabel.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.agentVoiceDurationColor;
         self.voiceDurationLabel.textAlignment = NSTextAlignmentLeft;
+        
     }
     else {
-        contentLabel.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.customerTextColor;
+        
         self.voiceDurationLabel.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.customerVoiceDurationColor;
         self.voiceDurationLabel.textAlignment = NSTextAlignmentRight;
     }
@@ -303,25 +316,13 @@
 
 }
 
-#pragma mark - UDLabelDelegate
-- (void)toucheBenginUDLabel:(UdeskLabel *)udLabel withContext:(NSString *)context {
+- (void)attributedLabel:(UDTTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
     
-    NSString *httpUrl = context;
-    
-    if (_chatMessage.messageType == UDMessageContentTypeRich) {
-        
-        httpUrl = [_chatMessage.richURLDictionary objectForKey:context];
+    if ([url.absoluteString rangeOfString:@"://"].location == NSNotFound) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", url.absoluteString]]];
+    } else {
+        [[UIApplication sharedApplication] openURL:url];
     }
-    
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:httpUrl]];
-}
-
-//检索文本的正则表达式的字符串
-- (NSString *)contentsOfRegexStringWithUDLabel:(UdeskLabel *)udLabel
-{
-    //需要添加链接字符串的正则表达式：http:// (开发者可以根据自身需求添加正则)
-    NSString *regex = @"http(s)?://([A-Za-z0-9._-]+(/)?)*";
-    return regex;
 }
 
 //长按复制

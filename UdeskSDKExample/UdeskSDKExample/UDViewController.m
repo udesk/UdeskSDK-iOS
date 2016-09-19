@@ -26,9 +26,6 @@
 
     [super viewDidLoad];
     
-    
-    NSLog(@"%@",[UdeskManager udeskSDKVersion]);
-    
     UIImageView *logo = [[UIImageView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-226)/2, 70, 226, 91)];
     logo.image = [UIImage imageNamed:@"backGroundLogo"];
     [self.view addSubview:logo];

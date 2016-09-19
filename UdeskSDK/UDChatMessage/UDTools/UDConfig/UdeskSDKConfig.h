@@ -64,6 +64,9 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 /** 页面弹出方式 */
 @property (nonatomic, assign) UDTransiteAnimationType presentingAnimation;
 
+/** 超链接正则 */
+@property (nonatomic, copy, readonly) NSMutableArray *linkRegexs;
+
 + (instancetype)sharedConfig;
 
 @end

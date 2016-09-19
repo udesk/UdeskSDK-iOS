@@ -68,6 +68,8 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
 }
 
 - (void)awakeFromNib {
+    
+    [super awakeFromNib];
     [self setup];
 }
 

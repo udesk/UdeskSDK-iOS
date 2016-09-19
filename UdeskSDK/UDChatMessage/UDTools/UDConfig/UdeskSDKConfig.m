@@ -11,6 +11,13 @@
 #import "UdeskFoundationMacro.h"
 #import "UIImage+UdeskSDK.h"
 
+@interface UdeskSDKConfig()
+
+/** 超链接正则 */
+@property (nonatomic, copy, readwrite) NSMutableArray *linkRegexs;
+
+@end
+
 @implementation UdeskSDKConfig
 
 + (instancetype)sharedConfig {
@@ -31,6 +38,8 @@
     if (self) {
         
         [self setDefaultConfig];
+        
+        self.linkRegexs   = [[NSMutableArray alloc] initWithArray:@[@"((http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|([a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)"]];
     }
     return self;
 }

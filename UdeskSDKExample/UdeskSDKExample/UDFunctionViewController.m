@@ -65,7 +65,7 @@
     }
     
     
-    double text1 = 533/2/675.0f;
+    double text1 = 237/675.0f;
     CGFloat logoHeight = self.view.ud_height*text1;
 
     _logoImage = [[UIImageView alloc] initWithFrame:CGRectZero];

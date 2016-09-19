@@ -2,6 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
+//  Version: 3.3.1
 //  Created by xuchen on 16/1/12.
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
@@ -133,11 +134,6 @@
  *  退出Udesk (切换用户，需要调用此接口)
  */
 + (void)logoutUdesk;
-
-/**
- *  设置客户离线 (在用户点击home键后调用此方法，如不调用此方法，会造成客服消息发送不出去)
- */
-+ (void)setCustomerOffline;
 
 /**
  *  设置客户在线 (用户点击app进入页面时调用此方法)

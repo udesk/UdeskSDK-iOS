@@ -16,17 +16,19 @@
 
     CGSize newSize;
     
-    if (ud_isIOS6) {
+    if (text.length>0 && font) {
+    
+        if (ud_isIOS6) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        newSize = [text sizeWithFont:font constrainedToSize:size];
+            newSize = [text sizeWithFont:font constrainedToSize:size];
 #pragma clang diagnostic pop
-    } else {
-        newSize = [text boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
+        } else {
+            newSize = [text boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
+        }
     }
     
     return newSize;
-
 }
 
 + (float)getAttributedStringHeightWithString:(NSString *)text
@@ -57,7 +59,10 @@
         //行距
         float linespace = 10.0f;
         CTParagraphStyleSetting lineSpaceSetting;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         lineSpaceSetting.spec = kCTParagraphStyleSpecifierLineSpacing;
+#pragma clang diagnostic pop
         lineSpaceSetting.value = &linespace;
         lineSpaceSetting.valueSize = sizeof(linespace);
         

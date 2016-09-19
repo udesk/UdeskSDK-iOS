@@ -126,6 +126,8 @@ static CGFloat EmojiFontSize;
     [backGroundView addSubview:deleteButton];}
 
 - (void)awakeFromNib {
+    
+    [super awakeFromNib];
     [self setup];
 }
 

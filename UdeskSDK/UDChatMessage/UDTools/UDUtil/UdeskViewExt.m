@@ -6,27 +6,9 @@
 
 #import "UdeskViewExt.h"
 
-CGPoint CGRectGetCenter(CGRect rect)
-{
-    CGPoint pt;
-    pt.x = CGRectGetMidX(rect);
-    pt.y = CGRectGetMidY(rect);
-    return pt;
-}
-
-CGRect CGRectMoveToCenter(CGRect rect, CGPoint center)
-{
-    CGRect newrect = CGRectZero;
-    newrect.origin.x = center.x-CGRectGetMidX(rect);
-    newrect.origin.y = center.y-CGRectGetMidY(rect);
-    newrect.size = rect.size;
-    return newrect;
-}
-
 @implementation UIView (UdeskViewGeometry)
 
 // Retrieve and set the origin
-
 - (CGPoint)ud_origin
 {
 	return self.frame.origin;

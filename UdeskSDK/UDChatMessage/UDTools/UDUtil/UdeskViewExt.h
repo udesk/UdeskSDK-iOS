@@ -6,9 +6,6 @@
 
 #import <UIKit/UIKit.h>
 
-CGPoint CGRectGetCenter(CGRect rect);
-CGRect  CGRectMoveToCenter(CGRect rect, CGPoint center);
-
 @interface UIView (UdeskViewFrameGeometry)
 @property CGPoint ud_origin;
 @property CGSize ud_size;

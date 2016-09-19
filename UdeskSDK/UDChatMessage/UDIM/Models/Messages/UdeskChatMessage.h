@@ -59,6 +59,8 @@
 @property (nonatomic, assign, readonly) CGRect     activityIndicatorFrame;
 /** 语音播放图片frame */
 @property (nonatomic, assign, readonly) CGRect     animationVoiceFrame;
+/** 消息的文字 */
+@property (nonatomic, copy, readonly) NSAttributedString *cellText;
 
 /**
  *  UdeskMessage转换成UdeskChatMessage
