@@ -396,15 +396,7 @@ SDK 咨询对象展示:
 [UdeskManager logoutUdesk];
 ```
 
-#### 5.8设置客户离线 
-
-在客户点击home键后调用此方法，如不调用此方法，可能会造成客服消息发送不出去，或者是退出对话页面时调用。
-
-```
-[UdeskManager setCustomerOffline];
-```
-
-#### 5.9设置客户上线
+#### 5.8设置客户上线
 
 连接Udesk服务器后客户默认在线，在设置客户离线后，调用此接口可以上客户重新上线。
 
@@ -412,7 +404,7 @@ SDK 咨询对象展示:
 [UdeskManager setCustomerOnline];
 ```
 
-#### 5.10设置接收消息代理
+#### 5.9设置接收消息代理
 
 设置接收消息的代理，由代理来接收消息。
 
@@ -422,7 +414,7 @@ SDK 咨询对象展示:
 [UdeskManager receiveUdeskDelegate:self]; 
 ```
 
-#### 5.11发送消息
+#### 5.10发送消息
 
 调用此接口开发送各种类型的消息，注意选择正确的消息类型。
 
@@ -430,7 +422,7 @@ SDK 咨询对象展示:
 [UdeskManager sendMessage:message completion:^(UdeskMessage *message,BOOL sendStatus) {    
 
 }];
-#### 5.12输入预知
+#### 5.11输入预知
 
 将用户正在输入的内容，实时显示在客服对话窗口。该接口没有调用限制，但每1秒内只会向服务器发送一次数据）
 
@@ -440,7 +432,7 @@ SDK 咨询对象展示:
 [UdeskManager sendClientInputtingWithContent:text];
 ```
 
-#### 5.13获取客户本地聊天数据
+#### 5.12获取客户本地聊天数据
 
 ```
 [UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:[NSDate date] messagesNumber:20 result:^(NSArray *messagesArray) {
@@ -448,11 +440,11 @@ SDK 咨询对象展示:
 }];
 ```
 
-#### 5.14监听收到未读消息的广播
+#### 5.13监听收到未读消息的广播
 
 开发者可在合适的地方，监听收到消息的广播，用于提醒顾客有新消息。广播的名字为 `UD_RECEIVED_NEW_MESSAGES_NOTIFICATION`，定义在 UdeskManager.h 中。
 
-#### 5.15获取未读消息数量
+#### 5.14获取未读消息数量
 
 开发者可以在需要显示未读消息数是调用此接口，当用户进入聊天界面后，未读消息将会清零。
 
@@ -460,7 +452,7 @@ SDK 咨询对象展示:
 [UdeskManager getLocalUnreadeMessagesCount];
 ```
 
-#### 4.16获取未读消息
+#### 4.15获取未读消息
 
 开发者可以在需要显示未读消息时调用此接口，当用户进入聊天界面后，未读消息将会清空。
 
@@ -468,7 +460,7 @@ SDK 咨询对象展示:
 [UdeskManager getLocalUnreadeMessages];
 ```
 
-#### 4.17获取机器人URL
+#### 4.16获取机器人URL
 
 当前SDK的机器人是web网页来实现，通过此接口可以获取机器人网页的URL，在webview里打开后即可以与机器人对话。
 
