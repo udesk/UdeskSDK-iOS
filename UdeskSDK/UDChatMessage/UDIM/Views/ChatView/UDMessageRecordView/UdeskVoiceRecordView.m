@@ -166,10 +166,12 @@
             NSError *sessionError;
             //AVAudioSessionCategoryPlayAndRecord用于录音和播放
             [session setCategory:AVAudioSessionCategoryPlayAndRecord error:&sessionError];
-            if(session == nil)
+            if(session == nil){
                 NSLog(@"Error creating session: %@", [sessionError description]);
-            else
+            }
+            else{
                 [session setActive:YES error:nil];
+            }
         }
         
         if (![self.audioRecorder isRecording]) {
