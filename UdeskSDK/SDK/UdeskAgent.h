@@ -16,7 +16,7 @@ typedef enum : NSUInteger {
     UDAgentConversationOver         = 2004,//会话结束
     UDAgentStatusResultNoExist      = 5050,//客服不存在
     UDAgentGroupStatusResultNoExist = 5060,//客服组不存在
-    UDAgentStatusResultUnKnown      = -2000,//其他错误
+    UDAgentStatusResultUnKnown      = 4444,//其他错误
 } UDAgentStatusType;
 
 @interface UdeskAgent : NSObject
