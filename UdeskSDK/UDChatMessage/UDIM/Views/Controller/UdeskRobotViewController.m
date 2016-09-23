@@ -77,7 +77,7 @@
 - (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
     
     CGPoint translation = [recognizer translationInView:self.view];
-    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.7;
+    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan:
@@ -88,7 +88,7 @@
             [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
             break;
         default:
-            if (xPercent < .25) {
+            if (xPercent < .45) {
                 [UdeskTransitioningAnimation cancelInteractiveTransition];
             } else {
                 [UdeskTransitioningAnimation finishInteractiveTransition];
@@ -103,7 +103,8 @@
     
     if ([UdeskSDKConfig sharedConfig].presentingAnimation == UDTransiteAnimationTypePush) {
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-            [self dismissViewControllerAnimated:YES completion:nil];
+            [self dismissViewControllerAnimated:YES completion:^{
+            }];
         } else {
             [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:[UdeskSDKConfig sharedConfig].presentingAnimation] forKey:nil];
             [self dismissViewControllerAnimated:NO completion:nil];

@@ -24,20 +24,20 @@
 #import <CoreText/CoreText.h>
 
 //! Project version number for TTTAttributedLabel.
-FOUNDATION_EXPORT double TTTAttributedLabelVersionNumber;
+FOUNDATION_EXPORT double UDTTTAttributedLabelVersionNumber;
 
 //! Project version string for TTTAttributedLabel.
-FOUNDATION_EXPORT const unsigned char TTTAttributedLabelVersionString[];
+FOUNDATION_EXPORT const unsigned char UDTTTAttributedLabelVersionString[];
 
 @class UDTTTAttributedLabelLink;
 
 /**
  Vertical alignment for text in a label whose bounds are larger than its text bounds
  */
-typedef NS_ENUM(NSInteger, TTTAttributedLabelVerticalAlignment) {
-    TTTAttributedLabelVerticalAlignmentCenter   = 0,
-    TTTAttributedLabelVerticalAlignmentTop      = 1,
-    TTTAttributedLabelVerticalAlignmentBottom   = 2,
+typedef NS_ENUM(NSInteger, UDTTTAttributedLabelVerticalAlignment) {
+    UDTTTAttributedLabelVerticalAlignmentCenter   = 0,
+    UDTTTAttributedLabelVerticalAlignmentTop      = 1,
+    UDTTTAttributedLabelVerticalAlignmentBottom   = 2,
 };
 
 /**
@@ -70,10 +70,10 @@ extern NSString * const kUDTTTBackgroundLineWidthAttributeName;
  */
 extern NSString * const kUDTTTBackgroundCornerRadiusAttributeName;
 
-@protocol TTTAttributedLabelDelegate;
+@protocol UDTTTAttributedLabelDelegate;
 
 // Override UILabel @property to accept both NSString and NSAttributedString
-@protocol TTTAttributedLabel <NSObject>
+@protocol UDTTTAttributedLabel <NSObject>
 @property (nonatomic, copy) IBInspectable id text;
 @end
 
@@ -104,7 +104,7 @@ IB_DESIGNABLE
  
  @bug Setting `attributedText` directly is not recommended, as it may cause a crash when attempting to access any links previously set. Instead, call `setText:`, passing an `NSAttributedString`.
  */
-@interface UDTTTAttributedLabel : UILabel <TTTAttributedLabel, UIGestureRecognizerDelegate>
+@interface UDTTTAttributedLabel : UILabel <UDTTTAttributedLabel, UIGestureRecognizerDelegate>
 
 /**
  * The designated initializers are @c initWithFrame: and @c initWithCoder:.
@@ -121,7 +121,7 @@ IB_DESIGNABLE
  
  @discussion A `TTTAttributedLabel` delegate responds to messages sent by tapping on links in the label. You can use the delegate to respond to links referencing a URL, address, phone number, date, or date with a specified time zone and duration.
  */
-@property (nonatomic, unsafe_unretained) IBOutlet id <TTTAttributedLabelDelegate> delegate;
+@property (nonatomic, unsafe_unretained) IBOutlet id <UDTTTAttributedLabelDelegate> delegate;
 
 ///--------------------------------------------
 /// @name Detecting, Accessing, & Styling Links
@@ -236,7 +236,7 @@ IB_DESIGNABLE
 /**
  The vertical text alignment for the label, for when the frame size is greater than the text rect size. The vertical alignment is `TTTAttributedLabelVerticalAlignmentCenter` by default.
  */
-@property (nonatomic, assign) TTTAttributedLabelVerticalAlignment verticalAlignment;
+@property (nonatomic, assign) UDTTTAttributedLabelVerticalAlignment verticalAlignment;
 
 ///--------------------------------------------
 /// @name Accessing Truncation Token Appearance
@@ -436,7 +436,7 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
 /**
  The `TTTAttributedLabelDelegate` protocol defines the messages sent to an attributed label delegate when links are tapped. All of the methods of this protocol are optional.
  */
-@protocol TTTAttributedLabelDelegate <NSObject>
+@protocol UDTTTAttributedLabelDelegate <NSObject>
 
 ///-----------------------------------
 /// @name Responding to Link Selection
@@ -611,7 +611,7 @@ didLongPressLinkWithTextCheckingResult:(NSTextCheckingResult *)result
 
 @interface UDTTTAttributedLabelLink : NSObject <NSCoding>
 
-typedef void (^TTTAttributedLabelLinkBlock) (UDTTTAttributedLabel *, UDTTTAttributedLabelLink *);
+typedef void (^UDTTTAttributedLabelLinkBlock) (UDTTTAttributedLabel *, UDTTTAttributedLabelLink *);
 
 /**
  An `NSTextCheckingResult` representing the link's location and type.
@@ -643,14 +643,14 @@ typedef void (^TTTAttributedLabelLinkBlock) (UDTTTAttributedLabel *, UDTTTAttrib
  If non-nil, tapping on this link will call this block instead of the 
  @c TTTAttributedLabelDelegate tap methods, which will not be called for this link.
  */
-@property (nonatomic, copy) TTTAttributedLabelLinkBlock linkTapBlock;
+@property (nonatomic, copy) UDTTTAttributedLabelLinkBlock linkTapBlock;
 
 /**
  A block called when this link is long-pressed.
  If non-nil, long pressing on this link will call this block instead of the
  @c TTTAttributedLabelDelegate long press methods, which will not be called for this link.
  */
-@property (nonatomic, copy) TTTAttributedLabelLinkBlock linkLongPressBlock;
+@property (nonatomic, copy) UDTTTAttributedLabelLinkBlock linkLongPressBlock;
 
 /**
  Initializes a link using the attribute dictionaries specified.

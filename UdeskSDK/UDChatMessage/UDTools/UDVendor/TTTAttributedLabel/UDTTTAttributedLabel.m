@@ -1208,13 +1208,13 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
     if (textSize.height < bounds.size.height) {
         CGFloat yOffset = 0.0f;
         switch (self.verticalAlignment) {
-            case TTTAttributedLabelVerticalAlignmentCenter:
+            case UDTTTAttributedLabelVerticalAlignmentCenter:
                 yOffset = CGFloat_floor((bounds.size.height - textSize.height) / 2.0f);
                 break;
-            case TTTAttributedLabelVerticalAlignmentBottom:
+            case UDTTTAttributedLabelVerticalAlignmentBottom:
                 yOffset = bounds.size.height - textSize.height;
                 break;
-            case TTTAttributedLabelVerticalAlignmentTop:
+            case UDTTTAttributedLabelVerticalAlignmentTop:
             default:
                 break;
         }

@@ -33,7 +33,7 @@
 #define kHourFormatReplace  @"!!!*"
 #define kDefaultFireIntervalNormal  0.1
 #define kDefaultFireIntervalHighUse  0.01
-#define kDefaultTimerType MZTimerLabelTypeStopWatch
+#define kDefaultTimerType UDTimerLabelTypeStopWatch
 
 @interface UdeskTimerLabel(){
     
@@ -64,11 +64,11 @@
     }
 }
 
-- (id)initWithTimerType:(MZTimerLabelType)theType {
+- (id)initWithTimerType:(UDTimerLabelType)theType {
     return [self initWithFrame:CGRectZero label:nil andTimerType:theType];
 }
 
-- (id)initWithLabel:(UILabel *)theLabel andTimerType:(MZTimerLabelType)theType {
+- (id)initWithLabel:(UILabel *)theLabel andTimerType:(UDTimerLabelType)theType {
     return [self initWithFrame:CGRectZero label:theLabel andTimerType:theType];
 }
 
@@ -80,7 +80,7 @@
     return [self initWithFrame:frame label:nil andTimerType:kDefaultTimerType];
 }
 
--(id)initWithFrame:(CGRect)frame label:(UILabel*)theLabel andTimerType:(MZTimerLabelType)theType {
+-(id)initWithFrame:(CGRect)frame label:(UILabel*)theLabel andTimerType:(UDTimerLabelType)theType {
     self = [super initWithFrame:frame];
     if (self) {
         self.timeLabel = theLabel;
@@ -183,9 +183,9 @@
 
 -(void)addTimeCountedByTime:(NSTimeInterval)timeToAdd
 {
-    if (_timerType == MZTimerLabelTypeTimer) {
+    if (_timerType == UDTimerLabelTypeTimer) {
         [self setCountDownTime:timeToAdd + timeUserValue];
-    }else if (_timerType == MZTimerLabelTypeStopWatch) {
+    }else if (_timerType == UDTimerLabelTypeStopWatch) {
         NSDate *newStartDate = [startCountDate dateByAddingTimeInterval:-timeToAdd];
         if([[NSDate date] timeIntervalSinceDate:newStartDate] <= 0) {
             //prevent less than 0
@@ -212,7 +212,7 @@
 
 - (NSTimeInterval)getTimeRemaining {
     
-    if (_timerType == MZTimerLabelTypeTimer) {
+    if (_timerType == UDTimerLabelTypeTimer) {
         return timeUserValue - [self getTimeCounted];
     }
     
@@ -221,7 +221,7 @@
 
 - (NSTimeInterval)getCountDownTime {
     
-    if (_timerType == MZTimerLabelTypeTimer) {
+    if (_timerType == UDTimerLabelTypeTimer) {
         return timeUserValue;
     }
     
@@ -253,7 +253,7 @@
     if(startCountDate == nil){
         startCountDate = [NSDate date];
         
-        if (self.timerType == MZTimerLabelTypeStopWatch && timeUserValue > 0) {
+        if (self.timerType == UDTimerLabelTypeStopWatch && timeUserValue > 0) {
             startCountDate = [startCountDate dateByAddingTimeInterval:-timeUserValue];
         }
     }
@@ -285,7 +285,7 @@
 
 -(void)reset{
     pausedTime = nil;
-    timeUserValue = (self.timerType == MZTimerLabelTypeStopWatch)? 0 : timeUserValue;
+    timeUserValue = (self.timerType == UDTimerLabelTypeStopWatch)? 0 : timeUserValue;
     startCountDate = (self.counting)? [NSDate date] : nil;
     [self updateLabel];
 }
@@ -307,7 +307,7 @@
     
     /***MZTimerLabelTypeStopWatch Logic***/
     
-    if(_timerType == MZTimerLabelTypeStopWatch){
+    if(_timerType == UDTimerLabelTypeStopWatch){
         
         if (_counting) {
             timeToShow = [date1970 dateByAddingTimeInterval:timeDiff];
@@ -346,7 +346,7 @@
 
     //setting text value
     if ([_delegate respondsToSelector:@selector(timerLabel:customTextToDisplayAtTime:)]) {
-        NSTimeInterval atTime = (_timerType == MZTimerLabelTypeStopWatch) ? timeDiff : ((timeUserValue - timeDiff) < 0 ? 0 : (timeUserValue - timeDiff));
+        NSTimeInterval atTime = (_timerType == UDTimerLabelTypeStopWatch) ? timeDiff : ((timeUserValue - timeDiff) < 0 ? 0 : (timeUserValue - timeDiff));
         NSString *customtext = [_delegate timerLabel:self customTextToDisplayAtTime:atTime];
         if ([customtext length]) {
             self.timeLabel.text = customtext;
@@ -362,7 +362,7 @@
             beyondFormat = [beyondFormat stringByReplacingOccurrencesOfString:@"H" withString:kHourFormatReplace];
             self.dateFormatter.dateFormat = beyondFormat;
             
-            int hours = (_timerType == MZTimerLabelTypeStopWatch)? ([self getTimeCounted] / 3600) : ([self getTimeRemaining] / 3600);
+            int hours = (_timerType == UDTimerLabelTypeStopWatch)? ([self getTimeCounted] / 3600) : ([self getTimeRemaining] / 3600);
             NSString *formmattedDate = [self.dateFormatter stringFromDate:timeToShow];
             NSString *beyondedDate = [formmattedDate stringByReplacingOccurrencesOfString:kHourFormatReplace withString:[NSString stringWithFormat:@"%02d",hours]];
             

@@ -97,6 +97,6 @@
  *
  *  @return 自己
  */
-- (instancetype)initWithVoicePath:(NSString *)voicePath withDisplayTimestamp:(BOOL)displayTimestamp;
+- (instancetype)initWithVoiceData:(NSData *)voiceData withDisplayTimestamp:(BOOL)displayTimestamp;
 
 @end

@@ -54,12 +54,12 @@
 }
 
 #pragma mark - 发送语音消息
-+ (UdeskChatMessage *)sendAudioMessage:(NSString *)audioPath
++ (UdeskChatMessage *)sendAudioMessage:(NSData *)voiceData
                          audioDuration:(NSString *)audioDuration
                       displayTimestamp:(BOOL)displayTimestamp
                             completion:(void(^)(UdeskMessage *message,BOOL sendStatus))comletion {
     
-    UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithVoicePath:audioPath withDisplayTimestamp:displayTimestamp];
+    UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithVoiceData:voiceData withDisplayTimestamp:displayTimestamp];
     
     UdeskMessage *voiceMessage = [[UdeskMessage alloc] initVoiceChatMessage:chatMessage voiceData:chatMessage.voiceData];
     //发送消息 callback发送状态和消息体

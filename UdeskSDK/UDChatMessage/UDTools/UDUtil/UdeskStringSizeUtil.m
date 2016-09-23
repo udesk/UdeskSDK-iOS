@@ -12,6 +12,35 @@
 
 @implementation UdeskStringSizeUtil
 
++ (CGFloat)getHeightForAttributedText:(NSAttributedString *)attributedText
+                            textWidth:(CGFloat)textWidth
+{
+    CGSize constraint = CGSizeMake(textWidth , CGFLOAT_MAX);
+    CGSize title_size;
+    CGFloat totalHeight;
+    title_size = [attributedText boundingRectWithSize:constraint
+                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                              context:nil].size;
+    
+    totalHeight = ceil(title_size.height);
+    
+    return totalHeight;
+}
+
++ (CGFloat)getWidthForAttributedText:(NSAttributedString *)attributedText
+                          textHeight:(CGFloat)textHeight
+{
+    CGSize constraint = CGSizeMake(CGFLOAT_MAX , textHeight);
+    CGSize title_size;
+    CGFloat width;
+    title_size = [attributedText boundingRectWithSize:constraint
+                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                              context:nil].size;
+    
+    width = ceil(title_size.width);
+    return width;
+}
+
 + (CGSize)textSize:(NSString *)text withFont:(UIFont *)font withSize:(CGSize)size {
 
     CGSize newSize;

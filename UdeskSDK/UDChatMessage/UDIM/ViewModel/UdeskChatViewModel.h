@@ -111,7 +111,7 @@
  *  @param audioDuration 语音时长
  *  @param comletion     发送状态&发送消息体
  */
-- (void)sendAudioMessage:(NSString *)audioPath
+- (void)sendAudioMessage:(NSData *)voiceData
            audioDuration:(NSString *)audioDuration
               completion:(void(^)(UdeskMessage *message,BOOL sendStatus))comletion;
 

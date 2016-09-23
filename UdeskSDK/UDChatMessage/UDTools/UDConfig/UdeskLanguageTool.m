@@ -7,6 +7,7 @@
 //
 
 #import "UdeskLanguageTool.h"
+#import "UdeskTools.h"
 
 static UdeskLanguageTool *sharedModel;
 
@@ -43,17 +44,16 @@ static UdeskLanguageTool *sharedModel;
 - (void)initLanguage
 {
     NSString *tmp = [[NSUserDefaults standardUserDefaults] objectForKey:LANGUAGE_SET];
-    NSString *path;
+    
     //默认是中文
-    if (!tmp)
+    if ([UdeskTools isBlankString:tmp])
     {
         tmp = CNS;
     }
     
-    
     self.language = tmp;
     
-    path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"UdeskBundle.bundle"];
+    NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"UdeskBundle.bundle"];
     NSBundle *bundle = [NSBundle bundleWithPath: path];
     path = [bundle pathForResource:self.language ofType:@"lproj"];
 

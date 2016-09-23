@@ -92,7 +92,7 @@
     return self;
 }
 
--(void)timerLabel:(UdeskTimerLabel*)timerLabel countingTo:(NSTimeInterval)time timertype:(MZTimerLabelType)timerType {
+-(void)timerLabel:(UdeskTimerLabel*)timerLabel countingTo:(NSTimeInterval)time timertype:(UDTimerLabelType)timerType {
     
     if (!isnan(time)) {
         recordTime = time;
@@ -117,27 +117,22 @@
         tipLabel.text = getUDLocalizedString(@"udesk_release_to_cancel");
         [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceHighImage] forState:UIControlStateNormal];
         
-        if([self.audioRecorder isRecording]){
-            isInDeleteButton = YES;
-        }
+        isInDeleteButton = YES;
     }
     else {
         spectrumView.hidden = NO;
         tipLabel.hidden = YES;
         tipLabel.text = getUDLocalizedString(@"udesk_hold_to_talk");
         [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
-        if([self.audioRecorder isRecording]){
-            isInDeleteButton = NO;
-        }
+        
+        isInDeleteButton = NO;
     }
     
 }
 
 - (void)recordCancel:(UIButton *)button
 {
-    
     if (isInDeleteButton) {
-        
         [spectrumView.stopwatch reset];
         [spectrumView.stopwatch pause];
         
@@ -148,10 +143,7 @@
         [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
     }
     else {
-        
-        if ([self.audioRecorder isRecording]) {
-            [self finishRecord];
-        }
+        [self finishRecord];
     }
 }
 
@@ -187,8 +179,17 @@
 
 - (void)recordFinish:(UIButton *)button
 {
-    
-    if ([self.audioRecorder isRecording]) {
+    if (isInDeleteButton) {
+        [spectrumView.stopwatch reset];
+        [spectrumView.stopwatch pause];
+        
+        [self.audioRecorder stop];
+        spectrumView.hidden = YES;
+        tipLabel.text = getUDLocalizedString(@"udesk_hold_to_talk");
+        tipLabel.hidden = NO;
+        [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
+    }
+    else {
         [self finishRecord];
     }
 }
@@ -203,7 +204,7 @@
     if (recordTime>1.1f && recordTime < 60.0f) {
         
         @try {
-            [self.delegate finishRecordedWithAudioPath:audioPath withAudioDuration:[NSString stringWithFormat:@"%.f", recordTime]];
+            [self.delegate finishRecordedWithVoiceData:[NSData dataWithContentsOfFile:audioPath] withAudioDuration:[NSString stringWithFormat:@"%.f", recordTime]];
         } @catch (NSException *exception) {
         } @finally {
         }
@@ -212,7 +213,7 @@
     if (recordTime>60.0f) {
         
         @try {
-            [self.delegate finishRecordedWithAudioPath:audioPath withAudioDuration:[NSString stringWithFormat:@"%.f", recordTime]];
+            [self.delegate finishRecordedWithVoiceData:[NSData dataWithContentsOfFile:audioPath] withAudioDuration:[NSString stringWithFormat:@"%.f", recordTime]];
         } @catch (NSException *exception) {
         } @finally {
         }

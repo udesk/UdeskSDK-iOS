@@ -91,11 +91,12 @@
     popRecognizer.edges = UIRectEdgeLeft;
     [self.view addGestureRecognizer:popRecognizer];
 }
+
 //滑动返回
 - (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
     
     CGPoint translation = [recognizer translationInView:self.view];
-    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.7;
+    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan:
@@ -106,7 +107,7 @@
             [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
             break;
         default:
-            if (xPercent < .25) {
+            if (xPercent < .45) {
                 [UdeskTransitioningAnimation cancelInteractiveTransition];
             } else {
                 [UdeskTransitioningAnimation finishInteractiveTransition];

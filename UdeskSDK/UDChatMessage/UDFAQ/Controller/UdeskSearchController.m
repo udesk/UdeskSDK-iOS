@@ -79,7 +79,10 @@
 
 - (void)contactUsButton {
     
-    UdeskChatViewController *chat = [[UdeskChatViewController alloc] init];
+#warning 如果你设置了UI 记得在这里也设置下
+    UdeskSDKConfig *config = [UdeskSDKConfig sharedConfig];
+    config.sdkStyle = [UdeskSDKStyle defaultStyle];
+    UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:config];
     
     UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:[UdeskSDKConfig sharedConfig]];
     [show presentOnViewController:self.searchContentsController.navigationController udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush];

@@ -897,7 +897,7 @@
 					44C3A05B1C93ADCE004BDB2B = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = DVNW3ZM7G9;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -1122,7 +1122,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = DVNW3ZM7G9;
+				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = UdeskSDKExample/Info.plist;
@@ -1138,8 +1138,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.sdk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ebb8d175-702a-4cc6-b01b-3694cffa1e1d";
-				PROVISIONING_PROFILE_SPECIFIER = jiawei;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -1150,7 +1150,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = DVNW3ZM7G9;
+				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = UdeskSDKExample/Info.plist;
@@ -1166,8 +1166,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.sdk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ebb8d175-702a-4cc6-b01b-3694cffa1e1d";
-				PROVISIONING_PROFILE_SPECIFIER = jiawei;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};

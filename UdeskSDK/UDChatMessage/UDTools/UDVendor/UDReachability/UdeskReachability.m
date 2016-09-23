@@ -44,7 +44,6 @@ static void PrintReachabilityFlags(SCNetworkReachabilityFlags flags, const char*
 //          (flags & kSCNetworkReachabilityFlagsIsDirect)             ? 'd' : '-',
 //          comment
 //          );
-//#endif
 }
 
 

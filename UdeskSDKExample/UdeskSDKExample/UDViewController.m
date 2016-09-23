@@ -52,6 +52,8 @@
     _domainTextField.placeholder = @"域名";
     _domainTextField.textColor = [UIColor whiteColor];
     _domainTextField.text = domain;
+    
+    _domainTextField.text = @"udesksdk.udesk.cn";
 
     [accountTextFieldBackGroundView addSubview:_domainTextField];
     
@@ -76,6 +78,8 @@
     }
     
     _appKeyTextField.text = key;
+    
+    _appKeyTextField.text = @"6c37f775019907785d85c027e29dae4e";
 
     [passwordTextFieldBackGroundView addSubview:_appKeyTextField];
     

@@ -21,7 +21,7 @@
 
 #define VoicePlayHasInterrupt @"VoicePlayHasInterrupt"
 
-@interface UdeskChatCell() <UDAudioPlayerHelperDelegate,TTTAttributedLabelDelegate> {
+@interface UdeskChatCell() <UDAudioPlayerHelperDelegate,UDTTTAttributedLabelDelegate> {
 
     UILabel          *dateLabel;//时间
     UIImageView      *avatarImageView;//头像
@@ -91,7 +91,6 @@
             [self.contentView addSubview:contentImageView];
             //添加图片点击手势
             UITapGestureRecognizer *tapContentImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapContentImageViewAction:)];
-            tapContentImage.cancelsTouchesInView = false;
             [contentImageView addGestureRecognizer:tapContentImage];
         }
         
@@ -127,7 +126,6 @@
             [self.contentView addSubview:_failureImageView];
             
             UITapGestureRecognizer *tapFailureImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFailureImageViewAction:)];
-            tapFailureImage.cancelsTouchesInView = false;
             [_failureImageView addGestureRecognizer:tapFailureImage];
         }
         
@@ -217,7 +215,6 @@
                 [contentLabel addLinkToURL:url withRange:[chatMessage.text rangeOfString:richContent]];
             }
         }
-        
         //隐藏
         contentImageView.hidden = YES;
         self.voiceDurationLabel.hidden = YES;

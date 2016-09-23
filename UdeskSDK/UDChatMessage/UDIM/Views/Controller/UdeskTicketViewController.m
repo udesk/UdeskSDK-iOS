@@ -52,7 +52,7 @@
         
         CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
         _ticketWebView = [[UIWebView alloc] initWithFrame:webViewRect];
-        _ticketWebView.backgroundColor=[UIColor whiteColor];
+        _ticketWebView.backgroundColor = [UIColor whiteColor];
         
         NSURL *ticketURL = [UdeskManager getSubmitTicketURL];
         
@@ -89,7 +89,7 @@
 - (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
 
     CGPoint translation = [recognizer translationInView:self.view];
-    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.7;
+    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan:
@@ -100,7 +100,7 @@
             [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
             break;
         default:
-            if (xPercent < .25) {
+            if (xPercent < .45) {
                 [UdeskTransitioningAnimation cancelInteractiveTransition];
             } else {
                 [UdeskTransitioningAnimation finishInteractiveTransition];

@@ -40,7 +40,6 @@
 #import "UdeskVoiceRecordView.h"
 #import "UdeskSDKShow.h"
 #import "UdeskBaseMessage.h"
-#import "UdeskLanguageTool.h"
 
 @interface UdeskChatViewController ()<UIGestureRecognizerDelegate,UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskInputBarDelegate,UdeskVoiceRecordViewDelegate,UdeskCellDelegate>
 
@@ -102,7 +101,7 @@
     //隐藏键盘
     [self.inputBar.inputTextView resignFirstResponder];
     CGPoint translation = [recognizer translationInView:self.view];
-    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.7;
+    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan:
@@ -113,7 +112,7 @@
             [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
             break;
         default:
-            if (xPercent < .25) {
+            if (xPercent < .45) {
                 [UdeskTransitioningAnimation cancelInteractiveTransition];
             } else {
                 [UdeskTransitioningAnimation finishInteractiveTransition];
@@ -278,7 +277,6 @@
     [_messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
     
     [self.view addSubview:_messageTableView];
-    [self.view sendSubviewToBack:_messageTableView];
     
     //添加单击手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapChatTableView:)];
@@ -301,14 +299,11 @@
     _inputBar = [[UdeskInputBar alloc] initWithFrame:inputFrame tableView:_messageTableView];
     _inputBar.delegate = self;
     [self.view addSubview:_inputBar];
-    [self.view bringSubviewToFront:_inputBar];
 }
 
 #pragma mark - UdeskInputBarDelegate
 //点击表情按钮
 - (void)didSelectEmotionButton:(BOOL)selected {
-
-    [[UdeskLanguageTool sharedInstance] changeNowLanguage];
     
     if (selected) {
         self.textViewInputViewType = UDInputViewTypeEmotion;
@@ -477,7 +472,6 @@
         _emotionManagerView.alpha = 0.0;
         [self.view addSubview:_emotionManagerView];
     }
-    [self.view bringSubviewToFront:_emotionManagerView];
     
     return _emotionManagerView;
 }
@@ -508,16 +502,15 @@
         _voiceRecordView.delegate = self;
         [self.view addSubview:_voiceRecordView];
     }
-    [self.view bringSubviewToFront:_voiceRecordView];
     
     return _voiceRecordView;
 }
 
 #pragma mark - UdeskVoiceRecordViewDelegate
 //完成录音
-- (void)finishRecordedWithAudioPath:(NSString *)path withAudioDuration:(NSString *)duration {
+- (void)finishRecordedWithVoiceData:(NSData *)voiceData withAudioDuration:(NSString *)duration {
 
-    [self didSendMessageWithAudio:path audioDuration:duration];
+    [self didSendMessageWithVoice:voiceData audioDuration:duration];
 }
 //录音时间太短
 - (void)speakDurationTooShort {
@@ -643,10 +636,10 @@
     
 }
 #pragma mark - 发送语音
-- (void)didSendMessageWithAudio:(NSString *)audioPath audioDuration:(NSString*)audioDuration {
+- (void)didSendMessageWithVoice:(NSData *)voiceData audioDuration:(NSString*)audioDuration {
     
     @udWeakify(self);
-    [self.chatViewModel sendAudioMessage:audioPath audioDuration:audioDuration completion:^(UdeskMessage *message, BOOL sendStatus) {
+    [self.chatViewModel sendAudioMessage:voiceData audioDuration:audioDuration completion:^(UdeskMessage *message, BOOL sendStatus) {
         //处理发送结果UI
         @udStrongify(self);
         [self sendMessageStatus:sendStatus message:message];

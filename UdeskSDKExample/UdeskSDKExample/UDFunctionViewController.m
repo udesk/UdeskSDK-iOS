@@ -65,6 +65,21 @@
     }
     
     
+//    NSDictionary *parameters = @{
+//                                 @"user" :    @{
+//                                         @"nick_name":@"许晨测试",
+//                                         @"sdk_token":@"88909090",
+//                                         @"custom_fields":@{
+//                                                 @"TextField_391":@"测试",
+//                                                 @"SelectField_455":@[@"1"]
+//                                                 }
+//                                         }
+//                                 };
+//    
+//    //创建用户
+//    [UdeskManager createCustomerWithCustomerInfo:parameters];
+    
+    
     double text1 = 237/675.0f;
     CGFloat logoHeight = self.view.ud_height*text1;
 

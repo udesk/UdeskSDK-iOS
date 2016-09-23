@@ -2,7 +2,8 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.3.1
+//  Version: 3.3.2
+//
 //  Created by xuchen on 16/1/12.
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
@@ -136,7 +137,7 @@
 + (void)logoutUdesk;
 
 /**
- *  设置客户在线 (用户点击app进入页面时调用此方法)
+ *  设置客户在线
  */
 + (void)setCustomerOnline;
 

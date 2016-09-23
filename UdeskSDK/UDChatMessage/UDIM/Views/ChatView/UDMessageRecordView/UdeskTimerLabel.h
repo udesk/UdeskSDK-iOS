@@ -33,9 +33,9 @@
  MZTimerLabel TimerType Enum
  **********************************************/
 typedef enum{
-    MZTimerLabelTypeStopWatch,
-    MZTimerLabelTypeTimer
-}MZTimerLabelType;
+    UDTimerLabelTypeStopWatch,
+    UDTimerLabelTypeTimer
+}UDTimerLabelType;
 
 /**********************************************
  Delegate Methods
@@ -55,7 +55,7 @@ typedef enum{
 @protocol MZTimerLabelDelegate <NSObject>
 @optional
 -(void)timerLabel:(UdeskTimerLabel*)timerLabel finshedCountDownTimerWithTime:(NSTimeInterval)countTime;
--(void)timerLabel:(UdeskTimerLabel*)timerLabel countingTo:(NSTimeInterval)time timertype:(MZTimerLabelType)timerType;
+-(void)timerLabel:(UdeskTimerLabel*)timerLabel countingTo:(NSTimeInterval)time timertype:(UDTimerLabelType)timerType;
 -(NSString*)timerLabel:(UdeskTimerLabel*)timerLabel customTextToDisplayAtTime:(NSTimeInterval)time;
 @end
 
@@ -80,7 +80,7 @@ typedef enum{
 @property (nonatomic, strong) NSDictionary *attributedDictionaryForTextInRange;
 
 /*Type to choose from stopwatch or timer*/
-@property (assign) MZTimerLabelType timerType;
+@property (assign) UDTimerLabelType timerType;
 
 /*Is The Timer Running?*/
 @property (assign,readonly) BOOL counting;
@@ -97,11 +97,11 @@ typedef enum{
 
 
 /*--------Init methods to choose*/
--(id)initWithTimerType:(MZTimerLabelType)theType;
--(id)initWithLabel:(UILabel*)theLabel andTimerType:(MZTimerLabelType)theType;
+-(id)initWithTimerType:(UDTimerLabelType)theType;
+-(id)initWithLabel:(UILabel*)theLabel andTimerType:(UDTimerLabelType)theType;
 -(id)initWithLabel:(UILabel*)theLabel;
 /*--------designated Initializer*/
--(id)initWithFrame:(CGRect)frame label:(UILabel*)theLabel andTimerType:(MZTimerLabelType)theType;
+-(id)initWithFrame:(CGRect)frame label:(UILabel*)theLabel andTimerType:(UDTimerLabelType)theType;
 
 /*--------Timer control methods to use*/
 -(void)start;

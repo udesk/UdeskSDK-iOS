@@ -36,11 +36,11 @@
 /**
  *  发送语音消息
  *
- *  @param audioPath     语音文件地址
+ *  @param audioPath     语音文件
  *  @param audioDuration 语音时长
  *  @param comletion     发送状态&发送消息体
  */
-+ (UdeskChatMessage *)sendAudioMessage:(NSString *)audioPath
++ (UdeskChatMessage *)sendAudioMessage:(NSData *)voiceData
                          audioDuration:(NSString *)audioDuration
                       displayTimestamp:(BOOL)displayTimestamp
                             completion:(void(^)(UdeskMessage *message,BOOL sendStatus))comletion;

@@ -536,7 +536,7 @@
 }
 
 #pragma mark - 发送语音消息
-- (void)sendAudioMessage:(NSString *)audioPath
+- (void)sendAudioMessage:(NSData *)voiceData
            audioDuration:(NSString *)audioDuration
               completion:(void (^)(UdeskMessage *, BOOL sendStatus))comletion {
     
@@ -548,7 +548,7 @@
     //是否需要显示时间
     BOOL displayTimestamp = [self addMessageDateAtLastWithNowDate:[NSDate date]];
     
-    UdeskChatMessage *chatMessage = [UdeskChatSend sendAudioMessage:audioPath audioDuration:audioDuration displayTimestamp:displayTimestamp completion:comletion];
+    UdeskChatMessage *chatMessage = [UdeskChatSend sendAudioMessage:voiceData audioDuration:audioDuration displayTimestamp:displayTimestamp completion:comletion];
     [self.messageArray addObject:chatMessage];
     //通知刷新UI
     [self updateContent];
