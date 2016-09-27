@@ -20,7 +20,6 @@
 #import "UdeskImageUtil.h"
 #import <CoreText/CoreText.h>
 #import "UdeskSDKConfig.h"
-#import "UDTTTAttributedLabel.h"
 
 /** 头像距离屏幕水平边沿距离 */
 static CGFloat const kUDAvatarToHorizontalEdgeSpacing = 15.0;
@@ -343,69 +342,11 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
 // 计算文本实际的大小
 - (CGSize)neededSizeForText:(NSString *)text {
     
-    //文字最大宽度
-    CGFloat maxLabelWidth = UD_SCREEN_WIDTH>320?235:180;
+    CGSize textSize = [UdeskStringSizeUtil textSize:text withFont:[UdeskSDKConfig sharedConfig].sdkStyle.messageContentFont withSize:CGSizeMake(UD_SCREEN_WIDTH>320?235:180, 99999999)];
     
-    //文字高度
-    CGFloat messageTextHeight = [UdeskStringSizeUtil getHeightForAttributedText:self.cellText textWidth:maxLabelWidth];
-    //判断文字中是否有emoji
-    if ([self stringContainsEmoji:[self.cellText string]]) {
-        NSAttributedString *oneLineText = [[NSAttributedString alloc] initWithString:@"haha" attributes:self.cellTextAttributes];
-        CGFloat oneLineTextHeight = [UdeskStringSizeUtil getHeightForAttributedText:oneLineText textWidth:maxLabelWidth];
-        NSInteger textLines = ceil(messageTextHeight / oneLineTextHeight);
-        messageTextHeight += 8 * textLines;
-    }
-    //文字宽度
-    CGFloat messageTextWidth = [UdeskStringSizeUtil getWidthForAttributedText:self.cellText textHeight:messageTextHeight];
-    //#warning 注：这里textLabel的宽度之所以要增加，是因为TTTAttributedLabel的bug，在文字有"."的情况下，有可能显示不出来，开发者可以帮忙定位TTTAttributedLabel的这个bug^.^
-    NSRange periodRange = [self.cellText.string rangeOfString:@"."];
-    if (periodRange.location != NSNotFound) {
-        messageTextWidth += 8;
-    }
-    if (messageTextWidth > maxLabelWidth) {
-        messageTextWidth = maxLabelWidth;
-    }
+    float textfloat = [UdeskStringSizeUtil getAttributedStringHeightWithString:text WidthValue:UD_SCREEN_WIDTH>320?235:180 font:[UdeskSDKConfig sharedConfig].sdkStyle.messageContentFont];
     
-    return CGSizeMake(messageTextWidth, messageTextHeight);
-}
-
-- (BOOL)stringContainsEmoji:(NSString *)string
-{
-    __block BOOL returnValue = NO;
-    
-    [string enumerateSubstringsInRange:NSMakeRange(0, [string length])
-                               options:NSStringEnumerationByComposedCharacterSequences
-                            usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
-                                const unichar hs = [substring characterAtIndex:0];
-                                if (0xd800 <= hs && hs <= 0xdbff) {
-                                    if (substring.length > 1) {
-                                        const unichar ls = [substring characterAtIndex:1];
-                                        const int uc = ((hs - 0xd800) * 0x400) + (ls - 0xdc00) + 0x10000;
-                                        if (0x1d000 <= uc && uc <= 0x1f77f) {
-                                            returnValue = YES;
-                                        }
-                                    }
-                                } else if (substring.length > 1) {
-                                    const unichar ls = [substring characterAtIndex:1];
-                                    if (ls == 0x20e3) {
-                                        returnValue = YES;
-                                    }
-                                } else {
-                                    if (0x2100 <= hs && hs <= 0x27ff) {
-                                        returnValue = YES;
-                                    } else if (0x2B05 <= hs && hs <= 0x2b07) {
-                                        returnValue = YES;
-                                    } else if (0x2934 <= hs && hs <= 0x2935) {
-                                        returnValue = YES;
-                                    } else if (0x3297 <= hs && hs <= 0x3299) {
-                                        returnValue = YES;
-                                    } else if (hs == 0xa9 || hs == 0xae || hs == 0x303d || hs == 0x3030 || hs == 0x2b55 || hs == 0x2b1c || hs == 0x2b1b || hs == 0x2b50) {
-                                        returnValue = YES;
-                                    }
-                                }
-                            }];
-    
-    return returnValue;
+    return CGSizeMake(textSize.width, textfloat);
 }
 
 // 计算图片实际大小

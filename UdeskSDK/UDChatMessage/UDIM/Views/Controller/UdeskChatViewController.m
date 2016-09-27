@@ -508,9 +508,9 @@
 
 #pragma mark - UdeskVoiceRecordViewDelegate
 //完成录音
-- (void)finishRecordedWithVoiceData:(NSData *)voiceData withAudioDuration:(NSString *)duration {
+- (void)finishRecordedWithVoicePath:(NSString *)voicePath withAudioDuration:(NSString *)duration {
 
-    [self didSendMessageWithVoice:voiceData audioDuration:duration];
+    [self didSendMessageWithVoice:voicePath audioDuration:duration];
 }
 //录音时间太短
 - (void)speakDurationTooShort {
@@ -636,10 +636,10 @@
     
 }
 #pragma mark - 发送语音
-- (void)didSendMessageWithVoice:(NSData *)voiceData audioDuration:(NSString*)audioDuration {
+- (void)didSendMessageWithVoice:(NSString *)voicePath audioDuration:(NSString*)audioDuration {
     
     @udWeakify(self);
-    [self.chatViewModel sendAudioMessage:voiceData audioDuration:audioDuration completion:^(UdeskMessage *message, BOOL sendStatus) {
+    [self.chatViewModel sendAudioMessage:voicePath audioDuration:audioDuration completion:^(UdeskMessage *message, BOOL sendStatus) {
         //处理发送结果UI
         @udStrongify(self);
         [self sendMessageStatus:sendStatus message:message];

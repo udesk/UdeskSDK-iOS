@@ -40,7 +40,7 @@
  *  @param audioDuration 语音时长
  *  @param comletion     发送状态&发送消息体
  */
-+ (UdeskChatMessage *)sendAudioMessage:(NSData *)voiceData
++ (UdeskChatMessage *)sendAudioMessage:(NSString *)voicePath
                          audioDuration:(NSString *)audioDuration
                       displayTimestamp:(BOOL)displayTimestamp
                             completion:(void(^)(UdeskMessage *message,BOOL sendStatus))comletion;

@@ -99,6 +99,29 @@
     
 }
 
+-(void)testFunction
+{
+    
+    CADisplayLink *displaylink = [CADisplayLink displayLinkWithTarget:_itemLevelCallback selector:@selector(invoke)];
+    displaylink.frameInterval = 6;
+    [displaylink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    
+    for(int i=0; i < self.numberOfItems; i++)
+    {
+        CAShapeLayer *itemline = [CAShapeLayer layer];
+        itemline.lineCap       = kCALineCapButt;
+        itemline.lineJoin      = kCALineJoinRound;
+        itemline.strokeColor   = [[UIColor clearColor] CGColor];
+        itemline.fillColor     = [[UIColor clearColor] CGColor];
+        //单个波浪的宽度
+        [itemline setLineWidth:self.itemWidth*0.3/self.numberOfItems];
+        itemline.strokeColor   = [self.itemColor CGColor];
+        
+        [self.layer addSublayer:itemline];
+        [self.itemArray addObject:itemline];
+    }
+    
+}
 
 - (void)setLevel:(CGFloat)level
 {

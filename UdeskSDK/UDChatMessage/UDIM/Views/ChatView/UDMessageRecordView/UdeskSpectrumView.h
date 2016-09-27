@@ -25,5 +25,6 @@
 
 @property (nonatomic) NSString *text;
 
+-(void)testFunction;
 
 @end

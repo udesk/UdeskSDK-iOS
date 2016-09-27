@@ -10,7 +10,7 @@
 
 @protocol UdeskVoiceRecordViewDelegate <NSObject>
 
-- (void)finishRecordedWithVoiceData:(NSData *)voiceData withAudioDuration:(NSString *)duration;
+- (void)finishRecordedWithVoicePath:(NSString *)voicePath withAudioDuration:(NSString *)duration;
 
 - (void)speakDurationTooShort;
 
@@ -21,3 +21,4 @@
 @property (nonatomic, weak) id <UdeskVoiceRecordViewDelegate> delegate;
 
 @end
+ 

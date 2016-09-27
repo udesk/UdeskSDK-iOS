@@ -13,6 +13,7 @@
 #import "UdeskFoundationMacro.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskUtils.h"
+#import "UdeskVoiceRecordHelper.h"
 
 @interface UdeskVoiceRecordView()<AVAudioRecorderDelegate,MZTimerLabelDelegate> {
 
@@ -21,12 +22,10 @@
     UIButton *recordButton;
     UdeskSpectrumView *spectrumView;
     BOOL        isInDeleteButton;
-    NSString *recordDuration;
-    NSString *audioPath;
     float  recordTime;
 }
 
-@property (nonatomic,strong) AVAudioRecorder *audioRecorder;//音频录音机
+@property (nonatomic, strong) UdeskVoiceRecordHelper    *voiceRecordHelper;//管理录音工具对象
 
 
 @end
@@ -45,13 +44,15 @@
         spectrumView = [[UdeskSpectrumView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-170)/2,32,150, 20)];
         spectrumView.stopwatch.delegate = self;
         __weak UdeskSpectrumView * weakSpectrum = spectrumView;
-        __weak typeof(self) weakself = self;
+
+        @udWeakify(self);
         spectrumView.itemLevelCallback = ^() {
+            @udStrongify(self);
+            self.voiceRecordHelper.peakPowerForChannel = ^(float peakPowerForChannel) {
+                
+                weakSpectrum.level = peakPowerForChannel;
+            };
             
-            [weakself.audioRecorder updateMeters];
-            //取得第一个通道的音频，音频强度范围时-160到0
-            float power= [weakself.audioRecorder averagePowerForChannel:0];
-            weakSpectrum.level = power;
         };
         
         spectrumView.hidden = YES;
@@ -132,96 +133,107 @@
 
 - (void)recordCancel:(UIButton *)button
 {
+    
     if (isInDeleteButton) {
+        
         [spectrumView.stopwatch reset];
         [spectrumView.stopwatch pause];
         
-        [self.audioRecorder stop];
         spectrumView.hidden = YES;
         tipLabel.text = getUDLocalizedString(@"udesk_hold_to_talk");
         tipLabel.hidden = NO;
         [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
+        
+        [self.voiceRecordHelper cancelledDeleteWithCompletion:nil];
     }
     else {
+
         [self finishRecord];
     }
 }
 
 - (void)recordStart:(UIButton *)button
 {
+    if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending)
+    {
+        //7.0第一次运行会提示，是否允许使用麦克风
+        AVAudioSession *session = [AVAudioSession sharedInstance];
+        NSError *sessionError;
+        //AVAudioSessionCategoryPlayAndRecord用于录音和播放
+        [session setCategory:AVAudioSessionCategoryPlayAndRecord error:&sessionError];
+        if(session == nil){
+            NSLog(@"Error creating session: %@", [sessionError description]);
+        }
+        else{
+            [session setActive:YES error:nil];
+        }
+    }
     if ([self canRecord]) {
         
-        if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending)
-        {
-            //7.0第一次运行会提示，是否允许使用麦克风
-            AVAudioSession *session = [AVAudioSession sharedInstance];
-            NSError *sessionError;
-            //AVAudioSessionCategoryPlayAndRecord用于录音和播放
-            [session setCategory:AVAudioSessionCategoryPlayAndRecord error:&sessionError];
-            if(session == nil){
-                NSLog(@"Error creating session: %@", [sessionError description]);
-            }
-            else{
-                [session setActive:YES error:nil];
-            }
-        }
-        
-        if (![self.audioRecorder isRecording]) {
+        @udWeakify(self);
+        [self.voiceRecordHelper prepareRecordingCompletion:^BOOL{
             
-            [self.audioRecorder record];
-            spectrumView.hidden = NO;
-            [spectrumView.stopwatch start];
-            tipLabel.hidden = YES;
-        }
+            @udStrongify(self);
+            [self.voiceRecordHelper startRecordingWithStartRecorderCompletion:nil];
+            
+            
+            return YES;
+        }];
+        
+        spectrumView.hidden = NO;
+        [spectrumView.stopwatch start];
+        tipLabel.hidden = YES;
     }
     
 }
 
 - (void)recordFinish:(UIButton *)button
 {
+    
+    spectrumView.hidden = YES;
+    tipLabel.text = getUDLocalizedString(@"udesk_hold_to_talk");
+    tipLabel.hidden = NO;
+    [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
     if (isInDeleteButton) {
+        
         [spectrumView.stopwatch reset];
         [spectrumView.stopwatch pause];
         
-        [self.audioRecorder stop];
-        spectrumView.hidden = YES;
-        tipLabel.text = getUDLocalizedString(@"udesk_hold_to_talk");
-        tipLabel.hidden = NO;
-        [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
+        [self.voiceRecordHelper cancelledDeleteWithCompletion:nil];
     }
     else {
+        
         [self finishRecord];
     }
 }
 
 - (void)finishRecord {
     
-    [self.audioRecorder stop];
     [spectrumView.stopwatch pause];
-    spectrumView.hidden = YES;
-    tipLabel.hidden = NO;
-
-    if (recordTime>1.1f && recordTime < 60.0f) {
+    
+    if (recordTime >1) {
         
         @try {
-            [self.delegate finishRecordedWithVoiceData:[NSData dataWithContentsOfFile:audioPath] withAudioDuration:[NSString stringWithFormat:@"%.f", recordTime]];
-        } @catch (NSException *exception) {
-        } @finally {
-        }
-    }
-
-    if (recordTime>60.0f) {
-        
-        @try {
-            [self.delegate finishRecordedWithVoiceData:[NSData dataWithContentsOfFile:audioPath] withAudioDuration:[NSString stringWithFormat:@"%.f", recordTime]];
+            @udWeakify(self);
+            [self.voiceRecordHelper stopRecordingWithStopRecorderCompletion:^{
+                @udStrongify(self);
+                @try {
+                    [self.delegate finishRecordedWithVoicePath:self.voiceRecordHelper.recordPath withAudioDuration:[NSString stringWithFormat:@"%@", self.voiceRecordHelper.recordDuration]];
+                } @catch (NSException *exception) {
+                } @finally {
+                }
+            }];
+            
         } @catch (NSException *exception) {
         } @finally {
         }
     }
     
-    if (recordTime<1.1f) {
+    if (recordTime <=1) {
         @try {
+            
             [self.delegate speakDurationTooShort];
+            
         } @catch (NSException *exception) {
         } @finally {
         }
@@ -259,89 +271,20 @@
     return bCanRecord;
 }
 
-/**
- *  获得录音机对象
- *
- *  @return 录音机对象
- */
--(AVAudioRecorder *)audioRecorder{
-    if (!_audioRecorder) {
-        //创建录音文件保存路径
-        NSURL *url=[self getSavePath];
-        //创建录音格式设置
-        NSDictionary *setting=[self getAudioSetting];
-        //创建录音机
-        NSError *error=nil;
-        _audioRecorder=[[AVAudioRecorder alloc]initWithURL:url settings:setting error:&error];
-        _audioRecorder.delegate=self;
-        _audioRecorder.meteringEnabled=YES;//如果要监控声波则必须设置为YES
-        if (error) {
-            NSLog(@"创建录音机对象时发生错误，错误信息：%@",error.localizedDescription);
-            return nil;
-        }
-    }
-    return _audioRecorder;
-}
-
-
-/**
- *  取得录音文件设置
- *
- *  @return 录音设置
- */
--(NSDictionary *)getAudioSetting{
-    NSMutableDictionary *dicM=[NSMutableDictionary dictionary];
-    //设置录音格式
-    [dicM setObject:@(kAudioFormatMPEG4AAC) forKey:AVFormatIDKey];
-    //设置录音采样率，8000是电话采样率，对于一般录音已经够了
-    [dicM setObject:@(8000) forKey:AVSampleRateKey];
-    //设置通道,这里采用单声道
-    [dicM setObject:@(1) forKey:AVNumberOfChannelsKey];
-    //每个采样点位数,分为8、16、24、32
-    [dicM setObject:@(8) forKey:AVLinearPCMBitDepthKey];
-    //是否使用浮点数采样
-    [dicM setObject:@(YES) forKey:AVLinearPCMIsFloatKey];
-    //....其他设置等
-    return dicM;
-}
-
-
-/**
- *  取得录音文件保存路径
- *
- *  @return 录音文件路径
- */
--(NSURL *)getSavePath {
-    
-    //  在Documents目录下创建一个名为FileData的文件夹
-    NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject] stringByAppendingPathComponent:@"UdeskAudioData"];
-    
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    BOOL isDir = FALSE;
-    BOOL isDirExist = [fileManager fileExistsAtPath:path isDirectory:&isDir];
-    if(!(isDirExist && isDir))
+#pragma mark - 录制语音
+- (UdeskVoiceRecordHelper *)voiceRecordHelper {
+    if (!_voiceRecordHelper) {
         
-    {
-        BOOL bCreateDir = [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
-        if(!bCreateDir){
-            NSLog(@"创建文件夹失败！");
-        }
-    }
-    
-    path = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@myRecord.aac",[[NSUUID UUID] UUIDString]]];
-    audioPath = path;
-    NSURL *url=[NSURL fileURLWithPath:path];
-    return url;
-}
+        @udWeakify(self);
+        _voiceRecordHelper = [[UdeskVoiceRecordHelper alloc] init];
+        _voiceRecordHelper.maxTimeStopRecorderCompletion = ^{
+            @udStrongify(self);
+            [self finishRecord];
+        };
 
-- (NSString *)getVoiceDuration:(NSString*)recordPath {
-    NSError *error = nil;
-    AVAudioPlayer *play = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:recordPath] error:&error];
-    if (error) {
-        return @"";
-    } else {
-        return [NSString stringWithFormat:@"%.f", play.duration];
+        _voiceRecordHelper.maxRecordTime = UdeskVoiceRecorderTotalTime;
     }
+    return _voiceRecordHelper;
 }
 
 @end
