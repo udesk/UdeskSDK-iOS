@@ -154,20 +154,7 @@
 
 - (void)recordStart:(UIButton *)button
 {
-    if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending)
-    {
-        //7.0第一次运行会提示，是否允许使用麦克风
-        AVAudioSession *session = [AVAudioSession sharedInstance];
-        NSError *sessionError;
-        //AVAudioSessionCategoryPlayAndRecord用于录音和播放
-        [session setCategory:AVAudioSessionCategoryPlayAndRecord error:&sessionError];
-        if(session == nil){
-            NSLog(@"Error creating session: %@", [sessionError description]);
-        }
-        else{
-            [session setActive:YES error:nil];
-        }
-    }
+
     if ([self canRecord]) {
         
         @udWeakify(self);
@@ -225,6 +212,7 @@
             }];
             
         } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
         } @finally {
         }
     }
@@ -235,6 +223,7 @@
             [self.delegate speakDurationTooShort];
             
         } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
         } @finally {
         }
     }
@@ -246,7 +235,7 @@
 - (BOOL)canRecord
 {
     __block BOOL bCanRecord = YES;
-    if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending)
+    if (ud_isIOS7)
     {
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         if ([audioSession respondsToSelector:@selector(requestRecordPermission:)]) {

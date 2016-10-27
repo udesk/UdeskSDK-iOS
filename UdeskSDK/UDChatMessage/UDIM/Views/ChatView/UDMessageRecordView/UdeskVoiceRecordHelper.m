@@ -174,14 +174,17 @@
     _isPause = NO;
     [self stopRecord];
     [self getVoiceDuration:_recordPath];
-    if (self.currentTimeInterval>1.5f) {
-        dispatch_async(dispatch_get_main_queue(), stopRecorderCompletion);
-    }
-    else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.tooShortRecorderFailue();
-        });
-    }
+//    if (self.currentTimeInterval>1.5f) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        stopRecorderCompletion();
+    });
+//        dispatch_async(dispatch_get_main_queue(), stopRecorderCompletion);
+//    }
+//    else {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            self.tooShortRecorderFailue();
+//        });
+//    }
     
 }
 //取消录音

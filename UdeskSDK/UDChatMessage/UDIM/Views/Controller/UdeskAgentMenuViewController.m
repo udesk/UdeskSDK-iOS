@@ -204,7 +204,7 @@
 - (void)pushChatViewController {
     
     UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-    [self.show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush];
+    [self.show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -289,7 +289,7 @@
         self.menuPage -- ;
         
         UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-        [self.show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush];
+        [self.show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
     }
     
 }

@@ -16,7 +16,7 @@
 #import "UdeskUtils.h"
 #import "UdeskStringSizeUtil.h"
 
-@interface UdeskSDKShow()
+@interface UdeskSDKShow()<UINavigationControllerDelegate>
 
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 
@@ -33,17 +33,21 @@
     return self;
 }
 
-- (void)presentOnViewController:(UIViewController *)rootViewController udeskViewController:(id)udeskViewController transiteAnimation:(UDTransiteAnimationType)animation {
+- (void)presentOnViewController:(UIViewController *)rootViewController
+            udeskViewController:(id)udeskViewController
+              transiteAnimation:(UDTransiteAnimationType)animation
+                     completion:(void (^)(void))completion {
 
     _sdkConfig.presentingAnimation = animation;
     
     UIViewController *viewController = nil;
+    rootViewController.navigationController.delegate = self;
     if (animation == UDTransiteAnimationTypePush) {
         viewController = [self createNavigationControllerWithWithAnimationSupport:udeskViewController presentedViewController:rootViewController];
         BOOL shouldUseUIKitAnimation = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7;
         
         if(![rootViewController.navigationController.topViewController isKindOfClass:[viewController class]]) {
-            [rootViewController presentViewController:viewController animated:shouldUseUIKitAnimation completion:nil];
+            [rootViewController presentViewController:viewController animated:shouldUseUIKitAnimation completion:completion];
         }
         
     } else {
@@ -51,7 +55,7 @@
         [self updateNavAttributesWithViewController:udeskViewController navigationController:(UINavigationController *)viewController defaultNavigationController:rootViewController.navigationController isPresentModalView:true];
         
         if(![rootViewController.navigationController.topViewController isKindOfClass:[viewController class]]) {
-            [rootViewController presentViewController:viewController animated:YES completion:nil];
+            [rootViewController presentViewController:viewController animated:YES completion:completion];
         }
     }
 }
@@ -98,7 +102,7 @@
     //导航栏左键
     UIBarButtonItem *customizedBackItem = nil;
     if (_sdkConfig.sdkStyle.navBackButtonImage) {
-        customizedBackItem = [[UIBarButtonItem alloc]initWithImage:_sdkConfig.sdkStyle.navBackButtonImage style:(UIBarButtonItemStylePlain) target:viewController action:@selector(dismissChatViewController)];
+        customizedBackItem = [[UIBarButtonItem alloc]initWithImage:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:(UIBarButtonItemStylePlain) target:viewController action:@selector(dismissChatViewController)];
     }
     
     if (_sdkConfig.presentingAnimation == UDTransiteAnimationTypePresent) {

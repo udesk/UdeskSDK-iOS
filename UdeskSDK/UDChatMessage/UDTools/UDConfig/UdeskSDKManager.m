@@ -40,7 +40,9 @@
     return self;
 }
 
-- (void)pushUdeskViewControllerWithType:(UdeskType)type viewController:(UIViewController *)viewController {
+- (void)pushUdeskViewControllerWithType:(UdeskType)type
+                         viewController:(UIViewController *)viewController
+                             completion:(void (^)(void))completion {
 
     if (_sdkConfig) {
         _sdkConfig = [UdeskSDKConfig sharedConfig];
@@ -56,7 +58,7 @@
                     robotChat = [[UdeskRobotViewController alloc] initWithSDKConfig:_sdkConfig withURL:robotUrl];
                 }
                 
-                [_show presentOnViewController:viewController udeskViewController:robotChat transiteAnimation:UDTransiteAnimationTypePush];
+                [_show presentOnViewController:viewController udeskViewController:robotChat transiteAnimation:UDTransiteAnimationTypePush completion:completion];
             }
             else {
             
@@ -64,7 +66,7 @@
                     chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
                 }
                 
-                [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePush];
+                [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
             }
             
         }];
@@ -76,7 +78,7 @@
             chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
         }
         
-        [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePush];
+        [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
     }
     else if(type == UdeskFAQ) {
         
@@ -84,7 +86,7 @@
             faq = [[UdeskFAQViewController alloc] initWithSDKConfig:_sdkConfig];
         }
         
-        [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:UDTransiteAnimationTypePush];
+        [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:UDTransiteAnimationTypePush completion:completion];
     }
     else if (type == UdeskMenu) {
     
@@ -99,7 +101,7 @@
                         agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig menuArray:result];
                     }
                     
-                    [_show presentOnViewController:viewController udeskViewController:agentMenu transiteAnimation:UDTransiteAnimationTypePush];
+                    [_show presentOnViewController:viewController udeskViewController:agentMenu transiteAnimation:UDTransiteAnimationTypePush completion:completion];
                 }
                 else {
                     
@@ -107,7 +109,7 @@
                         chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
                     }
                     
-                    [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePush];
+                    [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
                 }
             }
             
@@ -120,11 +122,13 @@
             ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig];
         }
         
-        [_show presentOnViewController:viewController udeskViewController:ticket transiteAnimation:UDTransiteAnimationTypePush];
+        [_show presentOnViewController:viewController udeskViewController:ticket transiteAnimation:UDTransiteAnimationTypePush completion:completion];
     }
 }
 
-- (void)presentUdeskViewControllerWithType:(UdeskType)type viewController:(UIViewController *)viewController {
+- (void)presentUdeskViewControllerWithType:(UdeskType)type
+                            viewController:(UIViewController *)viewController
+                                completion:(void (^)(void))completion {
     
     if (_sdkConfig) {
         _sdkConfig = [UdeskSDKConfig sharedConfig];
@@ -140,7 +144,7 @@
                     robotChat = [[UdeskRobotViewController alloc] initWithSDKConfig:_sdkConfig withURL:robotUrl];
                 }
                 
-                [_show presentOnViewController:viewController udeskViewController:robotChat transiteAnimation:UDTransiteAnimationTypePresent];
+                [_show presentOnViewController:viewController udeskViewController:robotChat transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
             }
             else {
                 
@@ -148,7 +152,7 @@
                     chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
                 }
                 
-                [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePresent];
+                [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
             }
             
         }];
@@ -160,7 +164,7 @@
             chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
         }
         
-        [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePresent];
+        [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
     }
     else if(type == UdeskFAQ) {
         
@@ -168,7 +172,7 @@
             faq = [[UdeskFAQViewController alloc] initWithSDKConfig:_sdkConfig];
         }
         
-        [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:UDTransiteAnimationTypePresent];
+        [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
     }
     else if (type == UdeskMenu) {
         
@@ -183,7 +187,7 @@
                         agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig menuArray:result];
                     }
                     
-                    [_show presentOnViewController:viewController udeskViewController:agentMenu transiteAnimation:UDTransiteAnimationTypePresent];
+                    [_show presentOnViewController:viewController udeskViewController:agentMenu transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
                 }
                 else {
                     
@@ -191,7 +195,7 @@
                         chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
                     }
                     
-                    [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePresent];
+                    [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
                 }
             }
             
@@ -204,7 +208,7 @@
             ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig];
         }
         
-        [_show presentOnViewController:viewController udeskViewController:ticket transiteAnimation:UDTransiteAnimationTypePresent];
+        [_show presentOnViewController:viewController udeskViewController:ticket transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
     }
 }
 

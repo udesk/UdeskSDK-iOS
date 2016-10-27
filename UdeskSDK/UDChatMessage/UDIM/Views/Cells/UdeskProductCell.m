@@ -11,6 +11,7 @@
 #import "UIColor+UdeskSDK.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskSDKConfig.h"
+#import "UdeskTools.h"
 
 @interface UdeskProductCell()
 
@@ -41,6 +42,15 @@
         
         UdeskProductMessage *productMessage = (UdeskProductMessage *)message;
         _productMessage = productMessage;
+        
+        if ([UdeskTools isBlankString:productMessage.productTitle]) {
+            return;
+        }
+        
+        if ([UdeskTools isBlankString:productMessage.productDetail]) {
+            return;
+        }
+        
         self.productImageView.image = productMessage.productImage;
         self.productTitleLabel.text = productMessage.productTitle;
         self.productDetailLabel.text = productMessage.productDetail;

@@ -140,13 +140,11 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     [albumButton addTarget:self action:@selector(albumButton:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:albumButton];
     
-    //评价(后期做)
-    /*
+    //评价
      surveyButton = [self createButtonWithImage:[UIImage ud_defaultSurveyImage] HLImage:[UIImage ud_defaultSurveyHighlightedImage]];
      surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
      [surveyButton addTarget:self action:@selector(surveyButton:) forControlEvents:UIControlEventTouchUpInside];
      [self addSubview:surveyButton];
-     */
 }
 
 //点击表情按钮
@@ -197,20 +195,34 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     
 }
 
+//点击评价
 - (void)surveyButton:(UIButton *)button {
 
     //检查客服状态
     if ([self checkAgentStatusValid]) {
         
         if (self.agent.agentId) {
-            [UdeskAgentSurvey.store showAgentSurveyAlertViewWithAgentId:self.agent.agentId completion:^{
-                
-                //评价提交成功Alert
-                if ([self.delegate respondsToSelector:@selector(didSurveyWithMessage:)]) {
-                    [self.delegate didSurveyWithMessage:getUDLocalizedString(@"udesk_top_view_thanks_evaluation")];
-                    button.selected = !button.selected;
+            
+            [UdeskAgentSurvey.store checkHasSurveyWithAgentId:self.agent.agentId completion:^(NSString *hasSurvey) {
+               
+                if (![hasSurvey boolValue]) {
+            
+                    [UdeskAgentSurvey.store showAgentSurveyAlertViewWithAgentId:self.agent.agentId completion:^{
+                        
+                        //评价提交成功Alert
+                        if ([self.delegate respondsToSelector:@selector(didSurveyWithMessage:hasSurvey:)]) {
+                            [self.delegate didSurveyWithMessage:getUDLocalizedString(@"udesk_top_view_thanks_evaluation") hasSurvey:NO];
+                            button.selected = !button.selected;
+                        }
+                    }];
                 }
+                else {
+                
+                    [self.delegate didSurveyWithMessage:getUDLocalizedString(@"udesk_has_survey")  hasSurvey:YES];
+                }
+                
             }];
+            
         }
     }
 }

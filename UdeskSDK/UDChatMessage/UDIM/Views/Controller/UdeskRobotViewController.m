@@ -131,12 +131,6 @@
     [blacklisted showWithSender:nil controller:nil animated:YES completion:NULL];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-
-    [super viewWillAppear:animated];
-    
-}
-
 - (void)dealloc
 {
     NSLog(@"%@销毁了",[self class]);
@@ -189,7 +183,7 @@
 
     UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
     UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
-    [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush];
+    [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 }
 
 @end

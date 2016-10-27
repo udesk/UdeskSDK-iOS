@@ -158,7 +158,7 @@
     content.articlesTitle = model.subject;
     
     UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
-    [show presentOnViewController:self udeskViewController:content transiteAnimation:UDTransiteAnimationTypePush];
+    [show presentOnViewController:self udeskViewController:content transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 }
 
 #pragma mark UISearchBarDelegate

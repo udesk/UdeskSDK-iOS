@@ -64,4 +64,11 @@
     }
 
 }
+
+- (void)checkHasSurveyWithAgentId:(NSString *)agentId
+                       completion:(void (^)(NSString *hasSurvey))completion {
+
+    [UdeskManager checkHasSurveyWithAgentId:agentId completion:completion];
+}
+
 @end

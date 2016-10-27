@@ -99,6 +99,13 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
             dateHeight = kUDChatMessageDateCellHeight;
         }
         
+        if ([UdeskTools isBlankString:message.messageId]) {
+            return nil;
+        }
+        if ([UdeskTools isBlankString:message.content]) {
+            return nil;
+        }
+        
         self.date = message.timestamp;
         self.messageId = message.messageId;
         self.nickName = message.nickName;
@@ -342,53 +349,65 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
 // 计算文本实际的大小
 - (CGSize)neededSizeForText:(NSString *)text {
     
-    CGSize textSize = [UdeskStringSizeUtil textSize:text withFont:[UdeskSDKConfig sharedConfig].sdkStyle.messageContentFont withSize:CGSizeMake(UD_SCREEN_WIDTH>320?235:180, 99999999)];
+    if ([UdeskTools isBlankString:text]) {
+        return CGSizeMake(50, 50);
+    }
     
-    float textfloat = [UdeskStringSizeUtil getAttributedStringHeightWithString:text WidthValue:UD_SCREEN_WIDTH>320?235:180 font:[UdeskSDKConfig sharedConfig].sdkStyle.messageContentFont];
+    CGSize textSize = [UdeskStringSizeUtil getSizeForAttributedText:self.cellText textWidth:UD_SCREEN_WIDTH>320?235:180];
     
-    return CGSizeMake(textSize.width, textfloat);
+    if ([UdeskTools stringContainsEmoji:[self.cellText string]]) {
+        NSAttributedString *oneLineText = [[NSAttributedString alloc] initWithString:@"haha" attributes:self.cellTextAttributes];
+        CGFloat oneLineTextHeight = [UdeskStringSizeUtil getHeightForAttributedText:oneLineText textWidth:UD_SCREEN_WIDTH>320?235:180];
+        NSInteger textLines = ceil(textSize.height / oneLineTextHeight);
+        textSize.height += 8 * textLines;
+    }
+    
+    return textSize;
 }
 
 // 计算图片实际大小
 - (CGSize)neededSizeForPhoto:(UIImage *)image {
     
-    CGSize imageSize;
+    CGSize imageSize = CGSizeMake(150, 150);
     
-    CGFloat fixedSize;
-    if (UD_SCREEN_WIDTH>320) {
-        fixedSize = 140;
-    }
-    else {
-        fixedSize = 115;
-    }
-    
-    if (image.size.height > image.size.width) {
+    if (image) {
         
-        CGFloat scale = image.size.height/fixedSize;
-        if (scale!=0) {
-            
-            CGFloat newWidth = (image.size.width)/scale;
-            
-            imageSize = CGSizeMake(newWidth<60.0f?60:newWidth, fixedSize);
+        CGFloat fixedSize;
+        if (UD_SCREEN_WIDTH>320) {
+            fixedSize = 140;
+        }
+        else {
+            fixedSize = 115;
         }
         
-    }
-    else if (image.size.height < image.size.width) {
-        
-        CGFloat scale = image.size.width/fixedSize;
-        
-        if (scale!=0) {
+        if (image.size.height > image.size.width) {
             
-            CGFloat newHeight = (image.size.height)/scale;
-            imageSize = CGSizeMake(fixedSize, newHeight);
+            CGFloat scale = image.size.height/fixedSize;
+            if (scale!=0) {
+                
+                CGFloat newWidth = (image.size.width)/scale;
+                
+                imageSize = CGSizeMake(newWidth<60.0f?60:newWidth, fixedSize);
+            }
+            
         }
-        
+        else if (image.size.height < image.size.width) {
+            
+            CGFloat scale = image.size.width/fixedSize;
+            
+            if (scale!=0) {
+                
+                CGFloat newHeight = (image.size.height)/scale;
+                imageSize = CGSizeMake(fixedSize, newHeight);
+            }
+            
+        }
+        else if (image.size.height == image.size.width) {
+            
+            imageSize = CGSizeMake(fixedSize, fixedSize);
+        }
+   
     }
-    else if (image.size.height == image.size.width) {
-        
-        imageSize = CGSizeMake(fixedSize, fixedSize);
-    }
-    
     // 这里需要缩放后的size
     return imageSize;
 }
@@ -396,23 +415,26 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
 // 计算语音实际大小
 - (CGSize)neededSizeForVoiceDuration:(NSString *)voiceDuration {
     // 这里的100只是暂时固定，到时候会根据一个函数来计算
-    CGSize voiceSize;
-    if ([voiceDuration floatValue]) {
-        voiceSize = CGSizeMake(40 + [voiceDuration floatValue]*5, 40.0);
-        if (UD_SCREEN_WIDTH>320) {
-            if (voiceSize.width>325.0f) {
-                voiceSize = CGSizeMake(325.0f, 40.0);
+    CGSize voiceSize = CGSizeMake(50, 40.0);
+    if (voiceDuration.length) {
+        if ([voiceDuration floatValue]) {
+            voiceSize = CGSizeMake(40 + [voiceDuration floatValue]*5, 40.0);
+            if (UD_SCREEN_WIDTH>320) {
+                if (voiceSize.width>325.0f) {
+                    voiceSize = CGSizeMake(325.0f, 40.0);
+                }
+            }
+            else {
+                if (voiceSize.width>180.0f) {
+                    voiceSize = CGSizeMake(180.0f, 40.0);
+                }
             }
         }
         else {
-            if (voiceSize.width>180.0f) {
-                voiceSize = CGSizeMake(180.0f, 40.0);
-            }
+            voiceSize = CGSizeMake(50, 40.0);
         }
     }
-    else {
-        voiceSize = CGSizeMake(50, 40.0);
-    }
+
     return voiceSize;
 }
 
@@ -420,6 +442,10 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
 - (instancetype)initWithText:(NSString *)text withDisplayTimestamp:(BOOL)displayTimestamp {
 	
     if (self = [super init]) {
+        
+        if ([UdeskTools isBlankString:text]) {
+            return nil;
+        }
         
         self.displayTimestamp = displayTimestamp;
         CGFloat dateHeight = 10;
@@ -564,6 +590,10 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
 //发送文本消息的组件
 - (void)sendedMessageOfText:(NSString *)text withDateHeight:(CGFloat)dateHeight {
 
+    if ([UdeskTools isBlankString:text]) {
+        return;
+    }
+    
     NSMutableDictionary *richURLDictionary = [NSMutableDictionary dictionary];
     NSMutableArray *richContetnArray = [NSMutableArray array];
     
@@ -710,6 +740,9 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
 
 - (void)setAttributedCellText:(NSString *)text messageFrom:(UDMessageFromType)messageFrom {
 
+    if ([UdeskTools isBlankString:text]) {
+        return;
+    }
     NSMutableParagraphStyle *contentParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     contentParagraphStyle.lineSpacing = 6.0f;
     contentParagraphStyle.lineHeightMultiple = 1.0f;

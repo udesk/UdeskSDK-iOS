@@ -23,6 +23,7 @@
 "udesk_network_interrupt" = "Network interrupt";
 "udesk_chat_end" = "Chat end";
 "udesk_top_view_thanks_evaluation" = "Thanks for comment.";
+"udesk_has_survey" = "Thank you, you have already done! ";
 "udesk_no_send_empty" = "No empty message";
 "udesk_resend_msg" = "Resend message";
 "udesk_send" = "Send";

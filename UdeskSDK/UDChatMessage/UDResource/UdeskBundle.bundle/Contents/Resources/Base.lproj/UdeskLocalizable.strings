@@ -22,6 +22,7 @@
 "udesk_network_interrupt" = "网络断开链接了";
 "udesk_chat_end" = "会话已结束";
 "udesk_top_view_thanks_evaluation" = "感谢评价！";
+"udesk_has_survey" = "谢谢，您已对本次服务做出过评价了！";
 "udesk_no_send_empty" = "不能发送空白消息";
 "udesk_resend_msg" = "重发该消息？";
 "udesk_send" = "发送";

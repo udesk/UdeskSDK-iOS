@@ -85,7 +85,7 @@
     UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:config];
     
     UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:[UdeskSDKConfig sharedConfig]];
-    [show presentOnViewController:self.searchContentsController.navigationController udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush];
+    [show presentOnViewController:self.searchContentsController.navigationController udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 }
 
 - (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {

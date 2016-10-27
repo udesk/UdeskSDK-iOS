@@ -13,6 +13,9 @@
 
 - (instancetype)initWithConfig:(UdeskSDKConfig *)sdkConfig;
 
-- (void)presentOnViewController:(UIViewController *)rootViewController udeskViewController:(id)udeskViewController transiteAnimation:(UDTransiteAnimationType)animation;
+- (void)presentOnViewController:(UIViewController *)rootViewController
+            udeskViewController:(id)udeskViewController
+              transiteAnimation:(UDTransiteAnimationType)animation
+                     completion:(void (^)(void))completion;
 
 @end

@@ -252,7 +252,7 @@
 
     UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] init];
     UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
-    [show presentOnViewController:self udeskViewController:offLineTicket transiteAnimation:UDTransiteAnimationTypePush];
+    [show presentOnViewController:self udeskViewController:offLineTicket transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 }
 
 //点击黑名单弹窗提示的确定
@@ -325,10 +325,10 @@
     }
 }
 //点击满意度按钮
-- (void)didSurveyWithMessage:(NSString *)message {
+- (void)didSurveyWithMessage:(NSString *)message hasSurvey:(BOOL)hasSurvey {
 
     self.textViewInputViewType = UDInputViewTypeNormal;
-    [UdeskTopAlertView showAlertType:UDAlertTypeGreen withMessage:message parentView:self.view];
+    [UdeskTopAlertView showAlertType:hasSurvey?UDAlertTypeOrange:UDAlertTypeGreen withMessage:message parentView:self.view];
 }
 //点击图片按钮
 - (void)sendImageWithSourceType:(UIImagePickerControllerSourceType)sourceType {
@@ -409,7 +409,12 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UdeskBaseMessage *message = [self.chatViewModel objectAtIndexPath:indexPath.row];
-    return message.cellHeight;
+    if (message.cellHeight) {        
+        return message.cellHeight;
+    }
+    else {
+        return 0;
+    }
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -694,7 +699,9 @@
 //根据发送状态更新UI
 - (void)sendStatusConfigUI:(BOOL)sendStatus message:(UdeskMessage *)message {
     
-    for (id oldMessage in self.chatViewModel.messageArray) {
+    NSArray *messageArray = self.chatViewModel.messageArray;
+    
+    for (id oldMessage in messageArray) {
         
         if ([oldMessage isKindOfClass:[UdeskChatMessage class]]) {
             

@@ -1,6 +1,24 @@
 # UdeskSDK-iOS
 Udesk为了让开发者更好的集成移动SDK,与企业业务结合更加紧密，我们开源了SDK的UI界面。用户可以根据自身业务以及APP不同风格重写页面。当然开发者也可以直接用我们提供的默认的界面。
 
+### 注意：
+
+##### 1. 为了保证您的app能正常使用sdk，请使用或及时更新最新版本的sdk
+
+##### 2. v3.3之前的版本未适配iOS10，如需适配iOS10请更新最新的sdk
+
+#### 更新记录：
+
+sdk v3.3.3版本更新功能：
+
+1.支持主动满意度调查
+
+2.push接口增加完成回调
+
+3.文字过多时计算bug修复
+
+4.支持https
+
 
 ## 一、SDK工作流程
 
@@ -43,7 +61,11 @@ libsqlite3.tbd
 - 搜索Other Linker Flags 加入 -lxml2 -ObjC
 - 搜索header search paths 加入/usr/include/libxml2
 
-#### 2.4CocoaPods 导入
+#### 2.4权限问题
+
+如果你使用的是xcode8 请在你项目的Info.plist文件里添加使用相册、相机、麦克风的权限
+
+#### 2.5CocoaPods 导入
 
 在 Podfile 中加入：
 

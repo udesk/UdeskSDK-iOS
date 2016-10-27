@@ -25,13 +25,17 @@ typedef enum : NSUInteger {
  * 在一个ViewController中Push出一个客服聊天界面
  * @param viewController 在这个viewController中push出客服聊天界面
  */
-- (void)pushUdeskViewControllerWithType:(UdeskType)type viewController:(UIViewController *)viewController;
+- (void)pushUdeskViewControllerWithType:(UdeskType)type
+                         viewController:(UIViewController *)viewController
+                             completion:(void (^)(void))completion;
 
 /**
  * 在一个ViewController中Present出一个客服聊天界面的Modal视图
  * @param viewController 在这个viewController中push出客服聊天界面
  */
-- (void)presentUdeskViewControllerWithType:(UdeskType)type viewController:(UIViewController *)viewController;
+- (void)presentUdeskViewControllerWithType:(UdeskType)type
+                            viewController:(UIViewController *)viewController
+                                completion:(void (^)(void))completion;
 
 /**
  *  设置分配给指定的客服id

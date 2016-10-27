@@ -12,6 +12,7 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskUtils.h"
+#import "UdeskTools.h"
 
 /** 咨询对象cell高度 */
 static CGFloat const kUDProductCellHeight = 105;
@@ -68,8 +69,17 @@ static CGFloat const kUDProductSendButtonHeight = 25.0;
         
         self.date = [NSDate date];
         self.messageId = [NSUUID UUID].UUIDString;
-        self.productURL = [message objectForKey:@"productURL"];
+        NSString *productURL = [message objectForKey:@"productURL"];
+        if ([UdeskTools isBlankString:productURL]) {
+            return nil;
+        }
+        self.productURL = productURL;
+        
         NSString *productImageUrl = [message objectForKey:@"productImageUrl"];
+        if ([UdeskTools isBlankString:productImageUrl]) {
+            return nil;
+        }
+        
         self.productImage = [UIImage ud_defaultLoadingImage];
         
         [UdeskManager downloadMediaWithUrlString:productImageUrl done:^(NSString *key, id<NSCoding> object) {
@@ -84,8 +94,18 @@ static CGFloat const kUDProductSendButtonHeight = 25.0;
 
         }];
         
-        self.productTitle = [message objectForKey:@"productTitle"];
-        self.productDetail = [message objectForKey:@"productDetail"];
+        NSString *productTitle = [message objectForKey:@"productTitle"];
+        if ([UdeskTools isBlankString:productTitle]) {
+            return nil;
+        }
+        self.productTitle = productTitle;
+        
+        NSString *productDetail = [message objectForKey:@"productDetail"];
+        if ([UdeskTools isBlankString:productDetail]) {
+            return nil;
+        }
+        self.productDetail = productDetail;
+        
         if ([UdeskSDKConfig sharedConfig].productSendText) {
             self.productSendText = [UdeskSDKConfig sharedConfig].productSendText;
         }

@@ -11,6 +11,7 @@
 #import "NSTimer+UdeskSDK.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskManager.h"
+#import "UdeskTools.h"
 
 @implementation UdeskChatSend
 
@@ -18,6 +19,10 @@
 + (UdeskChatMessage *)sendTextMessage:(NSString *)text
                      displayTimestamp:(BOOL)displayTimestamp
                            completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
+    
+    if ([UdeskTools isBlankString:text]) {
+        return nil;
+    }
     
     UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithText:text withDisplayTimestamp:displayTimestamp];
     
@@ -39,18 +44,24 @@
                       displayTimestamp:(BOOL)displayTimestamp
                             completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
     
-    UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithImage:image withDisplayTimestamp:displayTimestamp];
-    
-    UdeskMessage *photoMessage = [[UdeskMessage alloc] initImageChatMessage:chatMessage image:image];
-    //发送消息 callback发送状态和消息体
-    [UdeskManager sendMessage:photoMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
+    if (image) {
         
-        if (completion) {
-            completion(message,sendStatus);
-        }
-    }];
-    
-    return chatMessage;
+        UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithImage:image withDisplayTimestamp:displayTimestamp];
+        
+        UdeskMessage *photoMessage = [[UdeskMessage alloc] initImageChatMessage:chatMessage image:image];
+        //发送消息 callback发送状态和消息体
+        [UdeskManager sendMessage:photoMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
+            
+            if (completion) {
+                completion(message,sendStatus);
+            }
+        }];
+        
+        return chatMessage;
+    }
+    else {
+        return nil;
+    }
 }
 
 #pragma mark - 发送语音消息
@@ -58,6 +69,10 @@
                          audioDuration:(NSString *)audioDuration
                       displayTimestamp:(BOOL)displayTimestamp
                             completion:(void(^)(UdeskMessage *message,BOOL sendStatus))comletion {
+    
+    if ([UdeskTools isBlankString:voicePath]) {
+        return nil;
+    }
     
     UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithVoiceData:[NSData dataWithContentsOfFile:voicePath] withDisplayTimestamp:displayTimestamp];
     
@@ -77,48 +92,51 @@
 + (void)resendFailedMessage:(NSMutableArray *)resendMessageArray
                  completion:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion {
     
-    [NSTimer ud_scheduleTimerWithTimeInterval:6.0f repeats:YES usingBlock:^(NSTimer *timer) {
-        
-        if (resendMessageArray.count==0) {
+    if (resendMessageArray.count) {
+     
+        [NSTimer ud_scheduleTimerWithTimeInterval:6.0f repeats:YES usingBlock:^(NSTimer *timer) {
             
-            [timer invalidate];
-            timer = nil;
-        }
-        else {
-            
-            @try {
+            if (resendMessageArray.count==0) {
                 
-                for (UdeskMessage *resendMessage in resendMessageArray) {
+                [timer invalidate];
+                timer = nil;
+            }
+            else {
+                
+                @try {
                     
-                    NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:resendMessage.timestamp];
-                    
-                    if (fabs (timeInterval) > 60) {
+                    for (UdeskMessage *resendMessage in resendMessageArray) {
                         
-                        if (completion) {
-                            completion(resendMessage,NO);
-                        }
+                        NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:resendMessage.timestamp];
                         
-                        [resendMessageArray removeObject:resendMessage];
-                        
-                    } else {
-                        
-                        [UdeskManager sendMessage:resendMessage completion:^(UdeskMessage *message, BOOL sendStatus) {
+                        if (fabs (timeInterval) > 60) {
                             
                             if (completion) {
-                                completion(message,sendStatus);
+                                completion(resendMessage,NO);
                             }
-                        }];
+                            
+                            [resendMessageArray removeObject:resendMessage];
+                            
+                        } else {
+                            
+                            [UdeskManager sendMessage:resendMessage completion:^(UdeskMessage *message, BOOL sendStatus) {
+                                
+                                if (completion) {
+                                    completion(message,sendStatus);
+                                }
+                            }];
+                            
+                        }
                         
                     }
                     
+                } @catch (NSException *exception) {
+                } @finally {
                 }
                 
-            } @catch (NSException *exception) {
-            } @finally {
             }
-            
-        }
-    }];
+        }];
+    }
     
 }
 

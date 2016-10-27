@@ -18,4 +18,6 @@
 //网络状态
 + (NSString *)internetStatus;
 
++ (BOOL)stringContainsEmoji:(NSString *)string;
+
 @end

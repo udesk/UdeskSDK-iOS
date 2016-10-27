@@ -187,7 +187,12 @@
     if (chatMessage.messageType == UDMessageContentTypeText) {
         
         contentLabel.hidden = NO;
-        contentLabel.text = chatMessage.cellText;
+        if ([UdeskTools isBlankString:[chatMessage.cellText string]]) {
+            contentLabel.text = @"";
+        }
+        else {
+            contentLabel.text = chatMessage.cellText;
+        }
         
         //设置高亮
         for (NSString *richContent in chatMessage.matchArray) {
@@ -205,7 +210,12 @@
     else if (chatMessage.messageType == UDMessageContentTypeRich) {
     
         contentLabel.hidden = NO;
-        contentLabel.text = chatMessage.cellText;
+        if ([UdeskTools isBlankString:[chatMessage.cellText string]]) {
+            contentLabel.text = @"";
+        }
+        else {
+            contentLabel.text = chatMessage.cellText;
+        }
         
         //设置高亮
         for (NSString *richContent in chatMessage.matchArray) {
@@ -235,7 +245,13 @@
     else if (chatMessage.messageType == UDMessageContentTypeVoice) {
         
         //语音时长
-        self.voiceDurationLabel.text = [NSString stringWithFormat:@"%@\'\'", chatMessage.voiceDuration];
+        
+        if (chatMessage.voiceDuration.length) {
+            self.voiceDurationLabel.text = [NSString stringWithFormat:@"%@\'\'", chatMessage.voiceDuration];
+        }
+        else {
+            self.voiceDurationLabel.text = [NSString stringWithFormat:@"0\'\'"];
+        }
         
         //语音播放动画
         animationVoiceImageView.hidden = NO;

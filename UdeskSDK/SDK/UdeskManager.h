@@ -258,6 +258,16 @@
 + (void)survetVoteWithAgentId:(NSString *)agentId
                  withOptionId:(NSString *)optionId
                    completion:(void (^)(id responseObject, NSError *error))completion;
+
+/**
+ *  检查是否已经提交过满意度
+ *
+ *  @param agentId    满意度调查的客服
+ *  @param completion 回调结果
+ */
++ (void)checkHasSurveyWithAgentId:(NSString *)agentId
+                       completion:(void (^)(NSString *hasSurvey))completion;
+
 /**
  *  获取后台配置的导航菜单
  *

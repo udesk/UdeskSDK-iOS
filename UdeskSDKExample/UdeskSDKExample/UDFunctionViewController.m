@@ -65,21 +65,6 @@
     }
     
     
-//    NSDictionary *parameters = @{
-//                                 @"user" :    @{
-//                                         @"nick_name":@"许晨测试",
-//                                         @"sdk_token":@"88909090",
-//                                         @"custom_fields":@{
-//                                                 @"TextField_391":@"测试",
-//                                                 @"SelectField_455":@[@"1"]
-//                                                 }
-//                                         }
-//                                 };
-//    
-//    //创建用户
-//    [UdeskManager createCustomerWithCustomerInfo:parameters];
-    
-    
     double text1 = 237/675.0f;
     CGFloat logoHeight = self.view.ud_height*text1;
 
@@ -245,17 +230,17 @@
 - (void)faq:(id)sender {
     
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWithType:UdeskFAQ viewController:self];
+    [chatViewManager pushUdeskViewControllerWithType:UdeskFAQ viewController:self completion:nil];
 }
 - (void)contactUs:(id)sender {
     
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self];
+    [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
 }
 - (void)ticket:(id)sender {
     
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWithType:UdeskTicket viewController:self];
+    [chatViewManager pushUdeskViewControllerWithType:UdeskTicket viewController:self completion:nil];
 }
 - (void)developer:(id)sender {
     

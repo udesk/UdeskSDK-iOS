@@ -10,6 +10,7 @@
 #import "UdeskMessage.h"
 #import "UdeskStringSizeUtil.h"
 #import "UdeskFoundationMacro.h"
+#import "UdeskTools.h"
 
 /** Tips垂直距离 */
 static CGFloat const kUDTipToVerticalEdgeSpacing = 5;
@@ -29,6 +30,13 @@ static CGFloat const kUDTipHeight = 20;
 {
     self = [super init];
     if (self) {
+        
+        if ([UdeskTools isBlankString:message.messageId]) {
+            return nil;
+        }
+        if ([UdeskTools isBlankString:message.content]) {
+            return nil;
+        }
         
         self.date = message.timestamp;
         

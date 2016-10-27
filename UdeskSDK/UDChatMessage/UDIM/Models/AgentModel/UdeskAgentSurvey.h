@@ -15,4 +15,7 @@
 - (void)showAgentSurveyAlertViewWithAgentId:(NSString *)agentId
                                  completion:(void(^)())completion;
 
+- (void)checkHasSurveyWithAgentId:(NSString *)agentId
+                       completion:(void (^)(NSString *hasSurvey))completion;
+
 @end

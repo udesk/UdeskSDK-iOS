@@ -47,7 +47,7 @@
 /**
  *  评价成功
  */
-- (void)didSurveyWithMessage:(NSString *)message;
+- (void)didSurveyWithMessage:(NSString *)message hasSurvey:(BOOL)hasSurvey;
 
 @end
 

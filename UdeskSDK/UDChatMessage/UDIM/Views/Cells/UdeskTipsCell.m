@@ -8,6 +8,7 @@
 
 #import "UdeskTipsCell.h"
 #import "UdeskTipsMessage.h"
+#import "UdeskTools.h"
 
 @interface UdeskTipsCell()
 
@@ -42,6 +43,10 @@
 - (void)updateCellWithTipsMessage:(UdeskTipsMessage *)tipsMessage {
 
     _tipsMessage = tipsMessage;
+    
+    if ([UdeskTools isBlankString:tipsMessage.tipText]) {
+        return;
+    }
     
     self.tipsLabel.text = tipsMessage.tipText;
 }
