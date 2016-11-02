@@ -143,7 +143,7 @@
                     
                     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
                     [chatViewManager setScheduledAgentId:weakInputAgentIdAlert.textField.text];
-                    [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self];
+                    [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
                 }
                 else {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请输入ID" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
@@ -175,7 +175,7 @@
                     
                     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
                     [chatViewManager setScheduledGroupId:weakInputGroupIdAlert.textField.text];
-                    [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self];
+                    [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
                 }
                 else {
                     
@@ -244,14 +244,14 @@
                 
                 UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
                 
-                [manager pushUdeskViewControllerWithType:UdeskIM viewController:self];
+                [manager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
                 
             }]];
             [changeUIAlert addAction:[UdeskAlertAction actionWithTitle:@"经典" handler:^(UdeskAlertAction * _Nonnull action) {
                 
                 UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle blueStyle]];
                 
-                [manager pushUdeskViewControllerWithType:UdeskIM viewController:self];
+                [manager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
             }]];
             
             [changeUIAlert showWithSender:nil controller:self animated:YES completion:NULL];
@@ -263,7 +263,7 @@
             
             UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
             
-            [chatViewManager pushUdeskViewControllerWithType:UdeskMenu viewController:self];
+            [chatViewManager pushUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
             
             break;
         }
@@ -278,7 +278,7 @@
                                    @"productURL":@"http://www.baidu.com"
                                    };
             [chatViewManager setProductMessage:dict];
-            [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self];
+            [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
             
             break;
         }
