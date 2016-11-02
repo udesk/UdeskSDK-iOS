@@ -116,10 +116,10 @@ NSDictionary *parameters = @{
 ```objective-c
 //使用push
 UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
+[chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 
 //使用present
-[chat presentUdeskViewControllerWithType:UdeskIM viewController:self];
+[chat presentUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 ```
 
 #### 3.5推出机器人页面
@@ -129,20 +129,20 @@ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle
 ```objective-c
 //使用push
 UdeskSDKManager *robot = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[robot pushUdeskViewControllerWithType:UdeskRobot viewController:self];
+[robot pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
 
 //使用present
-[robot presentUdeskViewControllerWithType:UdeskRobot viewController:self];
+[robot presentUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
 ```
 #### 3.4推出帮助中心
 
 ```objective-c
 //使用push
 UdeskSDKManager *faq = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[faq pushUdeskViewControllerWithType:UdeskFAQ viewController:self];
+[faq pushUdeskViewControllerWithType:UdeskFAQ viewController:self completion:nil];
 
 //使用present
-[faq presentUdeskViewControllerWithType:UdeskFAQ viewController:self];
+[faq presentUdeskViewControllerWithType:UdeskFAQ viewController:self completion:nil];
 ```
 
 #### 3.5推出客服导航
@@ -150,10 +150,10 @@ UdeskSDKManager *faq = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle 
 ```objective-c
 //使用push
 UdeskSDKManager *agentMenu = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[agentMenu pushUdeskViewControllerWithType:UdeskMenu viewController:self];
+[agentMenu pushUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
 
 //使用present
-[agentMenu presentUdeskViewControllerWithType:UdeskMenu viewController:self];
+[agentMenu presentUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
 ```
 
 
@@ -165,12 +165,12 @@ UdeskSDKManager *agentMenu = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDK
 ##### 原生
 
     UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [manager pushUdeskViewControllerWithType:UdeskIM viewController:self];
+    [manager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 ##### 经典
 
 
     UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle blueStyle]];
-    [manager pushUdeskViewControllerWithType:UdeskIM viewController:self];
+    [manager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 
 #### 4.2自定义UI
 
@@ -180,19 +180,19 @@ UdeskSDKManager *agentMenu = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDK
     sdkStyle.titleColor = [UIColor orangeColor];
     
     UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:sdkStyle];
-    [chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
+    [chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 
 #### 4.3指定客服ID
 
     UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
     [chat setScheduledAgentId:agentId];
-    [chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
+    [chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 #### 4.4指定客服组ID
 
 ```
 UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
 [chat setScheduledGroupId:groupId];
-[chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
+[chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 ```
 
 #### 4.5设置用户头像
@@ -202,7 +202,7 @@ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle
     [chat setCustomerAvatarWithURL:@"头像URL"];
     //通过本地图片设置头像
     [chat setCustomerAvatarWithImage:[UIImage imageNamed:@"customer"]];
-    [chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
+    [chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 #### 4.6设置SDK语言
 
 ```
@@ -362,7 +362,7 @@ NSDictionary *updateParameters = @{
                         @"productURL":@"http://www.baidu.com"
                         };
  [chat setProductMessage:dict];
- [chat pushUdeskViewControllerWithType:UdeskIM viewController:self];
+ [chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 ```
 
 SDK 咨询对象展示:
