@@ -230,10 +230,18 @@
             UdeskMessage *message = messagesArray[i];
             
             if(i==0 || i == messagesArray.count-1){
-                
-                UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:YES];
-                if (chatMessage) {
-                    [toMessages addObject:chatMessage];
+
+                if (message.messageType == UDMessageContentTypeRedirect) {
+                    UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
+                    if (tipsMessage) {
+                        [toMessages addObject:tipsMessage];
+                    }
+                }
+                else {
+                    UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:YES];
+                    if (chatMessage) {
+                        [toMessages addObject:chatMessage];
+                    }
                 }
                 
             }
@@ -244,15 +252,32 @@
                 NSInteger interval=[newMessage.timestamp timeIntervalSinceDate:previousMessage.timestamp];
                 if(interval>60*3){
                     
-                    UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:YES];
-                    if (chatMessage) {
-                        [toMessages addObject:chatMessage];
+                    if (message.messageType == UDMessageContentTypeRedirect) {
+                        UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
+                        if (tipsMessage) {
+                            [toMessages addObject:tipsMessage];
+                        }
                     }
+                    else {
+                        UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:YES];
+                        if (chatMessage) {
+                            [toMessages addObject:chatMessage];
+                        }
+                    }
+
                 }else{
                     
-                    UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:NO];
-                    if (chatMessage) {
-                        [toMessages addObject:chatMessage];
+                    if (message.messageType == UDMessageContentTypeRedirect) {
+                        UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
+                        if (tipsMessage) {
+                            [toMessages addObject:tipsMessage];
+                        }
+                    }
+                    else {
+                        UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:NO];
+                        if (chatMessage) {
+                            [toMessages addObject:chatMessage];
+                        }
                     }
                 }
             }
@@ -538,6 +563,7 @@
     BOOL displayTimestamp = [self addMessageDateAtLastWithNowDate:[NSDate date]];
     
     UdeskChatMessage *chatMessage = [UdeskChatSend sendTextMessage:text displayTimestamp:displayTimestamp completion:completion];
+    chatMessage.delegate = self;
     if (chatMessage) {
         [self.messageArray addObject:chatMessage];
     }
@@ -559,6 +585,7 @@
     
     if (image) {
         UdeskChatMessage *chatMessage = [UdeskChatSend sendImageMessage:image displayTimestamp:displayTimestamp completion:completion];
+        chatMessage.delegate = self;
         if (chatMessage) {
             [self.messageArray addObject:chatMessage];
         }
@@ -585,6 +612,7 @@
     }
     
     UdeskChatMessage *chatMessage = [UdeskChatSend sendAudioMessage:voicePath audioDuration:audioDuration displayTimestamp:displayTimestamp completion:comletion];
+    chatMessage.delegate = self;
     if (chatMessage) {
         [self.messageArray addObject:chatMessage];
     }

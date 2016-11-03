@@ -38,6 +38,14 @@
 
     self.view.backgroundColor = _sdkConfig.sdkStyle.tableViewBackGroundColor;
     
+    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+    }
+    
+    if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
+        self.navigationController.navigationBar.translucent = NO;
+    }
+    
     if (_sdkConfig.ticketTitle) {
         self.title = _sdkConfig.ticketTitle;
     }

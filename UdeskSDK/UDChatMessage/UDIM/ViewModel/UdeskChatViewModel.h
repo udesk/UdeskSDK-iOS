@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "UdeskMessageTextView.h"
+#import "UdeskTextView.h"
 
 @class UdeskMessage;
 @class UdeskAgent;

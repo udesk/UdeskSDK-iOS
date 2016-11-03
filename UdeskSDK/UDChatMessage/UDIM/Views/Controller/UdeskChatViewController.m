@@ -264,11 +264,6 @@
 #pragma mark - 初始化视图
 - (void)initilzer {
     
-    // 提示用户允许访问麦克风
-    if (ud_isIOS7) {
-        [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
-        }];
-    }
     // 初始化message tableView
 	_messageTableView = [[UdeskMessageTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _messageTableView.delegate = self;
@@ -345,7 +340,7 @@
     [self.photographyHelper showImagePickerControllerSourceType:sourceType onViewController:self compled:PickerMediaBlock];
 }
 //点击输入框
-- (void)inputTextViewWillBeginEditing:(UdeskMessageTextView *)messageInputTextView {
+- (void)inputTextViewWillBeginEditing:(UdeskTextView *)messageInputTextView {
     self.textViewInputViewType = UDInputViewTypeText;
 }
 //点击inputBar
