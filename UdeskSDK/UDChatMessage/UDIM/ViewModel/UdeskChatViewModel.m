@@ -160,7 +160,7 @@
         }
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             
-            if (messagesArray.count) {
+//            if (messagesArray.count) {
                 self.messageArray = [self convertToChatViewMessageWithUdeskMessages:messagesArray];
                 //咨询对象
                 if ([UdeskSDKConfig sharedConfig].productDictionary) {
@@ -172,7 +172,7 @@
                 }
                 //更新UI
                 [self updateContent];
-            }
+//            }
         });
         
     }];
