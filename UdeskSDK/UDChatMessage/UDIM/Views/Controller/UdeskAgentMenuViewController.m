@@ -17,9 +17,9 @@
 #import "UdeskTools.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskTransitioningAnimation.h"
-#import "UdeskSDKShow.h"
+#import "UdeskSDKManager.h"
 
-@interface UdeskAgentMenuViewController () <UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
+@interface UdeskAgentMenuViewController () <UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate,UIGestureRecognizerDelegate>
 
 /** 客服组菜单Tableview */
 @property (nonatomic, strong) UITableView    *agentMenuTableView;
@@ -38,9 +38,6 @@
 /** sdk配置 */
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 
-@property (nonatomic, strong) UdeskSDKShow *show;
-
-
 @end
 
 @implementation UdeskAgentMenuViewController
@@ -56,7 +53,6 @@
         self.agentMenu = menu;
         
         self.allAgentMenuData = [NSMutableArray array];
-        self.show = [[UdeskSDKShow alloc] initWithConfig:config];
         
         self.menuPage = 0;
     }
@@ -89,7 +85,11 @@
     [self requestAgentMenu:self.agentMenu];
     UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
     popRecognizer.edges = UIRectEdgeLeft;
+    popRecognizer.delegate = self;
     [self.view addGestureRecognizer:popRecognizer];
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+    return YES;
 }
 
 //滑动返回
@@ -201,12 +201,6 @@
     
 }
 
-- (void)pushChatViewController {
-    
-    UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-    [self.show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     if (tableView.tag == self.menuPage+100) {
@@ -249,47 +243,55 @@
     //获取点击菜单选项的子集
     UdeskAgentMenuModel *didSelectModel = self.agentMenuData[indexPath.row];
     
-    for (UdeskAgentMenuModel *allAgentMenuModel in self.allAgentMenuData) {
+    if (didSelectModel.group_id.length > 0|| !didSelectModel.group_id) {
         
-        if ([allAgentMenuModel.parentId isEqualToString:didSelectModel.menu_id]) {
-            
-            [menuArray addObject:allAgentMenuModel];
-        }
-        
-    }
-    //根据是否还有子集选择push还是执行动画
-    if (menuArray.count > 0) {
-        
-        [UIView animateWithDuration:0.35f animations:^{
-            
-            self.agentMenuScrollView.contentOffset = CGPointMake(self.menuPage*UD_SCREEN_WIDTH, 0);
-            
-        } completion:^(BOOL finished) {
-            
-            if ([UdeskTools isBlankString:self.pathString]) {
-                self.pathString = [NSString stringWithFormat:@"   %@",didSelectModel.item_name];
-            }
-            else {
-                self.pathString = [NSString stringWithFormat:@"%@ > ",self.pathString];
-                self.pathString = [self.pathString stringByAppendingString:didSelectModel.item_name];
-            }
-            
-            self.agentMenuData = menuArray;
-            
-            UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:self.menuPage+100];
-            
-            [tableview reloadData];
-            
+        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:_sdkConfig.sdkStyle];
+        [chatViewManager setScheduledGroupId:didSelectModel.group_id];
+        [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:^{
         }];
-        
     }
     else {
-        
-        //这里--是因为之前的++并没有执行给ScrollView.contentOffset
-        self.menuPage -- ;
-        
-        UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-        [self.show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+    
+        for (UdeskAgentMenuModel *allAgentMenuModel in self.allAgentMenuData) {
+            
+            if ([allAgentMenuModel.parentId isEqualToString:didSelectModel.menu_id]) {
+                
+                [menuArray addObject:allAgentMenuModel];
+            }
+            
+        }
+        //根据是否还有子集选择push还是执行动画
+        if (menuArray.count > 0) {
+            
+            [UIView animateWithDuration:0.35f animations:^{
+                
+                self.agentMenuScrollView.contentOffset = CGPointMake(self.menuPage*UD_SCREEN_WIDTH, 0);
+                
+            } completion:^(BOOL finished) {
+                
+                if ([UdeskTools isBlankString:self.pathString]) {
+                    self.pathString = [NSString stringWithFormat:@"   %@",didSelectModel.item_name];
+                }
+                else {
+                    self.pathString = [NSString stringWithFormat:@"%@ > ",self.pathString];
+                    self.pathString = [self.pathString stringByAppendingString:didSelectModel.item_name];
+                }
+                
+                self.agentMenuData = menuArray;
+                
+                UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:self.menuPage+100];
+                
+                [tableview reloadData];
+                
+            }];
+            
+        }
+        else {
+            
+            //这里--是因为之前的++并没有执行给ScrollView.contentOffset
+            self.menuPage -- ;
+        }
+
     }
     
 }

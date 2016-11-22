@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.3.4
+//  Version: 3.4
 //
 //  Created by xuchen on 16/1/12.
 //  Copyright © 2016年 xuchen. All rights reserved.
@@ -56,7 +56,17 @@
  *  @param key    公司密钥
  *  @param domain 公司域名
  */
-+ (void)initWithAppkey:(NSString *)key domianName:(NSString *)domain;
++ (void)initWithAppkey:(NSString *)key domianName:(NSString *)domain __deprecated_msg("Use -initWithAppKey:appId:domain");
+/**
+ *  初始化Udesk，必须调用此函数，请正确填写参数。
+ *
+ *  @param key    应用key
+ *  @param appId  应用ID
+ *  @param domain 公司域名
+ */
++ (void)initWithAppKey:(NSString *)appKey
+                 appId:(NSString *)appId
+                domain:(NSString *)domain;
 /**
  *  创建用户，必须调用此函数，请正确填写参数
  *
@@ -132,15 +142,24 @@
 + (void)receiveUdeskDelegate:(id<UDManagerDelegate>)receiveDelegate;
 
 /**
- *  退出Udesk (切换用户，需要调用此接口)
+ *  设置离线
  */
-+ (void)logoutUdesk;
++ (void)setupCustomerOffline;
 
 /**
  *  设置客户在线
  */
-+ (void)setCustomerOnline;
++ (void)setupCustomerOnline;
 
+/**
+ 退出
+ */
++ (void)logoutUdesk;
+
+/**
+ 用户进入sdk页面（开发者不需要调用）
+ */
++ (void)enterTheSDKPage;
 /**
  *  发送消息
  *
@@ -307,5 +326,25 @@
  *  @param failure    失败信息回调
  */
 + (void)createServerCustomerCompletion:(void (^)(BOOL success, NSError *error))completion;
+
+/**
+ 开始推送
+ */
++ (void)startUdeskPush;
+/**
+ 结束推送
+ */
++ (void)endUdeskPush;
+/**
+ 设置用户的设备唯一标识
+ */
++ (void)registerDeviceToken:(id)deviceToken;
+
+/**
+ 客户是否正在会话
+
+ @return yes/no
+ */
++ (BOOL)customersAreSession;
 
 @end

@@ -26,7 +26,7 @@
 #import "UdeskUtils.h"
 
 @interface UdeskChatViewModel()<UDManagerDelegate,UdeskMessageDelegate,UdeskChatAlertDelegate> {
-
+    
     UdeskAlertController *_optionsAlert;
 }
 
@@ -72,7 +72,7 @@
 
 //创建用户
 - (void)createCustomer {
-
+    
     @udWeakify(self);
     //创建用户(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
     [UdeskManager createServerCustomerCompletion:^(BOOL success, NSError *error) {
@@ -100,7 +100,7 @@
 - (void)customerIsBlacklisted {
     
     //退出
-    [UdeskManager logoutUdesk];
+    [UdeskManager setupCustomerOffline];
     
     UdeskAgent *agentModel = [[UdeskAgent alloc] init];
     agentModel.message = getUDLocalizedString(@"udesk_im_title_blocked_list");
@@ -152,7 +152,7 @@
 
 #pragma mark - 获取DB数据
 - (void)requestDataBaseMessageContent {
-
+    
     [UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:[NSDate date] messagesNumber:20 result:^(NSArray *messagesArray) {
         
         if (messagesArray.count==20) {
@@ -181,7 +181,7 @@
 
 #pragma mark - 加载更多DB消息
 - (void)pullMoreDateBaseMessage {
-
+    
     UdeskChatMessage *lastMessage = self.messageArray.firstObject;
     //根据最后列表最后一条消息的时间获取历史记录
     [UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:lastMessage.date messagesNumber:20 result:^(NSArray *messagesArray) {
@@ -220,17 +220,17 @@
 
 //把UdeskMessage转换成UdeskChatMessage
 - (NSMutableArray *)convertToChatViewMessageWithUdeskMessages:(NSArray *)messagesArray {
-
+    
     NSMutableArray *toMessages = [[NSMutableArray alloc] init];
     
     if (messagesArray.count) {
-    
+        
         for (int i = 0; i<messagesArray.count; i++) {
             
             UdeskMessage *message = messagesArray[i];
             
             if(i==0 || i == messagesArray.count-1){
-
+                
                 if (message.messageType == UDMessageContentTypeRedirect) {
                     UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
                     if (tipsMessage) {
@@ -264,7 +264,7 @@
                             [toMessages addObject:chatMessage];
                         }
                     }
-
+                    
                 }else{
                     
                     if (message.messageType == UDMessageContentTypeRedirect) {
@@ -283,7 +283,7 @@
             }
             
         }
-
+        
     }
     
     return toMessages;
@@ -324,7 +324,7 @@
 }
 //UdeskMessage转换成UdeskChatMessage
 - (UdeskChatMessage *)chatMessageWithModel:(UdeskMessage *)message withDisplayTimestamp:(BOOL)displayTimestamp {
-
+    
     UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithModel:message withDisplayTimestamp:displayTimestamp];
     chatMessage.delegate = self;
     
@@ -352,7 +352,7 @@
         id message = [self.messageArray objectAtIndexCheck:index];
         
         if ([message isKindOfClass:[UdeskChatMessage class]]) {
-
+            
             UdeskChatMessage *chatMessage = (UdeskChatMessage *)message;
             if ([chatMessage.messageId isEqualToString:messageId]) {
                 return index;
@@ -378,7 +378,7 @@
 
 #pragma mark - 根据是否有客服id和客服组id请求客服数据
 - (void)requestAgentData {
-
+    
     NSString *agentId = [UdeskSDKConfig sharedConfig].scheduledAgentId;
     NSString *groupId = [UdeskSDKConfig sharedConfig].scheduledGroupId;
     
@@ -406,12 +406,12 @@
             [self distributionAgent:agentModel];
         }];
     }
-
+    
 }
 
 //获取分配客服
 - (void)distributionAgent:(UdeskAgent *)agentModel {
-
+    
     //回调客服信息到vc显示
     [self callbackAgentModel:agentModel];
     
@@ -443,7 +443,7 @@
 #pragma mark - UdeskChatAlertDelegate
 //点击了发送表单
 - (void)didSelectSendTicket {
-
+    
     if (self.delegate) {
         if ([self.delegate respondsToSelector:@selector(didSelectSendTicket)]) {
             [self.delegate didSelectSendTicket];
@@ -452,7 +452,7 @@
 }
 //点击了黑名单确定
 - (void)didSelectBlacklistedAlertViewOkButton {
-
+    
     if (self.delegate) {
         if ([self.delegate respondsToSelector:@selector(didSelectBlacklistedAlertViewOkButton)]) {
             [self.delegate didSelectBlacklistedAlertViewOkButton];
@@ -487,7 +487,7 @@
 
 //接受到转接
 - (void)didReceiveRedirect:(UdeskAgent *)agent {
-
+    
     [self callbackAgentModel:agent];
 }
 
@@ -501,7 +501,7 @@
         
         agentCode = UDAgentStatusResultOnline;
         agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_online")];
-
+        
     }
     else if([statusType isEqualToString:@"unavailable"]) {
         
@@ -509,7 +509,7 @@
         agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_offline")];
     }
     else if([statusType isEqualToString:@"over"]) {
-    
+        
         agentCode = UDAgentConversationOver;
         agentMessage = getUDLocalizedString(@"udesk_chat_end");
     }
@@ -534,7 +534,7 @@
         return;
     }
     [UdeskAgentSurvey.store showAgentSurveyAlertViewWithAgentId:agentId completion:^{
-       
+        
         //评价提交成功Alert
         if (self.delegate) {
             if ([self.delegate respondsToSelector:@selector(didSurveyCompletion:)]) {
@@ -574,7 +574,7 @@
 #pragma mark - 发送图片消息
 - (void)sendImageMessage:(UIImage *)image
               completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
-
+    
     if (_agentModel.code != UDAgentStatusResultOnline) {
         
         [self showAlertViewWithAgentCode:_agentModel.code];
@@ -632,7 +632,7 @@
         [self.chatAlert showIsBlacklistedAlert];
     }
     else {
-    
+        
         [self showAlertViewWithAgentCode:self.agentModel.code];
     }
 }
@@ -645,7 +645,7 @@
 
 #pragma mark - 更新消息内容
 - (void)updateContent {
-
+    
     if (self.delegate) {
         if ([self.delegate respondsToSelector:@selector(reloadChatTableView)]) {
             [self.delegate reloadChatTableView];
@@ -683,12 +683,12 @@
 }
 
 - (NSInteger)numberOfItems {
-
+    
     return [self.messageArray count];
 }
 
 - (id)objectAtIndexPath:(NSInteger)row {
-
+    
     return [self.messageArray objectAtIndexCheck:row];
 }
 

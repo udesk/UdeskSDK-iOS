@@ -49,80 +49,29 @@
     }
     
     if (type == UdeskRobot) {
-
-        [UdeskManager getRobotURL:^(NSURL *robotUrl) {
-           
-            if (robotUrl) {
-                
-                if (!robotChat) {
-                    robotChat = [[UdeskRobotViewController alloc] initWithSDKConfig:_sdkConfig withURL:robotUrl];
-                }
-                
-                [_show presentOnViewController:viewController udeskViewController:robotChat transiteAnimation:UDTransiteAnimationTypePush completion:completion];
-            }
-            else {
-            
-                if (!chatViewController) {
-                    chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-                }
-                
-                [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
-            }
-            
-        }];
         
+        //推到机器人页面
+        [self presentRobotController:viewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
     }
     else if(type == UdeskIM) {
     
-        if (!chatViewController) {
-            chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-        }
-        
-        [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
+        //推到聊天页面
+        [self presentIMController:viewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
     }
     else if(type == UdeskFAQ) {
         
-        if (!faq) {
-            faq = [[UdeskFAQViewController alloc] initWithSDKConfig:_sdkConfig];
-        }
-        
-        [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:UDTransiteAnimationTypePush completion:completion];
+        //推到帮助中心页面
+        [self presentFAQController:viewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
     }
     else if (type == UdeskMenu) {
-    
-        [UdeskManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
-            
-            if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
-                
-                NSArray *result = [responseObject objectForKey:@"result"];
-                if (result.count) {
-                    
-                    if (!agentMenu) {
-                        agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig menuArray:result];
-                    }
-                    
-                    [_show presentOnViewController:viewController udeskViewController:agentMenu transiteAnimation:UDTransiteAnimationTypePush completion:completion];
-                }
-                else {
-                    
-                    if (!chatViewController) {
-                        chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-                    }
-                    
-                    [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
-                }
-            }
-            
-        }];
-
+        
+        //推到客服导航栏页面
+        [self presentMenuController:viewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
     }
     else if (type == UdeskTicket) {
     
-        if (!ticket) {
-            ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig];
-        }
-        
-        [_show presentOnViewController:viewController udeskViewController:ticket transiteAnimation:UDTransiteAnimationTypePush completion:completion];
+        //推到留言页面
+        [self presentTicketController:viewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
     }
 }
 
@@ -136,6 +85,56 @@
     
     if (type == UdeskRobot) {
         
+        //推到机器人页面
+        [self presentRobotController:viewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+    }
+    else if(type == UdeskIM) {
+        
+        //推到聊天页面
+        [self presentIMController:viewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+    }
+    else if(type == UdeskFAQ) {
+        
+        //推到帮助中心页面
+        [self presentFAQController:viewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+    }
+    else if (type == UdeskMenu) {
+        
+        //推到客服导航栏页面
+        [self presentMenuController:viewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+    }
+    else if (type == UdeskTicket) {
+        
+        //推到留言页面
+        [self presentTicketController:viewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+    }
+}
+
+//推到聊天页面
+- (void)presentIMController:(UIViewController *)viewController
+          transiteAnimation:(UDTransiteAnimationType)animationType
+                 completion:(void (^)(void))completion {
+
+    if (!chatViewController) {
+        chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
+    }
+    
+    [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:animationType completion:completion];
+}
+
+//推到机器人页面
+- (void)presentRobotController:(UIViewController *)viewController
+             transiteAnimation:(UDTransiteAnimationType)animationType
+                    completion:(void (^)(void))completion {
+    
+    
+    //如果用户正在会话 直接进入聊天页面
+    if ([UdeskManager customersAreSession]) {
+        [self presentIMController:viewController transiteAnimation:animationType completion:completion];
+    }
+    else {
+        
+        //开通机器人进入机器人页面
         [UdeskManager getRobotURL:^(NSURL *robotUrl) {
             
             if (robotUrl) {
@@ -144,72 +143,83 @@
                     robotChat = [[UdeskRobotViewController alloc] initWithSDKConfig:_sdkConfig withURL:robotUrl];
                 }
                 
-                [_show presentOnViewController:viewController udeskViewController:robotChat transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+                [_show presentOnViewController:viewController udeskViewController:robotChat transiteAnimation:animationType completion:completion];
             }
             else {
-                
-                if (!chatViewController) {
-                    chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-                }
-                
-                [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+                //没有机器人直接进入聊天页面
+                [self presentIMController:viewController transiteAnimation:animationType completion:completion];
             }
             
         }];
-        
     }
-    else if(type == UdeskIM) {
-        
-        if (!chatViewController) {
-            chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-        }
-        
-        [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+}
+
+//推到帮助中心页面
+- (void)presentFAQController:(UIViewController *)viewController
+           transiteAnimation:(UDTransiteAnimationType)animationType
+                  completion:(void (^)(void))completion {
+    
+    if (!faq) {
+        faq = [[UdeskFAQViewController alloc] initWithSDKConfig:_sdkConfig];
     }
-    else if(type == UdeskFAQ) {
-        
-        if (!faq) {
-            faq = [[UdeskFAQViewController alloc] initWithSDKConfig:_sdkConfig];
-        }
-        
-        [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+    
+    [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:animationType completion:completion];
+}
+
+//推到客服导航栏页面
+- (void)presentMenuController:(UIViewController *)viewController
+           transiteAnimation:(UDTransiteAnimationType)animationType
+                  completion:(void (^)(void))completion {
+    
+    //如果用户正在会话 直接进入聊天页面
+    if ([UdeskManager customersAreSession]) {
+        [self presentIMController:viewController transiteAnimation:animationType completion:completion];
     }
-    else if (type == UdeskMenu) {
+    else {
         
+        //查看是否有导航栏
         [UdeskManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
+            
+            //查看导航栏错误，直接进入聊天页面
+            if (error) {
+                [self presentIMController:viewController transiteAnimation:animationType completion:completion];
+                return ;
+            }
             
             if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
                 
                 NSArray *result = [responseObject objectForKey:@"result"];
+                //有设置客服导航栏
                 if (result.count) {
                     
                     if (!agentMenu) {
                         agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig menuArray:result];
                     }
                     
-                    [_show presentOnViewController:viewController udeskViewController:agentMenu transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+                    [_show presentOnViewController:viewController udeskViewController:agentMenu transiteAnimation:animationType completion:completion];
                 }
                 else {
-                    
-                    if (!chatViewController) {
-                        chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-                    }
-                    
-                    [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+                    //没有设置导航栏 直接进入聊天页面
+                    [self presentIMController:viewController transiteAnimation:animationType completion:completion];
                 }
             }
             
         }];
         
     }
-    else if (type == UdeskTicket) {
-        
-        if (!ticket) {
-            ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig];
-        }
-        
-        [_show presentOnViewController:viewController udeskViewController:ticket transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
+
+}
+
+//推到留言页面
+- (void)presentTicketController:(UIViewController *)viewController
+           transiteAnimation:(UDTransiteAnimationType)animationType
+                  completion:(void (^)(void))completion {
+    
+    if (!ticket) {
+        ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig];
     }
+    
+    [_show presentOnViewController:viewController udeskViewController:ticket transiteAnimation:animationType completion:completion];
 }
 
 - (void)setScheduledAgentId:(NSString *)agentId {
@@ -297,6 +307,11 @@
         return;
     }
     _sdkConfig.agentMenuTitle = title;
+}
+
+- (void)setTransferToAgentMenu:(BOOL)toMenu {
+
+    _sdkConfig.transferToMenu = toMenu;
 }
 
 @end

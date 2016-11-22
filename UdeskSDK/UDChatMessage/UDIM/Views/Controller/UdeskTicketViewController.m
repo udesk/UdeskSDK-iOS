@@ -15,7 +15,7 @@
 #import "UdeskTransitioningAnimation.h"
 #import "UdeskLanguageTool.h"
 
-@interface UdeskTicketViewController ()
+@interface UdeskTicketViewController ()<UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 
@@ -58,8 +58,7 @@
     
     if (![UdeskTools isBlankString:key]||[UdeskTools isBlankString:domain]) {
         
-        CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
-        _ticketWebView = [[UIWebView alloc] initWithFrame:webViewRect];
+        _ticketWebView = [[UIWebView alloc] initWithFrame:self.view.bounds];
         _ticketWebView.backgroundColor = [UIColor whiteColor];
         
         NSURL *ticketURL = [UdeskManager getSubmitTicketURL];
@@ -91,7 +90,11 @@
 
     UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
     popRecognizer.edges = UIRectEdgeLeft;
+    popRecognizer.delegate = self;
     [self.view addGestureRecognizer:popRecognizer];
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+    return YES;
 }
 //滑动返回
 - (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {

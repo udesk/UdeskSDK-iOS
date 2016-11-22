@@ -112,5 +112,10 @@ typedef enum : NSUInteger {
  *  @param text 转人工
  */
 - (void)setTransferText:(NSString *)text;
+/**
+ *  设置转人工到客服导航栏菜单
+ *
+ */
+- (void)setTransferToAgentMenu:(BOOL)toMenu;
 
 @end

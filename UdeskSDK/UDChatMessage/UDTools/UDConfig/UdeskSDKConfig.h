@@ -52,6 +52,9 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 /** 指定客服组id */
 @property (nonatomic, copy  ) NSString *scheduledGroupId;
 
+/** 是否转人工至客服导航栏菜单（默认直接进会话） */
+@property (nonatomic, assign) BOOL     transferToMenu;
+
 /** 客户头像 */
 @property (nonatomic, strong) UIImage  *customerImage;
 

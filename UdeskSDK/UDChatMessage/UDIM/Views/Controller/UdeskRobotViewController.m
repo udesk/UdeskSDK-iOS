@@ -12,12 +12,12 @@
 #import "UdeskFoundationMacro.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskManager.h"
-#import "UdeskSDKShow.h"
 #import "UdeskAlertController.h"
 #import "UdeskUtils.h"
 #import "UdeskLanguageTool.h"
+#import "UdeskSDKManager.h"
 
-@interface UdeskRobotViewController ()
+@interface UdeskRobotViewController ()<UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 @property (nonatomic, strong) NSURL *robotURL;
@@ -42,14 +42,15 @@
     [UdeskManager createServerCustomerCompletion:^(BOOL success, NSError *error) {
         
         if (success) {
-            
+    
             CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
             UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:webViewRect];
             intelligenceWeb.backgroundColor=[UIColor whiteColor];
             
             NSURL *ticketURL = self.robotURL;
-            
-            [intelligenceWeb loadRequest:[NSURLRequest requestWithURL:ticketURL]];
+    
+            NSURLRequest *request = [NSURLRequest requestWithURL:ticketURL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
+            [intelligenceWeb loadRequest:request];
             
             [self.view addSubview:intelligenceWeb];
         }
@@ -71,7 +72,11 @@
     
     UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
     popRecognizer.edges = UIRectEdgeLeft;
+    popRecognizer.delegate = self;
     [self.view addGestureRecognizer:popRecognizer];
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+    return YES;
 }
 //滑动返回
 - (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
@@ -141,16 +146,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config withURL:(NSURL *)URL {
 
     self = [super init];
@@ -180,10 +175,17 @@
 }
 
 - (void)didSelectNavigationRightButton {
-
-    UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-    UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
-    [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+    
+    if (_sdkConfig.transferToMenu) {
+        UdeskSDKManager *sdk = [[UdeskSDKManager alloc] initWithSDKStyle:_sdkConfig.sdkStyle];
+        [sdk pushUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
+    }
+    else {
+        
+        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:_sdkConfig.sdkStyle];
+        [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:^{
+        }];
+    }
 }
 
 @end

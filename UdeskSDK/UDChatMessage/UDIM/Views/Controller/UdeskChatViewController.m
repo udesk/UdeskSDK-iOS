@@ -93,8 +93,12 @@
     [self initilzer];
     
     UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
+    popRecognizer.delegate = self;
     popRecognizer.edges = UIRectEdgeLeft;
     [self.view addGestureRecognizer:popRecognizer];
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+    return YES;
 }
 //滑动返回
 - (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
@@ -124,17 +128,20 @@
 }
 //点击返回
 - (void)dismissChatViewController {
+
     //隐藏键盘
     [self.inputBar.inputTextView resignFirstResponder];
     if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
+            
             [self dismissViewControllerAnimated:YES completion:nil];
         } else {
             [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:self.sdkConfig.presentingAnimation] forKey:nil];
             [self dismissViewControllerAnimated:NO completion:nil];
         }
     } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:^{
+        }];
     }
     
 }
@@ -323,6 +330,7 @@
 - (void)didSurveyWithMessage:(NSString *)message hasSurvey:(BOOL)hasSurvey {
 
     self.textViewInputViewType = UDInputViewTypeNormal;
+    [self layoutOtherMenuViewHiden:NO];
     [UdeskTopAlertView showAlertType:hasSurvey?UDAlertTypeOrange:UDAlertTypeGreen withMessage:message parentView:self.view];
 }
 //点击图片按钮
@@ -336,7 +344,6 @@
         }
     };
     [self layoutOtherMenuViewHiden:NO];
-    
     [self.photographyHelper showImagePickerControllerSourceType:sourceType onViewController:self compled:PickerMediaBlock];
 }
 //点击输入框
@@ -358,6 +365,7 @@
     
     id message = [self.chatViewModel objectAtIndexPath:indexPath.row];
     
+    static NSString *unkownCellIdentifier = @"UdeskUnkownCellIdentifier";
     static NSString *chatCellIdentifier = @"UdeskChatMessageCellIdentifier";
     static NSString *tipsCellIdentifier = @"UdeskTipsCellIdentifier";
     static NSString *productCellIdentifier = @"UdeskproductCellIdentifier";
@@ -368,7 +376,6 @@
         
         cell = [tableView dequeueReusableCellWithIdentifier:chatCellIdentifier];
         if (!cell) {
-            
             cell = [[UdeskChatCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:chatCellIdentifier];
             cell.delegate = self;
         }
@@ -379,7 +386,6 @@
     
         cell = [tableView dequeueReusableCellWithIdentifier:tipsCellIdentifier];
         if (!cell) {
-            
             cell = [[UdeskTipsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:tipsCellIdentifier];
         }
         
@@ -389,12 +395,17 @@
         
         cell = [tableView dequeueReusableCellWithIdentifier:productCellIdentifier];
         if (!cell) {
-            
             cell = [[UdeskProductCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:tipsCellIdentifier];
             cell.delegate = self;
         }
         
         [cell updateCellWithMessage:message];
+    }
+    else {
+        cell = [tableView dequeueReusableCellWithIdentifier:unkownCellIdentifier];
+        if (!cell) {
+            cell = [[UdeskBaseCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:unkownCellIdentifier];
+        }
     }
     
     return cell;
@@ -791,7 +802,7 @@
     //监听键盘
     [self subscribeToKeyboard];
     //设置客户在线
-    [UdeskManager setCustomerOnline];
+    [UdeskManager enterTheSDKPage];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -808,6 +819,20 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(NSArray *)cellsForTableView:(UITableView *)tableView
+{
+    NSInteger sections = tableView.numberOfSections;
+    NSMutableArray *cells = [[NSMutableArray alloc]  init];
+    for (int section = 0; section < sections; section++) {
+        NSInteger rows =  [tableView numberOfRowsInSection:section];
+        for (int row = 0; row < rows; row++) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+            [cells addObject:[tableView cellForRowAtIndexPath:indexPath]];
+        }
+    }
+    return cells;
 }
 
 - (void)dealloc {

@@ -16,7 +16,7 @@
 #import "UdeskUtils.h"
 #import "UdeskStringSizeUtil.h"
 
-@interface UdeskSDKShow()<UINavigationControllerDelegate>
+@interface UdeskSDKShow()
 
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 
@@ -41,10 +41,14 @@
     _sdkConfig.presentingAnimation = animation;
     
     UIViewController *viewController = nil;
-    rootViewController.navigationController.delegate = self;
     if (animation == UDTransiteAnimationTypePush) {
         viewController = [self createNavigationControllerWithWithAnimationSupport:udeskViewController presentedViewController:rootViewController];
         BOOL shouldUseUIKitAnimation = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7;
+        
+        //防止多次点击崩溃
+        if (viewController.popoverPresentationController && !viewController.popoverPresentationController.sourceView) {
+            return;
+        }
         
         if(![rootViewController.navigationController.topViewController isKindOfClass:[viewController class]]) {
             [rootViewController presentViewController:viewController animated:shouldUseUIKitAnimation completion:completion];
@@ -53,6 +57,11 @@
     } else {
         viewController = [[UINavigationController alloc] initWithRootViewController:udeskViewController];
         [self updateNavAttributesWithViewController:udeskViewController navigationController:(UINavigationController *)viewController defaultNavigationController:rootViewController.navigationController isPresentModalView:true];
+        
+        //防止多次点击崩溃
+        if (viewController.popoverPresentationController && !viewController.popoverPresentationController.sourceView) {
+            return;
+        }
         
         if(![rootViewController.navigationController.topViewController isKindOfClass:[viewController class]]) {
             [rootViewController presentViewController:viewController animated:YES completion:completion];

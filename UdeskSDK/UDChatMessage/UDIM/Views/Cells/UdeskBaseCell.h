@@ -21,7 +21,7 @@
 
 @interface UdeskBaseCell : UITableViewCell
 
-@property (nonatomic, weak  ) id<UdeskCellDelegate> delegate;
+@property (nonatomic, weak) id<UdeskCellDelegate> delegate;
 
 - (void)updateCellWithMessage:(id)message;
 
