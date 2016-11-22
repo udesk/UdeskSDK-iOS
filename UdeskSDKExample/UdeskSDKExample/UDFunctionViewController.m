@@ -235,6 +235,7 @@
 - (void)contactUs:(id)sender {
     
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+    [chatViewManager setTransferToAgentMenu:YES];
     [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
 }
 - (void)ticket:(id)sender {

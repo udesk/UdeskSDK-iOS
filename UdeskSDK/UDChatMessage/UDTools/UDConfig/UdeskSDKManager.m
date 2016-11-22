@@ -172,11 +172,11 @@
                   completion:(void (^)(void))completion {
     
     //如果用户正在会话 直接进入聊天页面
-    if ([UdeskManager customersAreSession]) {
-        [self presentIMController:viewController transiteAnimation:animationType completion:completion];
-    }
-    else {
-        
+//    if ([UdeskManager customersAreSession]) {
+//        [self presentIMController:viewController transiteAnimation:animationType completion:completion];
+//    }
+//    else {
+    
         //查看是否有导航栏
         [UdeskManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
             
@@ -206,7 +206,7 @@
             
         }];
         
-    }
+//    }
 
 }
 
