@@ -103,9 +103,9 @@ Udesk提供了一套开源的聊天界面，帮助开发者快速创建对话窗
 
 #### 3.1初始化Udesk  SDK
 
-获取密钥和公司域名。
+获取appkey和appId。
 
-![udesk](http://7xr0de.com1.z0.glb.clouddn.com/key.jpeg)
+![udesk](http://7xr0de.com1.z0.glb.clouddn.com/initUdesk.png)
 ```objective-c
 //初始化Udesk
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
