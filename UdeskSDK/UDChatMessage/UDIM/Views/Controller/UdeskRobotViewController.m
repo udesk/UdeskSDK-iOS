@@ -42,6 +42,11 @@
     [UdeskManager createServerCustomerCompletion:^(BOOL success, NSError *error) {
         
         if (success) {
+            
+            //这个函数只有在createServerCustomerCompletion回调成功之后才有用
+            if (![UdeskManager supportTransfer]) {
+                self.navigationItem.rightBarButtonItems = nil;
+            }
     
             CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
             UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:webViewRect];

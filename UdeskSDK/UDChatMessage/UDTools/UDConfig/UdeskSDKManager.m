@@ -130,7 +130,13 @@
     
     //如果用户正在会话 直接进入聊天页面
     if ([UdeskManager customersAreSession]) {
-        [self presentIMController:viewController transiteAnimation:animationType completion:completion];
+        
+        if (_sdkConfig.transferToMenu) {
+            [self presentMenuController:viewController transiteAnimation:animationType completion:completion];
+        }
+        else {
+            [self presentIMController:viewController transiteAnimation:animationType completion:completion];
+        }
     }
     else {
         
