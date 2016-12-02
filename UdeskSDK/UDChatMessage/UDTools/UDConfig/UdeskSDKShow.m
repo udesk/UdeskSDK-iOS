@@ -60,9 +60,11 @@
         viewController = [[UINavigationController alloc] initWithRootViewController:udeskViewController];
         [self updateNavAttributesWithViewController:udeskViewController navigationController:(UINavigationController *)viewController defaultNavigationController:rootViewController.navigationController isPresentModalView:true];
         
-        //防止多次点击崩溃
-        if (viewController.popoverPresentationController && !viewController.popoverPresentationController.sourceView) {
-            return;
+        if (ud_isIOS8) {
+            //防止多次点击崩溃
+            if (viewController.popoverPresentationController && !viewController.popoverPresentationController.sourceView) {
+                return;
+            }
         }
         
         if(![rootViewController.navigationController.topViewController isKindOfClass:[viewController class]]) {
