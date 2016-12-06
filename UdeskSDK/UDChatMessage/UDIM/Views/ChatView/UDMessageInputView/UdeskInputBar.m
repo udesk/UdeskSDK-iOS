@@ -376,7 +376,8 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
         
         emotionButton.selected = NO;
         voiceButton.selected = NO;
-    } else {
+    }
+    else {
         
         if ([self.delegate respondsToSelector:@selector(didUDMessageInputView)]) {
             [self.delegate didUDMessageInputView];

@@ -130,7 +130,6 @@
     
     //如果用户正在会话 直接进入聊天页面
     if ([UdeskManager customersAreSession]) {
-        
         if (_sdkConfig.transferToMenu) {
             [self presentMenuController:viewController transiteAnimation:animationType completion:completion];
         }
@@ -224,7 +223,6 @@
     if (!ticket) {
         ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig];
     }
-    
     [_show presentOnViewController:viewController udeskViewController:ticket transiteAnimation:animationType completion:completion];
 }
 
@@ -319,5 +317,9 @@
 
     _sdkConfig.transferToMenu = toMenu;
 }
+
+
+
+
 
 @end

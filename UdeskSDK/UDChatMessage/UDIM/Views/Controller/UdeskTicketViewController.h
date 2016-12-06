@@ -16,6 +16,11 @@
  */
 @property (nonatomic,strong ) UIWebView *ticketWebView;
 
+
+
+#pragma mark - 留言自定义url 重写get方法即可
+@property (nonatomic ,copy) NSString *urlStr;
+
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config;
 
 @end
