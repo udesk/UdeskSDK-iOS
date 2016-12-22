@@ -19,7 +19,7 @@
 #import "UdeskTransitioningAnimation.h"
 #import "UdeskSDKManager.h"
 
-@interface UdeskAgentMenuViewController () <UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate,UIGestureRecognizerDelegate>
+@interface UdeskAgentMenuViewController () <UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
 
 /** 客服组菜单Tableview */
 @property (nonatomic, strong) UITableView    *agentMenuTableView;
@@ -64,14 +64,7 @@
     // Do any additional setup after loading the view.
     
     self.view.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.tableViewBackGroundColor;
-    
-    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
-        self.automaticallyAdjustsScrollViewInsets = NO;
-    }
-    
-    if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
-        self.navigationController.navigationBar.translucent = NO;
-    }
+
     
     if ([UdeskSDKConfig sharedConfig].agentMenuTitle) {
         self.title = [UdeskSDKConfig sharedConfig].agentMenuTitle;
@@ -83,54 +76,7 @@
     [self setAgentMenuScrollView];
     
     [self requestAgentMenu:self.agentMenu];
-    UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
-    popRecognizer.edges = UIRectEdgeLeft;
-    popRecognizer.delegate = self;
-    [self.view addGestureRecognizer:popRecognizer];
-}
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
-    return YES;
-}
 
-//滑动返回
-- (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
-    
-    CGPoint translation = [recognizer translationInView:self.view];
-    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
-    
-    switch (recognizer.state) {
-        case UIGestureRecognizerStateBegan:
-            [UdeskTransitioningAnimation setInteractive:YES];
-            [self dismissViewControllerAnimated:YES completion:nil];
-            break;
-        case UIGestureRecognizerStateChanged:
-            [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
-            break;
-        default:
-            if (xPercent < .45) {
-                [UdeskTransitioningAnimation cancelInteractiveTransition];
-            } else {
-                [UdeskTransitioningAnimation finishInteractiveTransition];
-            }
-            [UdeskTransitioningAnimation setInteractive:NO];
-            break;
-    }
-    
-}
-//点击返回
-- (void)dismissChatViewController {
-    
-    if ([UdeskSDKConfig sharedConfig].presentingAnimation == UDTransiteAnimationTypePush) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-        } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:[UdeskSDKConfig sharedConfig].presentingAnimation] forKey:nil];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-    
 }
 
 #pragma mark - 设置MenuScrollView

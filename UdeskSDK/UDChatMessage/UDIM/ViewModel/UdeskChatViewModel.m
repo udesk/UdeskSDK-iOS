@@ -509,7 +509,11 @@
         agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_offline")];
     }
     else if([statusType isEqualToString:@"over"]) {
-        
+
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"agentOver" object:nil];
+
+
         agentCode = UDAgentConversationOver;
         agentMessage = getUDLocalizedString(@"udesk_chat_end");
     }

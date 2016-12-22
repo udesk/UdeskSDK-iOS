@@ -19,6 +19,8 @@ typedef enum : NSUInteger {
 
 @interface UdeskSDKManager : NSObject
 
++ (instancetype)managerWithSDKStyle:(UdeskSDKStyle *)style;
+
 - (instancetype)initWithSDKStyle:(UdeskSDKStyle *)style;
 
 /**

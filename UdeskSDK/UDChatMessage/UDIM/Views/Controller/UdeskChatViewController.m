@@ -42,7 +42,7 @@
 #import "UdeskSDKShow.h"
 #import "UdeskBaseMessage.h"
 
-@interface UdeskChatViewController ()<UIGestureRecognizerDelegate,UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskInputBarDelegate,UdeskVoiceRecordViewDelegate,UdeskCellDelegate>
+@interface UdeskChatViewController ()<UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskInputBarDelegate,UdeskVoiceRecordViewDelegate,UdeskCellDelegate>
 
 @property (nonatomic, assign) UDInputViewType           textViewInputViewType;//输入消息类型
 @property (nonatomic, assign) BOOL                      isMaxTimeStop;//判断是不是超出了录音最大时长
@@ -73,15 +73,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
-        self.automaticallyAdjustsScrollViewInsets = NO;
-    }
-    
-    if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
-        self.navigationController.navigationBar.translucent = NO;
-    }
-    
+
     self.navigationItem.title = getUDLocalizedString(@"udesk_connecting_agent");
     //设置返回按钮文字
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] init];
@@ -92,58 +84,6 @@
     [self initViewModel];
     //初始化消息页面布局
     [self initilzer];
-    
-    UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
-    popRecognizer.delegate = self;
-    popRecognizer.edges = UIRectEdgeLeft;
-    [self.view addGestureRecognizer:popRecognizer];
-}
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
-    return YES;
-}
-//滑动返回
-- (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
-    //隐藏键盘
-    [self.inputBar.inputTextView resignFirstResponder];
-    CGPoint translation = [recognizer translationInView:self.view];
-    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
-    
-    switch (recognizer.state) {
-        case UIGestureRecognizerStateBegan:
-            [UdeskTransitioningAnimation setInteractive:YES];
-            [self dismissViewControllerAnimated:YES completion:nil];
-            break;
-        case UIGestureRecognizerStateChanged:
-            [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
-            break;
-        default:
-            if (xPercent < .45) {
-                [UdeskTransitioningAnimation cancelInteractiveTransition];
-            } else {
-                [UdeskTransitioningAnimation finishInteractiveTransition];
-            }
-            [UdeskTransitioningAnimation setInteractive:NO];
-            break;
-    }
-    
-}
-//点击返回
-- (void)dismissChatViewController {
-
-    //隐藏键盘
-    [self.inputBar.inputTextView resignFirstResponder];
-    if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-            
-            [self dismissViewControllerAnimated:YES completion:nil];
-        } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:self.sdkConfig.presentingAnimation] forKey:nil];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
-    } else {
-        [self dismissViewControllerAnimated:YES completion:^{
-        }];
-    }
     
 }
 
@@ -219,7 +159,7 @@
         titleText = agent.nick?agent.nick:getUDLocalizedString(@"udesk_agent_offline");
     }
     else if (agent.code == UDAgentStatusResultQueue) {
-        titleText = getUDLocalizedString(@"udesk_agent_busy");
+        titleText = agent.message; //getUDLocalizedString(@"udesk_agent_busy");
     }
     else {
         titleText = agent.message;
@@ -241,6 +181,7 @@
     }
     
     UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    titleButton.userInteractionEnabled = NO;
     titleButton.frame = CGRectMake(0, 0, titleSize.width, titleSize.height);
     [titleButton setTitle:titleText forState:UIControlStateNormal];
     [titleButton setTitleColor:self.sdkConfig.sdkStyle.titleColor forState:UIControlStateNormal];
@@ -250,6 +191,14 @@
         [titleButton setImage:titleImage forState:UIControlStateNormal];
         [titleButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -titleImage.size.width-10, 0, titleImage.size.width)];
         [titleButton setImageEdgeInsets:UIEdgeInsetsMake(0, titleSize.width, 0, -titleSize.width)];
+    }
+
+    if (agent.code == UDAgentStatusResultQueue) {
+        titleButton.imageView.hidden = YES;
+        CGFloat x = CGRectGetMaxX(titleButton.titleLabel.frame);
+         [titleButton setImageEdgeInsets:UIEdgeInsetsMake(0, x+40, 0, 0)];
+    } else {
+        titleButton.imageView.hidden = NO;
     }
 
     self.navigationItem.titleView = titleButton;

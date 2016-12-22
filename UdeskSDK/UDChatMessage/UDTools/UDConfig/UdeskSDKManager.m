@@ -28,6 +28,11 @@
     UdeskSDKShow *_show;
 }
 
++ (instancetype)managerWithSDKStyle:(UdeskSDKStyle *)style
+{
+    return [[self alloc] initWithSDKStyle:style];
+}
+
 - (instancetype)initWithSDKStyle:(UdeskSDKStyle *)style
 {
     self = [super init];

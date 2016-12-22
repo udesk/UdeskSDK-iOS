@@ -17,7 +17,7 @@
 #import "UdeskLanguageTool.h"
 #import "UdeskSDKManager.h"
 
-@interface UdeskRobotViewController ()<UIGestureRecognizerDelegate>
+@interface UdeskRobotViewController ()
 
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 @property (nonatomic, strong) NSURL *robotURL;
@@ -28,15 +28,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
-        self.automaticallyAdjustsScrollViewInsets = NO;
-    }
-    
-    if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
-        self.navigationController.navigationBar.translucent = NO;
-    }
-    
+
     self.view.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.tableViewBackGroundColor;
 
     [UdeskManager createServerCustomerCompletion:^(BOOL success, NSError *error) {
@@ -70,59 +62,6 @@
         }
         
     }];
-    
-    //设置返回按钮文字（在A控制器写代码）
-    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] init];
-    barButtonItem.title = getUDLocalizedString(@"udesk_back");
-    self.navigationItem.backBarButtonItem = barButtonItem;
-    
-    UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
-    popRecognizer.edges = UIRectEdgeLeft;
-    popRecognizer.delegate = self;
-    [self.view addGestureRecognizer:popRecognizer];
-}
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
-    return YES;
-}
-//滑动返回
-- (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
-    
-    CGPoint translation = [recognizer translationInView:self.view];
-    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
-    
-    switch (recognizer.state) {
-        case UIGestureRecognizerStateBegan:
-            [UdeskTransitioningAnimation setInteractive:YES];
-            [self dismissViewControllerAnimated:YES completion:nil];
-            break;
-        case UIGestureRecognizerStateChanged:
-            [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
-            break;
-        default:
-            if (xPercent < .45) {
-                [UdeskTransitioningAnimation cancelInteractiveTransition];
-            } else {
-                [UdeskTransitioningAnimation finishInteractiveTransition];
-            }
-            [UdeskTransitioningAnimation setInteractive:NO];
-            break;
-    }
-    
-}
-//点击返回
-- (void)dismissChatViewController {
-    
-    if ([UdeskSDKConfig sharedConfig].presentingAnimation == UDTransiteAnimationTypePush) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-            [self dismissViewControllerAnimated:YES completion:^{
-            }];
-        } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:[UdeskSDKConfig sharedConfig].presentingAnimation] forKey:nil];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
     
 }
 

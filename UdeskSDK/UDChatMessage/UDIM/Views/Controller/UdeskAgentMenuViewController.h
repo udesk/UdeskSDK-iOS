@@ -6,13 +6,12 @@
 //  Copyright © 2016年 xuchen. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "UdeskBaseViewController.h"
 #import "UdeskSDKConfig.h"
 
-@interface UdeskAgentMenuViewController : UIViewController
+@interface UdeskAgentMenuViewController : UdeskBaseViewController
 
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config menuArray:(NSArray *)menu;
 
-- (void)dismissChatViewController;
 
 @end

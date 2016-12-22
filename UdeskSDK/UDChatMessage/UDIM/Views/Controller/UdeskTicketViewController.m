@@ -15,7 +15,7 @@
 #import "UdeskTransitioningAnimation.h"
 #import "UdeskLanguageTool.h"
 
-@interface UdeskTicketViewController ()<UIGestureRecognizerDelegate>
+@interface UdeskTicketViewController () 
 
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 
@@ -38,13 +38,7 @@
 
     self.view.backgroundColor = _sdkConfig.sdkStyle.tableViewBackGroundColor;
     
-    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
-        self.automaticallyAdjustsScrollViewInsets = NO;
-    }
-    
-    if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
-        self.navigationController.navigationBar.translucent = NO;
-    }
+
     
     if (_sdkConfig.ticketTitle) {
         self.title = _sdkConfig.ticketTitle;
@@ -94,68 +88,6 @@
         [_ticketWebView stringByEvaluatingJavaScriptFromString:@"ticketCallBack()"];
     }
 
-    UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
-    popRecognizer.edges = UIRectEdgeLeft;
-    popRecognizer.delegate = self;
-    [self.view addGestureRecognizer:popRecognizer];
-}
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
-    return YES;
-}
-//滑动返回
-- (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
-
-    CGPoint translation = [recognizer translationInView:self.view];
-    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
-    
-    switch (recognizer.state) {
-        case UIGestureRecognizerStateBegan:
-            [UdeskTransitioningAnimation setInteractive:YES];
-            [self dismissViewControllerAnimated:YES completion:nil];
-            break;
-        case UIGestureRecognizerStateChanged:
-            [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
-            break;
-        default:
-            if (xPercent < .45) {
-                [UdeskTransitioningAnimation cancelInteractiveTransition];
-            } else {
-                [UdeskTransitioningAnimation finishInteractiveTransition];
-            }
-            [UdeskTransitioningAnimation setInteractive:NO];
-            break;
-    }
-    
-}
-//点击返回
-- (void)dismissChatViewController {
-    //隐藏键盘
-    if ([UdeskSDKConfig sharedConfig].presentingAnimation == UDTransiteAnimationTypePush) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-        } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:[UdeskSDKConfig sharedConfig].presentingAnimation] forKey:nil];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-    
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-
-    [super viewWillAppear:animated];
-}
-
-- (void)dealloc
-{
-    NSLog(@"%@销毁了",[self class]);
 }
 
 

@@ -46,6 +46,7 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     UdeskMessageTableView *messageTableView;
     NSDate  *sendDate;
     NSInteger textViewHeight;
+    BOOL _agentOver;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -66,7 +67,14 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     self.opaque = YES;
     // 由于继承UIImageView，所以需要这个属性设置
     self.userInteractionEnabled = YES;
-    
+
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(agentOver) name:@"agentOver" object:nil];
+}
+
+- (void)agentOver
+{
+    _agentOver = YES;
 }
 
 - (void)awakeFromNib {
@@ -106,6 +114,7 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     _inputTextView = [[UdeskTextView  alloc] initWithFrame:CGRectMake(InputBarViewToHorizontalEdgeSpacing, InputBarViewToVerticalEdgeSpacing, UD_SCREEN_WIDTH-InputBarViewToHorizontalEdgeSpacing*2, InputBarViewHeight)];
     _inputTextView.placeholder = getUDLocalizedString(@"udesk_typing");
     _inputTextView.delegate = self;
+    _inputTextView.returnKeyType = UIReturnKeySend;
     _inputTextView.font = [UIFont systemFontOfSize:16];
     _inputTextView.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.textViewColor;
     self.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.inputViewColor;
@@ -378,9 +387,14 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
         voiceButton.selected = NO;
     }
     else {
-        
-        if ([self.delegate respondsToSelector:@selector(didUDMessageInputView)]) {
-            [self.delegate didUDMessageInputView];
+
+
+        if (_agentOver) {
+
+        } else {
+            if ([self.delegate respondsToSelector:@selector(didUDMessageInputView)]) {
+                [self.delegate didUDMessageInputView];
+            }
         }
         
         return NO;
@@ -532,6 +546,9 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     [self.inputTextView removeObserver:self forKeyPath:@"contentSize"];
     
     [self.inputTextView setEditable:NO];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
 }
 
 @end
