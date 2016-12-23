@@ -119,6 +119,10 @@ typedef enum : NSUInteger {
  *
  */
 - (void)setTransferToAgentMenu:(BOOL)toMenu;
-
+/**
+ *  设置自定义留言URL
+ *
+ */
+- (void)setTicketUrl:(NSString *)url;
 
 @end

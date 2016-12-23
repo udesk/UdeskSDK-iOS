@@ -19,6 +19,8 @@
 
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 
+
+
 @end
 
 @implementation UdeskTicketViewController
@@ -57,8 +59,8 @@
         _ticketWebView.backgroundColor = [UIColor whiteColor];
 
         NSURL *ticketURL = nil;
-        if (self.urlStr) {
-            ticketURL = [NSURL URLWithString:self.urlStr];
+        if (_sdkConfig.url) {
+            ticketURL = [NSURL URLWithString:_sdkConfig.url];
         }else{
             ticketURL =  [UdeskManager getSubmitTicketURL];
            // 设置语言
@@ -89,12 +91,5 @@
     }
 
 }
-
-
-#pragma mark - 留言自定义url重写getter
-//- (NSString *)urlStr
-//{
-//    return @"https://www.baidu.com";
-//}
 
 @end

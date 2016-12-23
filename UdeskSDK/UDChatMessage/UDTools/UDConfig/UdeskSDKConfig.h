@@ -23,6 +23,8 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 @property (nonatomic, strong) UdeskSDKStyle *sdkStyle;
 
 /** im标题 */
+@property (nonatomic, copy  ) NSString *url;
+/** im标题 */
 @property (nonatomic, copy  ) NSString *imTitle;
 
 /** 机器人标题 */

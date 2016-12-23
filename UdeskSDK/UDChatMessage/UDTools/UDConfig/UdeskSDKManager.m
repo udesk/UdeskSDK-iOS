@@ -323,7 +323,10 @@
     _sdkConfig.transferToMenu = toMenu;
 }
 
-
+- (void)setTicketUrl:(NSString *)url
+{
+    _sdkConfig.url = url;
+}
 
 
 
