@@ -83,6 +83,8 @@
                          viewController:(UIViewController *)viewController
                              completion:(void (^)(void))completion {
 
+           [UDStatus shareInstance].version_method = YES;
+
             if (type == UdeskRobot) {
               //推到机器人页面
             [self presentRobotController:viewController transiteAnimation:UDTransiteAnimationTypePush completion:completion];
@@ -164,7 +166,9 @@
 - (void)presentUdeskViewControllerWithType:(UdeskType)type
                             viewController:(UIViewController *)viewController
                                 completion:(void (^)(void))completion {
-    
+
+    [UDStatus shareInstance].version_method = YES;
+
     if (_sdkConfig) {
         _sdkConfig = [UdeskSDKConfig sharedConfig];
     }

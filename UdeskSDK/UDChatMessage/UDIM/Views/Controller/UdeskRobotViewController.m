@@ -128,7 +128,7 @@
             language = @"&language=en-us";
         }
         
-        _robotURL = [NSURL URLWithString:[URL.absoluteString stringByAppendingString:language]];
+        self.robotURL = [NSURL URLWithString:[URL.absoluteString stringByAppendingString:language]];
         
     }
     return self;
