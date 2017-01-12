@@ -25,6 +25,7 @@
 @property (nonatomic, assign, readonly) BOOL has_robot;
 @property (nonatomic, assign, readonly) BOOL in_session;
 @property (nonatomic, assign, readonly) BOOL is_worktime;
+@property (nonatomic, assign) BOOL version_method;
 @property (nonatomic, copy, readonly) NSString *no_reply_hint;
 @property (nonatomic, copy, readonly) NSString *robot;
 

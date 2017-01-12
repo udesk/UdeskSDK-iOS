@@ -151,7 +151,7 @@
     //初始化消息页面布局
     [self initilzer];
     // 后台设置的方法
-    if ([UDStatus shareInstance].is_worktime) {
+    if ([UDStatus shareInstance].is_worktime || [UDStatus shareInstance].version_method) {
         [self.chatViewModel createCustomer];
     } else {
         [self enable_web_im_feedback];
