@@ -13,6 +13,9 @@
 #import "UIColor+UdeskSDK.h"
 #import "UDDeveloperViewController.h"
 #import "UdeskTransitioningAnimation.h"
+#import "UdeskTools.h"
+#import "UdeskLanguageTool.h"
+#import "UDStatus.h"
 
 @interface UDFunctionViewController()
 
@@ -31,6 +34,8 @@
 @property (strong, nonatomic) UIView *horizontalLineView;
 @property (strong, nonatomic) UIView *verticalLineView;
 
+@property (strong, nonatomic) UIButton *button;
+
 @end
 
 @implementation UDFunctionViewController
@@ -39,33 +44,36 @@
 
     [super viewDidLoad];
     
+//    self.navigationController.navigationBarHidden = YES;
+    
     NSString *nick_name = [NSString stringWithFormat:@"sdk用户%u",arc4random()];
     NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
     
-    NSDictionary *parameters = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"parameters"];
-    
-    if (parameters) {
-        
-        //创建用户
-        [UdeskManager createCustomerWithCustomerInfo:parameters];
-    }
-    else {
+//    NSDictionary *parameters = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"parameters"];
+//    
+//    if (parameters) {
+//        //创建用户
+//        [UdeskManager createCustomerWithCustomerInfo:parameters];
+//    }
+//    else {
     
         NSDictionary *parameters = @{
                                      @"user" :    @{
                                              @"nick_name":nick_name,
-                                             @"sdk_token":sdk_token
+                                             @"sdk_token":sdk_token,
                                              }
                                      };
-        
+    
+
+    
         //创建用户
         [UdeskManager createCustomerWithCustomerInfo:parameters];
         
-        [[NSUserDefaults standardUserDefaults] setObject:parameters forKey:@"parameters"];
-    }
+//        [[NSUserDefaults standardUserDefaults] setObject:parameters forKey:@"parameters"];
+//    }
     
     
-    double text1 = 237/675.0f;
+    double text1 = 533/2/675.0f;
     CGFloat logoHeight = self.view.ud_height*text1;
 
     _logoImage = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -220,6 +228,19 @@
     [self.ticketButton addTarget:self action:@selector(ticket:) forControlEvents:UIControlEventTouchUpInside];
     [self.developerButton addTarget:self action:@selector(developer:) forControlEvents:UIControlEventTouchUpInside];
     
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveMsg:) name:UD_RECEIVED_NEW_MESSAGES_NOTIFICATION object:nil];
+    
+    
+    [UdeskManager getCustomerFields:^(id responseObject, NSError *error) {
+        
+        NSLog(@"%@",responseObject);
+    }];
+}
+
+- (void)receiveMsg:(NSNotification *)notif {
+
+    NSLog(@"%@",notif.object);
 }
 
 - (void)backButtonAction:(id)sender {
@@ -229,17 +250,75 @@
 
 - (void)faq:(id)sender {
     
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWithType:UdeskFAQ viewController:self completion:nil];
+//    [UdeskManager initWithAppkey:@"key" domianName:@"domain"];
+//    
+//    NSDictionary *parameters = @{
+//                                 @"user" :    @{
+//                                         @"nick_name":nick_name,
+//                                         @"sdk_token":sdk_token
+//                                         }
+//                                 };
+//    
+//    //创建用户
+//    [UdeskManager createCustomerWithCustomerInfo:parameters];
+    
+    UdeskSDKStyle *customStyle = [UdeskSDKStyle customStyle];
+//    customStyle.customerBubbleColor
+//    //导航栏颜色
+    customStyle.navigationColor = [self colorWithHexString:@"#FE6000"];
+//    //设置客服气泡图片
+//    customStyle.agentBubbleImage = [UIImage imageNamed:@"客服气泡"];
+//    //客户气泡图片
+//    customStyle.customerBubbleImage = [UIImage imageNamed:@"客户气泡"];
+//    //返回图片
+//    customStyle.navBackButtonImage = [UIImage imageNamed:@"backTwo"];
+    
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:customStyle];
+    
+    [chatViewManager presentUdeskViewControllerWithType:UdeskFAQ viewController:self completion:nil];
 }
+
 - (void)contactUs:(id)sender {
-    
+
+/***************  旧版本方法   ******************/
+
+//    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+//    [chatViewManager setGroupName:@"Decade"];
+//    UdeskType type = UdeskRobot;
+//
+//    [chatViewManager setTransferToAgentMenu:YES];
+//    if ([UdeskManager customersAreSession]) {
+//        type = UdeskIM;
+//    }
+//
+//    [chatViewManager pushUdeskViewControllerWithType:type viewController:self completion:^{
+//
+//    }];
+
+/***************   新版本方法（根据后台的配置执行）   *********************/
+
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
+
+    // 设置组名
+    [chatViewManager setGroupName:@"售后组"];
+
+    // 设置放弃排队
+    [chatViewManager setQuitQueueType:UdeskForce_quit];
+
+   // [chatViewManager setTicketUrl:@"https://github.com/udesk/UdeskSDK-iOS"];
+
+    // 调用后台配置的push方法
+    [chatViewManager presentUdeskViewControllerWith:self completion:^{
+
+    }];
+
 }
+
 - (void)ticket:(id)sender {
-    
+
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+    // 添加自定义的留言地址，如果不调用默认进系统留言
+   // [chatViewManager setTicketUrl:@"https://github.com/udesk/UdeskSDK-iOS"];
     [chatViewManager pushUdeskViewControllerWithType:UdeskTicket viewController:self completion:nil];
 }
 - (void)developer:(id)sender {
@@ -249,7 +328,6 @@
 }
 
 - (void)presentOnViewController:(UIViewController *)rootViewController udeskViewController:(id)udeskViewController transiteAnimation:(UDTransiteAnimationType)animation {
-    
     
     UIViewController *viewController = nil;
     if (animation == UDTransiteAnimationTypePush) {
@@ -306,5 +384,56 @@
     viewController.navigationItem.title = @"开发者功能";
 }
 
+//16进制颜色转换
+- (UIColor *)colorWithHexString: (NSString *)color
+{
+    NSString *cString = [[color stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
+    
+    // String should be 6 or 8 characters
+    if ([cString length] < 6) {
+        return [UIColor clearColor];
+    }
+    
+    // strip 0X if it appears
+    if ([cString hasPrefix:@"0X"])
+        cString = [cString substringFromIndex:2];
+    if ([cString hasPrefix:@"#"])
+        cString = [cString substringFromIndex:1];
+    if ([cString length] != 6)
+        return [UIColor clearColor];
+    
+    // Separate into r, g, b substrings
+    NSRange range;
+    range.location = 0;
+    range.length = 2;
+    
+    //r
+    NSString *rString = [cString substringWithRange:range];
+    
+    //g
+    range.location = 2;
+    NSString *gString = [cString substringWithRange:range];
+    
+    //b
+    range.location = 4;
+    NSString *bString = [cString substringWithRange:range];
+    
+    // Scan values
+    unsigned int r, g, b;
+    [[NSScanner scannerWithString:rString] scanHexInt:&r];
+    [[NSScanner scannerWithString:gString] scanHexInt:&g];
+    [[NSScanner scannerWithString:bString] scanHexInt:&b];
+    
+    return [UIColor colorWithRed:((float) r / 255.0f) green:((float) g / 255.0f) blue:((float) b / 255.0f) alpha:1.0f];
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+    
+//    _button.alpha = 1;
+//    [[UIApplication sharedApplication].keyWindow bringSubviewToFront:_button];
+}
 
 @end

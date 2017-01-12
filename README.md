@@ -207,7 +207,14 @@ sdkStyle.titleColor = [UIColor orangeColor];
 UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:sdkStyle];
 [chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 ```
+#### 4.2.1 自定义留言URL
 
+```objective-c
+UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+// 添加自定义的留言地址，如果不调用此方法默认进系统留言
+// [chatViewManager setTicketUrl:@"自定义网址"];
+[chatViewManager pushUdeskViewControllerWithType:UdeskTicket viewController:self completion:nil];
+```
 #### 4.3指定客服ID
 
 ```objective-c
@@ -248,6 +255,25 @@ UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[Ud
 [chatViewManager setTransferToAgentMenu:YES];
 [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
 ```
+#### 4.8 通过后台配置实现机器人、客服、留言、排队放弃
+
+```objective-c
+UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+
+    // 设置组名
+    [chatViewManager setGroupName:@"售后组"];
+
+    // 设置放弃排队（必填）
+    [chatViewManager setQuitQueueType:"类型"];
+    // 自定义的留言H5 （选填）
+    [chatViewManager setTicketUrl:@"网址"];
+
+    // 调用后台配置的push方法
+    [chatViewManager presentUdeskViewControllerWith:self completion:^{
+
+    }];
+```
+
 
 ## 五、消息推送
 
