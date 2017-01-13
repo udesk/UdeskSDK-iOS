@@ -93,6 +93,7 @@
     _agentMenuScrollView.scrollEnabled = NO;
     
     [self.view addSubview:_agentMenuScrollView];
+
 }
 
 #pragma mark - 请求客服组选择菜单
@@ -124,7 +125,7 @@
     
     //根据最大的级数循环添加tableView
     for (int i = 0; i<tableViewCount;i++) {
-        
+        NSLog(@"%d",i);
         UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStylePlain];
         agentMenuTableView.delegate = self;
         agentMenuTableView.dataSource = self;

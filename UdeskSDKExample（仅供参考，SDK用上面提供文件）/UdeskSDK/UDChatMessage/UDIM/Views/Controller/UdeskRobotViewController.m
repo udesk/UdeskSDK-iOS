@@ -33,6 +33,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+
+
     self.view.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.tableViewBackGroundColor;
 
     [UdeskManager createServerCustomerCompletion:^(BOOL success, NSError *error) {

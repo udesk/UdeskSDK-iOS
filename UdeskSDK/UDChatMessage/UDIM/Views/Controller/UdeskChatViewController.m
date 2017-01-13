@@ -151,11 +151,21 @@
     //初始化消息页面布局
     [self initilzer];
     // 后台设置的方法
-    if ([UDStatus shareInstance].is_worktime || [UDStatus shareInstance].version_method) {
-        [self.chatViewModel createCustomer];
-    } else {
-        [self enable_web_im_feedback];
+
+    if (![UDStatus shareInstance]) {
+        
+         [self.chatViewModel createCustomer];
+
+    }else{
+        if ([UDStatus shareInstance].is_worktime) {
+
+            [self.chatViewModel createCustomer];
+        }
+        else {
+            [self enable_web_im_feedback];
+        }
     }
+
 }
 
 #pragma mark - 初始化viewModel
@@ -215,28 +225,16 @@
 {
     if ([UDStatus shareInstance].enable_web_im_feedback) {
 
-        self.navigationItem.title = getUDLocalizedString(@"udesk_agent_offline");
+       self.navigationItem.title = getUDLocalizedString(@"udesk_agent_offline");
 
-        NSString *str = [UDStatus shareInstance].no_reply_hint;
-        if (!str.length) {
-            str = @"您可以选择提交表单来描述您的问题，稍后我们会和您联系";//getUDLocalizedString(@"udesk_alert_view_leave_msg");;
+       NSString *str = @"您可以选择提交表单来描述您的问题，稍后我们会和您联系";//getUDLocalizedString(@"udesk_alert_view_leave_msg");;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"当前客服不在线" message:str delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"留言", nil];
-            alert.delegate = self;
-            [alert show];
-            self.tickAlert = alert;
-            return;
-        }
-        
-        ZKAlertController *alert = [ZKAlertController alertControllerWithTitle:nil message:NSLocalizedString(str, nil) preferredStyle:ZKAlertControllerStyleAlert];
-
-        ZKAlertAction *cancel = [ZKAlertAction actionWithTitle:NSLocalizedString(@"确定", nil) style:ZKAlertActionStyleCancel handler:nil];
-
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
-
-
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"当前客服不在线" message:str delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"留言", nil];
+        alert.delegate = self;
+        [alert show];
+        self.tickAlert = alert;
+  
     } else {
 
         self.navigationItem.title = getUDLocalizedString(@"udesk_agent_offline");
@@ -355,11 +353,9 @@
 //点击发送留言
 - (void)didSelectSendTicket {
 
-
     UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] init];
     UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
     [show presentOnViewController:self udeskViewController:offLineTicket transiteAnimation:UDTransiteAnimationTypePush completion:nil];
-
 }
 
 //点击黑名单弹窗提示的确定

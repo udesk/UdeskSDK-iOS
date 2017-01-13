@@ -49,6 +49,8 @@
 - (void)pushUdeskViewControllerWith:(UIViewController *)viewController
                          completion:(void (^)(void))completion {
 
+    [UDStatus shareInstance].version_method = NO;
+
     [[UDStatus shareInstance] requestData:^(NSInteger type, UDStatus *status) {
 
         if (type) {
@@ -132,6 +134,8 @@
 
 - (void)presentUdeskViewControllerWith:(UIViewController *)viewController
                             completion:(void (^)(void))completion {
+
+    [UDStatus shareInstance].version_method = NO;
 
     [[UDStatus shareInstance] requestData:^(NSInteger type, UDStatus *status) {
 

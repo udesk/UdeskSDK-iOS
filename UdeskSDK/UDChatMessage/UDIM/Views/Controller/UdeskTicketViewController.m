@@ -20,8 +20,6 @@
 
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 
-
-
 @end
 
 @implementation UdeskTicketViewController
@@ -42,7 +40,6 @@
     self.view.backgroundColor = _sdkConfig.sdkStyle.tableViewBackGroundColor;
     
 
-    
     if (_sdkConfig.ticketTitle) {
         self.title = _sdkConfig.ticketTitle;
     }
