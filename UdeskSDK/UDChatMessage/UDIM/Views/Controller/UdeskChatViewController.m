@@ -25,7 +25,6 @@
 #import "UdeskAudioPlayerHelper.h"
 #import "UdeskPhotoManeger.h"
 #import "UdeskManager.h"
-#import "UdeskAgent.h"
 #import "UdeskChatCell.h"
 #import "UdeskChatMessage.h"
 #import "UdeskMessage+UdeskChatMessage.h"
@@ -41,8 +40,10 @@
 #import "UdeskVoiceRecordView.h"
 #import "UdeskSDKShow.h"
 #import "UdeskBaseMessage.h"
+#import "UdeskSDKManager.h"
+#import "UdeskSetting.h"
 
-@interface UdeskChatViewController ()<UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskInputBarDelegate,UdeskVoiceRecordViewDelegate,UdeskCellDelegate>
+@interface UdeskChatViewController ()<UIGestureRecognizerDelegate,UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskInputBarDelegate,UdeskVoiceRecordViewDelegate,UdeskCellDelegate>
 
 @property (nonatomic, assign) UDInputViewType           textViewInputViewType;//输入消息类型
 @property (nonatomic, assign) BOOL                      isMaxTimeStop;//判断是不是超出了录音最大时长
@@ -50,14 +51,25 @@
 @property (nonatomic, strong) UdeskEmotionManagerView   *emotionManagerView;//管理表情的控件
 @property (nonatomic, strong) UdeskVoiceRecordHUD       *voiceRecordHUD;//语音录制动画
 @property (nonatomic, strong) UdeskPhotographyHelper    *photographyHelper;//管理本机的摄像和图片库的工具对象
-@property (nonatomic, strong) UdeskVoiceRecordView    *voiceRecordView;//管理本机的摄像和图片库的工具对象
+@property (nonatomic, strong) UdeskVoiceRecordView      *voiceRecordView;//管理本机的摄像和图片库的工具对象
 @property (nonatomic, strong) UdeskChatViewModel        *chatViewModel;//viewModel
 @property (nonatomic, strong) UdeskInputBar     *inputBar;//用于显示发送消息类型控制的工具条，在底部
-@property (nonatomic, strong) UdeskSDKConfig     *sdkConfig;//用于显示发送消息类型控制的工具条，在底部
+@property (nonatomic, strong) UdeskSDKConfig     *sdkConfig;//sdk配置
+@property (nonatomic, strong) UdeskSetting       *sdkSetting;//sdk后台配置
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+@property (nonatomic, strong) UIAlertView *tickAlert;
 
 @end
 
 @implementation UdeskChatViewController
+
+- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
+                     withSettings:(UdeskSetting *)setting {
+    
+    _sdkSetting = setting;
+    return [self initWithSDKConfig:config];
+}
 
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config {
     if (self = [super init]) {
@@ -71,20 +83,79 @@
     return  self;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (void)setupBase {
 
+    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+    }
+    
+    if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
+        self.navigationController.navigationBar.translucent = NO;
+    }
+    
     self.navigationItem.title = getUDLocalizedString(@"udesk_connecting_agent");
     //设置返回按钮文字
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] init];
     barButtonItem.title = getUDLocalizedString(@"udesk_back");
     self.navigationItem.backBarButtonItem = barButtonItem;
     
+    UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
+    popRecognizer.edges = UIRectEdgeLeft;
+    [self.view addGestureRecognizer:popRecognizer];
+}
+
+//滑动返回
+- (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
+    //隐藏键盘
+    [self.inputBar.inputTextView resignFirstResponder];
+    CGPoint translation = [recognizer translationInView:self.view];
+    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
+    
+    switch (recognizer.state) {
+        case UIGestureRecognizerStateBegan:
+            [UdeskTransitioningAnimation setInteractive:YES];
+            [self dismissViewControllerAnimated:YES completion:nil];
+            break;
+        case UIGestureRecognizerStateChanged:
+            [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
+            break;
+        default:
+            if (xPercent < .45) {
+                [UdeskTransitioningAnimation cancelInteractiveTransition];
+            } else {
+                [UdeskTransitioningAnimation finishInteractiveTransition];
+            }
+            [UdeskTransitioningAnimation setInteractive:NO];
+            break;
+    }
+    
+}
+//点击返回
+- (void)dismissChatViewController {
+    //隐藏键盘
+    [self.inputBar.inputTextView resignFirstResponder];
+    if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        } else {
+            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:self.sdkConfig.presentingAnimation] forKey:nil];
+            [self dismissViewControllerAnimated:NO completion:nil];
+        }
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (void)viewDidLoad {
+
+    [super viewDidLoad];
+
+    [self setupBase];
+
     //初始化viewModel
     [self initViewModel];
     //初始化消息页面布局
     [self initilzer];
-    
 }
 
 #pragma mark - 初始化viewModel
@@ -92,6 +163,7 @@
     
     self.chatViewModel = [[UdeskChatViewModel alloc] init];
     self.chatViewModel.delegate = self;
+    [self.chatViewModel createCustomerWithSDKSetting:self.sdkSetting];
 }
 
 #pragma mark - UdeskChatViewModelDelegate
@@ -101,7 +173,6 @@
     @udWeakify(self);
     //更新消息内容
     dispatch_async(dispatch_get_main_queue(), ^{
-        
         @udStrongify(self);
         [self.messageTableView reloadData];
     });
@@ -204,9 +275,16 @@
     self.navigationItem.titleView = titleButton;
 }
 
-//点击发送表单
+//点击发送留言
 - (void)didSelectSendTicket {
 
+    self.chatViewModel.isNotShowAlert = YES;
+    
+    if (self.sdkConfig.isCustomForm) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:UdeskClickSendFormButton object:self];
+        return ;
+    }
+    
     UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] init];
     UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
     [show presentOnViewController:self udeskViewController:offLineTicket transiteAnimation:UDTransiteAnimationTypePush completion:nil];
@@ -215,6 +293,7 @@
 //点击黑名单弹窗提示的确定
 - (void)didSelectBlacklistedAlertViewOkButton {
 
+    self.chatViewModel.isNotShowAlert = YES;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -281,6 +360,7 @@
 
     self.textViewInputViewType = UDInputViewTypeNormal;
     [self layoutOtherMenuViewHiden:NO];
+    // 已经评价了弹出橘色 没有弹出绿色
     [UdeskTopAlertView showAlertType:hasSurvey?UDAlertTypeOrange:UDAlertTypeGreen withMessage:message parentView:self.view];
 }
 //点击图片按钮
@@ -484,7 +564,6 @@
     
     //根据textViewInputViewType切换功能面板
     [self.inputBar.inputTextView resignFirstResponder];
-    
     [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         __block CGRect inputViewFrame = self.inputBar.frame;
         __block CGRect otherMenuViewFrame;
@@ -571,6 +650,7 @@
     }];
 
 }
+
 
 #pragma mark - 发送文字
 - (void)didSendTextAction:(NSString *)text {
@@ -685,8 +765,8 @@
         NSRange lastRange = [self.inputBar.inputTextView.text rangeOfComposedCharacterSequenceAtIndex:self.inputBar.inputTextView.text.length-1];
         self.inputBar.inputTextView.text = [self.inputBar.inputTextView.text substringToIndex:lastRange.location];
     }
-    
 }
+
 //点击表情
 - (void)emojiViewDidSelectEmoji:(NSString *)emoji {
     if ([self.inputBar.inputTextView.textColor isEqual:[UIColor lightGrayColor]] && [self.inputBar.inputTextView.text isEqualToString:@"输入消息..."]) {
@@ -709,8 +789,10 @@
 
 #pragma mark - 监听键盘通知做出相应的操作
 - (void)subscribeToKeyboard {
+
     @udWeakify(self);
     [self ud_subscribeKeyboardWithBeforeAnimations:nil animations:^(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing) {
+
         @udStrongify(self);
         if (self.textViewInputViewType == UDInputViewTypeText) {
             //计算键盘的Y
@@ -728,9 +810,9 @@
                                                          inputViewFrame.size.width,
                                                          inputViewFrame.size.height);
             //改变tableview frame
-            [self.messageTableView setTableViewInsetsWithBottomValue:self.view.frame.size.height
+            [self.messageTableView setTableViewInsetsWithBottomValue:self.view.frame.size.height 
              - self.inputBar.frame.origin.y];
-            
+
             if (isShowing) {
                 [self.messageTableView scrollToBottomAnimated:NO];
                 self.emotionManagerView.alpha = 0.0;
@@ -741,9 +823,9 @@
             }
             
         }
-        
+
     } completion:nil];
-    
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -760,36 +842,24 @@
     
     // remove键盘通知或者手势
     [self ud_unsubscribeKeyboard];
-    
     // 停止播放语音
     [[UdeskAudioPlayerHelper shareInstance] stopAudio];
     
+    self.chatViewModel.isNotShowAlert = YES;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
--(NSArray *)cellsForTableView:(UITableView *)tableView
+- (void)viewDidDisappear:(BOOL)animated
 {
-    NSInteger sections = tableView.numberOfSections;
-    NSMutableArray *cells = [[NSMutableArray alloc]  init];
-    for (int section = 0; section < sections; section++) {
-        NSInteger rows =  [tableView numberOfRowsInSection:section];
-        for (int row = 0; row < rows; row++) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
-            [cells addObject:[tableView cellForRowAtIndexPath:indexPath]];
-        }
-    }
-    return cells;
+    [super viewDidDisappear:animated];
+    //离开页面放弃排队
+    [UdeskManager quitQueueWithType:_sdkConfig.quitQueueType];
+    //取消所有请求
+    [UdeskManager ud_cancelAllOperations];
 }
 
 - (void)dealloc {
     
     NSLog(@"%@销毁了",[self class]);
-    //取消所有请求
-    [UdeskManager ud_cancelAllOperations];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UdeskClickResendMessage object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UdeskTouchProductUrlSendButton object:nil];
     _messageTableView.delegate = nil;

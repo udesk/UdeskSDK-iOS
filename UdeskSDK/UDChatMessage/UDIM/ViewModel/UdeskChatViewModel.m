@@ -8,13 +8,11 @@
 
 #import "UdeskChatViewModel.h"
 #import "UdeskTools.h"
-#import "UdeskAlertController.h"
 #import "UdeskFoundationMacro.h"
 #import "NSArray+UdeskSDK.h"
 #import "UdeskAgentHttpData.h"
 #import "UdeskReachability.h"
 #import "UdeskManager.h"
-#import "UdeskAgent.h"
 #import "UdeskChatMessage.h"
 #import "UdeskMessage+UdeskChatMessage.h"
 #import "UdeskChatAlertController.h"
@@ -25,15 +23,14 @@
 #import "UdeskAgentSurvey.h"
 #import "UdeskUtils.h"
 
-@interface UdeskChatViewModel()<UDManagerDelegate,UdeskMessageDelegate,UdeskChatAlertDelegate> {
-    
-    UdeskAlertController *_optionsAlert;
-}
+@interface UdeskChatViewModel()<UDManagerDelegate,UdeskMessageDelegate,UdeskChatAlertDelegate>
 
 /** 消息 */
 @property (nonatomic, strong,readwrite) NSMutableArray           *messageArray;
 /** 失败的消息 */
 @property (nonatomic, strong,readwrite) NSMutableArray           *resendArray;
+/** sdk后台配置 */
+@property (nonatomic, strong          ) UdeskSetting             *sdkSetting;
 /** 客服Model */
 @property (nonatomic, strong          ) UdeskAgent               *agentModel;
 /** 聊天弹窗 */
@@ -56,18 +53,66 @@
         //聊天提示框
         self.chatAlert = [[UdeskChatAlertController alloc] init];
         self.chatAlert.delegate = self;
+        
         //UdeskSDK代理
         [UdeskManager receiveUdeskDelegate:self];
         //获取db消息
         [self requestDataBaseMessageContent];
-        //创建用户
-        [self createCustomer];
         //网络监测
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kUdeskReachabilityChangedNotification object:nil];
         self.reachability  = [UdeskReachability reachabilityWithHostName:@"www.baidu.com"];
         [self.reachability startNotifier];
     }
     return self;
+}
+
+
+//根据是否设置按后台配置
+- (void)createCustomerWithSDKSetting:(UdeskSetting *)setting {
+
+    if (setting) {
+
+        self.sdkSetting = setting;
+        
+        if (setting.isWorktime.boolValue) {
+            [self createCustomer];
+        }
+        else {
+            UdeskAgent *agentModel = [[UdeskAgent alloc] init];
+            agentModel.code = UDAgentStatusResultOffline;
+            //回调客服信息到vc显示
+            [self callbackAgentModel:agentModel];
+            
+            [self showAlertNotWorkTime];
+        }
+        
+        return;
+    }
+    
+    [self createCustomer];
+}
+
+- (void)showAlertNotWorkTime {
+
+    if (self.sdkSetting) {
+     
+        if (self.sdkSetting.enableWebImFeedback.boolValue) {
+#warning 这里以后需要做成用户在sdk端可自定义的
+            NSString *no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
+            [self.chatAlert showAgentNotOnlineAlertWithMessage:no_reply_hint enableWebImFeedback:YES];
+        }
+        else {
+            
+            NSString *no_reply_hint = self.sdkSetting.noReplyHint;
+            if (!no_reply_hint || no_reply_hint.length <= 0) {
+                no_reply_hint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
+            }
+            [self.chatAlert showAgentNotOnlineAlertWithMessage:no_reply_hint enableWebImFeedback:NO];
+        }
+    }
+    else {
+        [self.chatAlert showAgentNotOnlineAlert];
+    }
 }
 
 //创建用户
@@ -91,8 +136,7 @@
             else {
                 NSLog(@"Udesk SDK初始化失败，请查看控制台LOG");
             }
-        }
-        
+        }        
     }];
 }
 
@@ -415,9 +459,12 @@
     //回调客服信息到vc显示
     [self callbackAgentModel:agentModel];
     
-    if (agentModel.code != UDAgentStatusResultOnline && agentModel.code != UDAgentStatusResultQueue) {
+    if (agentModel.code != UDAgentStatusResultOnline) {
         
-        [self showAlertViewWithAgentCode:agentModel.code];
+        if (self.isNotShowAlert) {
+            return;
+        }
+        [self showAlertViewWithAgent];
         return;
     }
     //只有客服在线才发送消息
@@ -553,14 +600,12 @@
     
     if (_agentModel.code != UDAgentStatusResultOnline) {
         
-        [self showAlertViewWithAgentCode:_agentModel.code];
+        [self showAlertViewWithAgent];
         return;
     }
     
     if ([UdeskTools isBlankString:text]) {
-        UdeskAlertController *notOnline = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"udesk_no_send_empty")];
-        [notOnline addCloseActionWithTitle:getUDLocalizedString(@"udesk_sure") Handler:nil];
-        [notOnline showWithSender:nil controller:nil animated:YES completion:NULL];
+        [self.chatAlert showAlertWithMessage:getUDLocalizedString(@"udesk_no_send_empty")];
         return;
     }
     //是否需要显示时间
@@ -581,7 +626,7 @@
     
     if (_agentModel.code != UDAgentStatusResultOnline) {
         
-        [self showAlertViewWithAgentCode:_agentModel.code];
+        [self showAlertViewWithAgent];
         return;
     }
     //是否需要显示时间
@@ -605,7 +650,7 @@
     
     if (_agentModel.code != UDAgentStatusResultOnline) {
         
-        [self showAlertViewWithAgentCode:_agentModel.code];
+        [self showAlertViewWithAgent];
         return;
     }
     //是否需要显示时间
@@ -637,15 +682,47 @@
     }
     else {
         
-        [self showAlertViewWithAgentCode:self.agentModel.code];
+        [self showAlertViewWithAgent];
     }
 }
 
 //根据客服code展示alertview
-- (void)showAlertViewWithAgentCode:(UDAgentStatusType)code {
+- (void)showAlertViewWithAgent {
     
-    [self.chatAlert showChatAlertViewWithCode:code];
+    if (self.sdkSetting) {
+        
+        NSString *no_reply_hint = self.sdkSetting.noReplyHint;
+        if(self.agentModel.code == UDAgentStatusResultQueue) {
+            no_reply_hint = self.agentModel.message;
+        }
+        
+        //开启留言
+        if (self.sdkSetting.enableWebImFeedback.boolValue) {
+            
+#warning 这里以后需要做成用户在sdk端可自定义的
+            if (self.agentModel.code == UDAgentStatusResultOffline) {
+                no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
+            }
+            
+            [self.chatAlert showChatAlertViewWithCode:self.agentModel.code andMessage:no_reply_hint enableWebImFeedback:YES];
+            return;
+        }
+        
+        //关闭留言
+        if (self.agentModel.code == UDAgentStatusResultOffline) {
+            if (!no_reply_hint || no_reply_hint.length <= 0) {
+                no_reply_hint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
+            }
+        }
+        
+        [self.chatAlert showChatAlertViewWithCode:self.agentModel.code andMessage:no_reply_hint enableWebImFeedback:NO];
+        
+        return;
+    }
+    
+    [self.chatAlert showChatAlertViewWithCode:self.agentModel.code andMessage:self.agentModel.message enableWebImFeedback:YES];
 }
+
 
 #pragma mark - 更新消息内容
 - (void)updateContent {

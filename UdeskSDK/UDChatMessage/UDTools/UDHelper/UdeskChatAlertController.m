@@ -10,44 +10,68 @@
 #import "UdeskAlertController.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskUtils.h"
+#import "UdeskTicketViewController.h"
+#import "UdeskSDKShow.h"
 
-@implementation UdeskChatAlertController
+@interface UdeskChatAlertController()
+
+@end
+
+@implementation UdeskChatAlertController {
+
+    UdeskAlertController *queueAlert;
+}
 
 #pragma mark - Alert
 //排队Alert
-- (void)showQueueStatusAlert {
+- (void)showQueueStatusAlertWithMessage:(NSString *)message
+                    enableWebImFeedback:(BOOL)enableWebImFeedback {
+    
+    if (queueAlert) {
+        return;
+    }
     
     NSString *ticketButtonTitle = getUDLocalizedString(@"udesk_leave_msg");
-    UdeskAlertController *queueAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"udesk_alert_view_agent_busy_leave_msg")];
-    [queueAlert addCloseActionWithTitle:getUDLocalizedString(@"udesk_cancel") Handler:NULL];
-    @udWeakify(self);
-    [queueAlert addAction:[UdeskAlertAction actionWithTitle:ticketButtonTitle handler:^(UdeskAlertAction * _Nonnull action) {
+    queueAlert = [UdeskAlertController alertControllerWithTitle:ticketButtonTitle message:message preferredStyle:UDAlertControllerStyleAlert];
+    
+    [queueAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_cancel") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
         
-        @udStrongify(self);
-        if (self.delegate) {
-            if ([self.delegate respondsToSelector:@selector(didSelectSendTicket)]) {
-                [self.delegate didSelectSendTicket];
-            }
-        }
+        queueAlert = nil;
     }]];
+
+    if (enableWebImFeedback) {
     
-    [queueAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+        @udWeakify(self);
+        [queueAlert addAction:[UdeskAlertAction actionWithTitle:ticketButtonTitle style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+            
+            queueAlert = nil;
+            @udStrongify(self);
+            if (self.delegate) {
+                if ([self.delegate respondsToSelector:@selector(didSelectSendTicket)]) {
+                    [self.delegate didSelectSendTicket];
+                }
+            }
+        }]];
+    }
     
+    [self presentViewController:queueAlert];
 }
 
 //客服不在线Alert
 - (void)showAgentNotOnlineAlert {
-    
+
     NSString *title = getUDLocalizedString(@"udesk_agent_offline");
     NSString *message = getUDLocalizedString(@"udesk_alert_view_leave_msg");
     NSString *cancelButtonTitle = getUDLocalizedString(@"udesk_cancel");
     NSString *ticketButtonTitle = getUDLocalizedString(@"udesk_leave_msg");
     
-    UdeskAlertController *notOnlineAlert = [UdeskAlertController alertWithTitle:title message:message];
-    [notOnlineAlert addCloseActionWithTitle:cancelButtonTitle Handler:NULL];
+    UdeskAlertController *notOnlineAlert = [UdeskAlertController alertControllerWithTitle:title message:message preferredStyle:UDAlertControllerStyleAlert];
+    
+    [notOnlineAlert addAction:[UdeskAlertAction actionWithTitle:cancelButtonTitle style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    }]];
     
     @udWeakify(self);
-    [notOnlineAlert addAction:[UdeskAlertAction actionWithTitle:ticketButtonTitle handler:^(UdeskAlertAction * _Nonnull action) {
+    [notOnlineAlert addAction:[UdeskAlertAction actionWithTitle:ticketButtonTitle style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
         
         @udStrongify(self);
         if (self.delegate) {
@@ -57,34 +81,64 @@
         }
     }]];
     
-    [notOnlineAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+    [self presentViewController:notOnlineAlert];
+}
+
+//客服不在线Alert
+- (void)showAgentNotOnlineAlertWithMessage:(NSString *)message
+                       enableWebImFeedback:(BOOL)enableWebImFeedback {
+
+    NSString *title = getUDLocalizedString(@"udesk_agent_offline");
+    NSString *cancelButtonTitle = getUDLocalizedString(@"udesk_cancel");
+    NSString *ticketButtonTitle = getUDLocalizedString(@"udesk_leave_msg");
     
+    UdeskAlertController *notOnlineAlert = [UdeskAlertController alertControllerWithTitle:title message:message preferredStyle:UDAlertControllerStyleAlert];
+    [notOnlineAlert addAction:[UdeskAlertAction actionWithTitle:cancelButtonTitle style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    }]];
+    
+    if (enableWebImFeedback) {
+        @udWeakify(self);
+        [notOnlineAlert addAction:[UdeskAlertAction actionWithTitle:ticketButtonTitle style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+            
+            @udStrongify(self);
+            if (self.delegate) {
+                if ([self.delegate respondsToSelector:@selector(didSelectSendTicket)]) {
+                    [self.delegate didSelectSendTicket];
+                }
+            }
+        }]];
+    }
+    
+    [self presentViewController:notOnlineAlert];
 }
 
 //无网络Alert
 - (void)showNetWorkDisconnectAlert {
+
+    UdeskAlertController *notNetworkAlert = [UdeskAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_network_disconnect") preferredStyle:UDAlertControllerStyleAlert];
+    [notNetworkAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_cancel") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    }]];
     
-    UdeskAlertController *notNetworkAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"udesk_network_disconnect")];
-    [notNetworkAlert addCloseActionWithTitle:getUDLocalizedString(@"udesk_sure") Handler:NULL];
-    [notNetworkAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+    [self presentViewController:notNetworkAlert];
 }
 
 //不存在客服或客服组
 - (void)showNotExistAgentAlert:(NSString *)message {
     
-    UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertWithTitle:nil message:message];
-    [notExistAgentAlert addCloseActionWithTitle:getUDLocalizedString(@"udesk_sure") Handler:NULL];
-    [notExistAgentAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+    UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertControllerWithTitle:nil message:message preferredStyle:UDAlertControllerStyleAlert];
+    [notExistAgentAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_sure") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    }]];
     
+    [self presentViewController:notExistAgentAlert];
 }
 
 //黑名单
 - (void)showIsBlacklistedAlert {
     
-    UdeskAlertController *blacklisted = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"udesk_alert_view_blocked_list")];
+    UdeskAlertController *blacklisted = [UdeskAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_alert_view_blocked_list") preferredStyle:UDAlertControllerStyleAlert];
     
     @udWeakify(self);
-    [blacklisted addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_sure") handler:^(UdeskAlertAction * _Nonnull action) {
+    [blacklisted addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_sure") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
         @udStrongify(self);
         if (self.delegate) {
             if ([self.delegate respondsToSelector:@selector(didSelectBlacklistedAlertViewOkButton)]) {
@@ -93,44 +147,83 @@
         }
     }]];
     
-    [blacklisted addCloseActionWithTitle:getUDLocalizedString(@"udesk_close") Handler:nil];
+    [blacklisted addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    }]];
     
-    [blacklisted showWithSender:nil controller:nil animated:YES completion:NULL];
+    [self presentViewController:blacklisted];
 }
 
 //未知错误
 - (void)showNotConnectedAlert {
+
+    UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_connecting_agent") preferredStyle:UDAlertControllerStyleAlert];
+    [notExistAgentAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    }]];
     
-    UdeskAlertController *notExistAgentAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"udesk_wait_connecting")];
-    [notExistAgentAlert addCloseActionWithTitle:getUDLocalizedString(@"udesk_sure") Handler:NULL];
-    [notExistAgentAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+    [self presentViewController:notExistAgentAlert];
 }
 
 //评价提交成功Alert
 - (void)surveyCompletion {
     
-    UdeskAlertController *completionAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"udesk_thanks")];
-    [completionAlert addCloseActionWithTitle:getUDLocalizedString(@"udesk_close") Handler:NULL];
+    UdeskAlertController *completionAlert = [UdeskAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_thanks") preferredStyle:UDAlertControllerStyleAlert];
+    [completionAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    }]];
     
-    [completionAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+    [self presentViewController:completionAlert];
 }
 
 //评价提交成功Alert
 - (void)requestAgentAgain {
     
-    UdeskAlertController *agentAlert = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"udesk_reassign_agent")];
-    [agentAlert addCloseActionWithTitle:getUDLocalizedString(@"udesk_close") Handler:NULL];
+    UdeskAlertController *agentAlert = [UdeskAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_reassign_agent") preferredStyle:UDAlertControllerStyleAlert];
+    [agentAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    }]];
     
-    [agentAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+    [self presentViewController:agentAlert];
 }
 
+- (void)showAlertWithMessage:(NSString *)message {
 
-//根据客服code弹出提示窗
-- (void)showChatAlertViewWithCode:(NSInteger)code {
-	
+    UdeskAlertController *agentAlert = [UdeskAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UDAlertControllerStyleAlert];
+    [agentAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    }]];
+    
+    [self presentViewController:agentAlert];
+}
+
+- (UIViewController *)currentViewController
+{
+    UIWindow *keyWindow  = [UIApplication sharedApplication].keyWindow;
+    UIViewController *vc = keyWindow.rootViewController;
+    while (vc.presentedViewController)
+    {
+        vc = vc.presentedViewController;
+        
+        if ([vc isKindOfClass:[UINavigationController class]])
+        {
+            vc = [(UINavigationController *)vc visibleViewController];
+        }
+        else if ([vc isKindOfClass:[UITabBarController class]])
+        {
+            vc = [(UITabBarController *)vc selectedViewController];
+        }
+    }
+    return vc;
+}
+
+- (void)presentViewController:(UdeskAlertController *)alertController {
+    
+    [[self currentViewController] presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)showChatAlertViewWithCode:(NSInteger)code
+                       andMessage:(NSString *)message
+              enableWebImFeedback:(BOOL)enableWebImFeedback {
+
     if (code == 2002) {
         //客服不在线提示
-        [self showAgentNotOnlineAlert];
+        [self showAgentNotOnlineAlertWithMessage:message enableWebImFeedback:enableWebImFeedback];
     }
     else if (code == 2003) {
         //无网络提示
@@ -138,10 +231,10 @@
     }
     else if (code == 2001) {
         //排队提示
-        [self showQueueStatusAlert];
+        [self showQueueStatusAlertWithMessage:message enableWebImFeedback:enableWebImFeedback];
     }
     else if (code == 2004) {
-        //排队提示
+        //重新分配客服提示
         [self requestAgentAgain];
     }
     else if (code == 5050) {

@@ -41,6 +41,7 @@
 "udesk_robot_title" = "智能机器人";
 "udesk_alert_view_agent_busy_leave_msg" = "当前客服正繁忙，如需留言请点击按钮进入表单留言";
 "udesk_alert_view_leave_msg" = "您可以选择提交表单来描述您的问题，稍后我们会和您联系";
+"udesk_alert_view_no_reply_hint" = "当前无客服在线，请在工作时间联系客服";
 "udesk_network_disconnect" = "网络断开连接，请先连接网络";
 "udesk_wait_connecting" = "正在连接，请稍后...";
 "udesk_thanks" = "感谢您的评价";

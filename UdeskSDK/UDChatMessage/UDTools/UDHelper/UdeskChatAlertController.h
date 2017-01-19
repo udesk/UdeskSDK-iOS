@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @protocol UdeskChatAlertDelegate <NSObject>
 
@@ -19,10 +20,15 @@
 @interface UdeskChatAlertController : NSObject
 
 @property (nonatomic, weak) id <UdeskChatAlertDelegate> delegate;
+
 //排队Alert
-- (void)showQueueStatusAlert;
+- (void)showQueueStatusAlertWithMessage:(NSString *)message
+                    enableWebImFeedback:(BOOL)enableWebImFeedback;
 //客服不在线Alert
 - (void)showAgentNotOnlineAlert;
+//客服不在线Alert
+- (void)showAgentNotOnlineAlertWithMessage:(NSString *)message
+                       enableWebImFeedback:(BOOL)enableWebImFeedback;
 //无网络Alert
 - (void)showNetWorkDisconnectAlert;
 //不存在客服或客服组
@@ -32,8 +38,13 @@
 //未知错误
 - (void)showNotConnectedAlert;
 //根据客服code弹出提示窗
-- (void)showChatAlertViewWithCode:(NSInteger)code;
+- (void)showChatAlertViewWithCode:(NSInteger)code
+                       andMessage:(NSString *)message
+              enableWebImFeedback:(BOOL)enableWebImFeedback;
+
 //评价提交成功Alert
 - (void)surveyCompletion;
+
+- (void)showAlertWithMessage:(NSString *)message;
 
 @end

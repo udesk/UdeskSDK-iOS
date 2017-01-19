@@ -9,7 +9,6 @@
 #import "UdeskPhotoView.h"
 #import "UdeskOneScrollView.h"
 #import "UdeskFoundationMacro.h"
-#import "UdeskAlertController.h"
 #import "UdeskManager.h"
 #import "UdeskUtils.h"
 
@@ -82,9 +81,11 @@
         msg = getUDLocalizedString(@"udesk_success_save");
     }
     
-    UdeskAlertController *saveImageAlert = [UdeskAlertController alertWithTitle:nil message:msg];
-    [saveImageAlert addCloseActionWithTitle:getUDLocalizedString(@"udesk_sure") Handler:NULL];
-    [saveImageAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+    [alert show];
+#pragma clang diagnostic pop
 }
 
 #pragma mark - OneScroll的代理方法

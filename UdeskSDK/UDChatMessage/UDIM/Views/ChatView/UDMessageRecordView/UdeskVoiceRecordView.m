@@ -246,11 +246,15 @@
                 else {
                     bCanRecord = NO;
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                         [[[UIAlertView alloc] initWithTitle:nil
                                                     message:getUDLocalizedString(@"udesk_microphone_denied")
                                                    delegate:nil
                                           cancelButtonTitle:getUDLocalizedString(@"udesk_close")
                                           otherButtonTitles:nil] show];
+#pragma clang diagnostic pop
                     });
                 }
             }];

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+@class UdeskSDKConfig;
 @interface UdeskBaseViewController : UIViewController
 
 - (void)dismissChatViewController;

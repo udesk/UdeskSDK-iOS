@@ -6,12 +6,15 @@
 //  Copyright (c) 2015年 xuchen. All rights reserved.
 //
 
-#import "UdeskBaseViewController.h"
-#import "UdeskSDKConfig.h"
+#import <UIKit/UIKit.h>
 
-@interface UdeskChatViewController : UdeskBaseViewController
+@class UdeskSDKConfig;
+@class UdeskSetting;
+@interface UdeskChatViewController : UIViewController
 
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config;
 
+- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
+                     withSettings:(UdeskSetting *)setting;
 
 @end

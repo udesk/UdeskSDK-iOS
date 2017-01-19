@@ -7,10 +7,16 @@
 //
 
 #import "UdeskBaseViewController.h"
-#import "UdeskSDKConfig.h"
+#import "UdeskSetting.h"
 
 @interface UdeskRobotViewController : UdeskBaseViewController
 
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config withURL:(NSURL *)URL;
+
+- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
+                          withURL:(NSURL *)URL
+                      withSetting:(UdeskSetting *)setting;
+
+@property (nonatomic, strong) UdeskSetting *sdkSetting;
 
 @end

@@ -15,7 +15,7 @@
 #import "UdeskSDKConfig.h"
 #import "UDLanguageViewController.h"
 
-@interface UDDeveloperViewController() {
+@interface UDDeveloperViewController()<UIActionSheetDelegate> {
 
     NSArray *developerDataArray;
     NSArray *developerImageArray;
@@ -131,28 +131,36 @@
             
             NSString *title = @"指定分配客服";
             
-            UdeskAlertController *inputAgentIdAlert = [UdeskAlertController alertWithTitle:title message:@"注意：如果你已经与客服对话并且客服没有结束你的会话，指定分配客服将会无效。"];
+            UdeskAlertController *inputAgentIdAlert = [UdeskAlertController alertControllerWithTitle:title message:@"注意：如果你已经与客服对话并且客服没有结束你的会话，指定分配客服将会无效。" preferredStyle:UDAlertControllerStyleAlert];
+            
             __weak UdeskAlertController *weakInputAgentIdAlert = inputAgentIdAlert;
             
-            [inputAgentIdAlert addCloseActionWithTitle:@"取消" Handler:^(UdeskAlertAction * _Nonnull action) {
-                [weakInputAgentIdAlert.textField resignFirstResponder];
-            }];
-            [inputAgentIdAlert addAction:[UdeskAlertAction actionWithTitle:@"确定" handler:^(UdeskAlertAction * _Nonnull action) {
+            [inputAgentIdAlert addAction:[UdeskAlertAction actionWithTitle:@"取消" style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
                 
-                if (weakInputAgentIdAlert.textField.text.length) {
+            }]];
+            
+            [inputAgentIdAlert addAction:[UdeskAlertAction actionWithTitle:@"确定" style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+                
+                UITextField *textField = weakInputAgentIdAlert.textFields.firstObject;
+                
+                if (textField.text.length) {
                     
                     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-                    [chatViewManager setScheduledAgentId:weakInputAgentIdAlert.textField.text];
+                    [chatViewManager setScheduledAgentId:textField.text];
                     [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
                 }
                 else {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请输入ID" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
                     [alertView show];
                 }
+                
             }]];
             
-            [inputAgentIdAlert addTextFieldWithConfigurationHandler:nil];
-            [inputAgentIdAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+            [inputAgentIdAlert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+                
+            }];
+            
+            [self presentViewController:inputAgentIdAlert animated:YES completion:nil];
             
             break;
         }
@@ -160,33 +168,37 @@
             
             NSString *title = @"指定分配客服组";
             
-            UdeskAlertController *inputGroupIdAlert = [UdeskAlertController alertWithTitle:title message:@"注意：如果你已经与客服对话并且客服没有结束你的会话，指定分配客服将会无效。"];
-            __weak UdeskAlertController *weakInputGroupIdAlert = inputGroupIdAlert;
+            UdeskAlertController *inputAgentIdAlert = [UdeskAlertController alertControllerWithTitle:title message:@"注意：如果你已经与客服对话并且客服没有结束你的会话，指定分配客服将会无效。" preferredStyle:UDAlertControllerStyleAlert];
             
-            [inputGroupIdAlert addCloseActionWithTitle:@"取消" Handler:^(UdeskAlertAction * _Nonnull action) {
-                [weakInputGroupIdAlert.textField resignFirstResponder];
-            }];
+            __weak UdeskAlertController *weakInputAgentIdAlert = inputAgentIdAlert;
             
-            [inputGroupIdAlert addAction:[UdeskAlertAction actionWithTitle:@"确定" handler:^(UdeskAlertAction * _Nonnull action) {
+            [inputAgentIdAlert addAction:[UdeskAlertAction actionWithTitle:@"取消" style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
                 
-                [weakInputGroupIdAlert.textField resignFirstResponder];
+            }]];
+            
+            [inputAgentIdAlert addAction:[UdeskAlertAction actionWithTitle:@"确定" style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
                 
-                if (weakInputGroupIdAlert.textField.text.length) {
+                UITextField *textField = weakInputAgentIdAlert.textFields.firstObject;
+                
+                if (textField.text.length) {
                     
                     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-                    [chatViewManager setScheduledGroupId:weakInputGroupIdAlert.textField.text];
+                    [chatViewManager setScheduledGroupId:textField.text];
                     [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
                 }
                 else {
-                    
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请输入ID" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
                     [alertView show];
                 }
+                
             }]];
             
-            [inputGroupIdAlert addTextFieldWithConfigurationHandler:nil];
+            [inputAgentIdAlert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+                
+            }];
             
-            [inputGroupIdAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+            [self presentViewController:inputAgentIdAlert animated:YES completion:nil];
+
             
             break;
         }
@@ -211,9 +223,8 @@
                 }
             }
 
-             UdeskAlertController *unreadeMessagesAlert = [UdeskAlertController alertWithTitle:@"未读消息(这里只展示最近10条)" message:message];
-            [unreadeMessagesAlert addCloseActionWithTitle:@"取消" Handler:nil];
-            [unreadeMessagesAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"未读消息(这里只展示最近10条)" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alertView show];
             
             break;
         }
@@ -221,10 +232,8 @@
         case 3: {
             
             NSString *title = [NSString stringWithFormat:@"当前会话有 %ld 条未读",(long)[UdeskManager getLocalUnreadeMessagesCount]];
-            
-            UdeskAlertController *notNetworkAlert = [UdeskAlertController alertWithTitle:title message:nil];
-            [notNetworkAlert addCloseActionWithTitle:@"确定" Handler:NULL];
-            [notNetworkAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alertView show];
             
             break;
         }
@@ -238,23 +247,8 @@
             
         case 5: {
             
-            UdeskAlertController *changeUIAlert = [UdeskAlertController alertControllerWithTitle:@"更换UI模版" message:nil preferredStyle:UDAlertControllerStyleActionSheet];
-            [changeUIAlert addCloseActionWithTitle:@"取消" Handler:nil];
-            [changeUIAlert addAction:[UdeskAlertAction actionWithTitle:@"原生" handler:^(UdeskAlertAction * _Nonnull action) {
-                
-                UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-                
-                [manager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
-                
-            }]];
-            [changeUIAlert addAction:[UdeskAlertAction actionWithTitle:@"经典" handler:^(UdeskAlertAction * _Nonnull action) {
-                
-                UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle blueStyle]];
-                
-                [manager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
-            }]];
-            
-            [changeUIAlert showWithSender:nil controller:self animated:YES completion:NULL];
+            UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"更换UI模版" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"原生",@"经典", nil];
+            [sheet showInView:self.view];
             
             break;
         }
@@ -262,7 +256,6 @@
         case 6: {
             
             UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-            
             [chatViewManager pushUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
             
             break;
@@ -292,6 +285,12 @@
             break;
     }
     
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:buttonIndex?[UdeskSDKStyle blueStyle]:[UdeskSDKStyle defaultStyle]];
+    [chatViewManager pushUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
 }
 
 - (void)presentOnViewController:(UIViewController *)rootViewController udeskViewController:(id)udeskViewController transiteAnimation:(UDTransiteAnimationType)animation {

@@ -24,7 +24,6 @@
 
     // 1.添加左滑返回手势
     [self addGesture];
-
 }
 
 - (void)setupBase
@@ -37,6 +36,8 @@
     if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
         self.navigationController.navigationBar.translucent = NO;
     }
+
+    self.edgesForExtendedLayout = UIRectEdgeNone;
 }
 
 - (void)addGesture
@@ -90,9 +91,5 @@
 
 }
 
-- (void)dealloc
-{
-    NSLog(@"%@销毁了",[self class]);
-}
 
 @end

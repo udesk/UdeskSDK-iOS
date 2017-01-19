@@ -40,14 +40,12 @@
                     NSArray *optionsArray = (NSArray *)options;
                     if (optionsArray.count > 0) {
                         //根据返回的信息填充Alert数据
-                        _optionsAlert = [UdeskAlertController alertWithTitle:title message:desc];
-                        [_optionsAlert addCloseActionWithTitle:getUDLocalizedString(@"udesk_close") Handler:^(UdeskAlertAction * _Nonnull action) {
-                            _optionsAlert = nil;
-                        }];
+                        _optionsAlert = [UdeskAlertController alertControllerWithTitle:title message:desc preferredStyle:UDAlertControllerStyleAlert];
+
                         //遍历选项数组
                         for (NSDictionary *option in options) {
                             //依次添加选项
-                            [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:[option objectForKey:@"text"] handler:^(UdeskAlertAction * _Nonnull action) {
+                            [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:[option objectForKey:@"text"] style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
                                 
                                 _optionsAlert = nil;
                                 //根据点击的选项 提交到Udesk
@@ -56,13 +54,17 @@
                                     if (completion) {
                                         completion();
                                     }
-                                    
                                 }];
-                                
                             }]];
                         }
+                        
+                        [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+                            
+                            _optionsAlert = nil;
+                        }]];
+                        
                         //展示Alert
-                        [_optionsAlert showWithSender:nil controller:nil animated:YES completion:NULL];
+                        [[self currentViewController] presentViewController:_optionsAlert animated:YES completion:nil];
                     }
                     else {
                         [self showNotSurvey];
@@ -82,16 +84,38 @@
 
 - (void)showNotSurvey {
 
-    UdeskAlertController *alert = [UdeskAlertController alertWithTitle:@"错误" message:@"没有满意度调查选项内容,请联系管理员添加！"];
-    [alert addCloseActionWithTitle:@"取消" Handler:nil];
+    UdeskAlertController *alert = [UdeskAlertController alertControllerWithTitle:@"错误" message:@"没有满意度调查选项内容,请联系管理员添加！" preferredStyle:UDAlertControllerStyleAlert];
+    [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+        
+    }]];
     //展示Alert
-    [alert showWithSender:nil controller:nil animated:YES completion:NULL];
+    [[self currentViewController] presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)checkHasSurveyWithAgentId:(NSString *)agentId
                        completion:(void (^)(NSString *hasSurvey))completion {
 
     [UdeskManager checkHasSurveyWithAgentId:agentId completion:completion];
+}
+
+- (UIViewController *)currentViewController
+{
+    UIWindow *keyWindow  = [UIApplication sharedApplication].keyWindow;
+    UIViewController *vc = keyWindow.rootViewController;
+    while (vc.presentedViewController)
+    {
+        vc = vc.presentedViewController;
+        
+        if ([vc isKindOfClass:[UINavigationController class]])
+        {
+            vc = [(UINavigationController *)vc visibleViewController];
+        }
+        else if ([vc isKindOfClass:[UITabBarController class]])
+        {
+            vc = [(UITabBarController *)vc selectedViewController];
+        }
+    }
+    return vc;
 }
 
 @end

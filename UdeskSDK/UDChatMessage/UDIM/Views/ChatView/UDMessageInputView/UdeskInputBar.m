@@ -194,11 +194,14 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
             } else {
                 // 可以显示一个提示框告诉用户这个app没有得到允许？
                 dispatch_async(dispatch_get_main_queue(), ^{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                     [[[UIAlertView alloc] initWithTitle:nil
                                                 message:getUDLocalizedString(@"udesk_microphone_denied")
                                                delegate:nil
                                       cancelButtonTitle:getUDLocalizedString(@"udesk_close")
                                       otherButtonTitles:nil] show];
+#pragma clang diagnostic pop
                 });
                 
             }
@@ -228,7 +231,7 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
 
 //点击相册按钮
 - (void)albumButton:(UIButton *)button {
-
+    
     if ([ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusNotDetermined) {
         
         ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
@@ -251,11 +254,14 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
             
         } failureBlock:^(NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 [[[UIAlertView alloc] initWithTitle:nil
                                             message:getUDLocalizedString(@"udesk_album_denied")
                                            delegate:nil
                                   cancelButtonTitle:getUDLocalizedString(@"udesk_close")
                                   otherButtonTitles:nil] show];
+#pragma clang diagnostic pop
             });
         }];
     }
@@ -270,11 +276,14 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     else if([ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusDenied){
     
         dispatch_async(dispatch_get_main_queue(), ^{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             [[[UIAlertView alloc] initWithTitle:nil
                                         message:getUDLocalizedString(@"udesk_album_denied")
                                        delegate:nil
                               cancelButtonTitle:getUDLocalizedString(@"udesk_close")
                               otherButtonTitles:nil] show];
+#pragma clang diagnostic pop
         });
     }
     

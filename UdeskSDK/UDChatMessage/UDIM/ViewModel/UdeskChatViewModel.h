@@ -11,6 +11,7 @@
 
 @class UdeskMessage;
 @class UdeskAgent;
+@class UdeskSetting;
 
 @protocol UdeskChatViewModelDelegate <NSObject>
 
@@ -55,11 +56,15 @@
 
 /** 是否需要显示下拉加载 */
 @property (nonatomic, assign         ) BOOL                       isShowRefresh;
+/** 不显示alertview */
+@property (nonatomic, assign         ) BOOL                       isNotShowAlert;
 /** 消息数据 */
 @property (nonatomic, strong,readonly) NSMutableArray             *messageArray;
 /** ViewModel代理 */
 @property (nonatomic, weak           ) id <UdeskChatViewModelDelegate> delegate;
 
+//创建用户
+- (void)createCustomerWithSDKSetting:(UdeskSetting *)setting;
 
 /**
  *  加载更多DB消息

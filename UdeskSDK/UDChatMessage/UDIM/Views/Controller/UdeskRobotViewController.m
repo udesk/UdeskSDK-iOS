@@ -16,11 +16,16 @@
 #import "UdeskUtils.h"
 #import "UdeskLanguageTool.h"
 #import "UdeskSDKManager.h"
+#import "UdeskSDKShow.h"
+#import "UdeskAgentMenuViewController.h"
 
 @interface UdeskRobotViewController ()
 
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 @property (nonatomic, strong) NSURL *robotURL;
+
+
+@property (nonatomic, strong) UIWebView *sbWebView;
 
 @end
 
@@ -29,17 +34,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+
+
     self.view.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.tableViewBackGroundColor;
 
     [UdeskManager createServerCustomerCompletion:^(BOOL success, NSError *error) {
         
         if (success) {
     
-            //这个函数只有在createServerCustomerCompletion回调成功之后才有用
-            if (![UdeskManager supportTransfer]) {
-                self.navigationItem.rightBarButtonItems = nil;
+            if (self.sdkSetting) {
+                if (!self.sdkSetting.enableAgent.boolValue) {
+                    self.navigationItem.rightBarButtonItems = nil;
+                }
+            }else{
+                //这个函数只有在createServerCustomerCompletion回调成功之后才有用
+                if (![UdeskManager supportTransfer]) {
+                    self.navigationItem.rightBarButtonItems = nil;
+                }
             }
-            
+
+
             CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
             UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:webViewRect];
             intelligenceWeb.backgroundColor=[UIColor whiteColor];
@@ -50,7 +64,8 @@
             [intelligenceWeb loadRequest:request];
             
             [self.view addSubview:intelligenceWeb];
-            
+
+            self.sbWebView = intelligenceWeb;
         }
         else {
         
@@ -68,17 +83,19 @@
 //黑名单
 - (void)showIsBlacklistedAlert {
     
-    UdeskAlertController *blacklisted = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"udesk_alert_view_blocked_list")];
+    UdeskAlertController *blacklisted = [UdeskAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_alert_view_blocked_list") preferredStyle:UDAlertControllerStyleAlert];
     
     @udWeakify(self);
-    [blacklisted addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_sure") handler:^(UdeskAlertAction * _Nonnull action) {
+    [blacklisted addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_sure") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
         @udStrongify(self);
         [self dismissChatViewController];
     }]];
     
-    [blacklisted addCloseActionWithTitle:getUDLocalizedString(@"udesk_close") Handler:nil];
+    [blacklisted addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+        
+    }]];
     
-    [blacklisted showWithSender:nil controller:nil animated:YES completion:NULL];
+    [self presentViewController:blacklisted animated:YES completion:nil];
 }
 
 - (void)dealloc
@@ -113,24 +130,80 @@
             language = @"&language=en-us";
         }
         
-        _robotURL = [NSURL URLWithString:[URL.absoluteString stringByAppendingString:language]];
+        self.robotURL = [NSURL URLWithString:[URL.absoluteString stringByAppendingString:language]];
         
     }
     return self;
 }
 
+- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
+                          withURL:(NSURL *)URL
+                      withSetting:(UdeskSetting *)setting {
+
+    _sdkSetting = setting;
+    return [self initWithSDKConfig:config withURL:URL];
+}
+
 - (void)didSelectNavigationRightButton {
     
-    if (_sdkConfig.transferToMenu) {
-        UdeskSDKManager *sdk = [[UdeskSDKManager alloc] initWithSDKStyle:_sdkConfig.sdkStyle];
-        [sdk pushUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
-    }
-    else {
+    if (self.sdkSetting) {
+
+        UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:self.sdkConfig];
         
-        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:_sdkConfig.sdkStyle];
-        [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:^{
-        }];
+        if (self.sdkSetting.enableImGroup) {
+            
+            //查看是否有导航栏
+            [UdeskManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
+                
+                //查看导航栏错误，直接进入聊天页面
+                if (error) {
+                    UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig withSettings:self.sdkSetting];
+                    [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+                    
+                    return ;
+                }
+                
+                if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+                    
+                    NSArray *result = [responseObject objectForKey:@"result"];
+                    //有设置客服导航栏
+                    if (result.count) {
+                        //如果后台有配置
+                        UdeskAgentMenuViewController *agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig menuArray:result withSetting:self.sdkSetting];
+                        
+                        [show presentOnViewController:self udeskViewController:agentMenu transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+                    }
+                    else {
+                        //没有设置导航栏 直接进入聊天页面
+                        UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig withSettings:self.sdkSetting];
+                        [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+                    }
+                }
+                
+            }];
+
+        }else{
+            
+            UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig withSettings:self.sdkSetting];
+            [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+        }
+
+    }else{
+        
+        if (_sdkConfig.transferToMenu) {
+            UdeskSDKManager *sdk = [[UdeskSDKManager alloc] initWithSDKStyle:_sdkConfig.sdkStyle];
+            [sdk pushUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
+        }
+        else {
+
+            UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:_sdkConfig.sdkStyle];
+            [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:^{
+            }];
+        }
     }
+
 }
+
+
 
 @end

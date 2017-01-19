@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.4
+//  Version: 3.5.3
 //
 //  Created by xuchen on 16/1/12.
 //  Copyright © 2016年 xuchen. All rights reserved.
@@ -11,6 +11,15 @@
 #import <Foundation/Foundation.h>
 #import "UdeskMessage.h"
 #import "UdeskAgent.h"
+#import "UdeskSetting.h"
+
+// 排队放弃类型枚举
+typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
+    /** 直接从排列中清除 */
+    UdeskForceQuit,
+    /** 标记放弃 */
+    UdeskMark
+};
 
 /**
  *  Udesk客服系统当前有新消息，开发者可实现该协议方法，通过此方法显示小红点未读标识
@@ -48,15 +57,9 @@
 
 @end
 
+
 @interface UdeskManager : NSObject
 
-/**
- *  初始化Udesk，必须调用此函数，请正确填写参数。
- *
- *  @param key    公司密钥
- *  @param domain 公司域名
- */
-+ (void)initWithAppkey:(NSString *)key domianName:(NSString *)domain __deprecated_msg("Use -initWithAppKey:appId:domain");
 /**
  *  初始化Udesk，必须调用此函数，请正确填写参数。
  *
@@ -222,6 +225,11 @@
 + (NSURL *)getRobotURL;
 
 /**
+ * 获取后台配置的机器人URL
+ */
++ (NSURL *)getServerRobotURLWithBaseURL:(NSString *)url;
+
+/**
  *  异步获取
  *
  *  @param completion 回调机器人URL
@@ -346,5 +354,21 @@
  @return yes/no
  */
 + (BOOL)customersAreSession;
+
+/**
+ 获取后台sdk配置
+
+ @param success 成功返回配置model
+ @param failure 失败信息
+ */
++ (void)getServerSDKSetting:(void(^)(UdeskSetting *setting))success
+                    failure:(void(^)(NSError *error))failure;
+
+/**
+ 放弃排队
+
+ @param quiteType 放弃排队类型
+ */
++ (void)quitQueueWithType:(UDQuitQueueType)quiteType;
 
 @end

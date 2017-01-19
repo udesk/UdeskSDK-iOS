@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "UdeskSDKConfig.h"
+#import "UdeskManager.h"
+
+//留言表单点击通知
+#define UdeskClickSendFormButton              @"UdeskClickSendFormButton"
 
 typedef enum : NSUInteger {
     UdeskFAQ,
@@ -19,8 +23,14 @@ typedef enum : NSUInteger {
 
 @interface UdeskSDKManager : NSObject
 
+/**
+ * 类方法调用 
+ */
 + (instancetype)managerWithSDKStyle:(UdeskSDKStyle *)style;
 
+/**
+ * 对象方法调用
+ */
 - (instancetype)initWithSDKStyle:(UdeskSDKStyle *)style;
 
 /**
@@ -32,12 +42,35 @@ typedef enum : NSUInteger {
                              completion:(void (^)(void))completion;
 
 /**
+ * 新版本根据app_id进行后台配置的设置
+ * 在一个ViewController中Push出一个客服聊天界面
+ * @param viewController 在这个viewController中push出客服聊天界面
+ */
+- (void)pushUdeskViewControllerWith:(UIViewController *)viewController
+                             completion:(void (^)(void))completion;
+
+/**
  * 在一个ViewController中Present出一个客服聊天界面的Modal视图
  * @param viewController 在这个viewController中push出客服聊天界面
  */
 - (void)presentUdeskViewControllerWithType:(UdeskType)type
                             viewController:(UIViewController *)viewController
                                 completion:(void (^)(void))completion;
+
+/**
+ * 新版本根据app_id进行后台配置的设置
+ * 在一个ViewController中Present出一个客服聊天界面的Modal视图
+ * @param viewController 在这个viewController中push出客服聊天界面
+ */
+- (void)presentUdeskViewControllerWith:(UIViewController *)viewController
+                            completion:(void (^)(void))completion;
+
+/**
+ 设置自定义留言表单
+
+ @param isCustom
+ */
+- (void)setCustomForm:(BOOL)isCustom;
 
 /**
  *  设置分配给指定的客服id
@@ -119,6 +152,16 @@ typedef enum : NSUInteger {
  *
  */
 - (void)setTransferToAgentMenu:(BOOL)toMenu;
+
+/**
+ * 设置组名
+ */
+- (void)setGroupName:(NSString *)name;
+
+/**
+ * 设置排队放弃类型
+ */
+- (void)setQuitQueueType:(UDQuitQueueType)type;
 
 
 @end

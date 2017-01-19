@@ -18,6 +18,8 @@
 #import "UdeskSDKConfig.h"
 #import "UdeskTransitioningAnimation.h"
 #import "UdeskSDKManager.h"
+#import "UdeskSetting.h"
+#import "UdeskSDKShow.h"
 
 @interface UdeskAgentMenuViewController () <UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
 
@@ -37,10 +39,20 @@
 @property (nonatomic, strong) NSArray        *agentMenu;
 /** sdk配置 */
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
+/** sdk后台配置 */
+@property (nonatomic, strong) UdeskSetting   *sdkSetting;
 
 @end
 
 @implementation UdeskAgentMenuViewController
+
+- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
+                        menuArray:(NSArray *)menu
+                      withSetting:(UdeskSetting *)setting {
+
+    self.sdkSetting = setting;
+    return [self initWithSDKConfig:config menuArray:menu];
+}
 
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config menuArray:(NSArray *)menu
 {
@@ -93,6 +105,7 @@
     _agentMenuScrollView.scrollEnabled = NO;
     
     [self.view addSubview:_agentMenuScrollView];
+
 }
 
 #pragma mark - 请求客服组选择菜单
@@ -124,7 +137,6 @@
     
     //根据最大的级数循环添加tableView
     for (int i = 0; i<tableViewCount;i++) {
-        
         UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStylePlain];
         agentMenuTableView.delegate = self;
         agentMenuTableView.dataSource = self;
@@ -188,13 +200,19 @@
     
     //获取点击菜单选项的子集
     UdeskAgentMenuModel *didSelectModel = self.agentMenuData[indexPath.row];
-    
-    if (didSelectModel.group_id.length > 0|| !didSelectModel.group_id) {
+
+
+    if ([didSelectModel.group_id isKindOfClass:[NSNumber class]]) {
+        didSelectModel.group_id = [NSString stringWithFormat:@"%@",didSelectModel.group_id];
+    }
+
+    if (didSelectModel.group_id.length > 0 || !didSelectModel.group_id) {
         
-        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:_sdkConfig.sdkStyle];
-        [chatViewManager setScheduledGroupId:didSelectModel.group_id];
-        [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:^{
-        }];
+        self.sdkConfig.scheduledGroupId = didSelectModel.group_id;
+        UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:self.sdkConfig];
+        UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig withSettings:self.sdkSetting];
+        [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+        
     }
     else {
     

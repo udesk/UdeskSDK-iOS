@@ -13,7 +13,6 @@
 #import "UdeskConfigurationHelper.h"
 #import "UdeskPhotoManeger.h"
 #import "UdeskAudioPlayerHelper.h"
-#import "UdeskAlertController.h"
 #import "UdeskUtils.h"
 #import "UdeskTools.h"
 #import "UdeskFoundationMacro.h"
@@ -21,7 +20,7 @@
 
 #define VoicePlayHasInterrupt @"VoicePlayHasInterrupt"
 
-@interface UdeskChatCell() <UDAudioPlayerHelperDelegate,UDTTTAttributedLabelDelegate> {
+@interface UdeskChatCell() <UDAudioPlayerHelperDelegate,UDTTTAttributedLabelDelegate,UIAlertViewDelegate> {
 
     UILabel          *dateLabel;//时间
     UIImageView      *avatarImageView;//头像
@@ -433,29 +432,36 @@
 //点击失败重发图片事件
 - (void)tapFailureImageViewAction:(UIGestureRecognizer *)tap {
 
-    UdeskAlertController *againMsgController = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"udesk_resend_msg")];
-    [againMsgController addCloseActionWithTitle:getUDLocalizedString(@"udesk_cancel") Handler:NULL];
-    [againMsgController addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_sure") handler:^(UdeskAlertAction * _Nonnull action) {
-        
-        if (![[UdeskTools internetStatus] isEqualToString:@"notReachable"]) {
-            
-            self.failureImageView.hidden = YES;
-            self.activityIndicatorView.hidden = NO;
-            [self.activityIndicatorView startAnimating];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:UdeskClickResendMessage object:nil userInfo:@{@"failedMessage":_chatMessage}];
-            
-        }
-        else {
-            
-            UdeskAlertController *notNetWork = [UdeskAlertController alertWithTitle:nil message:getUDLocalizedString(@"udesk_network_interrupt")];
-            [notNetWork addCloseActionWithTitle:getUDLocalizedString(@"udesk_cancel") Handler:NULL];
-            [notNetWork showWithSender:nil controller:nil animated:YES completion:NULL];
-        }
-        
-    }]];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:getUDLocalizedString(@"udesk_resend_msg") delegate:self cancelButtonTitle:nil otherButtonTitles:getUDLocalizedString(@"udesk_sure"), nil];
     
-    [againMsgController showWithSender:nil controller:nil animated:YES completion:NULL];
+    [alert show];
+#pragma clang diagnostic pop
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+
+    if (![[UdeskTools internetStatus] isEqualToString:@"notReachable"]) {
+        
+        self.failureImageView.hidden = YES;
+        self.activityIndicatorView.hidden = NO;
+        [self.activityIndicatorView startAnimating];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:UdeskClickResendMessage object:nil userInfo:@{@"failedMessage":_chatMessage}];
+        
+    }
+    else {
+        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:getUDLocalizedString(@"udesk_network_interrupt") delegate:self cancelButtonTitle:nil otherButtonTitles:getUDLocalizedString(@"udesk_cancel"), nil];
+        
+        [alert show];
+#pragma clang diagnostic pop
+        
+    }
 }
 
 #pragma mark - 复制
