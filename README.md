@@ -154,7 +154,7 @@ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle
 [chat presentUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
 ```
 
-#### 3.5推出机器人页面
+#### 3.4推出机器人页面
 
 确保管理员后后【管理中心-即时通讯-IM机器人】开启机器人SDK IM渠道。可以设置是否允许转人员。使用此界面，则会根据后台配置显示机器人或人工客服对话界面
 
@@ -166,7 +166,7 @@ UdeskSDKManager *robot = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyl
 //使用present
 [robot presentUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
 ```
-#### 3.4推出帮助中心
+#### 3.5推出帮助中心
 
 ```objective-c
 //使用push
@@ -177,7 +177,7 @@ UdeskSDKManager *faq = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle 
 [faq presentUdeskViewControllerWithType:UdeskFAQ viewController:self completion:nil];
 ```
 
-#### 3.5推出客服导航
+#### 3.6推出客服导航
 
 ```objective-c
 //使用push
@@ -188,7 +188,16 @@ UdeskSDKManager *agentMenu = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDK
 [agentMenu presentUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
 ```
 
+#### 3.7推出管理员端配置的sdk界面
 
+```objective-c
+//使用push
+UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+[chat pushUdeskViewControllerWith:self completion:nil];
+
+//使用present
+[chat presentUdeskViewControllerWith:self completion:nil];
+```
 
 ## 四、Udesk SDK 自定义配置
 
@@ -259,6 +268,34 @@ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle
 UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
 [chatViewManager setTransferToAgentMenu:YES];
 [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
+```
+
+#### 4.8设置放弃排队类型
+
+```objective-c
+UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+//如果用户处于排队状态，当用户离开聊天界面，会强制把该用户移除排队
+//默认为标记排队（指不会放弃排队）
+[chatViewManager setQuitQueueType:UdeskForceQuit];
+[chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
+```
+
+#### 4.9自定义留言界面
+
+```objective-c
+UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+//设置为自定义留言界面（默认为udesk提供的留言界面）
+[robot setCustomForm:YES];
+[chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
+
+//注册获取点击留言按钮通知
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSelectFormButton:) name:UdeskClickSendFormButton object:nil];
+
+- (void)didSelectFormButton:(NSNotification *)notif {
+    UIViewController *viewController = notif.object;
+    UDTestViewController *test = [[UDTestViewController alloc] init];
+    [viewController.navigationController pushViewController:test animated:YES];
+}
 ```
 
 ## 五、消息推送
