@@ -108,10 +108,13 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config withURL:(NSURL *)URL {
+- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
+                          withURL:(NSURL *)URL
+                      withSetting:(UdeskSetting *)setting {
 
     self = [super init];
     if (self) {
+        _sdkSetting = setting;
         _sdkConfig = config;
         
         //设置语言
@@ -134,14 +137,7 @@
         
     }
     return self;
-}
 
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
-                          withURL:(NSURL *)URL
-                      withSetting:(UdeskSetting *)setting {
-
-    _sdkSetting = setting;
-    return [self initWithSDKConfig:config withURL:URL];
 }
 
 - (void)didSelectNavigationRightButton {

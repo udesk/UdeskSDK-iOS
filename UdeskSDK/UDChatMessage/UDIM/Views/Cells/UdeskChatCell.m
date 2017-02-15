@@ -153,8 +153,7 @@
         dateLabel.hidden = NO;
     }
     else {
-    
-        dateLabel.hidden = NO;
+        dateLabel.hidden = YES;
     }
     //头像图片
     avatarImageView.image = chatMessage.avatarImage;

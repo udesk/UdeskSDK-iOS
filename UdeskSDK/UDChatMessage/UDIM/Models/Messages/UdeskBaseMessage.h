@@ -24,10 +24,8 @@
 
 /** 消息ID */
 @property (nonatomic, copy) NSString *messageId;
-
 /** 时间 */
 @property (nonatomic, copy) NSDate   *date;
-
 /** cell高度 */
 @property (nonatomic, assign) CGFloat  cellHeight;
 /** 消息类型 */
@@ -38,5 +36,11 @@
 @property (nonatomic, assign) UDMessageSendStatus  messageStatus;
 
 @property (nonatomic, weak) id <UdeskMessageDelegate> delegate;
+
+/**
+ *  通过重用的名字初始化cell
+ *  @return 初始化了一个cell
+ */
+- (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer;
 
 @end

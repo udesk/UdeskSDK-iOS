@@ -67,13 +67,8 @@
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
                      withSettings:(UdeskSetting *)setting {
     
-    _sdkSetting = setting;
-    return [self initWithSDKConfig:config];
-}
-
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config {
     if (self = [super init]) {
-        
+        _sdkSetting = setting;
         _sdkConfig = config;
         self.hidesBottomBarWhenPushed = YES;
         
@@ -185,8 +180,10 @@
             @udStrongify(self);
             [self.messageTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
         } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
         } @finally {
         }
+
     });
 }
 
@@ -394,49 +391,23 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     id message = [self.chatViewModel objectAtIndexPath:indexPath.row];
+
+    NSString *messageModelName = NSStringFromClass([message class]);
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:messageModelName];
     
-    static NSString *unkownCellIdentifier = @"UdeskUnkownCellIdentifier";
-    static NSString *chatCellIdentifier = @"UdeskChatMessageCellIdentifier";
-    static NSString *tipsCellIdentifier = @"UdeskTipsCellIdentifier";
-    static NSString *productCellIdentifier = @"UdeskproductCellIdentifier";
+    if (!cell) {
+        
+        cell = [(UdeskBaseMessage *)message getCellWithReuseIdentifier:messageModelName];
+        UdeskBaseCell *chatCell = (UdeskBaseCell*)cell;
+        chatCell.delegate = self;
+    }
     
-    UdeskBaseCell *cell = nil;
+    if (![cell isKindOfClass:[UdeskBaseCell class]]) {
+        NSAssert(NO, @"TableDataSource的cellForRow中，没有返回正确的cell类型");
+        return cell;
+    }
     
-    if ([message isKindOfClass:[UdeskChatMessage class]]) {
-        
-        cell = [tableView dequeueReusableCellWithIdentifier:chatCellIdentifier];
-        if (!cell) {
-            cell = [[UdeskChatCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:chatCellIdentifier];
-            cell.delegate = self;
-        }
-        
-        [cell updateCellWithMessage:message];
-    }
-    else if ([message isKindOfClass:[UdeskTipsMessage class]]) {
-    
-        cell = [tableView dequeueReusableCellWithIdentifier:tipsCellIdentifier];
-        if (!cell) {
-            cell = [[UdeskTipsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:tipsCellIdentifier];
-        }
-        
-        [cell updateCellWithMessage:message];
-    }
-    else if ([message isKindOfClass:[UdeskProductMessage class]]) {
-        
-        cell = [tableView dequeueReusableCellWithIdentifier:productCellIdentifier];
-        if (!cell) {
-            cell = [[UdeskProductCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:tipsCellIdentifier];
-            cell.delegate = self;
-        }
-        
-        [cell updateCellWithMessage:message];
-    }
-    else {
-        cell = [tableView dequeueReusableCellWithIdentifier:unkownCellIdentifier];
-        if (!cell) {
-            cell = [[UdeskBaseCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:unkownCellIdentifier];
-        }
-    }
+    [(UdeskBaseCell*)cell updateCellWithMessage:message];
     
     return cell;
 }
@@ -690,15 +661,21 @@
 #pragma mark - 发送用户点击的失败消息
 - (void)resendClickFailedMessage:(NSNotification *)notif {
     
-    UdeskChatMessage *failedMessage = [notif.userInfo objectForKey:@"failedMessage"];
-    UdeskMessage *message = [[UdeskMessage alloc] initWithChatMessage:failedMessage];
+    if (self.inputBar.agent.code != UDAgentStatusResultOnline) {
+        [self.chatViewModel showAlertViewWithAgent];
+    }
+    else {
     
-    @udWeakify(self);
-    [UdeskManager sendMessage:message completion:^(UdeskMessage *message, BOOL sendStatus) {
-        //处理发送结果UI
-        @udStrongify(self);
-        [self sendMessageStatus:sendStatus message:message];
-    }];
+        UdeskChatMessage *failedMessage = [notif.userInfo objectForKey:@"failedMessage"];
+        UdeskMessage *message = [[UdeskMessage alloc] initWithChatMessage:failedMessage];
+        
+        @udWeakify(self);
+        [UdeskManager sendMessage:message completion:^(UdeskMessage *message, BOOL sendStatus) {
+            //处理发送结果UI
+            @udStrongify(self);
+            [self sendMessageStatus:sendStatus message:message];
+        }];
+    }
 }
 
 #pragma mark - 发送咨询对象url

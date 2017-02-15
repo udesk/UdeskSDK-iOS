@@ -50,15 +50,10 @@
                         menuArray:(NSArray *)menu
                       withSetting:(UdeskSetting *)setting {
 
-    self.sdkSetting = setting;
-    return [self initWithSDKConfig:config menuArray:menu];
-}
-
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config menuArray:(NSArray *)menu
-{
     self = [super init];
     if (self) {
-        
+
+        self.sdkSetting = setting;
         self.sdkConfig = config;
         self.hidesBottomBarWhenPushed = YES;
         

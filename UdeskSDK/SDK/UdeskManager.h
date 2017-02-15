@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.5.3
+//  Version: 3.5.5
 //
 //  Created by xuchen on 16/1/12.
 //  Copyright © 2016年 xuchen. All rights reserved.
@@ -130,6 +130,11 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  *  @return 未读消息数组
  */
 + (NSArray *)getLocalUnreadeMessages;
+
+/**
+ *  将所有未读消息设置为已读
+ */
++ (void)markAllMessagesAsRead;
 
 /**
  *  将 SDK 本地数据库中的消息都删除

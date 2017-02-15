@@ -79,7 +79,7 @@
     _itemLevelCallback = itemLevelCallback;
     
     CADisplayLink *displaylink = [CADisplayLink displayLinkWithTarget:_itemLevelCallback selector:@selector(invoke)];
-    
+
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0f) {
         displaylink.preferredFramesPerSecond = 6;
     }

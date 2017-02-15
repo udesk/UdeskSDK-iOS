@@ -12,6 +12,24 @@
 
 @implementation UdeskTools
 
+//字符串转字典
++ (id)dictionaryWithJSON:(NSString *)json {
+    if (json == nil) {
+        return nil;
+    }
+    
+    NSData *jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *err;
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                        options:NSJSONReadingMutableContainers
+                                                          error:&err];
+    if(err) {
+        NSLog(@"json解析失败：%@",err);
+        return nil;
+    }
+    return dic;
+}
+
 //同步获取网络状态
 + (NSString *)internetStatus {
     
@@ -46,6 +64,10 @@
         return YES;
     }
     if (string == NULL) {
+        return YES;
+    }
+    
+    if (![string isKindOfClass:[NSString class]]) {
         return YES;
     }
     

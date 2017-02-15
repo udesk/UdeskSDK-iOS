@@ -133,4 +133,7 @@
  */
 - (void)removeResendMessageInArray:(UdeskMessage *)message;
 
+//根据客服code展示alertview
+- (void)showAlertViewWithAgent;
+
 @end

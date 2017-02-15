@@ -17,6 +17,10 @@
 #import "UdeskTicketViewController.h"
 #import "UdeskSDKShow.h"
 
+@interface UdeskSDKManager()
+
+@end
+
 @implementation UdeskSDKManager{
     UdeskChatViewController *chatViewController;
     UdeskRobotViewController *robotChat;
@@ -156,11 +160,6 @@
                  completion:(void (^)(void))completion {
     
     if (!chatViewController) {
-        chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig];
-    }
-    
-    //如果后台有配置
-    if (setting) {
         chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig withSettings:setting];
     }
     
@@ -201,7 +200,7 @@
             if (robotUrl) {
                 
                 if (!robotChat) {
-                    robotChat = [[UdeskRobotViewController alloc] initWithSDKConfig:_sdkConfig withURL:robotUrl];
+                    robotChat = [[UdeskRobotViewController alloc] initWithSDKConfig:_sdkConfig withURL:robotUrl withSetting:nil];
                 }
                 
                 [_show presentOnViewController:viewController udeskViewController:robotChat transiteAnimation:animationType completion:completion];
@@ -238,7 +237,7 @@
         
         //查看导航栏错误，直接进入聊天页面
         if (error) {
-            [self presentIMController:viewController transiteAnimation:animationType sdkSetting:nil completion:completion];
+            [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
             return ;
         }
         
@@ -249,11 +248,6 @@
             if (result.count) {
                 
                 if (!agentMenu) {
-                    agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig menuArray:result];
-                }
-                
-                //如果后台有配置
-                if (setting) {
                     agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig menuArray:result withSetting:setting];
                 }
                 
@@ -261,7 +255,7 @@
             }
             else {
                 //没有设置导航栏 直接进入聊天页面
-                [self presentIMController:viewController transiteAnimation:animationType sdkSetting:nil completion:completion];
+                [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
             }
         }
         

@@ -13,6 +13,7 @@
 #import "UdeskSDKConfig.h"
 #import "UdeskUtils.h"
 #import "UdeskTools.h"
+#import "UdeskProductCell.h"
 
 /** 咨询对象cell高度 */
 static CGFloat const kUDProductCellHeight = 105;
@@ -124,4 +125,10 @@ static CGFloat const kUDProductSendButtonHeight = 25.0;
     }
     return self;
 }
+
+- (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {
+    
+    return [[UdeskProductCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifer];
+}
+
 @end

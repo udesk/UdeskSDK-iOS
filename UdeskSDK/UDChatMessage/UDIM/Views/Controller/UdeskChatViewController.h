@@ -10,9 +10,8 @@
 
 @class UdeskSDKConfig;
 @class UdeskSetting;
-@interface UdeskChatViewController : UIViewController
 
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config;
+@interface UdeskChatViewController : UIViewController
 
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
                      withSettings:(UdeskSetting *)setting;

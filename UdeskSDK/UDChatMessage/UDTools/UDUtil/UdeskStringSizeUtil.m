@@ -54,7 +54,7 @@
 
     CGSize newSize;
     
-    if (text.length>0 && font) {
+    if (text.length>0 && text && font) {
     
         if (ud_isIOS6) {
 #pragma clang diagnostic push

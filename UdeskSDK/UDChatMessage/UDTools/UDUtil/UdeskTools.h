@@ -20,4 +20,7 @@
 
 + (BOOL)stringContainsEmoji:(NSString *)string;
 
+//字符串转字典
++ (id)dictionaryWithJSON:(NSString *)json;
+
 @end

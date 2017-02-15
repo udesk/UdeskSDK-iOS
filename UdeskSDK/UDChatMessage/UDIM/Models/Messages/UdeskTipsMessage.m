@@ -11,6 +11,7 @@
 #import "UdeskStringSizeUtil.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskTools.h"
+#import "UdeskTipsCell.h"
 
 /** Tips垂直距离 */
 static CGFloat const kUDTipToVerticalEdgeSpacing = 5;
@@ -50,6 +51,11 @@ static CGFloat const kUDTipHeight = 20;
         
     }
     return self;
+}
+
+- (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {
+    
+    return [[UdeskTipsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifer];
 }
 
 @end

@@ -11,8 +11,6 @@
 
 @interface UdeskRobotViewController : UdeskBaseViewController
 
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config withURL:(NSURL *)URL;
-
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
                           withURL:(NSURL *)URL
                       withSetting:(UdeskSetting *)setting;

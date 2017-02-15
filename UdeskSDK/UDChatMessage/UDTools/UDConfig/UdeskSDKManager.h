@@ -163,5 +163,4 @@ typedef enum : NSUInteger {
  */
 - (void)setQuitQueueType:(UDQuitQueueType)type;
 
-
 @end

@@ -275,19 +275,10 @@
             
             if(i==0 || i == messagesArray.count-1){
                 
-                if (message.messageType == UDMessageContentTypeRedirect) {
-                    UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
-                    if (tipsMessage) {
-                        [toMessages addObject:tipsMessage];
-                    }
+                id chatMessage = [self addMessage:message withDisplayTimestamp:YES];
+                if (chatMessage) {
+                    [toMessages addObject:chatMessage];
                 }
-                else {
-                    UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:YES];
-                    if (chatMessage) {
-                        [toMessages addObject:chatMessage];
-                    }
-                }
-                
             }
             else{
                 
@@ -296,41 +287,40 @@
                 NSInteger interval=[newMessage.timestamp timeIntervalSinceDate:previousMessage.timestamp];
                 if(interval>60*3){
                     
-                    if (message.messageType == UDMessageContentTypeRedirect) {
-                        UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
-                        if (tipsMessage) {
-                            [toMessages addObject:tipsMessage];
-                        }
+                    id chatMessage = [self addMessage:message withDisplayTimestamp:YES];
+                    if (chatMessage) {
+                        [toMessages addObject:chatMessage];
                     }
-                    else {
-                        UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:YES];
-                        if (chatMessage) {
-                            [toMessages addObject:chatMessage];
-                        }
-                    }
+                }
+                else{
                     
-                }else{
-                    
-                    if (message.messageType == UDMessageContentTypeRedirect) {
-                        UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
-                        if (tipsMessage) {
-                            [toMessages addObject:tipsMessage];
-                        }
-                    }
-                    else {
-                        UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:NO];
-                        if (chatMessage) {
-                            [toMessages addObject:chatMessage];
-                        }
+                    id chatMessage = [self addMessage:message withDisplayTimestamp:NO];
+                    if (chatMessage) {
+                        [toMessages addObject:chatMessage];
                     }
                 }
             }
-            
         }
-        
     }
     
     return toMessages;
+}
+
+- (id)addMessage:(UdeskMessage *)message withDisplayTimestamp:(BOOL)displayTimestamp {
+    
+    if (message.messageType == UDMessageContentTypeRedirect) {
+        UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
+        if (tipsMessage) {
+            return tipsMessage;
+        }
+    }
+    else {
+        UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:displayTimestamp];
+        if (chatMessage) {
+            return chatMessage;
+        }
+    }
+    return nil;
 }
 
 //检查是否需要显示时间
@@ -338,21 +328,8 @@
     
     if (self.messageArray.count) {
         
-        NSDate *date;
-        id message = self.messageArray.lastObject;
-        if ([message isKindOfClass:[UdeskChatMessage class]]) {
-            UdeskChatMessage *chatMessage = (UdeskChatMessage *)message;
-            date = chatMessage.date;
-        }
-        else if ([message isKindOfClass:[UdeskTipsMessage class]]) {
-            UdeskTipsMessage *tipsMessage = (UdeskTipsMessage *)message;
-            date = tipsMessage.date;
-        }
-        else if ([message isKindOfClass:[UdeskProductMessage class]]) {
-            
-            UdeskProductMessage *productMessage = (UdeskProductMessage *)message;
-            date = productMessage.date;
-        }
+        UdeskBaseMessage *message = self.messageArray.lastObject;
+        NSDate *date = message.date;
         
         NSInteger interval = [date timeIntervalSinceDate:date];
         if(interval>60*3){
@@ -362,7 +339,6 @@
         }
     }
     else {
-        
         return YES;
     }
 }
@@ -393,20 +369,11 @@
 - (NSInteger)getIndexOfCellWithMessageId:(NSString *)messageId {
     
     for (NSInteger index=0; index<self.messageArray.count; index++) {
-        id message = [self.messageArray objectAtIndexCheck:index];
         
-        if ([message isKindOfClass:[UdeskChatMessage class]]) {
-            
-            UdeskChatMessage *chatMessage = (UdeskChatMessage *)message;
-            if ([chatMessage.messageId isEqualToString:messageId]) {
-                return index;
-            }
-        }
-        
-        if ([message isKindOfClass:[UdeskProductMessage class]]) {
+        UdeskBaseMessage *message = [self.messageArray objectAtIndexCheck:index];
+        if ([message.messageId isEqualToString:messageId]) {
             return index;
         }
-        
     }
     return -1;
 }
@@ -543,27 +510,26 @@
     
     NSString *statusType = [presence objectForKey:@"type"];
     UDAgentStatusType agentCode;
-    NSString  *agentMessage;
-    if ([statusType isEqualToString:@"available"]) {
+    NSString  *agentMessage = @"unavailable";
+    if([statusType isEqualToString:@"over"]) {
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"agentOver" object:nil];
+
+        agentCode = UDAgentConversationOver;
+        agentMessage = getUDLocalizedString(@"udesk_chat_end");
+    }
+    else if ([statusType isEqualToString:@"available"]) {
         
         agentCode = UDAgentStatusResultOnline;
         agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_online")];
         
     }
-    else if([statusType isEqualToString:@"unavailable"]) {
+    else if ([statusType isEqualToString:@"unavailable"]) {
         
         agentCode = UDAgentStatusResultOffline;
         agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_offline")];
     }
-    else if([statusType isEqualToString:@"over"]) {
-
-
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"agentOver" object:nil];
-
-
-        agentCode = UDAgentConversationOver;
-        agentMessage = getUDLocalizedString(@"udesk_chat_end");
-    }
+    
     
     //与上次不同的code才抛给vc
     if (self.agentModel.code != agentCode) {

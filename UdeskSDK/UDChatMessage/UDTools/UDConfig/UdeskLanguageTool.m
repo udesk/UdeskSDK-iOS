@@ -53,10 +53,14 @@ static UdeskLanguageTool *sharedModel;
     
     self.language = tmp;
     
-    NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"UdeskBundle.bundle"];
-    NSBundle *bundle = [NSBundle bundleWithPath: path];
+//    NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"UdeskBundle.bundle"];
+//    NSBundle *bundle = [NSBundle bundleWithPath: path];
+    
+    NSString *path = [[NSBundle bundleForClass:[UdeskLanguageTool class]] pathForResource:@"UdeskBundle" ofType:@"bundle"];
+    NSBundle *bundle = [NSBundle bundleWithPath:path];
+    
     path = [bundle pathForResource:self.language ofType:@"lproj"];
-
+    
     self.bundle = [NSBundle bundleWithPath:path];
 }
 

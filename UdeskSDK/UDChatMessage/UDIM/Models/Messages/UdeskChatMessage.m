@@ -20,6 +20,7 @@
 #import "UdeskImageUtil.h"
 #import <CoreText/CoreText.h>
 #import "UdeskSDKConfig.h"
+#import "UdeskChatCell.h"
 
 /** 头像距离屏幕水平边沿距离 */
 static CGFloat const kUDAvatarToHorizontalEdgeSpacing = 15.0;
@@ -771,6 +772,11 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
         bubbleImage = [bubbleImage convertImageColor:[UdeskSDKConfig sharedConfig].sdkStyle.customerBubbleColor];
     }
     self.bubbleImage = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width*0.5f topCapHeight:bubbleImage.size.height*0.8f];
+}
+
+- (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {
+
+    return [[UdeskChatCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifer];
 }
 
 @end

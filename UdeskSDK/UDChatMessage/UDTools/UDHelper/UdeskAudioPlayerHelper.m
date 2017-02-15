@@ -8,7 +8,7 @@
 
 #import "UdeskAudioPlayerHelper.h"
 #import <AVFoundation/AVFoundation.h>
-#import "UdeskManager.h"
+#import <UIKit/UIKit.h>
 
 @implementation UdeskAudioPlayerHelper
 
