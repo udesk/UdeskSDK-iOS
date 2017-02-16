@@ -11,6 +11,20 @@ Udesk为了让开发者更好的集成移动SDK,与企业业务结合更加紧�
 
 #### 更新记录：
 
+sdk v3.5.5版本更新功能:
+
+1.支持将未读消息标记为已读
+
+2.修复关闭会话之后有几率性不弹满意度调查
+
+------
+
+sdk v3.5.4版本更新功能:
+
+1.适配iOS10.3
+
+------
+
 sdk v3.5.3版本更新功能:
 
 1.支持管理员端sdk配置
@@ -617,9 +631,7 @@ SDK 咨询对象展示:
 
 使用管理员登陆Udesk系统
 
-![udesk](http://7xr0de.com1.z0.glb.clouddn.com/%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%9C%8Did.jpg)
-
-
+管理员在【管理中心-即时通讯-网页插件-管理默认网站接入插件-基本信息-专用链接】中选择指定的客服组或客服，可看到客服ID和客服组ID。
 
 #### 6.7断开与Udesk服务器连接 
 
@@ -717,3 +729,11 @@ SDK 咨询对象展示:
 ```objective-c
 BOOL isSession = [UdeskManager customersAreSession];
 ```
+#### 6.18将所有未读消息设置为已读
+
+可以把客户的未读消息重置
+
+```objective-c
+[UdeskManager markAllMessagesAsRead];
+```
+
