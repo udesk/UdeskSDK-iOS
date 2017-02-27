@@ -97,7 +97,7 @@
     if (self.sdkSetting) {
      
         if (self.sdkSetting.enableWebImFeedback.boolValue) {
-#warning 这里以后需要做成用户在sdk端可自定义的
+//#warning 这里以后需要做成用户在sdk端可自定义的
             NSString *no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
             [self.chatAlert showAgentNotOnlineAlertWithMessage:no_reply_hint enableWebImFeedback:YES];
         }

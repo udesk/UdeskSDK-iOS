@@ -374,7 +374,7 @@
     [self.photographyHelper showImagePickerControllerSourceType:sourceType onViewController:self compled:PickerMediaBlock];
 }
 //点击输入框
-- (void)inputTextViewWillBeginEditing:(UdeskTextView *)messageInputTextView {
+- (void)inputTextViewWillBeginEditing:(UdeskHPGrowingTextView *)messageInputTextView {
     self.textViewInputViewType = UDInputViewTypeText;
 }
 //点击inputBar

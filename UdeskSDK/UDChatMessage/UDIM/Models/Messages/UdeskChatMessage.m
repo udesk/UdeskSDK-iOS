@@ -744,6 +744,10 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
     if ([UdeskTools isBlankString:text]) {
         return;
     }
+    
+//    text = [text stringByReplacingOccurrencesOfString:@"\\" withString:@""];
+//    text = [text stringByReplacingOccurrencesOfString:@"/" withString:@""];
+    
     NSMutableParagraphStyle *contentParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     contentParagraphStyle.lineSpacing = 6.0f;
     contentParagraphStyle.lineHeightMultiple = 1.0f;

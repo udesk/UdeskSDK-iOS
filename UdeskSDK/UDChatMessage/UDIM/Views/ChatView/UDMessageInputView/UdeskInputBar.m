@@ -44,6 +44,7 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     UIButton *surveyButton;//评价
     UIView   *lineView;
     UdeskMessageTableView *messageTableView;
+    CGRect      originalChatViewFrame;
     NSDate  *sendDate;
     NSInteger textViewHeight;
     BOOL _agentOver;
@@ -94,10 +95,8 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
 - (UIButton *)createButtonWithImage:(UIImage *)image HLImage:(UIImage *)hlImage {
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, InputBarViewButtonDiameter, InputBarViewButtonDiameter)];
     if (image)
-//        [button setBackgroundImage:image forState:UIControlStateNormal];
         [button setImage:image forState:UIControlStateNormal];
     if (hlImage)
-//        [button setBackgroundImage:hlImage forState:UIControlStateHighlighted];
         [button setImage:image forState:UIControlStateHighlighted];
     
     return button;
@@ -111,22 +110,13 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     [self addSubview:lineView];
     
     //初始化输入框
-    _inputTextView = [[UdeskTextView  alloc] initWithFrame:CGRectMake(InputBarViewToHorizontalEdgeSpacing, InputBarViewToVerticalEdgeSpacing, UD_SCREEN_WIDTH-InputBarViewToHorizontalEdgeSpacing*2, InputBarViewHeight)];
+    _inputTextView = [[UdeskHPGrowingTextView  alloc] initWithFrame:CGRectMake(InputBarViewToHorizontalEdgeSpacing, InputBarViewToVerticalEdgeSpacing, UD_SCREEN_WIDTH-InputBarViewToHorizontalEdgeSpacing*2, InputBarViewHeight)];
     _inputTextView.placeholder = getUDLocalizedString(@"udesk_typing");
-    _inputTextView.delegate = self;
+    _inputTextView.delegate = (id)self;
     _inputTextView.returnKeyType = UIReturnKeySend;
     _inputTextView.font = [UIFont systemFontOfSize:16];
     _inputTextView.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.textViewColor;
     self.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.inputViewColor;
-    
-    // KVO 检查contentSize
-    [_inputTextView addObserver:self
-                         forKeyPath:@"contentSize"
-                            options:NSKeyValueObservingOptionNew
-                            context:nil];
-    
-    [_inputTextView setEditable:YES];
-
     [self addSubview:_inputTextView];
     
     //表情
@@ -334,53 +324,23 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     return YES;
 }
 
-#pragma mark - Message input view
+#pragma mark - Text view delegate
+- (void)growingTextViewDidChange:(UdeskHPGrowingTextView *)growingTextView {
 
-- (void)adjustTextViewHeightBy:(CGFloat)changeInHeight {
-    // 动态改变自身的高度和输入框的高度
-    CGRect prevFrame = self.inputTextView.frame;
-    
-    CGRect lineFrame = lineView.frame;
-    
-    NSUInteger numLines = MAX([self.inputTextView numberOfLinesOfText],
-                              [self numberOfLines:self.inputTextView.text]);
-    
-    lineView.frame = CGRectMake(0, lineFrame.origin.y - changeInHeight, lineFrame.size.width, lineFrame.size.height);
-    
-    self.inputTextView.frame = CGRectMake(prevFrame.origin.x,
-                                          lineView.frame.origin.y+lineView.frame.size.height+InputBarViewToVerticalEdgeSpacing,
-                                          prevFrame.size.width,
-                                          prevFrame.size.height + changeInHeight);
-    
-    self.inputTextView.contentInset = UIEdgeInsetsMake((numLines >= 6 ? 4.0f : 0.0f),
-                                                       0.0f,
-                                                       (numLines >= 6 ? 4.0f : 0.0f),
-                                                       0.0f);
-    
-    self.inputTextView.scrollEnabled = YES;
-    
-    if (numLines >= 6) {
-        CGPoint bottomOffset = CGPointMake(0.0f, self.inputTextView.contentSize.height - self.inputTextView.bounds.size.height);
-        [self.inputTextView setContentOffset:bottomOffset animated:YES];
-        [self.inputTextView scrollRangeToVisible:NSMakeRange(self.inputTextView.text.length - 2, 1)];
+    NSDate *nowDate = [NSDate date];
+    NSTimeInterval time = [nowDate timeIntervalSinceDate:sendDate];
+    if (time>0.5) {
+        sendDate = nowDate;
+        [UdeskManager sendClientInputtingWithContent:growingTextView.text];
+    }
+    //输入预知
+    if ([UdeskTools isBlankString:growingTextView.text]) {
+        [UdeskManager sendClientInputtingWithContent:growingTextView.text];
     }
 }
 
-- (NSUInteger)numberOfLines:(NSString *)text {
+- (BOOL)growingTextViewShouldBeginEditing:(UdeskHPGrowingTextView *)growingTextView {
     
-    return [[text componentsSeparatedByString:@"\n"] count] + 1;
-}
-
-+ (CGFloat)maxLines {
-    return 3.0f;
-}
-
-+ (CGFloat)maxHeight {
-    return ([UdeskInputBar maxLines] + 1.0f) * InputBarViewButtonDiameter;
-}
-
-#pragma mark - Text view delegate
-- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
     if (self.agent.code == UDAgentStatusResultOnline) {
         
         if ([self.inputTextView.textColor isEqual:[UIColor lightGrayColor]] && [self.inputTextView.text isEqualToString:getUDLocalizedString(@"udesk_typing")]) {
@@ -396,10 +356,10 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
         voiceButton.selected = NO;
     }
     else {
-
-
+        
+        
         if (_agentOver) {
-
+            
         } else {
             if ([self.delegate respondsToSelector:@selector(didUDMessageInputView)]) {
                 [self.delegate didUDMessageInputView];
@@ -412,152 +372,57 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     return YES;
 }
 
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    [textView becomeFirstResponder];
-    if (self.agent.code == UDAgentStatusResultOnline) {
-        
-        if (!textViewHeight)
-            textViewHeight = [self getTextViewContentH:textView];
-    }
+- (void)growingTextViewDidBeginEditing:(UdeskHPGrowingTextView *)growingTextView {
+    [growingTextView becomeFirstResponder];
 }
 
-- (void)textViewDidEndEditing:(UITextView *)textView {
-    [textView resignFirstResponder];
+- (void)growingTextViewDidEndEditing:(UdeskHPGrowingTextView *)growingTextView {
+    [growingTextView resignFirstResponder];
 }
 
-- (void)textViewDidChange:(UITextView *)textView {
-    
-    NSDate *nowDate = [NSDate date];
-    NSTimeInterval time = [nowDate timeIntervalSinceDate:sendDate];
-    if (time>0.5) {
-        sendDate = nowDate;
-        [UdeskManager sendClientInputtingWithContent:textView.text];
-    }
-    //输入预知
-    if ([UdeskTools isBlankString:textView.text]) {
-        [UdeskManager sendClientInputtingWithContent:textView.text];
-    }
-}
-
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+- (BOOL)growingTextView:(UdeskHPGrowingTextView *)growingTextView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     
     if ([text isEqualToString:@"\n"]) {
         //发送出去以后置空输入预知
         [UdeskManager sendClientInputtingWithContent:@""];
         if ([self.delegate respondsToSelector:@selector(didSendTextAction:)]) {
-            [self.delegate didSendTextAction:textView.text];
+            [self.delegate didSendTextAction:growingTextView.text];
         }
         return NO;
     }
     return YES;
 }
 
-//文字折行KVO
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context {
-    if (object == self.inputTextView && [keyPath isEqualToString:@"contentSize"]) {
-        
-        if (![self.inputTextView.textColor isEqual:[UIColor lightGrayColor]] && ![self.inputTextView.text isEqualToString:getUDLocalizedString(@"udesk_typing")]) {
-            [self layoutAndAnimateMessageInputTextView:object];
-        }
+- (void)growingTextView:(UdeskHPGrowingTextView *)growingTextView willChangeHeight:(float)height
+{
+    float diff     = (self.inputTextView.frame.size.height - height);
+    //确保tableView的y不大于原始的y
+    CGFloat tableViewOriginY = messageTableView.frame.origin.y + diff;
+    if (tableViewOriginY > originalChatViewFrame.origin.y) {
+        tableViewOriginY = originalChatViewFrame.origin.y;
     }
+    messageTableView.frame = CGRectMake(messageTableView.frame.origin.x, tableViewOriginY, messageTableView.frame.size.width, messageTableView.frame.size.height);
+    self.frame     = CGRectMake(0, self.frame.origin.y + diff, self.frame.size.width, self.frame.size.height - diff);
     
+    //按钮靠下
+    [self reFramefunctionBtnAfterTextViewChange];
 }
 
-#pragma mark - UITextView Helper Method
-- (CGFloat)getTextViewContentH:(UITextView *)textView {
-    //返回文字高度
-    if (ud_isIOS7) {
-        return ceilf([textView sizeThatFits:textView.frame.size].height);
-    } else {
-        return textView.contentSize.height;
-    }
+- (void)reFramefunctionBtnAfterTextViewChange
+{
+    CGFloat buttonY = self.ud_height-InputBarViewToVerticalEdgeSpacing-InputBarViewButtonDiameter;
+    
+    emotionButton.frame = CGRectMake(InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    voiceButton.frame = CGRectMake(emotionButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    cameraButton.frame = CGRectMake(voiceButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    albumButton.frame = CGRectMake(cameraButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
 }
 
-
-#pragma mark - UITextView跟随文字多少变化
-- (void)layoutAndAnimateMessageInputTextView:(UITextView *)textView {
-    //最大高度
-    CGFloat maxHeight = [UdeskInputBar maxHeight];
-    
-    //获取文字高度
-    CGFloat contentH = [self getTextViewContentH:textView];
-    
-    if (textViewHeight==0) {
-        textViewHeight = InputBarViewButtonDiameter;
-    }
-    BOOL isShrinking = contentH < textViewHeight;
-    
-    CGFloat changeInHeight = contentH - textViewHeight;
-    
-    if (!isShrinking && (textViewHeight == maxHeight || textView.text.length == 0)) {
-        changeInHeight = 0;
-    }
-    else {
-        changeInHeight = MIN(changeInHeight, maxHeight - textViewHeight);
-    }
-    if (changeInHeight != 0.0f) {
-        [UIView animateWithDuration:0.25f
-                         animations:^{
-                             //改变tableview的frame
-                             [messageTableView setTableViewInsetsWithBottomValue:messageTableView.contentInset.bottom + changeInHeight];
-                             
-                             [messageTableView scrollToBottomAnimated:NO];
-                             
-                             if (isShrinking) {
-                                 if (ud_isIOS6) {
-                                     textViewHeight = MIN(contentH, maxHeight);
-                                 }
-                                 // 改变textView的frame
-                                 [self adjustTextViewHeightBy:changeInHeight];
-                             }
-                             //根据changeInHeight修改inputFunctionView的frame
-                             CGRect inputViewFrame = self.frame;
-                             self.frame = CGRectMake(0.0f,
-                                                     inputViewFrame.origin.y,
-                                                     inputViewFrame.size.width,
-                                                     inputViewFrame.size.height + changeInHeight);
-                             
-                             if (!isShrinking) {
-                                 if (ud_isIOS6) {
-                                    textViewHeight = MIN(contentH, maxHeight);
-                                 }
-                                 // 改变textView的frame
-                                 [self adjustTextViewHeightBy:changeInHeight];
-                             }
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-        
-        textViewHeight = MIN(contentH, maxHeight);
-    }
-    
-    // textView高度为最大时，不再增加previousTextViewContentHeight
-    if (textViewHeight == maxHeight) {
-        double delayInSeconds = 0.01;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime,
-                       dispatch_get_main_queue(),
-                       ^(void) {
-                           CGPoint bottomOffset = CGPointMake(0.0f, contentH - textView.bounds.size.height);
-                           [textView setContentOffset:bottomOffset animated:YES];
-                       });
-    }
-    
-}
 
 - (void)dealloc
 {
-        
-    // remove KVO
-    [self.inputTextView removeObserver:self forKeyPath:@"contentSize"];
-    
-    [self.inputTextView setEditable:NO];
-
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-
 }
 
 @end

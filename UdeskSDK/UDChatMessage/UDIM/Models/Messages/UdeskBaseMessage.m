@@ -10,4 +10,9 @@
 
 @implementation UdeskBaseMessage
 
+- (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {
+    
+    return [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifer];
+}
+
 @end

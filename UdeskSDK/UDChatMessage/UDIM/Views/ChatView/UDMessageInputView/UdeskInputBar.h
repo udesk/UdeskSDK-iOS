@@ -9,7 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "UdeskMessageTableView.h"
 #import "UdeskAgent.h"
-#import "UdeskTextView.h"
+#import "UdeskHPGrowingTextView.h"
+
+typedef NS_ENUM(NSUInteger, UDInputViewType) {
+    UDInputViewTypeNormal = 0,
+    UDInputViewTypeText,
+    UDInputViewTypeEmotion,
+    UDInputViewTypeVoice,
+};
 
 @protocol UdeskInputBarDelegate <NSObject>
 
@@ -18,7 +25,7 @@
  *
  *  @param messageInputTextView 输入框对象
  */
-- (void)inputTextViewWillBeginEditing:(UdeskTextView *)messageInputTextView;
+- (void)inputTextViewWillBeginEditing:(UdeskHPGrowingTextView *)messageInputTextView;
 
 /**
  *  选择图片
@@ -55,7 +62,9 @@
 
 @property (nonatomic, strong) UdeskAgent *agent;
 
-@property (nonatomic, strong) UdeskTextView *inputTextView;//输入框
+//@property (nonatomic, strong) UdeskTextView *inputTextView;//输入框
+
+@property (nonatomic, strong) UdeskHPGrowingTextView *inputTextView;
 
 @property (nonatomic, weak) id <UdeskInputBarDelegate> delegate;
 

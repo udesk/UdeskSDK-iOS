@@ -67,10 +67,6 @@
         return YES;
     }
     
-    if (![string isKindOfClass:[NSString class]]) {
-        return YES;
-    }
-    
     if ([string isKindOfClass:[NSNull class]]) {
         return YES;
     }

@@ -80,7 +80,6 @@
     CGRect originalRect = [imageView convertRect: imageView.bounds toView:window];
     self.mainImageView.frame = originalRect;
     
-    
     //动画变换设置frame
     [UIView animateWithDuration:AnimationTime animations:^{
         
@@ -90,7 +89,7 @@
     } completion:^(BOOL finished) {
         
         self.userInteractionEnabled = YES ;
-        [self addGestureRecognizer:self.twoTap];
+        [self.mainImageView addGestureRecognizer:self.twoTap];
     }];
     
 }
