@@ -201,13 +201,12 @@
         didSelectModel.group_id = [NSString stringWithFormat:@"%@",didSelectModel.group_id];
     }
 
-    if (didSelectModel.group_id.length > 0 || !didSelectModel.group_id) {
+    if (didSelectModel.group_id.length > 0 && didSelectModel.group_id) {
         
         self.sdkConfig.scheduledGroupId = didSelectModel.group_id;
         UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:self.sdkConfig];
         UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig withSettings:self.sdkSetting];
         [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
-        
     }
     else {
     
@@ -365,7 +364,6 @@
     
 }
 - (void)viewWillAppear:(BOOL)animated {
-
     [super viewWillAppear:animated];
 }
 

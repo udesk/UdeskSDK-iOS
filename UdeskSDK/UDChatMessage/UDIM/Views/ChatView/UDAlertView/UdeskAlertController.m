@@ -76,7 +76,7 @@
 
 + (instancetype)actionWithTitle:(nullable NSString *)title style:(UDAlertActionStyle)style handler:(void (^ __nullable)(UdeskAlertAction *))handler
 {
-    UdeskAlertAction *instance = [UdeskAlertAction new];
+    UdeskAlertAction *instance = [[UdeskAlertAction alloc] init];
     instance -> _title = title;
     instance -> _style = style;
     instance.actionHandler = handler;
@@ -121,7 +121,7 @@ static CGRect menuScrollViewRect;
 #pragma mark -- 初始化
 + (instancetype)alertControllerWithTitle:(nullable NSString *)title message:(nullable NSString *)message preferredStyle:(UDAlertControllerStyle)preferredStyle
 {
-    UdeskAlertController *instance = [UdeskAlertController new];
+    UdeskAlertController *instance = [[UdeskAlertController alloc] init];
     instance.title = title;
     instance.message = message;
     instance -> _preferredStyle = preferredStyle;
@@ -219,7 +219,7 @@ static CGRect menuScrollViewRect;
 #pragma mark -- 创建内部视图
 - (void)creatContentView
 {
-    _contentView = [UIView new];
+    _contentView = [[UIView alloc] init];
     _contentView.backgroundColor = [UIColor whiteColor];
     _contentView.layer.cornerRadius = 13;
     _contentView.clipsToBounds = YES;
@@ -381,9 +381,11 @@ static CGRect menuScrollViewRect;
     [self.view endEditing:YES];
     
     UdeskAlertAction *action = self.actions[sender.tag - 10];
-    [self showDisappearAnimation:^{
-        if (action.actionHandler) action.actionHandler(action);
-    }];
+    if (action) {
+        [self showDisappearAnimation:^{
+            if (action.actionHandler) action.actionHandler(action);
+        }];
+    }
 }
 
 - (void)showAppearAnimation
@@ -415,7 +417,7 @@ static CGRect menuScrollViewRect;
 
 - (void)addTextFieldWithConfigurationHandler:(void (^ __nullable)(UITextField *))configurationHandler
 {
-    UITextField *textField = [UITextField new];
+    UITextField *textField = [[UITextField alloc] init];
     textField.font = [UIFont systemFontOfSize:15];
     textField.borderStyle = UITextBorderStyleRoundedRect;
     
@@ -525,7 +527,7 @@ static CGRect menuScrollViewRect;
 - (UIScrollView *)textScrollView
 {
     if (!_textScrollView) {
-        _textScrollView = [UIScrollView new];
+        _textScrollView = [[UIScrollView alloc] init];
         _textScrollView.showsHorizontalScrollIndicator = NO;
         [_contentView addSubview:_textScrollView];
     }
@@ -535,7 +537,7 @@ static CGRect menuScrollViewRect;
 - (ActionScrollView *)menuScrollView
 {
     if (!_menuScrollView) {
-        _menuScrollView = [ActionScrollView new];
+        _menuScrollView = [[ActionScrollView alloc] init];
         _menuScrollView.showsHorizontalScrollIndicator = NO;
         _menuScrollView.delaysContentTouches = NO;
         [_contentView addSubview:_menuScrollView];
@@ -546,7 +548,7 @@ static CGRect menuScrollViewRect;
 - (UILabel *)titleLabel
 {
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [[UILabel alloc] init];
         _titleLabel.numberOfLines = 0;
         _titleLabel.font = [UIFont boldSystemFontOfSize:17];
         _titleLabel.textColor = [UIColor blackColor];
@@ -560,7 +562,7 @@ static CGRect menuScrollViewRect;
 - (UILabel *)messageLbel
 {
     if (!_messageLbel) {
-        _messageLbel = [UILabel new];
+        _messageLbel = [[UILabel alloc] init];
         _messageLbel.numberOfLines = 0;
         _messageLbel.font = [UIFont systemFontOfSize:16];
         _messageLbel.textColor = [UIColor blackColor];

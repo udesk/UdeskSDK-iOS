@@ -363,6 +363,7 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
         textSize.height += 8 * textLines;
     }
     
+    textSize.height += 2;
     return textSize;
 }
 
@@ -531,7 +532,7 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
         [self sendedMessageBubble];
         //图片
         CGSize imageSize = [self neededSizeForPhoto:image];
-        self.image = [UIImage compressImageWith:image];
+        self.image = [UIImage imageWithData:UIImageJPEGRepresentation([UIImage compressImageWith:image], 0.5f)];
         
         [self sendedMessageOfImage:imageSize withDateHeight:dateHeight];
     }
@@ -744,9 +745,6 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
     if ([UdeskTools isBlankString:text]) {
         return;
     }
-    
-//    text = [text stringByReplacingOccurrencesOfString:@"\\" withString:@""];
-//    text = [text stringByReplacingOccurrencesOfString:@"/" withString:@""];
     
     NSMutableParagraphStyle *contentParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     contentParagraphStyle.lineSpacing = 6.0f;

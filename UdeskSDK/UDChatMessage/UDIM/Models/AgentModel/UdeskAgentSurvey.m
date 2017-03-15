@@ -59,7 +59,6 @@
                         }
                         
                         [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
-                            
                             _optionsAlert = nil;
                         }]];
                         
@@ -83,11 +82,12 @@
 }
 
 - (void)showNotSurvey {
-
+    
     UdeskAlertController *alert = [UdeskAlertController alertControllerWithTitle:@"错误" message:@"没有满意度调查选项内容,请联系管理员添加！" preferredStyle:UDAlertControllerStyleAlert];
-    [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
         
     }]];
+    
     //展示Alert
     [[self currentViewController] presentViewController:alert animated:YES completion:nil];
 }

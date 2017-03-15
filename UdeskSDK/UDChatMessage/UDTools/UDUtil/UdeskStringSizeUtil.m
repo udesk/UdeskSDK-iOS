@@ -42,8 +42,8 @@
     CGSize constraint = CGSizeMake(textWidth , CGFLOAT_MAX);
     
     CGRect stringRect = [attributedText boundingRectWithSize:constraint
-                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
-                                              context:nil];
+                                                     options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                                     context:nil];
     
     stringRect.size.height = stringRect.size.height < 30 ? stringRect.size.height = 18 : stringRect.size.height;
     

@@ -12,8 +12,11 @@
 #import "UdeskUtils.h"
 #import "UdeskTicketViewController.h"
 #import "UdeskSDKShow.h"
+#import "UDOverlayTransitioningDelegate.h"
 
 @interface UdeskChatAlertController()
+
+@property (nonatomic, strong) UDOverlayTransitioningDelegate *transitioningDelegate;
 
 @end
 
@@ -209,10 +212,17 @@
             vc = [(UITabBarController *)vc selectedViewController];
         }
     }
+    
     return vc;
 }
 
 - (void)presentViewController:(UdeskAlertController *)alertController {
+    
+    if (ud_isIOS7 && [[[UIDevice currentDevice]systemVersion] floatValue] < 8.0) {
+        _transitioningDelegate = [[UDOverlayTransitioningDelegate alloc] init];
+        alertController.modalPresentationStyle = UIModalPresentationCustom;
+        alertController.transitioningDelegate = _transitioningDelegate;
+    }
     
     [[self currentViewController] presentViewController:alertController animated:YES completion:nil];
 }

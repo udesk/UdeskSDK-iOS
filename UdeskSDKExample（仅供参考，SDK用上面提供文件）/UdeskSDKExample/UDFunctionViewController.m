@@ -51,6 +51,7 @@
     }
     else {
     
+#warning 注意sdktoken 是客户的唯一标识，用来识别身份，sdk_token: 传入的字符请使用 字母 / 数字 等常见字符集 。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;其次如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。 
         NSDictionary *parameters = @{
                                      @"user" :    @{
                                              @"nick_name":nick_name,
@@ -235,11 +236,12 @@
 - (void)contactUs:(id)sender {
     
     //自己选择
-//    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-//    [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
-    //后台配置
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWith:self completion:nil];
+    [chatViewManager setTransferToAgentMenu:YES];
+    [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
+    //后台配置
+//    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+//    [chatViewManager pushUdeskViewControllerWith:self completion:nil];
 }
 - (void)ticket:(id)sender {
     
