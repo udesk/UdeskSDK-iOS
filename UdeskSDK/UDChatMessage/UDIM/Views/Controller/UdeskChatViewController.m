@@ -100,7 +100,7 @@
 }
 
 //滑动返回
-- (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
+- (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer *)recognizer {
     //隐藏键盘
     [self.inputBar.inputTextView resignFirstResponder];
     CGPoint translation = [recognizer translationInView:self.view];
@@ -277,14 +277,14 @@
 
     self.chatViewModel.isNotShowAlert = YES;
     
-    if (self.sdkConfig.isCustomForm) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:UdeskClickSendFormButton object:self];
-        return ;
+    //如果用户实现了自定义留言界面
+    if (self.sdkConfig.leaveMessageAction) {
+        self.sdkConfig.leaveMessageAction(self);
+        return;
     }
     
-    UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] init];
-    UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
-    [show presentOnViewController:self udeskViewController:offLineTicket transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+    UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig];
+    [self presentViewController:offLineTicket animated:YES completion:nil];
 }
 
 //点击黑名单弹窗提示的确定

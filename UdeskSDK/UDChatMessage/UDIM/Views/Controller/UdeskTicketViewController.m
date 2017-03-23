@@ -14,6 +14,8 @@
 #import "UdeskSDKConfig.h"
 #import "UdeskTransitioningAnimation.h"
 #import "UdeskLanguageTool.h"
+#import "UDCustomNavigation.h"
+#import "UdeskViewExt.h"
 
 @interface UdeskTicketViewController () 
 
@@ -37,22 +39,38 @@
     [super viewDidLoad];
 
     self.view.backgroundColor = _sdkConfig.sdkStyle.tableViewBackGroundColor;
-    
 
+    UDCustomNavigation *customNav = [[UDCustomNavigation alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 64)];
+    if (_sdkConfig.sdkStyle.navigationColor) {
+        customNav.backgroundColor = _sdkConfig.sdkStyle.navigationColor;
+    }
+    if (_sdkConfig.sdkStyle.titleColor) {
+        customNav.titleLabel.textColor = _sdkConfig.sdkStyle.titleColor;
+    }
+    if (_sdkConfig.sdkStyle.navBackButtonColor) {
+        [customNav.closeButton setTitleColor:_sdkConfig.sdkStyle.navBackButtonColor forState:UIControlStateNormal];
+    }
+    
     if (_sdkConfig.ticketTitle) {
-        self.title = _sdkConfig.ticketTitle;
+        customNav.titleLabel.text = _sdkConfig.ticketTitle;
     }
     else {
-        self.title = getUDLocalizedString(@"udesk_leave_msg");
+        customNav.titleLabel.text = getUDLocalizedString(@"udesk_leave_msg");
     }
+    
+    [self.view addSubview:customNav];
+    
+    customNav.closeViewController = ^(){
+        [super dismissViewControllerAnimated:YES completion:nil];
+    };
+    
     
     NSString *key = [UdeskManager key];
     NSString *domain = [UdeskManager domain];
     
     if (![UdeskTools isBlankString:key]||[UdeskTools isBlankString:domain]) {
         
-        CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
-        _ticketWebView = [[UIWebView alloc] initWithFrame:webViewRect];
+        _ticketWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, customNav.ud_bottom, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-customNav.ud_bottom)];
         _ticketWebView.backgroundColor = [UIColor whiteColor];
 
         NSURL *ticketURL =  [UdeskManager getSubmitTicketURL];
@@ -81,6 +99,20 @@
         [_ticketWebView stringByEvaluatingJavaScriptFromString:@"ticketCallBack()"];
     }
 
+    
+    NSLog(@"%@",self.navigationController.viewControllers);
+}
+
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    if ( self.presentedViewController)
+    {
+        [super dismissViewControllerAnimated:flag completion:completion];
+    }
+}
+
+- (void)dealloc
+{
+    NSLog(@"%@销毁了",[self class]);
 }
 
 @end

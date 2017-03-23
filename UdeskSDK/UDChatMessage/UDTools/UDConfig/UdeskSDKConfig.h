@@ -81,6 +81,9 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 /** 超链接正则 */
 @property (nonatomic, copy, readonly) NSMutableArray *linkRegexs;
 
+/** 离线留言点击 */
+@property (nonatomic, copy) void(^leaveMessageAction)(UIViewController *viewController);
+
 + (instancetype)sharedConfig;
 
 @end

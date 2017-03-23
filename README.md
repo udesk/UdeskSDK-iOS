@@ -11,6 +11,16 @@ Udesk为了让开发者更好的集成移动SDK,与企业业务结合更加紧�
 
 #### 更新记录：
 
+sdk v3.5.8版本更新功能:
+
+1.支持留言添加附件
+
+2.开放留言页面跳转方式事件逻辑修改
+
+3.bug修复
+
+------
+
 sdk v3.5.7版本更新功能:
 
 1.支持bitcode
@@ -310,18 +320,33 @@ UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[Ud
 
 ```objective-c
 UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-//设置为自定义留言界面（默认为udesk提供的留言界面）
-[robot setCustomForm:YES];
-[chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
+//点击留言回调
+[chatViewManager leaveMessageButtonAction:^(UIViewController *viewController){
+  
+    UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] init];
+    [viewController presentViewController:offLineTicket animated:YES completion:nil];
+}];
+```
 
-//注册获取点击留言按钮通知
-[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSelectFormButton:) name:UdeskClickSendFormButton object:nil];
+##### 注意：如果你自定义的留言界面是h5的，恰好你们有上传附件的功能，这时候你们需要添加以下代码到你们自定义的控制器，否则选择附件的时候会直接返回到上一页
 
-- (void)didSelectFormButton:(NSNotification *)notif {
-    UIViewController *viewController = notif.object;
-    UDTestViewController *test = [[UDTestViewController alloc] init];
-    [viewController.navigationController pushViewController:test animated:YES];
+1.使用presentViewController 进入到留言页
+
+2.重写dismissViewControllerAnimated方法
+
+```objective-c
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    if ( self.presentedViewController)
+    {
+        [super dismissViewControllerAnimated:flag completion:completion];
+    }
 }
+```
+
+3.在需要dismiss的时候调用：
+
+```objective-c
+[super dismissViewControllerAnimated:flag completion:completion];
 ```
 
 ## 五、消息推送
@@ -564,9 +589,6 @@ NSDictionary *updateParameters = @{
 @"user" : @{
 @"nick_name":@"测试更新10",
 @"cellphone":@"323312110198754326231123",
-@"weixin_id":@"xiaoming91078543628818",
-@"weibo_name":@"xmwb81497810568328",
-@"qq":@"888818682843578910",
 @"description":@"用户10描述",
 @"email":@"889092340491087556233290111@163.com",
 @"custom_fields":@{

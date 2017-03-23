@@ -13,6 +13,7 @@
 #import "UdeskTicketViewController.h"
 #import "UdeskSDKShow.h"
 #import "UDOverlayTransitioningDelegate.h"
+#import "UdeskTools.h"
 
 @interface UdeskChatAlertController()
 
@@ -94,6 +95,9 @@
     NSString *title = getUDLocalizedString(@"udesk_agent_offline");
     NSString *cancelButtonTitle = getUDLocalizedString(@"udesk_cancel");
     NSString *ticketButtonTitle = getUDLocalizedString(@"udesk_leave_msg");
+    if ([UdeskTools isBlankString:message]) {
+        message = getUDLocalizedString(@"udesk_alert_view_leave_msg");
+    }
     
     UdeskAlertController *notOnlineAlert = [UdeskAlertController alertControllerWithTitle:title message:message preferredStyle:UDAlertControllerStyleAlert];
     [notOnlineAlert addAction:[UdeskAlertAction actionWithTitle:cancelButtonTitle style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {

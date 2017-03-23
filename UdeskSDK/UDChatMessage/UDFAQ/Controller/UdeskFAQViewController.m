@@ -184,8 +184,9 @@
             NSArray *contents = [responseObject objectForKey:@"contents"];
             for (NSDictionary *dic in contents) {
                 UdeskProblemModel *model = [[UdeskProblemModel alloc] initWithContentsOfDic:dic];
-                
-                [muArray addObject:model];
+                if (model) {
+                    [muArray addObject:model];
+                }
             }
             
             @udStrongify(self);
@@ -195,7 +196,6 @@
                 [self.faqTableView reloadData];
             });
         }
-        
     }];
     
 }

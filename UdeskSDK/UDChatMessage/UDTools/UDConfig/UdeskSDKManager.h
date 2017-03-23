@@ -10,9 +10,6 @@
 #import "UdeskSDKConfig.h"
 #import "UdeskManager.h"
 
-//留言表单点击通知
-#define UdeskClickSendFormButton              @"UdeskClickSendFormButton"
-
 typedef enum : NSUInteger {
     UdeskFAQ,
     UdeskIM,
@@ -162,5 +159,12 @@ typedef enum : NSUInteger {
  * 设置排队放弃类型
  */
 - (void)setQuitQueueType:(UDQuitQueueType)type;
+
+/**
+ 离线留言点击事件
+
+ @param completion 事件完成回调
+ */
+- (void)leaveMessageButtonAction:(void(^)(UIViewController *viewController))completion;
 
 @end

@@ -51,10 +51,12 @@
 - (void)dicToObject:(NSDictionary *)dic
 {
     for (NSString *key in dic) {
+        
         //[获取映射关系字典]通过key获取属性的名字
         NSString *model_key = [[self keyToAtt:dic] objectForKey:key];
         //做一个容错
-        if (model_key) {
+        if (model_key || model_key != (id)kCFNull) {
+        
             //判断当前属性是否存(也就是说判断该属性的set方法是否存在)
             SEL action = [self setingToSel:model_key];
             //判断方法是否存在

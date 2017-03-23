@@ -272,7 +272,7 @@
     if (!ticket) {
         ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig];
     }
-    [_show presentOnViewController:viewController udeskViewController:ticket transiteAnimation:animationType completion:completion];
+    [viewController presentViewController:ticket animated:YES completion:nil];
 }
 
 - (void)setCustomForm:(BOOL)isCustom {
@@ -383,6 +383,11 @@
 - (void)setQuitQueueType:(UDQuitQueueType)type {
 
     _sdkConfig.quitQueueType = type;
+}
+
+- (void)leaveMessageButtonAction:(void(^)(UIViewController *viewController))completion {
+
+    _sdkConfig.leaveMessageAction = completion;
 }
 
 @end

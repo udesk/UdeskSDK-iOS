@@ -10,10 +10,13 @@
 #import "UdeskAlertController.h"
 #import "UdeskManager.h"
 #import "UdeskUtils.h"
+#import "UDOverlayTransitioningDelegate.h"
+#import "UdeskFoundationMacro.h"
 
 @implementation UdeskAgentSurvey {
 
     UdeskAlertController *_optionsAlert;
+    UDOverlayTransitioningDelegate *_transitioningDelegate;
 }
 
 + (instancetype)store {
@@ -63,7 +66,7 @@
                         }]];
                         
                         //展示Alert
-                        [[self currentViewController] presentViewController:_optionsAlert animated:YES completion:nil];
+                        [self presentViewController:_optionsAlert];
                     }
                     else {
                         [self showNotSurvey];
@@ -88,6 +91,17 @@
         
     }]];
     
+    //展示Alert
+    [self presentViewController:_optionsAlert];
+}
+
+- (void)presentViewController:(UdeskAlertController *)alert {
+
+    if (ud_isIOS7 && [[[UIDevice currentDevice]systemVersion] floatValue] < 8.0) {
+        _transitioningDelegate = [[UDOverlayTransitioningDelegate alloc] init];
+        alert.modalPresentationStyle = UIModalPresentationCustom;
+        alert.transitioningDelegate = _transitioningDelegate;
+    }
     //展示Alert
     [[self currentViewController] presentViewController:alert animated:YES completion:nil];
 }
