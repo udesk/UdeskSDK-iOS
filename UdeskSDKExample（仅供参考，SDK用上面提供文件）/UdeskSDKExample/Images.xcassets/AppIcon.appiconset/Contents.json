@@ -18,24 +18,27 @@
       "scale" : "1x"
     },
     {
-      "idiom" : "iphone",
       "size" : "29x29",
+      "idiom" : "iphone",
+      "filename" : "default_icon_58_58.png",
       "scale" : "2x"
     },
     {
-      "idiom" : "iphone",
       "size" : "29x29",
+      "idiom" : "iphone",
+      "filename" : "default_icon_87_87.png",
       "scale" : "3x"
     },
     {
-      "idiom" : "iphone",
       "size" : "40x40",
+      "idiom" : "iphone",
+      "filename" : "default_icon_80_80.png",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "default_icon_120_120@3x.png",
+      "filename" : "default_icon_120_120-1.png",
       "scale" : "3x"
     },
     {
@@ -49,14 +52,15 @@
       "scale" : "2x"
     },
     {
-      "idiom" : "iphone",
       "size" : "60x60",
+      "idiom" : "iphone",
+      "filename" : "default_icon_120_120.png",
       "scale" : "2x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "default_icon_180_180@3x.png",
+      "filename" : "default_icon_180_180.png",
       "scale" : "3x"
     },
     {
@@ -70,14 +74,15 @@
       "scale" : "2x"
     },
     {
-      "idiom" : "ipad",
       "size" : "29x29",
+      "idiom" : "ipad",
+      "filename" : "default_icon_29_29-1.png",
       "scale" : "1x"
     },
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "default_icon_58_58@2x.png",
+      "filename" : "default_icon_58_58-1.png",
       "scale" : "2x"
     },
     {
@@ -86,8 +91,9 @@
       "scale" : "1x"
     },
     {
-      "idiom" : "ipad",
       "size" : "40x40",
+      "idiom" : "ipad",
+      "filename" : "default_icon_80_80-1.png",
       "scale" : "2x"
     },
     {
@@ -119,7 +125,7 @@
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "default_icon_152_152@2x.png",
+      "filename" : "default_icon_152_152.png",
       "scale" : "2x"
     },
     {
@@ -127,110 +133,6 @@
       "idiom" : "ipad",
       "filename" : "default_icon_167_167.png",
       "scale" : "2x"
-    },
-    {
-      "size" : "24x24",
-      "idiom" : "watch",
-      "scale" : "2x",
-      "role" : "notificationCenter",
-      "subtype" : "38mm"
-    },
-    {
-      "size" : "27.5x27.5",
-      "idiom" : "watch",
-      "scale" : "2x",
-      "role" : "notificationCenter",
-      "subtype" : "42mm"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "watch",
-      "role" : "companionSettings",
-      "scale" : "2x"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "watch",
-      "filename" : "default_icon_87_87@3x.png",
-      "role" : "companionSettings",
-      "scale" : "3x"
-    },
-    {
-      "size" : "40x40",
-      "idiom" : "watch",
-      "filename" : "default_icon_80_80@2x.png",
-      "scale" : "2x",
-      "role" : "appLauncher",
-      "subtype" : "38mm"
-    },
-    {
-      "size" : "86x86",
-      "idiom" : "watch",
-      "scale" : "2x",
-      "role" : "quickLook",
-      "subtype" : "38mm"
-    },
-    {
-      "size" : "98x98",
-      "idiom" : "watch",
-      "scale" : "2x",
-      "role" : "quickLook",
-      "subtype" : "42mm"
-    },
-    {
-      "idiom" : "mac",
-      "size" : "16x16",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "mac",
-      "size" : "16x16",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "mac",
-      "size" : "32x32",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "mac",
-      "size" : "32x32",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "mac",
-      "size" : "128x128",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "mac",
-      "size" : "128x128",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "mac",
-      "size" : "256x256",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "mac",
-      "size" : "256x256",
-      "scale" : "2x"
-    },
-    {
-      "size" : "512x512",
-      "idiom" : "mac",
-      "filename" : "default_icon_512_512.png",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "mac",
-      "size" : "512x512",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "default_icon_60_60@2x.png",
-      "unassigned" : true
     }
   ],
   "info" : {

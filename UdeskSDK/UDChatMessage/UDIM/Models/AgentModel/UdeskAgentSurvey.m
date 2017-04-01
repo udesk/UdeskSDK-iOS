@@ -92,11 +92,13 @@
     }]];
     
     //展示Alert
-    [self presentViewController:_optionsAlert];
+    [self presentViewController:alert];
 }
 
 - (void)presentViewController:(UdeskAlertController *)alert {
 
+    if (!alert) return;
+    
     if (ud_isIOS7 && [[[UIDevice currentDevice]systemVersion] floatValue] < 8.0) {
         _transitioningDelegate = [[UDOverlayTransitioningDelegate alloc] init];
         alert.modalPresentationStyle = UIModalPresentationCustom;

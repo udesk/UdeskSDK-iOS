@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>china</string>
 	<key>CFBundleDisplayName</key>
-	<string>UdeskSDK</string>
+	<string>Udesk客户</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -37,6 +37,10 @@
 	<string>microphoneDesciption</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>photoLibraryDesciption</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

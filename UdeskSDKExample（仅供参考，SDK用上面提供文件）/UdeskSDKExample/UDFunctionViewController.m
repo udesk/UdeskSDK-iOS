@@ -235,18 +235,8 @@
 }
 - (void)contactUs:(id)sender {
     
-    //自己选择
-//    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-//    [chatViewManager setTransferToAgentMenu:YES];
-//    [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
     //后台配置
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    
-    
-    [chatViewManager leaveMessageButtonAction:^(UIViewController *viewController) {
-        
-    }];
-    
     [chatViewManager pushUdeskViewControllerWith:self completion:nil];
 }
 - (void)ticket:(id)sender {
