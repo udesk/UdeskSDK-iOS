@@ -807,7 +807,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
     //监听键盘
     [self subscribeToKeyboard];
     //设置客户在线
@@ -841,6 +841,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UdeskTouchProductUrlSendButton object:nil];
     _messageTableView.delegate = nil;
     _messageTableView.dataSource = nil;
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
 }
 
 @end
