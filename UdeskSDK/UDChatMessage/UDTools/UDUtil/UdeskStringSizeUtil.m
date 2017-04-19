@@ -2,8 +2,8 @@
 //  UdeskGeneral.m
 //  UdeskSDK
 //
-//  Created by xuchen on 15/12/21.
-//  Copyright © 2015年 xuchen. All rights reserved.
+//  Created by Udesk on 15/12/21.
+//  Copyright © 2015年 Udesk. All rights reserved.
 //
 
 #import "UdeskStringSizeUtil.h"
@@ -52,25 +52,28 @@
 
 + (CGSize)textSize:(NSString *)text withFont:(UIFont *)font withSize:(CGSize)size {
 
-    CGSize newSize;
+    CGSize newSize = CGSizeMake(50, 50);
     
-    if (text.length>0 && text && font) {
-    
-        if (ud_isIOS6) {
+    if (![UdeskTools isBlankString:text]) {
+        
+        if (font) {
+            
+            if (ud_isIOS6) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            newSize = [text sizeWithFont:font constrainedToSize:size];
+                newSize = [text sizeWithFont:font constrainedToSize:size];
 #pragma clang diagnostic pop
-        } else {
-            
-            CGRect stringRect = [text boundingRectWithSize:CGSizeMake(size.width, CGFLOAT_MAX)
-                                                   options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                                attributes:@{ NSFontAttributeName : font }
-                                                   context:nil];
-            
-            CGSize stringSize = CGRectIntegral(stringRect).size;
-            
-            newSize = stringSize;
+            } else {
+                
+                CGRect stringRect = [text boundingRectWithSize:CGSizeMake(size.width, CGFLOAT_MAX)
+                                                       options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                                    attributes:@{ NSFontAttributeName : font }
+                                                       context:nil];
+                
+                CGSize stringSize = CGRectIntegral(stringRect).size;
+                
+                newSize = stringSize;
+            }
         }
     }
     

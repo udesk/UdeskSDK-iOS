@@ -1,7 +1,7 @@
 //
 //  NSTimer+UdeskSDK.m
 //
-//  Created by xuchen on 3/14/16.
+//  Created by Udesk on 3/14/16.
 //  Copyright 2016 Random Ideas, LLC. All rights reserved.
 //
 

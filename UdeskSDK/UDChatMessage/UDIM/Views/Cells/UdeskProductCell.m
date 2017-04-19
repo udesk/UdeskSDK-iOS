@@ -2,8 +2,8 @@
 //  UdeskProductCell.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/17.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/17.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskProductCell.h"
@@ -43,17 +43,17 @@
         UdeskProductMessage *productMessage = (UdeskProductMessage *)message;
         _productMessage = productMessage;
         
-        if ([UdeskTools isBlankString:productMessage.productTitle]) {
-            return;
+        if (![UdeskTools isBlankString:productMessage.productTitle]) {
+            self.productTitleLabel.text = productMessage.productTitle;
         }
         
-        if ([UdeskTools isBlankString:productMessage.productDetail]) {
-            return;
+        if (![UdeskTools isBlankString:productMessage.productDetail]) {
+            self.productDetailLabel.text = productMessage.productDetail;
+        }
+        if (productMessage.productImage) {
+            self.productImageView.image = productMessage.productImage;
         }
         
-        self.productImageView.image = productMessage.productImage;
-        self.productTitleLabel.text = productMessage.productTitle;
-        self.productDetailLabel.text = productMessage.productDetail;
         [self.productSendButton setTitle:productMessage.productSendText forState:UIControlStateNormal];
     }
 }

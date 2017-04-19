@@ -2,8 +2,8 @@
 //  UdeskSDKManager.h
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/18.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/18.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -166,5 +166,12 @@ typedef enum : NSUInteger {
  @param completion 事件完成回调
  */
 - (void)leaveMessageButtonAction:(void(^)(UIViewController *viewController))completion;
+
+/**
+ 结构化消息点击事件
+ 
+ @param completion 事件完成回调
+ */
+- (void)structMessageButtonCallBack:(void(^)(void))completion;
 
 @end

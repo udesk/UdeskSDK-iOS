@@ -2,8 +2,8 @@
 //  UdeskFatherViewController.m
 //  UdeskSDK
 //
-//  Created by Mac开发机 on 2016/12/1.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 2016/12/1.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskBaseViewController.h"

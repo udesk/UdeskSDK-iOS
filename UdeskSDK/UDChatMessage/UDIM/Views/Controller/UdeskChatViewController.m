@@ -3,8 +3,8 @@
 //  UdeskChatViewController.m
 //  UdeskSDK
 //
-//  Created by xuchen on 15/11/26.
-//  Copyright (c) 2015年 xuchen. All rights reserved.
+//  Created by Udesk on 15/11/26.
+//  Copyright (c) 2015年 Udesk. All rights reserved.
 //
 
 #import "UdeskChatViewController.h"
@@ -75,7 +75,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resendClickFailedMessage:) name:UdeskClickResendMessage object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendProductMessageURL:) name:UdeskTouchProductUrlSendButton object:nil];
     }
-    return  self;
+    return self;
 }
 
 - (void)setupBase {
@@ -232,6 +232,10 @@
     else {
         titleText = agent.message;
     }
+    
+    if (!titleText || titleText.length<=0) {
+        return;
+    }
     CGSize titleSize = [UdeskStringSizeUtil textSize:titleText withFont:self.sdkConfig.sdkStyle.titleFont withSize:CGSizeMake(200, 44)];
     UIImage *titleImage;
     switch (agent.code) {
@@ -291,7 +295,7 @@
 - (void)didSelectBlacklistedAlertViewOkButton {
 
     self.chatViewModel.isNotShowAlert = YES;
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissChatViewController];
 }
 
 #pragma mark - 初始化视图
@@ -446,6 +450,14 @@
 - (void)sendProductURL:(NSString *)url {
 
     [self didSendTextAction:url];
+}
+
+//结构化消息
+- (void)didSelectStructButton {
+
+    if (self.sdkConfig.structMessageCallBack) {
+        self.sdkConfig.structMessageCallBack();
+    }
 }
 
 #pragma mark - UDChatTableViewDelegate

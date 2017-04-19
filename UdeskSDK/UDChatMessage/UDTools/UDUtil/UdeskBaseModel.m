@@ -2,8 +2,8 @@
 //  UdeskBaseModel.m
 //  UdeskSDK
 //
-//  Created by xuchen on 14-8-20.
-//  Copyright (c) 2014年 xuchen. All rights reserved.
+//  Created by Udesk on 14-8-20.
+//  Copyright (c) 2014年 Udesk. All rights reserved.
 //
 
 #import "UdeskBaseModel.h"

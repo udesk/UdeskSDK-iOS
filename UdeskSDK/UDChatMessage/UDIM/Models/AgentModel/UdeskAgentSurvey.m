@@ -2,21 +2,21 @@
 //  UdeskAgentSurvey.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/18.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/18.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskAgentSurvey.h"
 #import "UdeskAlertController.h"
 #import "UdeskManager.h"
 #import "UdeskUtils.h"
-#import "UDOverlayTransitioningDelegate.h"
+#import "UdeskOverlayTransitioningDelegate.h"
 #import "UdeskFoundationMacro.h"
 
 @implementation UdeskAgentSurvey {
 
     UdeskAlertController *_optionsAlert;
-    UDOverlayTransitioningDelegate *_transitioningDelegate;
+    UdeskOverlayTransitioningDelegate *_transitioningDelegate;
 }
 
 + (instancetype)store {
@@ -76,9 +76,7 @@
                 else {
                     [self showNotSurvey];
                 }
-                
             }
-            
         }];
     }
 
@@ -100,7 +98,7 @@
     if (!alert) return;
     
     if (ud_isIOS7 && [[[UIDevice currentDevice]systemVersion] floatValue] < 8.0) {
-        _transitioningDelegate = [[UDOverlayTransitioningDelegate alloc] init];
+        _transitioningDelegate = [[UdeskOverlayTransitioningDelegate alloc] init];
         alert.modalPresentationStyle = UIModalPresentationCustom;
         alert.transitioningDelegate = _transitioningDelegate;
     }

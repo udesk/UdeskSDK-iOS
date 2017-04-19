@@ -2,8 +2,8 @@
 //  UdeskTicketViewController.m
 //  UdeskSDK
 //
-//  Created by xuchen on 15/11/26.
-//  Copyright (c) 2015年 xuchen. All rights reserved.
+//  Created by Udesk on 15/11/26.
+//  Copyright (c) 2015年 Udesk. All rights reserved.
 //
 
 #import "UdeskTicketViewController.h"
@@ -14,7 +14,7 @@
 #import "UdeskSDKConfig.h"
 #import "UdeskTransitioningAnimation.h"
 #import "UdeskLanguageTool.h"
-#import "UDCustomNavigation.h"
+#import "UdeskCustomNavigation.h"
 #import "UdeskViewExt.h"
 
 @interface UdeskTicketViewController () 
@@ -40,7 +40,7 @@
 
     self.view.backgroundColor = _sdkConfig.sdkStyle.tableViewBackGroundColor;
 
-    UDCustomNavigation *customNav = [[UDCustomNavigation alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 64)];
+    UdeskCustomNavigation *customNav = [[UdeskCustomNavigation alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 64)];
     if (_sdkConfig.sdkStyle.navigationColor) {
         customNav.backgroundColor = _sdkConfig.sdkStyle.navigationColor;
     }

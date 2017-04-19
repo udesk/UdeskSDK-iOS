@@ -2,8 +2,8 @@
 //  UdeskPhotographyHelper.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/1/18.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/1/18.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskPhotographyHelper.h"

@@ -2,8 +2,8 @@
 //  UdeskChatCell.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/15.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/15.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskChatCell.h"
@@ -20,7 +20,7 @@
 
 #define VoicePlayHasInterrupt @"VoicePlayHasInterrupt"
 
-@interface UdeskChatCell() <UDAudioPlayerHelperDelegate,UDTTTAttributedLabelDelegate,UIAlertViewDelegate> {
+@interface UdeskChatCell() <UDAudioPlayerHelperDelegate,UDTTTAttributedLabelDelegate,UIAlertViewDelegate,UIActionSheetDelegate> {
 
     UILabel          *dateLabel;//时间
     UIImageView      *avatarImageView;//头像
@@ -200,6 +200,20 @@
             }
         }
         
+        //获取文字中的可选中的元素
+        if (chatMessage.numberRangeDic.count > 0) {
+            NSString *longestKey = @"";
+            for (NSString *key in chatMessage.numberRangeDic.allKeys) {
+                //找到最长的key
+                if (key.length > longestKey.length) {
+                    longestKey = key;
+                }
+            }
+            if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
+                [contentLabel addLinkToPhoneNumber:longestKey withRange:[chatMessage.numberRangeDic[longestKey] rangeValue]];
+            }
+        }
+        
         //隐藏
         contentImageView.hidden = YES;
         self.voiceDurationLabel.hidden = YES;
@@ -333,6 +347,35 @@
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", url.absoluteString]]];
     } else {
         [[UIApplication sharedApplication] openURL:url];
+    }
+}
+
+- (void)attributedLabel:(UDTTTAttributedLabel *)label didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"%@\n可能是一个电话号码，你可以",phoneNumber] delegate:self cancelButtonTitle:getUDLocalizedString(@"udesk_cancel") destructiveButtonTitle:nil otherButtonTitles:getUDLocalizedString(@"udesk_call"), getUDLocalizedString(@"udesk_copy"), nil];
+    [sheet showInView:[UIApplication sharedApplication].keyWindow];
+}
+
+#pragma mark - UIActionSheetDelegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        return;
+    }
+    
+    NSRange range = [actionSheet.title rangeOfString:@"\n"];
+    NSString *number = actionSheet.title;
+    if (actionSheet.title.length>range.location) {
+        number = [actionSheet.title substringToIndex:range.location];
+    }
+    
+    switch (buttonIndex) {
+        case 0:
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@", actionSheet.title]]];
+            break;
+        case 1:
+            [UIPasteboard generalPasteboard].string = number;
+            break;
+        default:
+            break;
     }
 }
 

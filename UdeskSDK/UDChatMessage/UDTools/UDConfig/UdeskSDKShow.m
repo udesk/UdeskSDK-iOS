@@ -2,8 +2,8 @@
 //  UdeskSDKShow.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/26.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/26.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskSDKShow.h"
@@ -109,7 +109,9 @@
     if (_sdkConfig.sdkStyle.navBarBackgroundImage) {
         [navigationController.navigationBar setBackgroundImage:_sdkConfig.sdkStyle.navBarBackgroundImage forBarMetrics:UIBarMetricsDefault];
     } else {
-        navigationController.navigationBar.barTintColor = _sdkConfig.sdkStyle.navigationColor;
+        if (_sdkConfig.sdkStyle.navigationColor) {
+            navigationController.navigationBar.barTintColor = _sdkConfig.sdkStyle.navigationColor;
+        }
     }
     
     //导航栏左键

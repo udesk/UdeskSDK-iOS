@@ -2,8 +2,8 @@
 //  UIImage+UdeskSDK.h
 //  UdeskSDK
 //
-//  Created by xuchen on 16/3/2.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/3/2.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

@@ -2,8 +2,8 @@
 //  UdeskChatAlertController.h
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/17.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/17.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -34,7 +34,7 @@
 //不存在客服或客服组
 - (void)showNotExistAgentAlert:(NSString *)message;
 //黑名单
-- (void)showIsBlacklistedAlert;
+- (void)showIsBlacklistedAlert:(NSString *)message;
 //未知错误
 - (void)showNotConnectedAlert;
 //根据客服code弹出提示窗

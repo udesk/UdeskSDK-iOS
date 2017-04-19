@@ -2,8 +2,8 @@
 //  UdeskSDKConfig.h
 //  UdeskSDK
 //
-//  Created by xuchen on 16/1/16.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/1/16.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -79,10 +79,16 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 @property (nonatomic, assign) BOOL isCustomForm;
 
 /** 超链接正则 */
-@property (nonatomic, copy, readonly) NSMutableArray *linkRegexs;
+@property (nonatomic, strong, readonly) NSMutableArray *linkRegexs;
+
+/** 号码正则 */
+@property (nonatomic, strong, readonly) NSMutableArray *numberRegexs;
 
 /** 离线留言点击 */
 @property (nonatomic, copy) void(^leaveMessageAction)(UIViewController *viewController);
+
+/** 结构化消息回调 */
+@property (nonatomic, copy) void(^structMessageCallBack)(void);
 
 + (instancetype)sharedConfig;
 

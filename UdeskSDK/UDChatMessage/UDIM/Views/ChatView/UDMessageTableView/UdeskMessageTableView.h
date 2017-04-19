@@ -2,8 +2,8 @@
 //  UdeskMessageTableView.h
 //  UdeskSDK
 //
-//  Created by xuchen on 15/12/22.
-//  Copyright © 2015年 xuchen. All rights reserved.
+//  Created by Udesk on 15/12/22.
+//  Copyright © 2015年 Udesk. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

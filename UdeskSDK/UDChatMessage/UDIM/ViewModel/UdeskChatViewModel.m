@@ -2,8 +2,8 @@
 //  UdeskChatViewModel.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/1/19.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/1/19.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskChatViewModel.h"
@@ -22,6 +22,7 @@
 #import "UdeskChatSend.h"
 #import "UdeskAgentSurvey.h"
 #import "UdeskUtils.h"
+#import "UdeskStructMessage.h"
 
 @interface UdeskChatViewModel()<UDManagerDelegate,UdeskMessageDelegate,UdeskChatAlertDelegate>
 
@@ -39,6 +40,8 @@
 @property (nonatomic                  ) UdeskReachability        *reachability;
 /** 网络切换 */
 @property (nonatomic, assign          ) BOOL                     netWorkChange;
+/** 黑名单提示语 */
+@property (nonatomic, copy            ) NSString                 *blackedMessage;
 
 @end
 
@@ -103,7 +106,7 @@
         }
         else {
             
-            NSString *no_reply_hint = self.sdkSetting.noReplyHint;
+            NSString *no_reply_hint = [NSString stringWithFormat:@"%@",self.sdkSetting.noReplyHint];
             if (!no_reply_hint || no_reply_hint.length <= 0) {
                 no_reply_hint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
             }
@@ -131,7 +134,7 @@
             
             if ([UdeskManager isBlacklisted]) {
                 //客户在黑名单
-                [self customerIsBlacklisted];
+                [self customerIsBlacklisted:error.userInfo[@"message"]];
             }
             else {
                 NSLog(@"Udesk SDK初始化失败，请查看控制台LOG");
@@ -141,18 +144,19 @@
 }
 
 //客户在黑名单
-- (void)customerIsBlacklisted {
+- (void)customerIsBlacklisted:(NSString *)message {
     
+    _blackedMessage = message;
     //退出
     [UdeskManager setupCustomerOffline];
     
     UdeskAgent *agentModel = [[UdeskAgent alloc] init];
-    agentModel.message = getUDLocalizedString(@"udesk_im_title_blocked_list");
+    agentModel.message = [UdeskTools isBlankString:message]?getUDLocalizedString(@"udesk_im_title_blocked_list"):message;
     agentModel.code = UDAgentStatusResultUnKnown;
     
     [self callbackAgentModel:agentModel];
     //显示客户黑名单提示
-    [self.chatAlert showIsBlacklistedAlert];
+    [self.chatAlert showIsBlacklistedAlert:message];
 }
 //网络状态检测
 - (void)reachabilityChanged:(NSNotification *)note
@@ -206,17 +210,18 @@
             
             if (messagesArray.count) {
                 self.messageArray = [self convertToChatViewMessageWithUdeskMessages:messagesArray];
-                //咨询对象
-                if ([UdeskSDKConfig sharedConfig].productDictionary) {
-                    UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithProductMessage:[UdeskSDKConfig sharedConfig].productDictionary];
-                    if (productMessage) {
-                        productMessage.delegate = self;
-                        [self.messageArray addObject:productMessage];
-                    }
-                }
-                //更新UI
-                [self updateContent];
             }
+            
+            //咨询对象
+            if ([UdeskSDKConfig sharedConfig].productDictionary) {
+                UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithProductMessage:[UdeskSDKConfig sharedConfig].productDictionary];
+                if (productMessage) {
+                    productMessage.delegate = self;
+                    [self.messageArray addObject:productMessage];
+                }
+            }
+            //更新UI
+            [self updateContent];
         });
         
     }];
@@ -312,6 +317,13 @@
         UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
         if (tipsMessage) {
             return tipsMessage;
+        }
+    }
+    else if (message.messageType == UDMessageContentTypeStruct) {
+        UdeskStructMessage *strucrtMessage = [[UdeskStructMessage alloc] initWithUdeskMessage:message];
+        strucrtMessage.delegate = self;
+        if (strucrtMessage) {
+            return strucrtMessage;
         }
     }
     else {
@@ -489,6 +501,13 @@
             [self.messageArray addObject:tipsMessage];
         }
     }
+    else if (message.messageType == UDMessageContentTypeStruct) {
+        UdeskStructMessage *structMessage = [[UdeskStructMessage alloc] initWithUdeskMessage:message];
+        structMessage.delegate = self;
+        if (structMessage) {
+            [self.messageArray addObject:structMessage];
+        }
+    }
     else {
         UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:displayTimestamp];
         if (chatMessage) {
@@ -644,7 +663,7 @@
     
     if ([UdeskManager isBlacklisted]) {
         //黑名单用户
-        [self.chatAlert showIsBlacklistedAlert];
+        [self.chatAlert showIsBlacklistedAlert:self.blackedMessage];
     }
     else {
         
@@ -657,7 +676,7 @@
     
     if (self.sdkSetting) {
         
-        NSString *no_reply_hint = self.sdkSetting.noReplyHint;
+        NSString *no_reply_hint = [NSString stringWithFormat:@"%@",self.sdkSetting.noReplyHint];
         if(self.agentModel.code == UDAgentStatusResultQueue) {
             no_reply_hint = self.agentModel.message;
         }

@@ -2,8 +2,8 @@
 //  UdeskChatMessage.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/12.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/12.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskChatMessage.h"
@@ -235,9 +235,18 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
                         [richContetnArray addObject:[self.text substringWithRange:range]];
                     }
                 }
-                
                 self.matchArray = [NSArray arrayWithArray:richContetnArray];
                 self.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
+                
+                NSMutableDictionary *numberDictionary = [NSMutableDictionary dictionary];
+                for (NSString *linkRegex in [UdeskSDKConfig sharedConfig].numberRegexs) {
+                    
+                    NSRange range = [self.text rangeOfString:linkRegex options:NSRegularExpressionSearch];
+                    if (range.location != NSNotFound) {
+                        [numberDictionary setValue:[NSValue valueWithRange:range] forKey:[self.text substringWithRange:range]];
+                    }
+                }
+                self.numberRangeDic = [NSDictionary dictionaryWithDictionary:numberDictionary];
                 
                 CGSize textSize = [self neededSizeForText:self.text];
                 //接收文字气泡frame
@@ -391,7 +400,6 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
                 
                 imageSize = CGSizeMake(newWidth<60.0f?60:newWidth, fixedSize);
             }
-            
         }
         else if (image.size.height < image.size.width) {
             
@@ -610,6 +618,16 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
     
     self.matchArray = [NSArray arrayWithArray:richContetnArray];
     self.richURLDictionary = [NSDictionary dictionaryWithDictionary:richURLDictionary];
+    
+    NSMutableDictionary *numberDictionary = [NSMutableDictionary dictionary];
+    for (NSString *linkRegex in [UdeskSDKConfig sharedConfig].numberRegexs) {
+        
+        NSRange range = [text rangeOfString:linkRegex options:NSRegularExpressionSearch];
+        if (range.location != NSNotFound) {
+            [numberDictionary setValue:[NSValue valueWithRange:range] forKey:[text substringWithRange:range]];
+        }
+    }
+    self.numberRangeDic = [NSDictionary dictionaryWithDictionary:numberDictionary];
     
     //文本
     self.text = text;

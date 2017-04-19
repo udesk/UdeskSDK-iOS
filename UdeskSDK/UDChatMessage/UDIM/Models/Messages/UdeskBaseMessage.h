@@ -2,8 +2,8 @@
 //  UdeskBaseMessage.h
 //  UdeskSDK
 //
-//  Created by xuchen on 16/9/1.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/9/1.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

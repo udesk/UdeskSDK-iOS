@@ -423,6 +423,8 @@ App 进入后台后，Udesk推送给开发者服务端的消息数据格式中�
 
 - 推送接口只支持 http，不支持 https
 - 数据将以 JSON 格式发送
+- 请求 Body 数据为 JSON 格式，见示例
+- 请求时使用的 content-type 为 application/x-www-form-urlencoded
 
 **参数**
 

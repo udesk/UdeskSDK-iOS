@@ -2,8 +2,8 @@
 //  UdeskSetting.h
 //  UdeskSDK
 //
-//  Created by xuchen on 2017/1/18.
-//  Copyright © 2017年 xuchen. All rights reserved.
+//  Created by Udesk on 2017/1/18.
+//  Copyright © 2017年 Udesk. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

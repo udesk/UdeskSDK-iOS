@@ -2,10 +2,10 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.5.8
+//  Version: 3.6
 //
-//  Created by xuchen on 16/1/12.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/1/12.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

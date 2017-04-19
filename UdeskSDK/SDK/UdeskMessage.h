@@ -2,8 +2,8 @@
 //  UdeskMessage.h
 //  UdeskSDK
 //
-//  Created by xuchen on 15/8/26.
-//  Copyright (c) 2015年 xuchen. All rights reserved.
+//  Created by Udesk on 15/8/26.
+//  Copyright (c) 2015年 Udesk. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -22,6 +22,7 @@ typedef NS_ENUM(NSInteger, UDMessageContentType) {
     UDMessageContentTypeProduct  = 3,//咨询对象
     UDMessageContentTypeRedirect = 4,//转接
     UDMessageContentTypeRich     = 5,//欢迎语
+    UDMessageContentTypeStruct   = 6,//结构化消息
 };
 
 typedef NS_ENUM(NSInteger,UDMessageSendStatus) {

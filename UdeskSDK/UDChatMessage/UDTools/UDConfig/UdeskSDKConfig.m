@@ -2,8 +2,8 @@
 //  UdeskSDKConfig.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/1/16.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/1/16.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskSDKConfig.h"
@@ -14,7 +14,9 @@
 @interface UdeskSDKConfig()
 
 /** 超链接正则 */
-@property (nonatomic, copy, readwrite) NSMutableArray *linkRegexs;
+@property (nonatomic, strong, readwrite) NSMutableArray *linkRegexs;
+/** 号码正则 */
+@property (nonatomic, strong, readwrite) NSMutableArray *numberRegexs;
 
 @end
 
@@ -38,6 +40,11 @@
     if (self) {
         
         [self setDefaultConfig];
+        
+        self.numberRegexs = [[NSMutableArray alloc] initWithArray:@[@"^(\\d{3,4}-?)\\d{7,8}$",
+                                                                    @"^1[3|4|5|7|8]\\d{9}",
+                                                                    @"[0-9]\\d{4,10}",
+                                                                    @"^400(-\\d{3,4}){2}$"]];
         
         self.linkRegexs   = [[NSMutableArray alloc] initWithArray:@[@"((http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|([a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)"]];
     }

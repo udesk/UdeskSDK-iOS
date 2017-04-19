@@ -2,8 +2,8 @@
 //  UdeskChatMessage.h
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/12.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/12.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskBaseMessage.h"
@@ -41,6 +41,8 @@
 @property (nonatomic, strong) NSArray              *matchArray;
 /** 高亮文字对应的超链接 */
 @property (nonatomic, strong) NSDictionary         *richURLDictionary;
+/** 高亮文字对应的超链接 */
+@property (nonatomic, strong) NSDictionary         *numberRangeDic;
 /** 消息气泡frame */
 @property (nonatomic, assign, readonly) CGRect     bubbleImageFrame;
 /** 时间frame */

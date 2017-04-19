@@ -2,8 +2,8 @@
 //  UdeskChatAlertController.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/17.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/17.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskChatAlertController.h"
@@ -12,12 +12,12 @@
 #import "UdeskUtils.h"
 #import "UdeskTicketViewController.h"
 #import "UdeskSDKShow.h"
-#import "UDOverlayTransitioningDelegate.h"
+#import "UdeskOverlayTransitioningDelegate.h"
 #import "UdeskTools.h"
 
 @interface UdeskChatAlertController()
 
-@property (nonatomic, strong) UDOverlayTransitioningDelegate *transitioningDelegate;
+@property (nonatomic, strong) UdeskOverlayTransitioningDelegate *transitioningDelegate;
 
 @end
 
@@ -140,9 +140,13 @@
 }
 
 //黑名单
-- (void)showIsBlacklistedAlert {
+- (void)showIsBlacklistedAlert:(NSString *)message {
     
-    UdeskAlertController *blacklisted = [UdeskAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_alert_view_blocked_list") preferredStyle:UDAlertControllerStyleAlert];
+    if ([UdeskTools isBlankString:message]) {
+        message = getUDLocalizedString(@"udesk_alert_view_blocked_list");
+    }
+    
+    UdeskAlertController *blacklisted = [UdeskAlertController alertControllerWithTitle:nil message:message preferredStyle:UDAlertControllerStyleAlert];
     
     @udWeakify(self);
     [blacklisted addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_sure") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
@@ -223,7 +227,7 @@
 - (void)presentViewController:(UdeskAlertController *)alertController {
     
     if (ud_isIOS7 && [[[UIDevice currentDevice]systemVersion] floatValue] < 8.0) {
-        _transitioningDelegate = [[UDOverlayTransitioningDelegate alloc] init];
+        _transitioningDelegate = [[UdeskOverlayTransitioningDelegate alloc] init];
         alertController.modalPresentationStyle = UIModalPresentationCustom;
         alertController.transitioningDelegate = _transitioningDelegate;
     }

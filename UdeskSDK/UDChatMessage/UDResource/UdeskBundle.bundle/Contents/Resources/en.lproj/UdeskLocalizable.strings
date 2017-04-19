@@ -2,8 +2,8 @@
   UdeskLocalizable.strings
   UdeskSDK
 
-  Created by xuchen on 16/9/2.
-  Copyright © 2016年 xuchen. All rights reserved.
+  Created by Udesk on 16/9/2.
+  Copyright © 2016年 Udesk. All rights reserved.
 */
 
 //faq
@@ -49,6 +49,7 @@
 "udesk_agent_not_exist" = "Agent not exist";
 "udesk_group_not_exist" = "Agent group not exist";
 "udesk_copy" = "Copy";
+"udesk_call" = "Call";
 "udesk_today" = "Today";
 "udesk_yesterday" = "Yesterday";
 "udesk_save" = "Save";

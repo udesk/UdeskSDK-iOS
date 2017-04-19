@@ -2,8 +2,8 @@
 //  UdeskSDKManager.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/18.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/18.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UdeskSDKManager.h"
@@ -388,6 +388,16 @@
 - (void)leaveMessageButtonAction:(void(^)(UIViewController *viewController))completion {
 
     _sdkConfig.leaveMessageAction = completion;
+}
+
+/**
+ 结构化消息点击事件
+ 
+ @param completion 事件完成回调
+ */
+- (void)structMessageButtonCallBack:(void(^)(void))completion {
+    
+    _sdkConfig.structMessageCallBack = completion;
 }
 
 @end
