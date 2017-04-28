@@ -23,7 +23,7 @@ static NSString *channel = @"AppStore";
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    BOOL isProduction;
+    BOOL isProduction = NO;
 #ifdef DEBUG
     NSLog(@"debug");
 #else

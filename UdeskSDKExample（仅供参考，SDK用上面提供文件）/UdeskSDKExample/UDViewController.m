@@ -44,7 +44,7 @@
     _domainTextField.backgroundColor = [UIColor clearColor];
     _domainTextField.placeholder = @"域名";
     _domainTextField.textColor = [UIColor whiteColor];
-//    _domainTextField.text = @"udesksdk.udesk.cn";
+    _domainTextField.text = @"udesksdk.udesk.cn";
     [accountTextFieldBackGroundView addSubview:_domainTextField];
     
     UIView *passwordTextFieldBackGroundView = [[UIView alloc] initWithFrame:CGRectMake(20, accountTextFieldBackGroundView.ud_bottom+11, UD_SCREEN_WIDTH-40, 50)];
@@ -58,7 +58,7 @@
     _appKeyTextField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"key"];
     _appKeyTextField.placeholder = @"APP Key";
     _appKeyTextField.textColor = [UIColor whiteColor];
-//    _appKeyTextField.text = @"6c37f775019907785d85c027e29dae4e";
+    _appKeyTextField.text = @"6c37f775019907785d85c027e29dae4e";
     [passwordTextFieldBackGroundView addSubview:_appKeyTextField];
     
     UIView *appIdTextFieldBackGroundView = [[UIView alloc] initWithFrame:CGRectMake(20, passwordTextFieldBackGroundView.ud_bottom+11, UD_SCREEN_WIDTH-40, 50)];
@@ -72,7 +72,7 @@
     _appIdTextField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"appId"];
     _appIdTextField.placeholder = @"APP ID";
     _appIdTextField.textColor = [UIColor whiteColor];
-//    _appIdTextField.text = @"cdc6da4fa97efc2c";
+    _appIdTextField.text = @"cdc6da4fa97efc2c";
     
     [appIdTextFieldBackGroundView addSubview:_appIdTextField];
     
@@ -105,6 +105,7 @@
         
         [[NSUserDefaults standardUserDefaults] setObject:self.domainTextField.text forKey:@"domain"];
         [[NSUserDefaults standardUserDefaults] setObject:self.appKeyTextField.text forKey:@"key"];
+        [[NSUserDefaults standardUserDefaults] setObject:self.appIdTextField.text forKey:@"appId"];
         
         [UdeskManager initWithAppKey:self.appKeyTextField.text appId:self.appIdTextField.text domain:self.domainTextField.text];
         
