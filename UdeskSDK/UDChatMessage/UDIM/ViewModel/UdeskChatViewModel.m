@@ -453,6 +453,9 @@
             UdeskMessage *productMessage = [[UdeskMessage alloc] initWithProductMessage:[UdeskSDKConfig sharedConfig].productDictionary];
             [UdeskManager sendMessage:productMessage completion:nil];
         }
+    
+        //隐藏弹窗
+        [self.chatAlert hideAlert];
     }
 }
 
@@ -528,7 +531,7 @@
 - (void)didReceivePresence:(NSDictionary *)presence {
     
     NSString *statusType = [presence objectForKey:@"type"];
-    UDAgentStatusType agentCode;
+    UDAgentStatusType agentCode = UDAgentStatusResultOffline;
     NSString  *agentMessage = @"unavailable";
     if([statusType isEqualToString:@"over"]) {
 

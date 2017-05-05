@@ -47,4 +47,6 @@
 
 - (void)showAlertWithMessage:(NSString *)message;
 
+- (void)hideAlert;
+
 @end

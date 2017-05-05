@@ -298,9 +298,6 @@
 
 - (void)setProductMessage:(NSDictionary *)product {
 
-    if (!product) {
-        return;
-    }
     _sdkConfig.productDictionary = product;
 }
 

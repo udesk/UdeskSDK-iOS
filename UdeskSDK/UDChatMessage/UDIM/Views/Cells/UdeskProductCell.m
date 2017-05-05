@@ -51,7 +51,12 @@
             self.productDetailLabel.text = productMessage.productDetail;
         }
         if (productMessage.productImage) {
-            self.productImageView.image = productMessage.productImage;
+            if ([productMessage.productImage isKindOfClass:[UIImage class]]) {
+                self.productImageView.image = productMessage.productImage;
+            }
+            else {
+                self.productImageView.image = [UIImage ud_defaultLoadingImage];
+            }
         }
         
         [self.productSendButton setTitle:productMessage.productSendText forState:UIControlStateNormal];

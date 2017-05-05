@@ -270,4 +270,11 @@
 
 }
 
+- (void)hideAlert {
+
+    if ([[self currentViewController] isKindOfClass:[UdeskAlertController class]]) {
+        [[self currentViewController] dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
 @end

@@ -282,15 +282,22 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
 //点击评价
 - (void)surveyButton:(UIButton *)button {
 
+    //先将未到时间执行前的任务取消。
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showAgentSurvey:) object:button];
+    [self performSelector:@selector(showAgentSurvey:) withObject:button afterDelay:0.35f];
+}
+
+- (void)showAgentSurvey:(UIButton *)button {
+
     //检查客服状态
     if ([self checkAgentStatusValid]) {
         
         if (self.agent.agentId) {
             
             [UdeskAgentSurvey.store checkHasSurveyWithAgentId:self.agent.agentId completion:^(NSString *hasSurvey) {
-               
+                
                 if (![hasSurvey boolValue]) {
-            
+                    
                     [UdeskAgentSurvey.store showAgentSurveyAlertViewWithAgentId:self.agent.agentId completion:^{
                         
                         //评价提交成功Alert
@@ -301,12 +308,11 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
                     }];
                 }
                 else {
-                
+                    
                     [self.delegate didSurveyWithMessage:getUDLocalizedString(@"udesk_has_survey")  hasSurvey:YES];
                 }
                 
             }];
-            
         }
     }
 }
