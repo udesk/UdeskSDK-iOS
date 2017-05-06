@@ -572,7 +572,7 @@
     if ([UdeskTools isBlankString:agentId]) {
         return;
     }
-    [UdeskAgentSurvey.store showAgentSurveyAlertViewWithAgentId:agentId completion:^{
+    [[UdeskAgentSurvey sharedManager] showAgentSurveyAlertViewWithAgentId:agentId completion:^{
         
         //评价提交成功Alert
         if (self.delegate) {
