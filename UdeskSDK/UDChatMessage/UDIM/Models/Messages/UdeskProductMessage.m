@@ -87,9 +87,6 @@ static CGFloat const kUDProductSendButtonHeight = 25.0;
             [UdeskManager downloadMediaWithUrlString:productImageUrl done:^(NSString *key, id<NSCoding> object) {
                 
                 self.productImage = (UIImage *)object;
-                if ([self.productImage isKindOfClass:[UIImage class]]) {
-                    self.productImage = [UIImage ud_defaultLoadingImage];
-                }
                 //通知更新
                 if (self.delegate) {
                     if ([self.delegate respondsToSelector:@selector(didUpdateCellDataWithMessageId:)]) {
