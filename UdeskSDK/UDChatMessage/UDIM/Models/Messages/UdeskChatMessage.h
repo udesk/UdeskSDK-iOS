@@ -94,7 +94,7 @@
 /**
  *  初始化语音消息model
  *
- *  @param image            语音
+ *  @param voiceData            语音
  *  @param displayTimestamp 是否显示时间label
  *
  *  @return 自己

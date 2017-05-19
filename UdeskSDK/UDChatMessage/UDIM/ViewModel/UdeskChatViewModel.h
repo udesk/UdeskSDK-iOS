@@ -112,7 +112,7 @@
 /**
  *  发送语音消息
  *
- *  @param audioPath     语音文件地址
+ *  @param voicePath     语音文件地址
  *  @param audioDuration 语音时长
  *  @param comletion     发送状态&发送消息体
  */

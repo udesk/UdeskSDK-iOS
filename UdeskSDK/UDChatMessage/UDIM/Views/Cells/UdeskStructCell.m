@@ -59,10 +59,11 @@
     
     //结构化消息
     NSMutableArray *array = [NSMutableArray array];
+    @udWeakify(self);
     for (UdeskStructButton *button in structMsg.buttons) {
         UdeskStructAction *action = [UdeskStructAction actionWithTitle:button.text handler:^(UdeskStructAction * _Nonnull action) {
             
-            [self tapButtonAction:button];
+            [__weak_self__ tapButtonAction:button];
         }];
         [array addObject:action];
     }
@@ -100,10 +101,6 @@
         }
         return;
     }
-}
-
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
 }
 
 @end

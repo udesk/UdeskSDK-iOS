@@ -98,9 +98,6 @@
         
         [_ticketWebView stringByEvaluatingJavaScriptFromString:@"ticketCallBack()"];
     }
-
-    
-    NSLog(@"%@",self.navigationController.viewControllers);
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {

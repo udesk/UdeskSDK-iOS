@@ -133,27 +133,21 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
     
     [self setFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width - width)*0.5, -40, width, 40)];
     self.alpha = .9f;
-    UIColor *doBtnColor = FlatSkyBlueDark;
-    
     if (type == UDAlertTypeGreen) {
         
         self.backgroundColor = FlatGreen;
-        doBtnColor = FlatGreenDark;
     }
     else if (type == UDAlertTypeSkyBlue) {
     
         self.backgroundColor = FlatSkyBlue;
-        doBtnColor = FlatSkyBlueDark;
     }
     else if (type == UDAlertTypeOrange) {
         
         self.backgroundColor = FlatOrange;
-        doBtnColor = FlatOrangeDark;
     }
     else {
     
         self.backgroundColor = FlatRed;
-        doBtnColor = FlatRedDark;
     }
     
     CGFloat textLabelWidth = width*0.8;

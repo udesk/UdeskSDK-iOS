@@ -99,7 +99,7 @@ typedef enum : NSUInteger {
 /**
  *  通过URL设置客户头像
  *
- *  @param avatarImage 客户头像URL
+ *  @param avatarURL 客户头像URL
  */
 - (void)setCustomerAvatarWithURL:(NSString *)avatarURL;
 /**
@@ -173,5 +173,12 @@ typedef enum : NSUInteger {
  @param completion 事件完成回调
  */
 - (void)structMessageButtonCallBack:(void(^)(void))completion;
+
+/**
+ 离开聊天页面回调
+ 
+ @param completion 事件完成回调
+ */
+- (void)leaveChatViewControllerCallBack:(void(^)(void))completion;
 
 @end

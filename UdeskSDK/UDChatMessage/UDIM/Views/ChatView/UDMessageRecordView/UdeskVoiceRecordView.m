@@ -16,7 +16,7 @@
 #import "UdeskVoiceRecordHelper.h"
 
 @interface UdeskVoiceRecordView()<AVAudioRecorderDelegate,MZTimerLabelDelegate> {
-
+    
     UILabel  *tipLabel;
     UIButton *deleteButton;
     UIButton *recordButton;
@@ -26,7 +26,7 @@
 }
 
 @property (nonatomic, strong) UdeskVoiceRecordHelper    *voiceRecordHelper;//管理录音工具对象
-
+@property (nonatomic, assign) BOOL isMaxTime;
 
 @end
 
@@ -44,7 +44,7 @@
         spectrumView = [[UdeskSpectrumView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-170)/2,32,150, 20)];
         spectrumView.stopwatch.delegate = self;
         __weak UdeskSpectrumView * weakSpectrum = spectrumView;
-
+        
         @udWeakify(self);
         spectrumView.itemLevelCallback = ^() {
             @udStrongify(self);
@@ -85,7 +85,7 @@
         
         
         deleteButton = [[UIButton alloc]initWithFrame:CGRectMake(UD_SCREEN_WIDTH-40-25, 25, 40, 40)];
-        
+        deleteButton.hidden = YES;
         [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
         
         [self addSubview:deleteButton];
@@ -110,51 +110,42 @@
     
     CGRect newButton = CGRectMake(location.x+sender.frame.origin.x, location.y+sender.frame.origin.y,100, 100);
     
-    BOOL test1 = CGRectIntersectsRect(deleteButton.frame,newButton);
+    BOOL deletePoint = CGRectIntersectsRect(deleteButton.frame,newButton);
     
-    if (test1) {
+    if (deletePoint) {
+        
         spectrumView.hidden = YES;
         tipLabel.hidden = NO;
+        deleteButton.hidden = NO;
         tipLabel.text = getUDLocalizedString(@"udesk_release_to_cancel");
         [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceHighImage] forState:UIControlStateNormal];
         
         isInDeleteButton = YES;
     }
     else {
-        spectrumView.hidden = NO;
-        tipLabel.hidden = YES;
+        
+        [self showSpectrum];
         tipLabel.text = getUDLocalizedString(@"udesk_hold_to_talk");
         [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
         
         isInDeleteButton = NO;
     }
-    
 }
 
 - (void)recordCancel:(UIButton *)button
 {
-    
+    [self hideSpectrum];
     if (isInDeleteButton) {
         
-        [spectrumView.stopwatch reset];
-        [spectrumView.stopwatch pause];
-        
-        spectrumView.hidden = YES;
-        tipLabel.text = getUDLocalizedString(@"udesk_hold_to_talk");
-        tipLabel.hidden = NO;
-        [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
-        
-        [self.voiceRecordHelper cancelledDeleteWithCompletion:nil];
+        [self cancelRecord];
     }
     else {
-
         [self finishRecord];
     }
 }
 
 - (void)recordStart:(UIButton *)button
 {
-
     if ([self canRecord]) {
         
         @udWeakify(self);
@@ -163,49 +154,71 @@
             @udStrongify(self);
             [self.voiceRecordHelper startRecordingWithStartRecorderCompletion:nil];
             
-            
             return YES;
         }];
         
-        spectrumView.hidden = NO;
+        self.isMaxTime = NO;
+        [self showSpectrum];
         [spectrumView.stopwatch start];
-        tipLabel.hidden = YES;
     }
-    
 }
 
 - (void)recordFinish:(UIButton *)button
 {
-    
-    spectrumView.hidden = YES;
-    tipLabel.text = getUDLocalizedString(@"udesk_hold_to_talk");
-    tipLabel.hidden = NO;
-    [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
+    [self hideSpectrum];
     if (isInDeleteButton) {
         
-        [spectrumView.stopwatch reset];
-        [spectrumView.stopwatch pause];
-        
-        [self.voiceRecordHelper cancelledDeleteWithCompletion:nil];
+        [self cancelRecord];
     }
     else {
-        
         [self finishRecord];
     }
 }
 
-- (void)finishRecord {
+- (void)cancelRecord {
     
+    [spectrumView.stopwatch reset];
     [spectrumView.stopwatch pause];
     
-    if (recordTime >1) {
+    [self.voiceRecordHelper cancelledDeleteWithCompletion:nil];
+}
+
+- (void)hideSpectrum {
+    
+    spectrumView.hidden = YES;
+    tipLabel.text = getUDLocalizedString(@"udesk_hold_to_talk");
+    tipLabel.hidden = NO;
+    deleteButton.hidden = YES;
+    [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
+}
+
+- (void)showSpectrum {
+    
+    spectrumView.hidden = NO;
+    tipLabel.hidden = YES;
+    deleteButton.hidden = NO;
+}
+
+- (void)finishRecord {
+    
+    //最大时间了，为了解决重复发送
+    if (self.isMaxTime) {
+     
+        [spectrumView.stopwatch reset];
+        [spectrumView.stopwatch pause];
+        
+        return;
+    }
+    
+    [spectrumView.stopwatch pause];
+    if (recordTime >1.5f) {
         
         @try {
             @udWeakify(self);
             [self.voiceRecordHelper stopRecordingWithStopRecorderCompletion:^{
                 @udStrongify(self);
                 @try {
-                    [self.delegate finishRecordedWithVoicePath:self.voiceRecordHelper.recordPath withAudioDuration:[NSString stringWithFormat:@"%@", self.voiceRecordHelper.recordDuration]];
+                    [self.delegate finishRecordedWithVoicePath:self.voiceRecordHelper.recordPath withAudioDuration:[NSString stringWithFormat:@"%.f", recordTime]];
                 } @catch (NSException *exception) {
                 } @finally {
                 }
@@ -217,9 +230,10 @@
         }
     }
     
-    if (recordTime <=1) {
+    if (recordTime <= 1.5f) {
         @try {
             
+            [self.voiceRecordHelper cancelledDeleteWithCompletion:nil];
             [self.delegate speakDurationTooShort];
             
         } @catch (NSException *exception) {
@@ -227,7 +241,7 @@
         } @finally {
         }
     }
-
+    
     [spectrumView.stopwatch reset];
 }
 
@@ -272,9 +286,11 @@
         _voiceRecordHelper = [[UdeskVoiceRecordHelper alloc] init];
         _voiceRecordHelper.maxTimeStopRecorderCompletion = ^{
             @udStrongify(self);
+            [self hideSpectrum];
             [self finishRecord];
+            self.isMaxTime = YES;
         };
-
+        
         _voiceRecordHelper.maxRecordTime = UdeskVoiceRecorderTotalTime;
     }
     return _voiceRecordHelper;

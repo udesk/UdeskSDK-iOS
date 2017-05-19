@@ -90,6 +90,9 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 /** 结构化消息回调 */
 @property (nonatomic, copy) void(^structMessageCallBack)(void);
 
+/** 离开聊天页面回调 */
+@property (nonatomic, copy) void(^leaveChatViewController)(void);
+
 + (instancetype)sharedConfig;
 
 @end

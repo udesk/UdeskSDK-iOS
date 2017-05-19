@@ -397,4 +397,9 @@
     _sdkConfig.structMessageCallBack = completion;
 }
 
+- (void)leaveChatViewControllerCallBack:(void(^)(void))completion {
+    
+    _sdkConfig.leaveChatViewController = completion;
+}
+
 @end

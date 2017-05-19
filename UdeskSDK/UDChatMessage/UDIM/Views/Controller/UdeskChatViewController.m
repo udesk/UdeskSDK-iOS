@@ -99,8 +99,20 @@
     [self.view addGestureRecognizer:popRecognizer];
 }
 
+- (void)leaveChatViewController {
+
+    if (self.sdkConfig) {
+        if (self.sdkConfig.leaveChatViewController) {
+            self.sdkConfig.leaveChatViewController();
+        }
+    }
+}
+
 //滑动返回
 - (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer *)recognizer {
+    
+    //离开页面
+    [self leaveChatViewController];
     //隐藏键盘
     [self.inputBar.inputTextView resignFirstResponder];
     CGPoint translation = [recognizer translationInView:self.view];
@@ -127,6 +139,9 @@
 }
 //点击返回
 - (void)dismissChatViewController {
+    
+    //离开页面
+    [self leaveChatViewController];
     //隐藏键盘
     [self.inputBar.inputTextView resignFirstResponder];
     if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {

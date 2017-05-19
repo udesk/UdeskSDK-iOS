@@ -428,17 +428,8 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
     CGSize voiceSize = CGSizeMake(50, 40.0);
     if (voiceDuration.length) {
         if ([voiceDuration floatValue]) {
-            voiceSize = CGSizeMake(40 + [voiceDuration floatValue]*5, 40.0);
-            if (UD_SCREEN_WIDTH>320) {
-                if (voiceSize.width>325.0f) {
-                    voiceSize = CGSizeMake(325.0f, 40.0);
-                }
-            }
-            else {
-                if (voiceSize.width>180.0f) {
-                    voiceSize = CGSizeMake(180.0f, 40.0);
-                }
-            }
+            
+            voiceSize = CGSizeMake(MIN(50 + [voiceDuration floatValue]*2.5f, 130), 40.0);
         }
         else {
             voiceSize = CGSizeMake(50, 40.0);
@@ -581,7 +572,6 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
                     }
                 }
             }];
-            
         }
         
         //头像frame
