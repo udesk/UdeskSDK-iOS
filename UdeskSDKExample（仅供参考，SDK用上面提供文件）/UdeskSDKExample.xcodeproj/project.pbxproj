@@ -1335,8 +1335,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
-					"-force_load",
-					"\"$(SRCROOT)/../UdeskSDK/SDK/libUdesk.a\"",
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1369,8 +1368,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
-					"-force_load",
-					"\"$(SRCROOT)/../UdeskSDK/SDK/libUdesk.a\"",
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
