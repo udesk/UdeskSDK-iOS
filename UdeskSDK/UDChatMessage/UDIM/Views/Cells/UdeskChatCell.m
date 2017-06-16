@@ -73,6 +73,7 @@
             contentLabel.textAlignment = NSTextAlignmentLeft;
             contentLabel.userInteractionEnabled = true;
             contentLabel.backgroundColor = [UIColor clearColor];
+            contentLabel.lineBreakMode = NSLineBreakByCharWrapping;
             [self.contentView addSubview:contentLabel];
             
             UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressContentLabelAction:)];
@@ -184,63 +185,67 @@
     //文本消息
     if (chatMessage.messageType == UDMessageContentTypeText) {
         
-        contentLabel.hidden = NO;
-        if ([UdeskTools isBlankString:[chatMessage.cellText string]]) {
-            contentLabel.text = @"";
-        }
-        else {
-            contentLabel.text = chatMessage.cellText;
-        }
-        
-        //设置高亮
-        for (NSString *richContent in chatMessage.matchArray) {
+        @try {
             
-            if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
-                [contentLabel addLinkToURL:[NSURL URLWithString:richContent] withRange:[chatMessage.richURLDictionary[richContent] rangeValue]];
+            contentLabel.hidden = NO;
+            if ([UdeskTools isBlankString:[chatMessage.cellText string]]) {
+                contentLabel.text = @"";
             }
-        }
-        
-        //获取文字中的可选中的元素
-        if (chatMessage.numberRangeDic.count > 0) {
-            NSString *longestKey = @"";
-            for (NSString *key in chatMessage.numberRangeDic.allKeys) {
-                //找到最长的key
-                if (key.length > longestKey.length) {
-                    longestKey = key;
+            else {
+                contentLabel.text = chatMessage.cellText;
+            }
+            
+            //设置高亮
+            for (NSString *richContent in chatMessage.matchArray) {
+                
+                if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
+                    [contentLabel addLinkToURL:[NSURL URLWithString:richContent] withRange:[chatMessage.richURLDictionary[richContent] rangeValue]];
                 }
             }
-            if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
-                [contentLabel addLinkToPhoneNumber:longestKey withRange:[chatMessage.numberRangeDic[longestKey] rangeValue]];
+            
+            //获取文字中的可选中的元素
+            if (chatMessage.numberRangeDic.count > 0) {
+                NSString *longestKey = @"";
+                for (NSString *key in chatMessage.numberRangeDic.allKeys) {
+                    //找到最长的key
+                    if (key.length > longestKey.length) {
+                        longestKey = key;
+                    }
+                }
+                if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
+                    [contentLabel addLinkToPhoneNumber:longestKey withRange:[chatMessage.numberRangeDic[longestKey] rangeValue]];
+                }
             }
+            
+            //隐藏
+            contentImageView.hidden = YES;
+            self.voiceDurationLabel.hidden = YES;
+            animationVoiceImageView.hidden = YES;
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
         }
-        
-        //隐藏
-        contentImageView.hidden = YES;
-        self.voiceDurationLabel.hidden = YES;
-        animationVoiceImageView.hidden = YES;
     }
     else if (chatMessage.messageType == UDMessageContentTypeRich) {
     
-        contentLabel.hidden = NO;
-        if ([UdeskTools isBlankString:[chatMessage.cellText string]]) {
-            contentLabel.text = @"";
-        }
-        else {
-            contentLabel.text = chatMessage.cellText;
-        }
-        
-        //设置高亮
-        for (NSString *richContent in chatMessage.matchArray) {
+        @try {
             
-            if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
-                NSURL *url = [NSURL URLWithString:[chatMessage.richURLDictionary objectForKey:[NSValue valueWithRange:[chatMessage.text rangeOfString:richContent]]]];
-                [contentLabel addLinkToURL:url withRange:[chatMessage.text rangeOfString:richContent]];
+            contentLabel.hidden = NO;
+            if ([UdeskTools isBlankString:[chatMessage.cellText string]]) {
+                contentLabel.text = @"";
             }
+            else {
+                contentLabel.text = chatMessage.cellText;
+            }
+            
+            //隐藏
+            contentImageView.hidden = YES;
+            self.voiceDurationLabel.hidden = YES;
+            animationVoiceImageView.hidden = YES;
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
         }
-        //隐藏
-        contentImageView.hidden = YES;
-        self.voiceDurationLabel.hidden = YES;
-        animationVoiceImageView.hidden = YES;
     }
     //图片消息
     else if (chatMessage.messageType == UDMessageContentTypeImage) {
@@ -382,63 +387,74 @@
 //长按复制
 - (void)longPressContentLabelAction:(UILongPressGestureRecognizer *)longPressGestureRecognizer {
 
-    if (longPressGestureRecognizer.state != UIGestureRecognizerStateBegan || ![self becomeFirstResponder])
-        return;
-    
-    NSArray *popMenuTitles = [[UdeskConfigurationHelper appearance] popMenuTitles];
-    NSMutableArray *menuItems = [[NSMutableArray alloc] init];
-    for (int i = 0; i < popMenuTitles.count; i ++) {
-        NSString *title = popMenuTitles[i];
-        SEL action = nil;
-        switch (i) {
-            case 0: {
-                if (_chatMessage.messageType == UDMessageContentTypeText||_chatMessage.messageType == UDMessageContentTypeRich) {
-                    action = @selector(copyed:);
+    @try {
+        
+        if (longPressGestureRecognizer.state != UIGestureRecognizerStateBegan || ![self becomeFirstResponder])
+            return;
+        
+        NSArray *popMenuTitles = [[UdeskConfigurationHelper appearance] popMenuTitles];
+        NSMutableArray *menuItems = [[NSMutableArray alloc] init];
+        for (int i = 0; i < popMenuTitles.count; i ++) {
+            NSString *title = popMenuTitles[i];
+            SEL action = nil;
+            switch (i) {
+                case 0: {
+                    if (_chatMessage.messageType == UDMessageContentTypeText||_chatMessage.messageType == UDMessageContentTypeRich) {
+                        action = @selector(copyed:);
+                    }
+                    break;
                 }
-                break;
+                    
+                default:
+                    break;
             }
-                
-            default:
-                break;
-        }
-        if (action) {
-            UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:title action:action];
-            if (item) {
-                [menuItems addObject:item];
+            if (action) {
+                UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:title action:action];
+                if (item) {
+                    [menuItems addObject:item];
+                }
             }
         }
+        
+        UIMenuController *menu = [UIMenuController sharedMenuController];
+        [menu setMenuItems:menuItems];
+        
+        CGRect targetRect = [self convertRect:_chatMessage.bubbleImageFrame
+                                     fromView:self];
+        
+        [menu setTargetRect:CGRectInset(targetRect, 0.0f, 4.0f) inView:self];
+        [menu setMenuVisible:YES animated:YES];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    UIMenuController *menu = [UIMenuController sharedMenuController];
-    [menu setMenuItems:menuItems];
-    
-    CGRect targetRect = [self convertRect:_chatMessage.bubbleImageFrame
-                                 fromView:self];
-    
-    [menu setTargetRect:CGRectInset(targetRect, 0.0f, 4.0f) inView:self];
-    [menu setMenuVisible:YES animated:YES];
 }
 
 //点击气泡（播放语音）
 - (void)tapBubbleImageViewAction:(UIGestureRecognizer *)tap {
 
-    if (_chatMessage.messageType == UDMessageContentTypeVoice) {
-        UdeskAudioPlayerHelper *playerHelper = [UdeskAudioPlayerHelper shareInstance];
-
-        if (!contentVoiceIsPlaying) {
+    @try {
+        
+        if (_chatMessage.messageType == UDMessageContentTypeVoice) {
+            UdeskAudioPlayerHelper *playerHelper = [UdeskAudioPlayerHelper shareInstance];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:VoicePlayHasInterrupt object:nil];
-            contentVoiceIsPlaying = YES;
-            [animationVoiceImageView startAnimating];
-            playerHelper.delegate = self;
-            [playerHelper playAudioWithVoiceData:_chatMessage.voiceData];
+            if (!contentVoiceIsPlaying) {
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:VoicePlayHasInterrupt object:nil];
+                contentVoiceIsPlaying = YES;
+                [animationVoiceImageView startAnimating];
+                playerHelper.delegate = self;
+                [playerHelper playAudioWithVoiceData:_chatMessage.voiceData];
+            }
+            else {
+                
+                [self AVAudioPlayerDidFinishPlay];
+                
+            }
         }
-        else {
-        
-            [self AVAudioPlayerDidFinishPlay];
-
-        }
-        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
 }
 

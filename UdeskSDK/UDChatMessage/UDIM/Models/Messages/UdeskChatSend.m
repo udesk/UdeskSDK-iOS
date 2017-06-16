@@ -20,37 +20,14 @@
                      displayTimestamp:(BOOL)displayTimestamp
                            completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
     
-    if ([UdeskTools isBlankString:text]) {
-        return nil;
-    }
-    
-    UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithText:text withDisplayTimestamp:displayTimestamp];
-    
-    UdeskMessage *textMessage = [[UdeskMessage alloc] initTextChatMessage:chatMessage text:text];
-    
-    //发送消息 callback发送状态和消息体
-    [UdeskManager sendMessage:textMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
+    @try {
         
-        if (completion) {
-            completion(message,sendStatus);
-        }
-    }];
-    
-    return chatMessage;
-}
-
-#pragma mark - 发送图片消息
-+ (UdeskChatMessage *)sendImageMessage:(UIImage *)image
-                      displayTimestamp:(BOOL)displayTimestamp
-                            completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
-    
-    if (image) {
+        UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithText:text withDisplayTimestamp:displayTimestamp];
         
-        UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithImage:image withDisplayTimestamp:displayTimestamp];
+        UdeskMessage *textMessage = [[UdeskMessage alloc] initTextChatMessage:chatMessage text:text];
         
-        UdeskMessage *photoMessage = [[UdeskMessage alloc] initImageChatMessage:chatMessage image:image];
         //发送消息 callback发送状态和消息体
-        [UdeskManager sendMessage:photoMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
+        [UdeskManager sendMessage:textMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
             
             if (completion) {
                 completion(message,sendStatus);
@@ -58,9 +35,44 @@
         }];
         
         return chatMessage;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    else {
+    if ([UdeskTools isBlankString:text]) {
         return nil;
+    }
+    
+}
+
+#pragma mark - 发送图片消息
++ (UdeskChatMessage *)sendImageMessage:(UIImage *)image
+                      displayTimestamp:(BOOL)displayTimestamp
+                            completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
+    
+    @try {
+        
+        if (image) {
+            
+            UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithImage:image withDisplayTimestamp:displayTimestamp];
+            
+            UdeskMessage *photoMessage = [[UdeskMessage alloc] initImageChatMessage:chatMessage image:image];
+            //发送消息 callback发送状态和消息体
+            [UdeskManager sendMessage:photoMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
+                
+                if (completion) {
+                    completion(message,sendStatus);
+                }
+            }];
+            
+            return chatMessage;
+        }
+        else {
+            return nil;
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
 }
 
@@ -70,22 +82,28 @@
                       displayTimestamp:(BOOL)displayTimestamp
                             completion:(void(^)(UdeskMessage *message,BOOL sendStatus))comletion {
     
-    if ([UdeskTools isBlankString:voicePath]) {
-        return nil;
-    }
-    
-    UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithVoiceData:[NSData dataWithContentsOfFile:voicePath] withDisplayTimestamp:displayTimestamp];
-    
-    UdeskMessage *voiceMessage = [[UdeskMessage alloc] initVoiceChatMessage:chatMessage voiceData:chatMessage.voiceData];
-    //发送消息 callback发送状态和消息体
-    [UdeskManager sendMessage:voiceMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
+    @try {
         
-        if (comletion) {
-            comletion(message,sendStatus);
+        if ([UdeskTools isBlankString:voicePath]) {
+            return nil;
         }
-    }];
-    
-    return chatMessage;
+        
+        UdeskChatMessage *chatMessage = [[UdeskChatMessage alloc] initWithVoiceData:[NSData dataWithContentsOfFile:voicePath] withDisplayTimestamp:displayTimestamp];
+        
+        UdeskMessage *voiceMessage = [[UdeskMessage alloc] initVoiceChatMessage:chatMessage voiceData:chatMessage.voiceData];
+        //发送消息 callback发送状态和消息体
+        [UdeskManager sendMessage:voiceMessage completion:^(UdeskMessage *message,BOOL sendStatus) {
+            
+            if (comletion) {
+                comletion(message,sendStatus);
+            }
+        }];
+        
+        return chatMessage;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
 }
 
 #pragma mark - 重发失败的消息

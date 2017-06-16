@@ -33,45 +33,51 @@
     self = [super init];
     if (self) {
 
-        self.searchContentsController = viewController;
-        
-        [searchBar setPlaceholder:getUDLocalizedString(@"udesk_faq_search")];
-        
-        searchBar.tintColor = [UdeskSDKConfig sharedConfig].sdkStyle.searchCancleButtonColor;
-        
-        UIButton *contactUs = [UIButton buttonWithType:UIButtonTypeCustom];
-        contactUs.frame = CGRectMake((UD_SCREEN_WIDTH-250)/2, 50, 250, 40);
-        [contactUs setTitleColor:[UdeskSDKConfig sharedConfig].sdkStyle.searchContactUsColor forState:0];
-        [contactUs setTitle:getUDLocalizedString(@"udesk_faq_Contactus") forState:0];
-        [contactUs addTarget:self action:@selector(contactUsButton) forControlEvents:UIControlEventTouchUpInside];
-        
-        [contactUs.layer setMasksToBounds:YES];
-        [contactUs.layer setCornerRadius:5.0]; //设置矩圆角半径
-        [contactUs.layer setBorderWidth:1.5];   //边框宽度
-        contactUs.titleLabel.font = [UIFont systemFontOfSize:19];
-        [contactUs.layer setBorderColor:([UdeskSDKConfig sharedConfig].sdkStyle.contactUsBorderColor).CGColor];//边框颜色
-        
-        
-        UILabel *notFound = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-230)/2, 0, 230, contactUs.frame.origin.y)];
-        notFound.textAlignment = NSTextAlignmentCenter;
-        notFound.font = [UIFont systemFontOfSize:17];
-        notFound.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.promptTextColor;
-        notFound.text = getUDLocalizedString(@"udesk_faq_tips");
-        
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-69)];
-        [view insertSubview:notFound aboveSubview:view];
-        [view insertSubview:contactUs aboveSubview:view];
-        
-        _searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar
-                                                                     contentsController:viewController];
-        _searchDisplayController.delegate = self;
-        _searchDisplayController.searchResultsDataSource = self;
-        _searchDisplayController.searchResultsDelegate = self;
-        _searchDisplayController.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        _searchDisplayController.searchResultsTableView.tableFooterView = view;
-        _searchDisplayController.searchBar.delegate = self;
-        
-        viewController.navigationController.view.backgroundColor = UDRGBCOLOR(201, 201, 206);
+        @try {
+            
+            self.searchContentsController = viewController;
+            
+            [searchBar setPlaceholder:getUDLocalizedString(@"udesk_faq_search")];
+            
+            searchBar.tintColor = [UdeskSDKConfig sharedConfig].sdkStyle.searchCancleButtonColor;
+            
+            UIButton *contactUs = [UIButton buttonWithType:UIButtonTypeCustom];
+            contactUs.frame = CGRectMake((UD_SCREEN_WIDTH-250)/2, 50, 250, 40);
+            [contactUs setTitleColor:[UdeskSDKConfig sharedConfig].sdkStyle.searchContactUsColor forState:0];
+            [contactUs setTitle:getUDLocalizedString(@"udesk_faq_Contactus") forState:0];
+            [contactUs addTarget:self action:@selector(contactUsButton) forControlEvents:UIControlEventTouchUpInside];
+            
+            [contactUs.layer setMasksToBounds:YES];
+            [contactUs.layer setCornerRadius:5.0]; //设置矩圆角半径
+            [contactUs.layer setBorderWidth:1.5];   //边框宽度
+            contactUs.titleLabel.font = [UIFont systemFontOfSize:19];
+            [contactUs.layer setBorderColor:([UdeskSDKConfig sharedConfig].sdkStyle.contactUsBorderColor).CGColor];//边框颜色
+            
+            
+            UILabel *notFound = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-230)/2, 0, 230, contactUs.frame.origin.y)];
+            notFound.textAlignment = NSTextAlignmentCenter;
+            notFound.font = [UIFont systemFontOfSize:17];
+            notFound.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.promptTextColor;
+            notFound.text = getUDLocalizedString(@"udesk_faq_tips");
+            
+            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-69)];
+            [view insertSubview:notFound aboveSubview:view];
+            [view insertSubview:contactUs aboveSubview:view];
+            
+            _searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar
+                                                                         contentsController:viewController];
+            _searchDisplayController.delegate = self;
+            _searchDisplayController.searchResultsDataSource = self;
+            _searchDisplayController.searchResultsDelegate = self;
+            _searchDisplayController.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+            _searchDisplayController.searchResultsTableView.tableFooterView = view;
+            _searchDisplayController.searchBar.delegate = self;
+            
+            viewController.navigationController.view.backgroundColor = UDRGBCOLOR(201, 201, 206);
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
+        }
         
     }
     return self;
@@ -177,23 +183,29 @@
     
     [UdeskManager searchFaqArticles:searchText completion:^(id responseObject, NSError *error) {
         
-        if (!error) {
+        @try {
             
-            NSMutableArray *muArray = [NSMutableArray array];
-            NSArray *contents = [responseObject objectForKey:@"contents"];
-            for (NSDictionary *dic in contents) {
-                UdeskProblemModel *model = [[UdeskProblemModel alloc] initWithContentsOfDic:dic];
+            if (!error) {
                 
-                [muArray addObject:model];
+                NSMutableArray *muArray = [NSMutableArray array];
+                NSArray *contents = [responseObject objectForKey:@"contents"];
+                for (NSDictionary *dic in contents) {
+                    UdeskProblemModel *model = [[UdeskProblemModel alloc] initWithContentsOfDic:dic];
+                    
+                    [muArray addObject:model];
+                }
+                
+                if (contents == nil) {
+                    self.searchData = nil;
+                }else {
+                    self.searchData = [muArray arrayByAddingObjectsFromArray:self.searchData];
+                }
+                
+                [self.searchDisplayController.searchResultsTableView reloadData];
             }
-            
-            if (contents == nil) {
-                self.searchData = nil;
-            }else {
-                self.searchData = [muArray arrayByAddingObjectsFromArray:self.searchData];
-            }
-            
-            [self.searchDisplayController.searchResultsTableView reloadData];
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
         }
     }];
    

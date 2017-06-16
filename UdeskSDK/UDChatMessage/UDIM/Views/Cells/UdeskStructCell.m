@@ -46,34 +46,44 @@
 
 - (void)updateCellWithMessage:(id)message {
 
-    if (![message isKindOfClass:[UdeskStructMessage class]]) {
-        return;
+    @try {
+        
+        if (![message isKindOfClass:[UdeskStructMessage class]]) {
+            return;
+        }
+        
+        UdeskStructMessage *structMsg = (UdeskStructMessage *)message;
+        dateLabel.frame = structMsg.dateFrame;
+        dateLabel.text = [[UdeskDateFormatter sharedFormatter] ud_styleDateForDate:structMsg.date];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            avatarImageView.frame = structMsg.avatarFrame;
+            avatarImageView.image = structMsg.avatarImage;
+        });
+        
+        //结构化消息
+        NSMutableArray *array = [NSMutableArray array];
+        @udWeakify(self);
+        for (UdeskStructButton *button in structMsg.buttons) {
+            UdeskStructAction *action = [UdeskStructAction actionWithTitle:button.text handler:^(UdeskStructAction * _Nonnull action) {
+                
+                [__weak_self__ tapButtonAction:button];
+            }];
+            [array addObject:action];
+        }
+        
+        UIView *view = (UIView *)[self.contentView.subviews lastObject];
+        if ([view isKindOfClass:[UdeskStructView class]]) {
+            [view removeFromSuperview];
+        }
+        UdeskStructView *structView = structMsg.structContentView;
+        structView.mutableActions = array;
+        [self.contentView addSubview:structView];
+    
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    UdeskStructMessage *structMsg = (UdeskStructMessage *)message;
-    dateLabel.frame = structMsg.dateFrame;
-    dateLabel.text = [[UdeskDateFormatter sharedFormatter] ud_styleDateForDate:structMsg.date];
-    
-    avatarImageView.frame = structMsg.avatarFrame;
-    avatarImageView.image = structMsg.avatarImage;
-    
-    //结构化消息
-    NSMutableArray *array = [NSMutableArray array];
-    @udWeakify(self);
-    for (UdeskStructButton *button in structMsg.buttons) {
-        UdeskStructAction *action = [UdeskStructAction actionWithTitle:button.text handler:^(UdeskStructAction * _Nonnull action) {
-            
-            [__weak_self__ tapButtonAction:button];
-        }];
-        [array addObject:action];
-    }
-    
-    structContentView = [[UdeskStructView alloc] initWithImage:structMsg.structImage title:structMsg.title message:structMsg.udDescription buttons:array origin:CGPointMake(avatarImageView.ud_right+kUDStructPadding, dateLabel.ud_bottom+kUDStructPadding)];
-    
-    structContentView.layer.borderWidth = 1;
-    structContentView.layer.borderColor = [UIColor colorWithWhite:0.90 alpha:1].CGColor;
-    
-    [self.contentView addSubview:structContentView];
 }
 
 - (void)tapButtonAction:(UdeskStructButton *)button {

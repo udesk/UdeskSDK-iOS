@@ -24,6 +24,7 @@
 @implementation UdeskChatAlertController {
 
     UdeskAlertController *queueAlert;
+    UdeskAlertController *sessionOverAlert;
 }
 
 #pragma mark - Alert
@@ -187,11 +188,16 @@
 //评价提交成功Alert
 - (void)requestAgentAgain {
     
-    UdeskAlertController *agentAlert = [UdeskAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_reassign_agent") preferredStyle:UDAlertControllerStyleAlert];
-    [agentAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    //已经弹出不用再弹
+    if (sessionOverAlert) {
+        return;
+    }
+    sessionOverAlert = [UdeskAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_reassign_agent") preferredStyle:UDAlertControllerStyleAlert];
+    [sessionOverAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+        sessionOverAlert = nil;
     }]];
     
-    [self presentViewController:agentAlert];
+    [self presentViewController:sessionOverAlert];
 }
 
 - (void)showAlertWithMessage:(NSString *)message {
@@ -274,6 +280,8 @@
 
     if ([[self currentViewController] isKindOfClass:[UdeskAlertController class]]) {
         [[self currentViewController] dismissViewControllerAnimated:YES completion:nil];
+        sessionOverAlert = nil;
+        queueAlert = nil;
     }
 }
 

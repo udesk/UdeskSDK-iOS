@@ -29,7 +29,7 @@ typedef NS_ENUM(NSInteger, UDAlertControllerStyle) {
 + (instancetype)actionWithTitle:(nullable NSString *)title style:(UDAlertActionStyle)style handler:(void (^ __nullable)(UdeskAlertAction *action))handler;
 
 @property (nullable, nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) UDAlertActionStyle style;
+@property (nonatomic, readonly) UDAlertActionStyle udStyle;
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
 @end

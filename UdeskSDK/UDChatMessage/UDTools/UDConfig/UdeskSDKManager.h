@@ -13,8 +13,6 @@
 typedef enum : NSUInteger {
     UdeskFAQ,
     UdeskIM,
-    UdeskRobot,
-    UdeskMenu,
     UdeskTicket
 } UdeskType;
 
@@ -31,43 +29,42 @@ typedef enum : NSUInteger {
 - (instancetype)initWithSDKStyle:(UdeskSDKStyle *)style;
 
 /**
- * 在一个ViewController中Push出一个客服聊天界面
- * @param viewController 在这个viewController中push出客服聊天界面
- */
-- (void)pushUdeskViewControllerWithType:(UdeskType)type
-                         viewController:(UIViewController *)viewController
-                             completion:(void (^)(void))completion;
-
-/**
  * 新版本根据app_id进行后台配置的设置
  * 在一个ViewController中Push出一个客服聊天界面
  * @param viewController 在这个viewController中push出客服聊天界面
  */
-- (void)pushUdeskViewControllerWith:(UIViewController *)viewController
-                             completion:(void (^)(void))completion;
-
-/**
- * 在一个ViewController中Present出一个客服聊天界面的Modal视图
- * @param viewController 在这个viewController中push出客服聊天界面
- */
-- (void)presentUdeskViewControllerWithType:(UdeskType)type
-                            viewController:(UIViewController *)viewController
-                                completion:(void (^)(void))completion;
+- (void)pushUdeskInViewController:(UIViewController *)viewController
+                       completion:(void (^)(void))completion;
 
 /**
  * 新版本根据app_id进行后台配置的设置
  * 在一个ViewController中Present出一个客服聊天界面的Modal视图
  * @param viewController 在这个viewController中push出客服聊天界面
  */
-- (void)presentUdeskViewControllerWith:(UIViewController *)viewController
-                            completion:(void (^)(void))completion;
+- (void)presentUdeskInViewController:(UIViewController *)viewController
+                          completion:(void (^)(void))completion;
 
 /**
- 设置自定义留言表单
+ 进入udesk页面
 
- @param isCustom
+ @param viewController 在一个ViewController中Push出一个客服聊天界面
+ @param udeskType 视图类型
+ @param completion 完成回调
  */
-- (void)setCustomForm:(BOOL)isCustom;
+- (void)pushUdeskInViewController:(UIViewController *)viewController
+                        udeskType:(UdeskType)udeskType
+                       completion:(void (^)(void))completion NS_DEPRECATED_IOS(3.5,3.6.3, "不建议你使用这个API，推荐使用“pushUdeskInViewController:”");
+
+/**
+ 进入udesk页面
+ 
+ @param viewController 在一个ViewController中Push出一个客服聊天界面
+ @param udeskType 视图类型
+ @param completion 完成回调
+ */
+- (void)presentUdeskInViewController:(UIViewController *)viewController
+                           udeskType:(UdeskType)udeskType
+                          completion:(void (^)(void))completion NS_DEPRECATED_IOS(3.5,3.6.3, "不建议你使用这个API，推荐使用“pushUdeskInViewController:”");
 
 /**
  *  设置分配给指定的客服id

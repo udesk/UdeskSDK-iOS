@@ -106,51 +106,57 @@
 #pragma mark - 请求客服组选择菜单
 - (void)requestAgentMenu:(NSArray *)result {
     
-    for (NSDictionary *menuDict in result) {
+    @try {
         
-        UdeskAgentMenuModel *agentMenuModel = [[UdeskAgentMenuModel alloc] initWithContentsOfDic:menuDict];
-        
-        [self.allAgentMenuData addObject:agentMenuModel];
-    }
-    
-    NSMutableArray *rootMenuArray = [NSMutableArray array];
-    
-    int tableViewCount = 1;
-    //寻找树状的根
-    for (UdeskAgentMenuModel *agentMenuModel in self.allAgentMenuData) {
-        
-        if ([agentMenuModel.parentId isEqualToString:@"item_0"]) {
+        for (NSDictionary *menuDict in result) {
             
-            [rootMenuArray addObject:agentMenuModel];
+            UdeskAgentMenuModel *agentMenuModel = [[UdeskAgentMenuModel alloc] initWithContentsOfDic:menuDict];
+            
+            [self.allAgentMenuData addObject:agentMenuModel];
         }
         
-        tableViewCount += [agentMenuModel.has_next intValue];
+        NSMutableArray *rootMenuArray = [NSMutableArray array];
         
+        int tableViewCount = 1;
+        //寻找树状的根
+        for (UdeskAgentMenuModel *agentMenuModel in self.allAgentMenuData) {
+            
+            if ([agentMenuModel.parentId isEqualToString:@"item_0"]) {
+                
+                [rootMenuArray addObject:agentMenuModel];
+            }
+            
+            tableViewCount += [agentMenuModel.has_next intValue];
+            
+        }
+        //根据最大的级数设置ScrollView.contentSize
+        self.agentMenuScrollView.contentSize = CGSizeMake(tableViewCount*UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT);
+        
+        //根据最大的级数循环添加tableView
+        for (int i = 0; i<tableViewCount;i++) {
+            UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStylePlain];
+            agentMenuTableView.delegate = self;
+            agentMenuTableView.dataSource = self;
+            agentMenuTableView.tag = 100+i;
+            agentMenuTableView.backgroundColor = self.view.backgroundColor;
+            
+            [self.agentMenuScrollView addSubview:agentMenuTableView];
+            
+            //删除多余的cell
+            UIView *footerView = [[UIView alloc] initWithFrame:CGRectZero];
+            [agentMenuTableView setTableFooterView:footerView];
+            
+        }
+        //装载数据 刷新第一个tableView
+        self.agentMenuData = rootMenuArray;
+        
+        UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:100];
+        
+        [tableview reloadData];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    //根据最大的级数设置ScrollView.contentSize
-    self.agentMenuScrollView.contentSize = CGSizeMake(tableViewCount*UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT);
-    
-    //根据最大的级数循环添加tableView
-    for (int i = 0; i<tableViewCount;i++) {
-        UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStylePlain];
-        agentMenuTableView.delegate = self;
-        agentMenuTableView.dataSource = self;
-        agentMenuTableView.tag = 100+i;
-        agentMenuTableView.backgroundColor = self.view.backgroundColor;
-        
-        [self.agentMenuScrollView addSubview:agentMenuTableView];
-        
-        //删除多余的cell
-        UIView *footerView = [[UIView alloc] initWithFrame:CGRectZero];
-        [agentMenuTableView setTableFooterView:footerView];
-        
-    }
-    //装载数据 刷新第一个tableView
-    self.agentMenuData = rootMenuArray;
-    
-    UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:100];
-    
-    [tableview reloadData];
     
 }
 
@@ -189,178 +195,200 @@
     //取消点击效果
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    self.menuPage ++;
-    
-    NSMutableArray *menuArray = [NSMutableArray array];
-    
-    //获取点击菜单选项的子集
-    UdeskAgentMenuModel *didSelectModel = self.agentMenuData[indexPath.row];
-
-    if ([didSelectModel.group_id isKindOfClass:[NSNumber class]]) {
-        didSelectModel.group_id = [NSString stringWithFormat:@"%@",didSelectModel.group_id];
-    }
-
-    if (didSelectModel.group_id.length > 0 && didSelectModel.group_id) {
+    @try {
         
-        self.sdkConfig.scheduledGroupId = didSelectModel.group_id;
-        UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:self.sdkConfig];
-        UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig withSettings:self.sdkSetting];
-        [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
-    }
-    else {
-    
-        for (UdeskAgentMenuModel *allAgentMenuModel in self.allAgentMenuData) {
-            
-            if ([allAgentMenuModel.parentId isEqualToString:didSelectModel.menu_id]) {
-                
-                [menuArray addObject:allAgentMenuModel];
-            }
-            
+        if (indexPath.row>(self.agentMenuData.count-1)) {
+            return;
         }
-        //根据是否还有子集选择push还是执行动画
-        if (menuArray.count > 0) {
+        
+        NSMutableArray *menuArray = [NSMutableArray array];
+        
+        //获取点击菜单选项的子集
+        UdeskAgentMenuModel *didSelectModel = self.agentMenuData[indexPath.row];
+        
+        if ([didSelectModel.group_id isKindOfClass:[NSNumber class]]) {
+            didSelectModel.group_id = [NSString stringWithFormat:@"%@",didSelectModel.group_id];
+        }
+        
+        if (didSelectModel.group_id.length > 0 && didSelectModel.group_id) {
             
-            [UIView animateWithDuration:0.35f animations:^{
-                
-                self.agentMenuScrollView.contentOffset = CGPointMake(self.menuPage*UD_SCREEN_WIDTH, 0);
-                
-            } completion:^(BOOL finished) {
-                
-                if ([UdeskTools isBlankString:self.pathString]) {
-                    self.pathString = [NSString stringWithFormat:@"   %@",didSelectModel.item_name];
-                }
-                else {
-                    self.pathString = [NSString stringWithFormat:@"%@ > ",self.pathString];
-                    self.pathString = [self.pathString stringByAppendingString:didSelectModel.item_name];
-                }
-                
-                self.agentMenuData = menuArray;
-                
-                UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:self.menuPage+100];
-                
-                [tableview reloadData];
-                
-            }];
-            
+            self.sdkConfig.scheduledGroupId = didSelectModel.group_id;
+            UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:self.sdkConfig];
+            UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig withSettings:self.sdkSetting];
+            [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
         }
         else {
             
-            //这里--是因为之前的++并没有执行给ScrollView.contentOffset
-            self.menuPage -- ;
+            self.menuPage ++;
+            
+            for (UdeskAgentMenuModel *allAgentMenuModel in self.allAgentMenuData) {
+                
+                if ([allAgentMenuModel.parentId isEqualToString:didSelectModel.menu_id]) {
+                    
+                    [menuArray addObject:allAgentMenuModel];
+                }
+                
+            }
+            //根据是否还有子集选择push还是执行动画
+            if (menuArray.count > 0) {
+                
+                [UIView animateWithDuration:0.35f animations:^{
+                    
+                    self.agentMenuScrollView.contentOffset = CGPointMake(self.menuPage*UD_SCREEN_WIDTH, 0);
+                    
+                } completion:^(BOOL finished) {
+                    
+                    if ([UdeskTools isBlankString:self.pathString]) {
+                        self.pathString = [NSString stringWithFormat:@"   %@",didSelectModel.item_name];
+                    }
+                    else {
+                        self.pathString = [NSString stringWithFormat:@"%@ > ",self.pathString];
+                        self.pathString = [self.pathString stringByAppendingString:didSelectModel.item_name];
+                    }
+                    
+                    self.agentMenuData = menuArray;
+                    
+                    UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:self.menuPage+100];
+                    [tableview reloadData];
+                }];
+            }
+            else {
+                
+                //这里--是因为之前的++并没有执行给ScrollView.contentOffset
+                self.menuPage -- ;
+            }
         }
-
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     
-    if (self.menuPage) {
+    @try {
         
-        UIButton *pathButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [pathButton setTitle:self.pathString forState:UIControlStateNormal];
-        pathButton.frame = CGRectMake(0, 0, tableView.ud_width-0, 30);
-        pathButton.titleLabel.numberOfLines = 0;
-        pathButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        [pathButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [pathButton addTarget:self action:@selector(pathBackButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        
-        return pathButton;
-    }
-    else {
-        
-        return nil;
+        if (self.menuPage) {
+            
+            UIButton *pathButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [pathButton setTitle:self.pathString forState:UIControlStateNormal];
+            pathButton.frame = CGRectMake(0, 0, tableView.ud_width-0, 30);
+            pathButton.titleLabel.numberOfLines = 0;
+            pathButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+            [pathButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+            [pathButton addTarget:self action:@selector(pathBackButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+            
+            return pathButton;
+        }
+        else {
+            
+            return nil;
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
     
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     
-    if (self.menuPage) {
+    @try {
         
-        CGSize pathSize = [UdeskStringSizeUtil textSize:self.pathString withFont:[UIFont systemFontOfSize:17] withSize:CGSizeMake(tableView.ud_width, CGFLOAT_MAX)];
-        
-        CGFloat otherH;
-        if (pathSize.height==0) {
-            otherH = 45;
+        if (self.menuPage) {
+            
+            CGSize pathSize = [UdeskStringSizeUtil textSize:self.pathString withFont:[UIFont systemFontOfSize:17] withSize:CGSizeMake(tableView.ud_width, CGFLOAT_MAX)];
+            
+            CGFloat otherH;
+            if (pathSize.height==0) {
+                otherH = 45;
+            }
+            else {
+                otherH = 25;
+            }
+            
+            return pathSize.height+otherH;
         }
         else {
-            otherH = 25;
+            
+            return 0;
         }
         
-        return pathSize.height+otherH;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    else {
-        
-        return 0;
-    }
-    
 }
 
 - (void)pathBackButtonAction:(UIButton *)button {
     
-    self.menuPage --;
-    
-    //判断ScrollView.contentOffset.x是否到头
-    if (self.agentMenuScrollView.contentOffset.x>0) {
+    @try {
         
-        [UIView animateWithDuration:0.35f animations:^{
-            //执行返回
-            self.agentMenuScrollView.contentOffset = CGPointMake(self.agentMenuScrollView.contentOffset.x-UD_SCREEN_WIDTH, 0);
-        } completion:^(BOOL finished) {
-            //装载这个页面的数据
-            NSMutableArray *array = [NSMutableArray array];
+        self.menuPage --;
+        
+        //判断ScrollView.contentOffset.x是否到头
+        if (self.agentMenuScrollView.contentOffset.x>0) {
             
-            UdeskAgentMenuModel *subMenuModel = self.agentMenuData.lastObject;
-            
-            NSString *parentId;
-            NSString *upString;
-            //查找属于上级菜单的父级
-            for (UdeskAgentMenuModel *model in self.allAgentMenuData) {
+            [UIView animateWithDuration:0.35f animations:^{
+                //执行返回
+                self.agentMenuScrollView.contentOffset = CGPointMake(self.agentMenuScrollView.contentOffset.x-UD_SCREEN_WIDTH, 0);
+            } completion:^(BOOL finished) {
+                //装载这个页面的数据
+                NSMutableArray *array = [NSMutableArray array];
                 
-                if ([model.menu_id isEqualToString:subMenuModel.parentId]) {
+                UdeskAgentMenuModel *subMenuModel = self.agentMenuData.lastObject;
+                
+                NSString *parentId;
+                NSString *upString;
+                //查找属于上级菜单的父级
+                for (UdeskAgentMenuModel *model in self.allAgentMenuData) {
                     
-                    parentId = model.parentId;
-                    
-                    if ([model.parentId isEqualToString:@"item_0"]) {
-                        upString = model.item_name;
+                    if ([model.menu_id isEqualToString:subMenuModel.parentId]) {
+                        
+                        parentId = model.parentId;
+                        
+                        if ([model.parentId isEqualToString:@"item_0"]) {
+                            upString = model.item_name;
+                        }
+                        else {
+                            upString = [NSString stringWithFormat:@" > %@",model.item_name];
+                        }
                     }
-                    else {
-                        upString = [NSString stringWithFormat:@" > %@",model.item_name];
-                    }
-                    
                 }
                 
-            }
-            
-            //查找与上级菜单的父级同级的菜单选项
-            for (UdeskAgentMenuModel *model in self.allAgentMenuData) {
-                
-                if ([model.parentId isEqualToString:parentId]) {
+                if (parentId) {
                     
-                    [array addObject:model];
+                    //查找与上级菜单的父级同级的菜单选项
+                    for (UdeskAgentMenuModel *model in self.allAgentMenuData) {
+                        
+                        if ([model.parentId isEqualToString:parentId]) {
+                            [array addObject:model];
+                        }
+                    }
                 }
-            }
-            
-            if (array.count > 0) {
                 
-                NSMutableString *mString = [NSMutableString stringWithString:self.pathString];
-                [mString deleteCharactersInRange:[mString rangeOfString:upString]];
-                
-                self.pathString = mString;
-                
-                //装载数据刷新指定tableview
-                self.agentMenuData = array;
-                
-                UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:self.menuPage+100];
-                
-                [tableview reloadData];
-            }
-            
-        }];
-        
+                if (array.count > 0) {
+                    
+                    NSMutableString *mString = [NSMutableString stringWithString:self.pathString];
+                    if (upString) {
+                        [mString deleteCharactersInRange:[mString rangeOfString:upString]];
+                    }
+                    
+                    self.pathString = mString;
+                    
+                    //装载数据刷新指定tableview
+                    self.agentMenuData = array;
+                    
+                    UITableView *tableview = (UITableView *)[self.agentMenuScrollView viewWithTag:self.menuPage+100];
+                    
+                    [tableview reloadData];
+                }
+            }];
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];

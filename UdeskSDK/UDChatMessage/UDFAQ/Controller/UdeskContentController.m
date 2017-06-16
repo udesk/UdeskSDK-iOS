@@ -141,48 +141,60 @@
 
 - (void)loadHtmlContent:(NSString *)htmlString baseUrl:(NSString *)baseUrl {
     
-    CGFloat webY = _labelTitle.frame.origin.y+_labelTitle.frame.size.height+5;
-    htmlWebView=[[UIWebView alloc] initWithFrame:CGRectMake(7, webY, UD_SCREEN_WIDTH-14, self.view.frame.size.height-webY)];
-//    [htmlWebView setScalesPageToFit:YES];
-    htmlWebView.backgroundColor = [UIColor whiteColor];
-    htmlWebView.delegate = self;
-    NSString *newBaseURL = [NSString stringWithFormat:@"http://%@",baseUrl];
-    
-//    NSString *jsString = [NSString stringWithFormat:@"<html> \n"
-//                          "<head> \n"
-//                          "<style type=\"text/css\"> \n"
-//                          "body {font-size: %d;}\n"
-//                          "</style> \n"
-//                          "</head> \n"
-//                          "</html>", 47];
-    
-//    NSString *newString = [NSString stringWithFormat:@"%@%@",jsString,htmlString];
-    
-    [htmlWebView loadHTMLString:htmlString baseURL:[NSURL URLWithString:newBaseURL]];
-    
-    [self.view addSubview:htmlWebView];
+    @try {
+        
+        CGFloat webY = _labelTitle.frame.origin.y+_labelTitle.frame.size.height+5;
+        htmlWebView=[[UIWebView alloc] initWithFrame:CGRectMake(7, webY, UD_SCREEN_WIDTH-14, self.view.frame.size.height-webY)];
+        //    [htmlWebView setScalesPageToFit:YES];
+        htmlWebView.backgroundColor = [UIColor whiteColor];
+        htmlWebView.delegate = self;
+        NSString *newBaseURL = [NSString stringWithFormat:@"http://%@",baseUrl];
+        
+        //    NSString *jsString = [NSString stringWithFormat:@"<html> \n"
+        //                          "<head> \n"
+        //                          "<style type=\"text/css\"> \n"
+        //                          "body {font-size: %d;}\n"
+        //                          "</style> \n"
+        //                          "</head> \n"
+        //                          "</html>", 47];
+        
+        //    NSString *newString = [NSString stringWithFormat:@"%@%@",jsString,htmlString];
+        
+        [htmlWebView loadHTMLString:htmlString baseURL:[NSURL URLWithString:newBaseURL]];
+        
+        [self.view addSubview:htmlWebView];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
 }
 
 #pragma mark - UIWebViewDelegate
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    for (UIView *_aView in [htmlWebView subviews])
-    {
-        if ([_aView isKindOfClass:[UIScrollView class]])
+    @try {
+        
+        for (UIView *_aView in [htmlWebView subviews])
         {
-            [(UIScrollView *)_aView setShowsVerticalScrollIndicator:NO];
-            //右侧的滚动条
-            [(UIScrollView *)_aView setShowsHorizontalScrollIndicator:NO];
-            [(UIScrollView *)_aView setAlwaysBounceHorizontal:NO];//禁止左右滑动
-            //下侧的滚动条
-            for (UIView *_inScrollview in _aView.subviews)
+            if ([_aView isKindOfClass:[UIScrollView class]])
             {
-                if ([_inScrollview isKindOfClass:[UIImageView class]])
+                [(UIScrollView *)_aView setShowsVerticalScrollIndicator:NO];
+                //右侧的滚动条
+                [(UIScrollView *)_aView setShowsHorizontalScrollIndicator:NO];
+                [(UIScrollView *)_aView setAlwaysBounceHorizontal:NO];//禁止左右滑动
+                //下侧的滚动条
+                for (UIView *_inScrollview in _aView.subviews)
                 {
-                    _inScrollview.hidden = YES;  //上下滚动出边界时的黑色的图片
+                    if ([_inScrollview isKindOfClass:[UIImageView class]])
+                    {
+                        _inScrollview.hidden = YES;  //上下滚动出边界时的黑色的图片
+                    }
                 }
             }
         }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
 }
 

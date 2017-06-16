@@ -75,9 +75,6 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 /** 放弃排队方式 */
 @property (nonatomic, assign) UDQuitQueueType quitQueueType;
 
-/** 用户自定义留言 */
-@property (nonatomic, assign) BOOL isCustomForm;
-
 /** 超链接正则 */
 @property (nonatomic, strong, readonly) NSMutableArray *linkRegexs;
 

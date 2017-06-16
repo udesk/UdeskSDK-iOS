@@ -43,25 +43,31 @@ static UdeskLanguageTool *sharedModel;
 
 - (void)initLanguage
 {
-    NSString *tmp = [[NSUserDefaults standardUserDefaults] objectForKey:LANGUAGE_SET];
-    
-    //默认是中文
-    if ([UdeskTools isBlankString:tmp])
-    {
-        tmp = CNS;
+    @try {
+        
+        NSString *tmp = [[NSUserDefaults standardUserDefaults] objectForKey:LANGUAGE_SET];
+        
+        //默认是中文
+        if ([UdeskTools isBlankString:tmp])
+        {
+            tmp = CNS;
+        }
+        
+        self.language = tmp;
+        
+        //    NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"UdeskBundle.bundle"];
+        //    NSBundle *bundle = [NSBundle bundleWithPath: path];
+        
+        NSString *path = [[NSBundle bundleForClass:[UdeskLanguageTool class]] pathForResource:@"UdeskBundle" ofType:@"bundle"];
+        NSBundle *bundle = [NSBundle bundleWithPath:path];
+        
+        path = [bundle pathForResource:self.language ofType:@"lproj"];
+        
+        self.bundle = [NSBundle bundleWithPath:path];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    self.language = tmp;
-    
-//    NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"UdeskBundle.bundle"];
-//    NSBundle *bundle = [NSBundle bundleWithPath: path];
-    
-    NSString *path = [[NSBundle bundleForClass:[UdeskLanguageTool class]] pathForResource:@"UdeskBundle" ofType:@"bundle"];
-    NSBundle *bundle = [NSBundle bundleWithPath:path];
-    
-    path = [bundle pathForResource:self.language ofType:@"lproj"];
-    
-    self.bundle = [NSBundle bundleWithPath:path];
 }
 
 - (NSString *)getStringForKey:(NSString *)key withTable:(NSString *)table
@@ -88,23 +94,29 @@ static UdeskLanguageTool *sharedModel;
 
 - (void)setNewLanguage:(NSString *)language
 {
-    if ([language isEqualToString:self.language])
-    {
-        return;
-    }
-    
-    if ([language isEqualToString:EN] || [language isEqualToString:CNS])
-    {
+    @try {
         
-        NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"UdeskBundle.bundle"];
-        NSBundle *bundle = [NSBundle bundleWithPath: path];
-        path = [bundle pathForResource:language ofType:@"lproj"];
-        self.bundle = [NSBundle bundleWithPath:path];
+        if ([language isEqualToString:self.language])
+        {
+            return;
+        }
+        
+        if ([language isEqualToString:EN] || [language isEqualToString:CNS])
+        {
+            
+            NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"UdeskBundle.bundle"];
+            NSBundle *bundle = [NSBundle bundleWithPath: path];
+            path = [bundle pathForResource:language ofType:@"lproj"];
+            self.bundle = [NSBundle bundleWithPath:path];
+        }
+        
+        self.language = language;
+        [[NSUserDefaults standardUserDefaults]setObject:language forKey:LANGUAGE_SET];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    self.language = language;
-    [[NSUserDefaults standardUserDefaults]setObject:language forKey:LANGUAGE_SET];
-    [[NSUserDefaults standardUserDefaults]synchronize];
 }
 
 @end

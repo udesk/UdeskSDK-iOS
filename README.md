@@ -1,127 +1,26 @@
 # UdeskSDK-iOS
 Udesk为了让开发者更好的集成移动SDK,与企业业务结合更加紧密，我们开源了SDK的UI界面。用户可以根据自身业务以及APP不同风格重写页面。当然开发者也可以直接用我们提供的默认的界面。
 
-#### [iOS-SDK下载地址](https://github.com/udesk/UdeskSDK-iOS)
-
-### 注意：
-
-##### 1. 为了保证您的app能正常使用sdk，请使用或及时更新最新版本的sdk
-
-##### 2. v3.3之前的版本未适配iOS10，如需适配iOS10请更新最新的sdk
-
-#### 更新记录：
-
-sdk v3.6.2版本更新功能:
-
-1.增加im页面返回回调API
-
-2.录音优化
-
-------
-
-sdk v3.6.1版本更新功能:
-
-1.满意度调查多次弹窗bug修改
-
-2.客服繁忙到上线sdk弹窗自动隐藏
-
-------
-
-sdk v3.6版本更新功能:
-
-1.支持结构化消息展示
-
-2.支持管理员端黑名单留言提示语自定义
-
-------
-
-sdk v3.5.8版本更新功能:
-
-1.支持留言添加附件
-
-2.开放留言页面跳转方式事件逻辑修改
-
-3.推送例子
-
-3.bug修复
-
-------
-
-sdk v3.5.7版本更新功能:
-
-1.支持bitcode
-
-------
-
-sdk v3.5.6版本更新功能:
-
-1.修改复制大量文字到输入框引起的crash
-
-------
-
-sdk v3.5.5版本更新功能:
-
-1.支持将未读消息标记为已读
-
-2.修复关闭会话之后有几率性不弹满意度调查
-
-------
-
-sdk v3.5.4版本更新功能:
-
-1.适配iOS10.3
-
-------
-
-sdk v3.5.3版本更新功能:
-
-1.支持管理员端sdk配置
-
-2.支持放弃排队
-
-3.初始化不再支持单点登录的key，统一使用创建每个应用时生成对应的appid，和appkey。
-
-------
-
-sdk v3.4版本更新功能:
-
-1.支持推送
-
-2.支持多app
-
-3.新增查看客户是否正在会话API
-
-4.满意度调查bug修复
-
-----------------------------------------------------------------
-
-sdk v3.3.4版本更新功能:
-
-1.优化相册、语音权限流程
-
-2.转接优化
-
-----------------------------------------------------------------
-
-sdk v3.3.3版本更新功能：
-
-1.支持主动满意度调查
-
-2.push接口增加完成回调
-
-3.文字过多时计算bug修复
-
-4.支持https
+## 目录
+- [一、SDK工作流程](#%E4%B8%80sdk%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B)
+- [二、导入SDK依赖的框架](#%E4%BA%8C%E5%AF%BC%E5%85%A5sdk%E4%BE%9D%E8%B5%96%E7%9A%84%E6%A1%86%E6%9E%B6)
+- [三、快速集成SDK](#%E4%B8%89%E5%BF%AB%E9%80%9F%E9%9B%86%E6%88%90sdk)
+- [四、Udesk SDK 自定义配置](#%E5%9B%9Budesk-sdk-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
+- [五、消息推送](#%E4%BA%94%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81)
+- [六、Udesk SDK API说明](#%E5%85%ADudesk-sdk-api%E8%AF%B4%E6%98%8E)
+- [七、常见问题](#%E4%B8%83%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
+- [八、更新记录](#%E5%85%AB%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95)
 
 
-## 一、SDK工作流程
+
+# 一、SDK工作流程
 
 
 Udesk-SDK的工作流程如下图所示。
 
 ![udesk](http://7xr0de.com2.z0.glb.qiniucdn.com/ios-new-1.png)
 
-## 二、导入SDK依赖的框架
+# 二、导入SDK依赖的框架
 
 #### 2.1文件介绍
 
@@ -171,7 +70,7 @@ pod 'UdeskSDK'
 #import "Udesk.h"
 ```
 
-## 三、快速集成SDK
+# 三、快速集成SDK
 
 Udesk提供了一套开源的聊天界面，帮助开发者快速创建对话窗口和帮助中心，并提供自定义接口，以实现定制需求。
 
@@ -180,6 +79,9 @@ Udesk提供了一套开源的聊天界面，帮助开发者快速创建对话窗
 获取appkey和appId。
 
 ![udesk](http://7xr0de.com1.z0.glb.clouddn.com/initUdesk.png)
+
+##### 注意：appKey、appID、domain都是必传字段
+
 ```objective-c
 //初始化Udesk
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -210,58 +112,24 @@ NSDictionary *parameters = @{
 ```objective-c
 //使用push
 UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+[chat pushUdeskInViewController:self completion:nil];
 
 //使用present
-[chat presentUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+[chat presentUdeskInViewController:self completion:nil];
 ```
 
-#### 3.4推出机器人页面
-
-确保管理员后后【管理中心-即时通讯-IM机器人】开启机器人SDK IM渠道。可以设置是否允许转人员。使用此界面，则会根据后台配置显示机器人或人工客服对话界面
-
-```objective-c
-//使用push
-UdeskSDKManager *robot = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[robot pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
-
-//使用present
-[robot presentUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
-```
-#### 3.5推出帮助中心
+#### 3.4推出帮助中心
 
 ```objective-c
 //使用push
 UdeskSDKManager *faq = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[faq pushUdeskViewControllerWithType:UdeskFAQ viewController:self completion:nil];
+[faq pushUdeskInViewController:self udeskType:UdeskFAQ completion:nil];
 
 //使用present
-[faq presentUdeskViewControllerWithType:UdeskFAQ viewController:self completion:nil];
+[faq presentUdeskInViewController:self udeskType:UdeskFAQ completion:nil];
 ```
 
-#### 3.6推出客服导航
-
-```objective-c
-//使用push
-UdeskSDKManager *agentMenu = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[agentMenu pushUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
-
-//使用present
-[agentMenu presentUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
-```
-
-#### 3.7推出管理员端配置的sdk界面
-
-```objective-c
-//使用push
-UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[chat pushUdeskViewControllerWith:self completion:nil];
-
-//使用present
-[chat presentUdeskViewControllerWith:self completion:nil];
-```
-
-## 四、Udesk SDK 自定义配置
+# 四、Udesk SDK 自定义配置
 
 #### 4.1使用SDK提供的UI
 
@@ -269,14 +137,14 @@ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle
 
 ```objective-c
 UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[manager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+[manager pushUdeskInViewController:self completion:nil];
 ```
 ##### 经典
 
 
 ```objective-c
 UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle blueStyle]];
-[manager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+[manager presentUdeskInViewController:self completion:nil];
 ```
 
 #### 4.2自定义UI
@@ -288,7 +156,7 @@ sdkStyle.navigationColor = [UIColor yellowColor];
 sdkStyle.titleColor = [UIColor orangeColor];
 
 UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:sdkStyle];
-[chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+[chat pushUdeskInViewController:self completion:nil];
 ```
 
 #### 4.3指定客服ID
@@ -296,14 +164,14 @@ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:sdkStyle];
 ```objective-c
 UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
 [chat setScheduledAgentId:agentId];
-[chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+[chat pushUdeskInViewController:self udeskType:UdeskIM completion:nil];
 ```
 #### 4.4指定客服组ID
 
 ```objective-c
 UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
 [chat setScheduledGroupId:groupId];
-[chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+[chat pushUdeskInViewController:self udeskType:UdeskIM completion:nil];
 ```
 
 #### 4.5设置用户头像
@@ -314,7 +182,7 @@ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle
 [chat setCustomerAvatarWithURL:@"头像URL"];
 //通过本地图片设置头像
 [chat setCustomerAvatarWithImage:[UIImage imageNamed:@"customer"]];
-[chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+[chat pushUdeskInViewController:self completion:nil];
 ```
 #### 4.6设置SDK语言
 
@@ -324,25 +192,17 @@ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle
 [[UdeskLanguageTool sharedInstance] setNewLanguage:EN]
 ```
 
-#### 4.7设置机器人转人工至客服导航栏
-
-```objective-c
-UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-[chatViewManager setTransferToAgentMenu:YES];
-[chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
-```
-
-#### 4.8设置放弃排队类型
+#### 4.7设置放弃排队类型
 
 ```objective-c
 UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
 //如果用户处于排队状态，当用户离开聊天界面，会强制把该用户移除排队
 //默认为标记排队（指不会放弃排队）
 [chatViewManager setQuitQueueType:UdeskForceQuit];
-[chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self completion:nil];
+[chatViewManager pushUdeskInViewController:self completion:nil];
 ```
 
-#### 4.9自定义留言界面
+#### 4.8自定义留言界面
 
 ```objective-c
 UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
@@ -354,7 +214,7 @@ UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[Ud
 }];
 ```
 
-##### 注意：如果你自定义的留言界面是h5的，恰好你们有上传附件的功能，这时候你们需要添加以下代码到你们自定义的控制器，否则选择附件的时候会直接返回到上一页
+#### 注意：如果你自定义的留言界面是h5的，恰好你们有上传附件的功能，这时候你们需要添加以下代码到你们自定义的控制器，否则选择附件的时候会直接返回到上一页
 
 1.使用presentViewController 进入到留言页
 
@@ -375,7 +235,7 @@ UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[Ud
 [super dismissViewControllerAnimated:flag completion:completion];
 ```
 
-## 五、消息推送
+# 五、消息推送
 
 当前仅支持一种推送方案，即Udesk服务端发送消息至开发者的服务端，开发者再推送消息到 App。
 
@@ -512,7 +372,7 @@ App 进入后台后，Udesk推送给开发者服务端的消息数据格式中�
 }
 ```
 
-## 六、Udesk SDK API说明
+# 六、Udesk SDK API说明
 
 注意：以下接口在Udesk开源UI里均有调用，如果你使用Udesk的开源UI则不需要调用以下任何接口
 
@@ -671,7 +531,7 @@ NSDictionary *updateParameters = @{
                         @"productURL":@"http://www.baidu.com"
                         };
  [chat setProductMessage:dict];
- [chat pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+ [chat pushUdeskInViewController:self completion:nil];
 ```
 
 SDK 咨询对象展示:
@@ -755,10 +615,13 @@ SDK 咨询对象展示:
 
 调用此接口开发送各种类型的消息，注意选择正确的消息类型。
 
+```objective-c
 //message消息类型为 UdeskMessage
 [UdeskManager sendMessage:message completion:^(UdeskMessage *message,BOOL sendStatus) {    
 
 }];
+```
+
 #### 6.11输入预知
 
 将用户正在输入的内容，实时显示在客服对话窗口。该接口没有调用限制，但每1秒内只会向服务器发送一次数据）
@@ -820,4 +683,139 @@ BOOL isSession = [UdeskManager customersAreSession];
 ```objective-c
 [UdeskManager markAllMessagesAsRead];
 ```
+
+# 七、常见问题
+
+#### 键盘弹起后输入框和键盘之间有偏移
+
+请检查是否使用了第三方开源库[IQKeyboardManager](https://github.com/hackiftekhar/IQKeyboardManager)，该开源库会和判断输入框的逻辑冲突。
+
+- 在UdeskChatViewController的viewWillAppear里加入 `[[IQKeyboardManager sharedManager] setEnable:NO];`，作用是在当前页面禁止IQKeyboardManager
+- 在UdeskChatViewController的viewWillDisappear里加入 `[[IQKeyboardManager sharedManager] setEnable:YES];`，作用是在离开当前页面之前重新启用IQKeyboardManager
+
+#### **指定客服组或者客服分配出现与指定客服组客服不一致的情况**
+
+先要确认客服没有关闭会话。
+
+我们产品逻辑： 假设客户A   选了客服组B下的客服B1，进行会话。  之后客户A退出会话界面，进入另外界面，之后通过客服组C下的客服C 1分配会话：  这时后台会判断，如果和B1会话还存在，则会直接分配给B1，而不会分配給客服C 1。  只有B1会话关闭了，才会分配給客服C1。
+
+#### 出现在不同客户分配的会话在一个会话中
+
+出现这种情况，是客服传的sdktoken值一样。 sdktoken像身份证一样，是用户唯一的标识。让客户检查接入是传入的sdktoken值。
+
+ 如果设置了email 或者 cellphone  出现相同也会在一个客服的会话里。
+
+# 八、更新记录
+
+#### 更新记录：
+
+sdk v3.6.3版本更新功能:
+
+1.优化自定义字段调用方式
+
+2.欢迎语bug修改
+
+------
+
+sdk v3.6.2版本更新功能:
+
+1.增加im页面返回回调API
+
+2.录音优化
+
+------
+
+sdk v3.6.1版本更新功能:
+
+1.满意度调查多次弹窗bug修改
+
+2.客服繁忙到上线sdk弹窗自动隐藏
+
+------
+
+sdk v3.6版本更新功能:
+
+1.支持结构化消息展示
+
+2.支持管理员端黑名单留言提示语自定义
+
+------
+
+sdk v3.5.8版本更新功能:
+
+1.支持留言添加附件
+
+2.开放留言页面跳转方式事件逻辑修改
+
+3.推送例子
+
+3.bug修复
+
+------
+
+sdk v3.5.7版本更新功能:
+
+1.支持bitcode
+
+------
+
+sdk v3.5.6版本更新功能:
+
+1.修改复制大量文字到输入框引起的crash
+
+------
+
+sdk v3.5.5版本更新功能:
+
+1.支持将未读消息标记为已读
+
+2.修复关闭会话之后有几率性不弹满意度调查
+
+------
+
+sdk v3.5.4版本更新功能:
+
+1.适配iOS10.3
+
+------
+
+sdk v3.5.3版本更新功能:
+
+1.支持管理员端sdk配置
+
+2.支持放弃排队
+
+3.初始化不再支持单点登录的key，统一使用创建每个应用时生成对应的appid，和appkey。
+
+------
+
+sdk v3.4版本更新功能:
+
+1.支持推送
+
+2.支持多app
+
+3.新增查看客户是否正在会话API
+
+4.满意度调查bug修复
+
+------
+
+sdk v3.3.4版本更新功能:
+
+1.优化相册、语音权限流程
+
+2.转接优化
+
+------
+
+sdk v3.3.3版本更新功能：
+
+1.支持主动满意度调查
+
+2.push接口增加完成回调
+
+3.文字过多时计算bug修复
+
+4.支持https
 

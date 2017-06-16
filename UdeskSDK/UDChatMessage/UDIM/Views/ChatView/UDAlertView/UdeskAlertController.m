@@ -68,7 +68,7 @@
 
 @interface UdeskAlertAction ()
 
-@property (nonatomic, copy) void(^actionHandler)(UdeskAlertAction *action);
+@property (nonatomic, copy) void(^alertActionHandler)(UdeskAlertAction *action);
 
 @end
 
@@ -78,8 +78,8 @@
 {
     UdeskAlertAction *instance = [[UdeskAlertAction alloc] init];
     instance -> _title = title;
-    instance -> _style = style;
-    instance.actionHandler = handler;
+    instance -> _udStyle = style;
+    instance.alertActionHandler = handler;
     instance.enabled = YES; // 默认可用
     
     return instance;
@@ -199,7 +199,7 @@ static CGRect menuScrollViewRect;
     // 当只有两个action时，style == ZKAlertActionStyleCancel的action始终居左显示
     if (self.mutableActions.count == 2) {
         [self.mutableActions enumerateObjectsUsingBlock:^(UdeskAlertAction * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (obj.style == UDAlertActionStyleCancel) {
+            if (obj.udStyle == UDAlertActionStyleCancel) {
                 [self.mutableActions exchangeObjectAtIndex:idx withObjectAtIndex:0];
             }
         }];
@@ -208,7 +208,7 @@ static CGRect menuScrollViewRect;
     // 当多于两个action时，style == ZKAlertActionStyleCancel的action始终居下显示
     if (self.mutableActions.count > 2) {
         [self.mutableActions enumerateObjectsUsingBlock:^(UdeskAlertAction *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (obj.style == UDAlertActionStyleCancel) {
+            if (obj.udStyle == UDAlertActionStyleCancel) {
                 [self.mutableActions removeObject:obj];
                 [self.mutableActions addObject:obj];
             }
@@ -232,7 +232,7 @@ static CGRect menuScrollViewRect;
         ActionButton *button = [ActionButton buttonWithType:UIButtonTypeCustom];
         button.tag = 10 + i;
         [button setBackgroundColor:[UIColor colorWithWhite:0.95 alpha:1] forState:UIControlStateHighlighted];
-        switch (self.actions[i].style) {
+        switch (self.actions[i].udStyle) {
             case UDAlertActionStyleDefault:
 
                 button.titleLabel.font = [UIFont systemFontOfSize:17];
@@ -380,11 +380,14 @@ static CGRect menuScrollViewRect;
 {
     [self.view endEditing:YES];
     
-    UdeskAlertAction *action = self.actions[sender.tag - 10];
-    if (action) {
-        [self showDisappearAnimation:^{
-            if (action.actionHandler) action.actionHandler(action);
-        }];
+    if (self.actions.count > (sender.tag - 10)) {
+     
+        UdeskAlertAction *action = self.actions[sender.tag - 10];
+        if (action) {
+            [self showDisappearAnimation:^{
+                if (action.alertActionHandler) action.alertActionHandler(action);
+            }];
+        }
     }
 }
 
@@ -408,7 +411,7 @@ static CGRect menuScrollViewRect;
 #pragma mark -- 方法实现
 - (void)addAction:(UdeskAlertAction *)action
 {
-    if (action.style == UDAlertActionStyleCancel) _count ++;
+    if (action.udStyle == UDAlertActionStyleCancel) _count ++;
     
     NSAssert(_count < 2, @"ZKAlertController can only have one action with a style of ZKAlertActionStyleCancel");
     

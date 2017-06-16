@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.6.2
+//  Version: 3.6.3
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -52,7 +52,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 /**
  *  接收客服发送的满意度调查
  *
- *  @param isSurvey 是否调查满意度
+ *  @param agentId 是否调查满意度
  */
 - (void)didReceiveSurveyWithAgentId:(NSString *)agentId;
 
@@ -64,7 +64,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 /**
  *  初始化Udesk，必须调用此函数，请正确填写参数。
  *
- *  @param key    应用key
+ *  @param appKey 应用key
  *  @param appId  应用ID
  *  @param domain 公司域名
  */
@@ -103,7 +103,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 /**
  *  指定分配客服组
  *
- *  @param agentId    客服组id
+ *  @param groupId    客服组id
  *  @param completion 完成之后回调
  */
 + (void)scheduledGroupId:(NSString *)groupId
@@ -254,12 +254,6 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  *  @return Udesk key
  */
 + (NSString *)key;
-/**
- *  机器人客服是否支持转移
- *
- *  @return 是否支持转移
- */
-+ (BOOL)supportTransfer;
 
 /**
  * 当前用户是否被加入黑名单
@@ -319,7 +313,6 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  *  @param key       图片消息id
  *  @param doneBlock 回调
  *
- *  @return NSOperation
  */
 + (void)downloadMediaWithUrlString:(NSString *)key done:(void(^)(NSString *key, id<NSCoding> object))doneBlock;
 
@@ -337,7 +330,6 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  *  在服务端创建用户。（开发者无需调用此函数）
  *
  *  @param completion 成功信息回调
- *  @param failure    失败信息回调
  */
 + (void)createServerCustomerCompletion:(void (^)(BOOL success, NSError *error))completion;
 

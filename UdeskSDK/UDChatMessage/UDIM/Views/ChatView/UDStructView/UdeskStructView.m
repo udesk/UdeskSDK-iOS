@@ -91,7 +91,7 @@
 
 @interface UdeskStructAction ()
 
-@property (nonatomic, copy) void(^actionHandler)(UdeskStructAction *action);
+@property (nonatomic, copy) void(^structActionHandler)(UdeskStructAction *action);
 
 @end
 
@@ -101,7 +101,7 @@
 {
     UdeskStructAction *instance = [UdeskStructAction new];
     instance -> _title = title;
-    instance.actionHandler = handler;
+    instance.structActionHandler = handler;
     instance.enabled = YES; // 默认可用
     
     return instance;
@@ -130,7 +130,6 @@ static CGRect menuScrollViewRect;
 @property (nonatomic, strong) UIImageView *structImageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *messageLbel;
-@property (nonatomic, strong) NSMutableArray *mutableActions;
 
 @end
 
@@ -214,104 +213,128 @@ static CGRect menuScrollViewRect;
 
 - (void)configImageScrollViewFrame
 {
-    
-    if (!self.image) {
-        return;
+ 
+    @try {
+        
+        if (!self.image) {
+            return;
+        }
+        
+        //限定图片的最大直径
+        CGFloat maxBubbleDiameter = ceil(_contentViewWidth / 2);  //限定图片的最大直径
+        CGSize contentImageSize = self.image.size;
+        
+        //先限定图片宽度来计算高度
+        CGFloat imageWidth = contentImageSize.width < maxBubbleDiameter ? contentImageSize.width : maxBubbleDiameter;
+        CGFloat imageHeight = ceil(contentImageSize.height / contentImageSize.width * imageWidth);
+        //判断如果气泡高度计算结果超过图片的最大直径，则限制高度
+        if (imageHeight > maxBubbleDiameter) {
+            imageHeight = maxBubbleDiameter;
+            imageWidth = ceil(contentImageSize.width / contentImageSize.height * imageHeight);
+        }
+        
+        self.structImageView.frame = CGRectMake((_contentViewWidth-imageWidth)/2, _contentMargin.top, imageWidth, imageHeight);
+        self.imageScrollView.frame = CGRectMake(0, 0, _contentViewWidth, imageHeight+_contentMargin.top+_contentMargin.bottom);
+        
+        self.imageScrollView.contentSize = CGSizeMake(_contentViewWidth, imageHeight);
+        
+        // 绘制横向分割线
+        CALayer *border_hor = [CALayer layer];
+        CGFloat bottom = CGRectGetMaxY(self.structImageView.frame)+CGRectGetHeight(self.structImageView.frame);
+        border_hor.frame = CGRectMake(0, bottom, _contentViewWidth, 0.6);
+        border_hor.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1].CGColor;
+        [self.structImageView.layer addSublayer:border_hor];
+        
+        imageScrollViewRect = self.imageScrollView.frame;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    //限定图片的最大直径
-    CGFloat maxBubbleDiameter = ceil(_contentViewWidth / 2);  //限定图片的最大直径
-    CGSize contentImageSize = self.image.size;
-    
-    //先限定图片宽度来计算高度
-    CGFloat imageWidth = contentImageSize.width < maxBubbleDiameter ? contentImageSize.width : maxBubbleDiameter;
-    CGFloat imageHeight = ceil(contentImageSize.height / contentImageSize.width * imageWidth);
-    //判断如果气泡高度计算结果超过图片的最大直径，则限制高度
-    if (imageHeight > maxBubbleDiameter) {
-        imageHeight = maxBubbleDiameter;
-        imageWidth = ceil(contentImageSize.width / contentImageSize.height * imageHeight);
-    }
-
-    self.structImageView.frame = CGRectMake((_contentViewWidth-imageWidth)/2, _contentMargin.top, imageWidth, imageHeight);
-    self.imageScrollView.frame = CGRectMake(0, 0, _contentViewWidth, imageHeight+_contentMargin.top+_contentMargin.bottom);
-    
-    self.imageScrollView.contentSize = CGSizeMake(_contentViewWidth, imageHeight);
-    
-    // 绘制横向分割线
-    CALayer *border_hor = [CALayer layer];
-    CGFloat bottom = CGRectGetMaxY(self.structImageView.frame)+CGRectGetHeight(self.structImageView.frame);
-    border_hor.frame = CGRectMake(0, bottom, _contentViewWidth, 0.6);
-    border_hor.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1].CGColor;
-    [self.structImageView.layer addSublayer:border_hor];
-    
-    imageScrollViewRect = self.imageScrollView.frame;
 }
 
 - (void)configTextScrollViewFrame
 {
     
-    CGFloat textScrollY = CGRectGetMaxY(self.imageScrollView.frame);
-    CGFloat messageY = _contentMargin.top;
-    CGFloat menuHeight = [self getMenuHeight];
-    CGFloat labelWidth = _contentViewWidth - _contentMargin.left - _contentMargin.right;
-    CGFloat textHeight = (!self.title.length && !self.message.length) ? 0.0 : _contentMargin.top;
-    
-    if (self.title.length) {
-        CGSize size = [self.titleLabel sizeThatFits:CGSizeMake(labelWidth, CGFLOAT_MAX)];
-        self.titleLabel.frame = CGRectMake(_contentMargin.left, _contentMargin.top, labelWidth, size.height);
-        messageY =  CGRectGetMaxY(self.titleLabel.frame) + _contentMargin.bottom;
-        textHeight = CGRectGetMaxY(self.titleLabel.frame) + _contentMargin.bottom;
-    }
-    
-    if (self.message.length) {
-        CGSize size = [self.messageLbel sizeThatFits:CGSizeMake(labelWidth, CGFLOAT_MAX)];
-        self.messageLbel.frame = CGRectMake(_contentMargin.left, messageY, labelWidth, size.height);
-        textHeight = CGRectGetMaxY(self.messageLbel.frame) + _contentMargin.bottom;
-    }
-    
-    if (textHeight + menuHeight + CGRectGetHeight(self.imageScrollView.frame) <= _maxHeight) {
+    @try {
         
-        self.textScrollView.frame = CGRectMake(0, textScrollY, _contentViewWidth, textHeight);
-    }else{
-        self.textScrollView.frame = CGRectMake(0, textScrollY, _contentViewWidth, _maxHeight - menuHeight - CGRectGetHeight(self.imageScrollView.frame));
+        CGFloat textScrollY = CGRectGetMaxY(self.imageScrollView.frame);
+        CGFloat messageY = _contentMargin.top;
+        CGFloat menuHeight = [self getMenuHeight];
+        CGFloat labelWidth = _contentViewWidth - _contentMargin.left - _contentMargin.right;
+        CGFloat textHeight = (!self.title.length && !self.message.length) ? 0.0 : _contentMargin.top;
+        
+        if (self.title.length) {
+            CGSize size = [self.titleLabel sizeThatFits:CGSizeMake(labelWidth, CGFLOAT_MAX)];
+            self.titleLabel.frame = CGRectMake(_contentMargin.left, _contentMargin.top, labelWidth, size.height);
+            messageY =  CGRectGetMaxY(self.titleLabel.frame) + _contentMargin.bottom;
+            textHeight = CGRectGetMaxY(self.titleLabel.frame) + _contentMargin.bottom;
+        }
+        
+        if (self.message.length) {
+            CGSize size = [self.messageLbel sizeThatFits:CGSizeMake(labelWidth, CGFLOAT_MAX)];
+            self.messageLbel.frame = CGRectMake(_contentMargin.left, messageY, labelWidth, size.height);
+            textHeight = CGRectGetMaxY(self.messageLbel.frame) + _contentMargin.bottom;
+        }
+        
+        if (textHeight + menuHeight + CGRectGetHeight(self.imageScrollView.frame) <= _maxHeight) {
+            
+            self.textScrollView.frame = CGRectMake(0, textScrollY, _contentViewWidth, textHeight);
+        }else{
+            self.textScrollView.frame = CGRectMake(0, textScrollY, _contentViewWidth, _maxHeight - menuHeight - CGRectGetHeight(self.imageScrollView.frame));
+        }
+        
+        self.textScrollView.contentSize = CGSizeMake(_contentViewWidth, textHeight);
+        
+        textScrollViewRect = self.textScrollView.frame;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    self.textScrollView.contentSize = CGSizeMake(_contentViewWidth, textHeight);
-    
-    textScrollViewRect = self.textScrollView.frame;
 }
 
 - (void)configMenuScrollViewFrame
 {
-    if (!self.actions.count) return;
-    
-    CGFloat firstButtonY = CGRectGetMaxY(self.textScrollView.frame);
-    
-    for (int i = 0; i < self.actions.count; i++) {
-        UIButton *button = (UIButton *)[self.menuScrollView viewWithTag:10 + i];
-        button.frame = CGRectMake(0, _buttonHeight * i, _contentViewWidth, _buttonHeight);
+    @try {
+        
+        if (!self.actions.count) return;
+        
+        CGFloat firstButtonY = CGRectGetMaxY(self.textScrollView.frame);
+        
+        for (int i = 0; i < self.actions.count; i++) {
+            UIButton *button = (UIButton *)[self.menuScrollView viewWithTag:10 + i];
+            button.frame = CGRectMake(0, _buttonHeight * i, _contentViewWidth, _buttonHeight);
+        }
+        
+        CGFloat buttonTotalHeight = _buttonHeight * self.actions.count;
+        CGFloat menuHeight = buttonTotalHeight > (_maxHeight - firstButtonY) ? (_maxHeight - firstButtonY) : buttonTotalHeight;
+        
+        self.menuScrollView.frame = CGRectMake(0, firstButtonY, _contentViewWidth, menuHeight);
+        self.menuScrollView.contentSize = CGSizeMake(_contentViewWidth, buttonTotalHeight);
+        
+        menuScrollViewRect = self.menuScrollView.frame;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    CGFloat buttonTotalHeight = _buttonHeight * self.actions.count;
-    CGFloat menuHeight = buttonTotalHeight > (_maxHeight - firstButtonY) ? (_maxHeight - firstButtonY) : buttonTotalHeight;
-    
-    self.menuScrollView.frame = CGRectMake(0, firstButtonY, _contentViewWidth, menuHeight);
-    self.menuScrollView.contentSize = CGSizeMake(_contentViewWidth, buttonTotalHeight);
-    
-    menuScrollViewRect = self.menuScrollView.frame;
 }
 
 - (void)configContentViewFrame:(CGPoint)origin
 {
-    CGFloat firstButtonY = CGRectGetMaxY(self.textScrollView.frame);
-    
-    CGRect rect = self.frame;
-    rect.origin = origin;
-    rect.size.width = _contentViewWidth;
-    rect.size.height = firstButtonY + CGRectGetHeight(self.menuScrollView.frame);
-    self.frame = rect;
-    
-    contentViewRect = self.frame;
+    @try {
+        
+        CGFloat firstButtonY = CGRectGetMaxY(self.textScrollView.frame);
+        
+        CGRect rect = self.frame;
+        rect.origin = origin;
+        rect.size.width = _contentViewWidth;
+        rect.size.height = firstButtonY + CGRectGetHeight(self.menuScrollView.frame);
+        self.frame = rect;
+        
+        contentViewRect = self.frame;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
 }
 
 - (CGFloat)getMenuHeight
@@ -333,7 +356,7 @@ static CGRect menuScrollViewRect;
     [self endEditing:YES];
     
     UdeskStructAction *action = self.actions[sender.tag - 10];
-    if (action.actionHandler) action.actionHandler(action);
+    if (action.structActionHandler) action.structActionHandler(action);
 }
 
 #pragma mark -- 方法实现

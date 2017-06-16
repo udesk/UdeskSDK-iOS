@@ -50,65 +50,57 @@ static CGFloat const kUDAvatarToVerticalEdgeSpacing = 15.0;
     self = [super init];
     if (self) {
         
-        if ([UdeskTools isBlankString:message.messageId]) {
-            return nil;
-        }
-        if ([UdeskTools isBlankString:message.content]) {
-            return nil;
-        }
-
-        self.date = message.timestamp;
-        self.messageId = message.messageId;
-        
-        //时间frame
-        self.dateFrame = CGRectMake(0, kUDChatMessageDateLabelY, UD_SCREEN_WIDTH, kUDChatMessageDateCellHeight);
-        //用户头像frame
-        self.avatarFrame = CGRectMake(kUDAvatarToHorizontalEdgeSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
-        
-        //客服头像
-        self.avatarImage = [UIImage ud_defaultAgentImage];
-        if (message.avatar.length > 0) {
+        @try {
             
-            [UdeskManager downloadMediaWithUrlString:message.avatar done:^(NSString *key, id<NSCoding> object) {
+            if ([UdeskTools isBlankString:message.messageId]) {
+                return nil;
+            }
+            if ([UdeskTools isBlankString:message.content]) {
+                return nil;
+            }
+            
+            self.date = message.timestamp;
+            self.messageId = message.messageId;
+            
+            //时间frame
+            self.dateFrame = CGRectMake(0, kUDChatMessageDateLabelY, UD_SCREEN_WIDTH, kUDChatMessageDateCellHeight);
+            //用户头像frame
+            self.avatarFrame = CGRectMake(kUDAvatarToHorizontalEdgeSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
+            
+            //客服头像
+            self.avatarImage = [UIImage ud_defaultAgentImage];
+            if (message.avatar.length > 0) {
                 
-                self.avatarImage = [UdeskImageUtil compressImage:(UIImage *)object toMaxFileSize:CGSizeMake(kUDAvatarDiameter*2, kUDAvatarDiameter*2)];
-                //通知更新
-                if (self.delegate) {
-                    if ([self.delegate respondsToSelector:@selector(didUpdateCellDataWithMessageId:)]) {
-                        [self.delegate didUpdateCellDataWithMessageId:message.messageId];
-                    }
-                }
-            }];
-        }
-        
-
-        NSDictionary *structMsg = [UdeskTools dictionaryWithJSON:message.content];
-        
-        NSString *title = [NSString stringWithFormat:@"%@",[structMsg objectForKey:@"title"]];
-        NSString *description = [NSString stringWithFormat:@"%@",[structMsg objectForKey:@"description"]];
-        NSString *img_url = [NSString stringWithFormat:@"%@",[structMsg objectForKey:@"img_url"]];
-        NSArray *buttonArray = [structMsg objectForKey:@"buttons"];
-        
-        self.title = title;
-        self.udDescription = description;
-        self.imgURL = img_url;
-        
-        NSMutableArray *array = [NSMutableArray array];
-        for (NSDictionary *buttonDic in buttonArray) {
+                NSString *newURL = [message.avatar stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:newURL]]];
+                self.avatarImage = [UdeskImageUtil compressImage:image toMaxFileSize:CGSizeMake(kUDAvatarDiameter*2, kUDAvatarDiameter*2)];
+            }
             
-            UdeskStructButton *structButton = [[UdeskStructButton alloc] initWithContentsOfDic:buttonDic];
-            [array addObject:structButton];
-        }
-        self.buttons = array;
-        
-        if (img_url && img_url.length>0) {
-        
-            NSString *newURL = [img_url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSDictionary *structMsg = [UdeskTools dictionaryWithJSON:message.content];
             
-            [UdeskManager downloadMediaWithUrlString:newURL done:^(NSString *key, id<NSCoding> object) {
+            NSString *title = [NSString stringWithFormat:@"%@",[structMsg objectForKey:@"title"]];
+            NSString *description = [NSString stringWithFormat:@"%@",[structMsg objectForKey:@"description"]];
+            NSString *img_url = [NSString stringWithFormat:@"%@",[structMsg objectForKey:@"img_url"]];
+            NSArray *buttonArray = [structMsg objectForKey:@"buttons"];
+            
+            self.title = title;
+            self.udDescription = description;
+            self.imgURL = [img_url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            
+            NSMutableArray *array = [NSMutableArray array];
+            for (NSDictionary *buttonDic in buttonArray) {
+                
+                UdeskStructButton *structButton = [[UdeskStructButton alloc] initWithContentsOfDic:buttonDic];
+                [array addObject:structButton];
+            }
+            self.buttons = array;
+            
+            if (img_url && img_url.length>0) {
+                
+                NSString *newURL = [img_url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:newURL]]];
                 
                 //限定图片的最大直径
-                UIImage *image = (UIImage *)object;
                 CGFloat maxBubbleDiameter = ceil(230 / 2);  //限定图片的最大直径
                 CGSize contentImageSize = image.size;
                 
@@ -121,8 +113,7 @@ static CGFloat const kUDAvatarToVerticalEdgeSpacing = 15.0;
                     imageWidth = ceil(contentImageSize.width / contentImageSize.height * imageHeight);
                 }
                 
-                self.structImage = [UdeskImageUtil compressImage:(UIImage *)object toMaxFileSize:CGSizeMake(imageWidth, imageHeight)];
-                
+                self.structImage = [UdeskImageUtil compressImage:image toMaxFileSize:CGSizeMake(imageWidth, imageHeight)];
                 
                 //这种获取高度的方法不是很友好，之后需要优化
                 NSMutableArray *actionArray = [NSMutableArray array];
@@ -132,17 +123,22 @@ static CGFloat const kUDAvatarToVerticalEdgeSpacing = 15.0;
                     [actionArray addObject:action];
                 }
                 
-                UdeskStructView *structContentView = [[UdeskStructView alloc] initWithImage:self.structImage title:self.title message:self.udDescription buttons:actionArray origin:CGPointMake(CGRectGetMaxX(self.avatarFrame)+kUDStructPadding, CGRectGetMaxY(self.dateFrame)+kUDStructPadding)];
-                self.cellHeight = structContentView.ud_height+CGRectGetHeight(self.dateFrame)+(kUDStructPadding*3);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    self.structContentView = [[UdeskStructView alloc] initWithImage:self.structImage title:self.title message:self.udDescription buttons:actionArray origin:CGPointMake(CGRectGetMaxX(self.avatarFrame)+kUDStructPadding, CGRectGetMaxY(self.dateFrame)+kUDStructPadding)];
+                    self.structContentView.layer.borderWidth = 1;
+                    self.structContentView.layer.borderColor = [UIColor colorWithWhite:0.90 alpha:1].CGColor;
+                    
+                    self.cellHeight = self.structContentView.ud_height+CGRectGetHeight(self.dateFrame)+(kUDStructPadding*3);
+                });
                 
-                //通知更新
-                if (self.delegate) {
-                    if ([self.delegate respondsToSelector:@selector(didUpdateCellDataWithMessageId:)]) {
-                        [self.delegate didUpdateCellDataWithMessageId:message.messageId];
-                    }
-                }
-            }];
+            }
+            
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
         }
+        
     }
     
     return self;

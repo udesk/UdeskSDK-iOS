@@ -91,6 +91,8 @@ _Pragma("clang diagnostic pop")
                                 [[UIScreen mainScreen] currentMode].size) : \
                                 NO)
 
+// 是否IOS9
+#define ud_isIOS9                  ([[[UIDevice currentDevice]systemVersion]floatValue] >= 9.0)
 // 是否IOS8
 #define ud_isIOS8                  ([[[UIDevice currentDevice]systemVersion]floatValue] >= 8.0)
 // 是否IOS7

@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, strong) UIImage *image;
 @property (nullable, nonatomic, copy) NSString *title;
 @property (nullable, nonatomic, copy) NSString *message;
+@property (nonatomic, strong) NSMutableArray *mutableActions;
 
 - (instancetype)initWithImage:(nullable UIImage *)image
                         title:(nullable NSString *)title

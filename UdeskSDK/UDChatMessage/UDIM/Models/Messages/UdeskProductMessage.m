@@ -68,62 +68,68 @@ static CGFloat const kUDProductSendButtonHeight = 25.0;
     self = [super init];
     if (self) {
         
-        self.cellHeight = kUDProductCellHeight;
-        
-        self.date = [NSDate date];
-        self.messageId = [NSUUID UUID].UUIDString;
-        NSString *productURL = [message objectForKey:@"productURL"];
-        if ([UdeskTools isBlankString:productURL]) {
-            return nil;
-        }
-        self.productURL = productURL;
-        
-        //咨询对象图片
-        NSString *productImageUrl = [message objectForKey:@"productImageUrl"];
-        if (![UdeskTools isBlankString:productImageUrl]) {
-         
-            self.productImage = [UIImage ud_defaultLoadingImage];
+        @try {
             
-            [UdeskManager downloadMediaWithUrlString:productImageUrl done:^(NSString *key, id<NSCoding> object) {
+            self.cellHeight = kUDProductCellHeight;
+            
+            self.date = [NSDate date];
+            self.messageId = [NSUUID UUID].UUIDString;
+            NSString *productURL = [message objectForKey:@"productURL"];
+            if ([UdeskTools isBlankString:productURL]) {
+                return nil;
+            }
+            self.productURL = productURL;
+            
+            //咨询对象图片
+            NSString *productImageUrl = [message objectForKey:@"productImageUrl"];
+            if (![UdeskTools isBlankString:productImageUrl]) {
                 
-                self.productImage = (UIImage *)object;
-                //通知更新
-                if (self.delegate) {
-                    if ([self.delegate respondsToSelector:@selector(didUpdateCellDataWithMessageId:)]) {
-                        [self.delegate didUpdateCellDataWithMessageId:self.messageId];
+                self.productImage = [UIImage ud_defaultLoadingImage];
+                
+                [UdeskManager downloadMediaWithUrlString:productImageUrl done:^(NSString *key, id<NSCoding> object) {
+                    
+                    self.productImage = (UIImage *)object;
+                    //通知更新
+                    if (self.delegate) {
+                        if ([self.delegate respondsToSelector:@selector(didUpdateCellDataWithMessageId:)]) {
+                            [self.delegate didUpdateCellDataWithMessageId:self.messageId];
+                        }
                     }
-                }
-            }];
+                }];
+                
+                self.productImageFrame = CGRectMake(kUDProductImageToHorizontalEdgeSpacing, kUDProductImageToVerticalEdgeSpacing, kUDProductImageDiameter, kUDProductImageDiameter);
+            }
             
-            self.productImageFrame = CGRectMake(kUDProductImageToHorizontalEdgeSpacing, kUDProductImageToVerticalEdgeSpacing, kUDProductImageDiameter, kUDProductImageDiameter);
+            //咨询对象标题
+            NSString *productTitle = [message objectForKey:@"productTitle"];
+            if (![UdeskTools isBlankString:productTitle]) {
+                self.productTitle = productTitle;
+                CGFloat productTitleX = self.productImageFrame.origin.x+self.productImageFrame.size.width+kUDProductTitleToProductImageHorizontalEdgeSpacing;
+                self.productTitleFrame = CGRectMake(productTitleX, kUDProductTitleToVerticalEdgeSpacing, UD_SCREEN_WIDTH-productTitleX-kUDProductTitleToProductImageHorizontalEdgeSpacing, kUDProductTitleHeight);
+            }
+            
+            //咨询对象副标题
+            NSString *productDetail = [message objectForKey:@"productDetail"];
+            if (![UdeskTools isBlankString:productDetail]) {
+                self.productDetail = productDetail;
+                self.productDetailFrame = CGRectMake(CGRectGetMinX(self.productTitleFrame), self.productTitleFrame.origin.y+self.productTitleFrame.size.height+ kUDProductDetailToTitleVerticalEdgeSpacing, self.productTitleFrame.size.width/2, kUDProductDetailHeight);
+            }
+            
+            //咨询对象发送按钮
+            if ([UdeskSDKConfig sharedConfig].productSendText) {
+                self.productSendText = [UdeskSDKConfig sharedConfig].productSendText;
+            }
+            else {
+                self.productSendText = getUDLocalizedString(@"udesk_send_link");
+            }
+            
+            self.productSendFrame = CGRectMake(UD_SCREEN_WIDTH-kUDProductSendButtonWidth-kUDProductSendButtonToRightHorizontalEdgeSpacing, self.productTitleFrame.origin.y+self.productTitleFrame.size.height+kUDProductSendButtonToTitleVerticalEdgeSpacing, kUDProductSendButtonWidth, kUDProductSendButtonHeight);
+            
+            self.productFrame = CGRectMake(0, 10, UD_SCREEN_WIDTH, kUDProductHeight);
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
         }
-        
-        //咨询对象标题
-        NSString *productTitle = [message objectForKey:@"productTitle"];
-        if (![UdeskTools isBlankString:productTitle]) {
-            self.productTitle = productTitle;
-            CGFloat productTitleX = self.productImageFrame.origin.x+self.productImageFrame.size.width+kUDProductTitleToProductImageHorizontalEdgeSpacing;
-            self.productTitleFrame = CGRectMake(productTitleX, kUDProductTitleToVerticalEdgeSpacing, UD_SCREEN_WIDTH-productTitleX-kUDProductTitleToProductImageHorizontalEdgeSpacing, kUDProductTitleHeight);
-        }
-        
-        //咨询对象副标题
-        NSString *productDetail = [message objectForKey:@"productDetail"];
-        if (![UdeskTools isBlankString:productDetail]) {
-            self.productDetail = productDetail;
-            self.productDetailFrame = CGRectMake(CGRectGetMinX(self.productTitleFrame), self.productTitleFrame.origin.y+self.productTitleFrame.size.height+ kUDProductDetailToTitleVerticalEdgeSpacing, self.productTitleFrame.size.width/2, kUDProductDetailHeight);
-        }
-        
-        //咨询对象发送按钮
-        if ([UdeskSDKConfig sharedConfig].productSendText) {
-            self.productSendText = [UdeskSDKConfig sharedConfig].productSendText;
-        }
-        else {
-            self.productSendText = getUDLocalizedString(@"udesk_send_link");
-        }
-        
-        self.productSendFrame = CGRectMake(UD_SCREEN_WIDTH-kUDProductSendButtonWidth-kUDProductSendButtonToRightHorizontalEdgeSpacing, self.productTitleFrame.origin.y+self.productTitleFrame.size.height+kUDProductSendButtonToTitleVerticalEdgeSpacing, kUDProductSendButtonWidth, kUDProductSendButtonHeight);
-        
-        self.productFrame = CGRectMake(0, 10, UD_SCREEN_WIDTH, kUDProductHeight);
     }
     return self;
 }

@@ -14,7 +14,7 @@
 #import "UdeskFoundationMacro.h"
 
 @implementation UdeskAgentSurvey {
-
+    
     UdeskAlertController *_optionsAlert;
     UdeskAlertController *_unKnownAlert;
     UdeskOverlayTransitioningDelegate *_transitioningDelegate;
@@ -32,93 +32,111 @@
 
 - (void)showAgentSurveyAlertViewWithAgentId:(NSString *)agentId
                                  completion:(void(^)())completion {
-
+    
     [UdeskManager getSurveyOptions:^(id responseObject, NSError *error) {
         
-        if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+        @try {
             
-            //已经弹出不用再弹
-            if (_optionsAlert) {
-                return ;
-            }
-            //解析数据
-            NSDictionary *result = [responseObject objectForKey:@"result"];
-            NSString *title = [result objectForKey:@"title"];
-            NSString *desc = [result objectForKey:@"desc"];
-            id options = [result objectForKey:@"options"];
-            
-            if ([options isKindOfClass:[NSArray class]]) {
-                NSArray *optionsArray = (NSArray *)options;
-                if (optionsArray.count > 0) {
-                    //根据返回的信息填充Alert数据
-                    _optionsAlert = [UdeskAlertController alertControllerWithTitle:title message:desc preferredStyle:UDAlertControllerStyleAlert];
-                    
-                    //遍历选项数组
-                    for (NSDictionary *option in options) {
-                        //依次添加选项
-                        [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:[option objectForKey:@"text"] style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
-                            
-                            _optionsAlert = nil;
-                            //根据点击的选项 提交到Udesk
-                            [UdeskManager survetVoteWithAgentId:agentId withOptionId:[option objectForKey:@"id"] completion:^(id responseObject, NSError *error) {
+            if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
+                
+                //已经弹出不用再弹
+                if (_optionsAlert) {
+                    return ;
+                }
+                //解析数据
+                NSDictionary *result = [responseObject objectForKey:@"result"];
+                NSString *title = [result objectForKey:@"title"];
+                NSString *desc = [result objectForKey:@"desc"];
+                id options = [result objectForKey:@"options"];
+                
+                if ([options isKindOfClass:[NSArray class]]) {
+                    NSArray *optionsArray = (NSArray *)options;
+                    if (optionsArray.count > 0) {
+                        //根据返回的信息填充Alert数据
+                        _optionsAlert = [UdeskAlertController alertControllerWithTitle:title message:desc preferredStyle:UDAlertControllerStyleAlert];
+                        
+                        //遍历选项数组
+                        for (NSDictionary *option in options) {
+                            //依次添加选项
+                            [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:[option objectForKey:@"text"] style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
                                 
-                                if (completion) {
-                                    completion();
-                                }
-                            }];
+                                _optionsAlert = nil;
+                                //根据点击的选项 提交到Udesk
+                                [UdeskManager survetVoteWithAgentId:agentId withOptionId:[option objectForKey:@"id"] completion:^(id responseObject, NSError *error) {
+                                    
+                                    if (completion) {
+                                        completion();
+                                    }
+                                }];
+                            }]];
+                        }
+                        
+                        [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+                            _optionsAlert = nil;
                         }]];
+                        
+                        //展示Alert
+                        [self presentViewController:_optionsAlert];
+                    }
+                    else {
+                        [self showNotSurvey];
                     }
                     
-                    [_optionsAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
-                        _optionsAlert = nil;
-                    }]];
-                    
-                    //展示Alert
-                    [self presentViewController:_optionsAlert];
                 }
                 else {
                     [self showNotSurvey];
                 }
-                
             }
-            else {
-                [self showNotSurvey];
-            }
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
         }
     }];
 }
 
 - (void)showNotSurvey {
     
-    //已经弹出不用再弹
-    if (_unKnownAlert) {
-        return;
+    @try {
+        
+        //已经弹出不用再弹
+        if (_unKnownAlert) {
+            return;
+        }
+        _unKnownAlert = [UdeskAlertController alertControllerWithTitle:@"提示" message:@"没有满意度调查选项内容,请联系管理员添加！" preferredStyle:UDAlertControllerStyleAlert];
+        [_unKnownAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+            _unKnownAlert = nil;
+        }]];
+        
+        //展示Alert
+        [self presentViewController:_unKnownAlert];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    _unKnownAlert = [UdeskAlertController alertControllerWithTitle:@"提示" message:@"没有满意度调查选项内容,请联系管理员添加！" preferredStyle:UDAlertControllerStyleAlert];
-    [_unKnownAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
-        _unKnownAlert = nil;
-    }]];
-    
-    //展示Alert
-    [self presentViewController:_unKnownAlert];
 }
 
 - (void)presentViewController:(UdeskAlertController *)alert {
     
-    if (!alert) return;
-    
-    if (ud_isIOS7 && [[[UIDevice currentDevice]systemVersion] floatValue] < 8.0) {
-        _transitioningDelegate = [[UdeskOverlayTransitioningDelegate alloc] init];
-        alert.modalPresentationStyle = UIModalPresentationCustom;
-        alert.transitioningDelegate = _transitioningDelegate;
+    @try {
+        
+        if (!alert) return;
+        
+        if (ud_isIOS7 && [[[UIDevice currentDevice]systemVersion] floatValue] < 8.0) {
+            _transitioningDelegate = [[UdeskOverlayTransitioningDelegate alloc] init];
+            alert.modalPresentationStyle = UIModalPresentationCustom;
+            alert.transitioningDelegate = _transitioningDelegate;
+        }
+        //展示Alert
+        [[self currentViewController] presentViewController:alert animated:YES completion:nil];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    //展示Alert
-    [[self currentViewController] presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)checkHasSurveyWithAgentId:(NSString *)agentId
                        completion:(void (^)(NSString *hasSurvey))completion {
-
+    
     if (_optionsAlert==nil) {
         [UdeskManager checkHasSurveyWithAgentId:agentId completion:completion];
     }

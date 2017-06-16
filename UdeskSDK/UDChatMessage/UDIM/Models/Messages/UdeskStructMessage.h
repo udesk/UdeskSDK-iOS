@@ -8,6 +8,7 @@
 
 #import "UdeskBaseMessage.h"
 #import "UdeskBaseModel.h"
+#import "UdeskStructView.h"
 
 /** 边距 */
 static CGFloat const kUDStructPadding = 10.0;
@@ -39,6 +40,8 @@ static CGFloat const kUDStructViewWidth = 250.0;
 @property (nonatomic, assign, readonly) CGRect     avatarFrame;
 /** 结构消息Point */
 @property (nonatomic, assign, readonly) CGPoint    structPoint;
+/** 结构消息 */
+@property (nonatomic, strong          ) UdeskStructView *structContentView;
 
 - (instancetype)initWithUdeskMessage:(UdeskMessage *)message;
 

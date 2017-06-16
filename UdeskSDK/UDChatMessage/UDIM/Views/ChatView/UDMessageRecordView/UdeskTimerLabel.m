@@ -238,33 +238,39 @@
 
 -(void)start{
     
-    if (_timer) {
-        [_timer invalidate];
-        _timer = nil;
-    }
-    
-    if ([self.timeFormat rangeOfString:@"SS"].location != NSNotFound) {
-        _timer = [NSTimer scheduledTimerWithTimeInterval:kDefaultFireIntervalHighUse target:self selector:@selector(updateLabel) userInfo:nil repeats:YES];
-    }else{
-        _timer = [NSTimer scheduledTimerWithTimeInterval:kDefaultFireIntervalNormal target:self selector:@selector(updateLabel) userInfo:nil repeats:YES];
-    }
-    [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
-    
-    if(startCountDate == nil){
-        startCountDate = [NSDate date];
+    @try {
         
-        if (self.timerType == UDTimerLabelTypeStopWatch && timeUserValue > 0) {
-            startCountDate = [startCountDate dateByAddingTimeInterval:-timeUserValue];
+        if (_timer) {
+            [_timer invalidate];
+            _timer = nil;
         }
+        
+        if ([self.timeFormat rangeOfString:@"SS"].location != NSNotFound) {
+            _timer = [NSTimer scheduledTimerWithTimeInterval:kDefaultFireIntervalHighUse target:self selector:@selector(updateLabel) userInfo:nil repeats:YES];
+        }else{
+            _timer = [NSTimer scheduledTimerWithTimeInterval:kDefaultFireIntervalNormal target:self selector:@selector(updateLabel) userInfo:nil repeats:YES];
+        }
+        [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
+        
+        if(startCountDate == nil){
+            startCountDate = [NSDate date];
+            
+            if (self.timerType == UDTimerLabelTypeStopWatch && timeUserValue > 0) {
+                startCountDate = [startCountDate dateByAddingTimeInterval:-timeUserValue];
+            }
+        }
+        if(pausedTime != nil){
+            NSTimeInterval countedTime = [pausedTime timeIntervalSinceDate:startCountDate];
+            startCountDate = [[NSDate date] dateByAddingTimeInterval:-countedTime];
+            pausedTime = nil;
+        }
+        
+        _counting = YES;
+        [_timer fire];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    if(pausedTime != nil){
-        NSTimeInterval countedTime = [pausedTime timeIntervalSinceDate:startCountDate];
-        startCountDate = [[NSDate date] dateByAddingTimeInterval:-countedTime];
-        pausedTime = nil;
-    }
-    
-    _counting = YES;
-    [_timer fire];
 }
 
 #if NS_BLOCKS_AVAILABLE
@@ -301,112 +307,118 @@
 
 -(void)updateLabel{
 
-    NSTimeInterval timeDiff = [[NSDate date] timeIntervalSinceDate:startCountDate];
-    NSDate *timeToShow = [NSDate date];
-    BOOL timerEnded = false;
-    
-    /***MZTimerLabelTypeStopWatch Logic***/
-    
-    if(_timerType == UDTimerLabelTypeStopWatch){
+    @try {
+
+        NSTimeInterval timeDiff = [[NSDate date] timeIntervalSinceDate:startCountDate];
+        NSDate *timeToShow = [NSDate date];
+        BOOL timerEnded = false;
         
-        if (_counting) {
-            timeToShow = [date1970 dateByAddingTimeInterval:timeDiff];
-        }else{
-            timeToShow = [date1970 dateByAddingTimeInterval:(!startCountDate)?0:timeDiff];
-        }
+        /***MZTimerLabelTypeStopWatch Logic***/
         
-        if([_delegate respondsToSelector:@selector(timerLabel:countingTo:timertype:)]){
-            [_delegate timerLabel:self countingTo:timeDiff timertype:_timerType];
-        }
-    
-    }else{
-        
-    /***MZTimerLabelTypeTimer Logic***/
-        
-        if (_counting) {
+        if(_timerType == UDTimerLabelTypeStopWatch){
+            
+            if (_counting) {
+                timeToShow = [date1970 dateByAddingTimeInterval:timeDiff];
+            }else{
+                timeToShow = [date1970 dateByAddingTimeInterval:(!startCountDate)?0:timeDiff];
+            }
             
             if([_delegate respondsToSelector:@selector(timerLabel:countingTo:timertype:)]){
-                NSTimeInterval timeLeft = timeUserValue - timeDiff;
-                [_delegate timerLabel:self countingTo:timeLeft timertype:_timerType];
-            }
-                        
-            if(timeDiff >= timeUserValue){
-                [self pause];
-                timeToShow = [date1970 dateByAddingTimeInterval:0];
-                startCountDate = nil;
-                timerEnded = true;
-            }else{
-                timeToShow = [timeToCountOff dateByAddingTimeInterval:(timeDiff*-1)]; //added 0.999 to make it actually counting the whole first second
+                [_delegate timerLabel:self countingTo:timeDiff timertype:_timerType];
             }
             
         }else{
-            timeToShow = timeToCountOff;
-        }
-    }
-
-    //setting text value
-    if ([_delegate respondsToSelector:@selector(timerLabel:customTextToDisplayAtTime:)]) {
-        NSTimeInterval atTime = (_timerType == UDTimerLabelTypeStopWatch) ? timeDiff : ((timeUserValue - timeDiff) < 0 ? 0 : (timeUserValue - timeDiff));
-        NSString *customtext = [_delegate timerLabel:self customTextToDisplayAtTime:atTime];
-        if ([customtext length]) {
-            self.timeLabel.text = customtext;
-        }else{
-            self.timeLabel.text = [self.dateFormatter stringFromDate:timeToShow];
-        }
-    }else{
-        
-        if(_shouldCountBeyondHHLimit) {
-            //0.4.7 added---start//
-            NSString *originalTimeFormat = _timeFormat;
-            NSString *beyondFormat = [_timeFormat stringByReplacingOccurrencesOfString:@"HH" withString:kHourFormatReplace];
-            beyondFormat = [beyondFormat stringByReplacingOccurrencesOfString:@"H" withString:kHourFormatReplace];
-            self.dateFormatter.dateFormat = beyondFormat;
             
-            int hours = (_timerType == UDTimerLabelTypeStopWatch)? ([self getTimeCounted] / 3600) : ([self getTimeRemaining] / 3600);
-            NSString *formmattedDate = [self.dateFormatter stringFromDate:timeToShow];
-            NSString *beyondedDate = [formmattedDate stringByReplacingOccurrencesOfString:kHourFormatReplace withString:[NSString stringWithFormat:@"%02d",hours]];
+            /***MZTimerLabelTypeTimer Logic***/
             
-            self.timeLabel.text = beyondedDate;
-            self.dateFormatter.dateFormat = originalTimeFormat;
-            //0.4.7 added---endb//
-        }else{
-            if(self.textRange.length > 0){
-                if(self.attributedDictionaryForTextInRange){
-                    
-                    NSAttributedString *attrTextInRange = [[NSAttributedString alloc] initWithString:[self.dateFormatter stringFromDate:timeToShow] attributes:self.attributedDictionaryForTextInRange];
-                    
-                    NSMutableAttributedString *attributedString;
-                    attributedString = [[NSMutableAttributedString alloc]initWithString:self.text];
-                    [attributedString replaceCharactersInRange:self.textRange withAttributedString:attrTextInRange];
-                    self.timeLabel.attributedText = attributedString;
-        
-                } else {
-                    NSString *labelText = [self.text stringByReplacingCharactersInRange:self.textRange withString:[self.dateFormatter stringFromDate:timeToShow]];
-                    self.timeLabel.text = labelText;
+            if (_counting) {
+                
+                if([_delegate respondsToSelector:@selector(timerLabel:countingTo:timertype:)]){
+                    NSTimeInterval timeLeft = timeUserValue - timeDiff;
+                    [_delegate timerLabel:self countingTo:timeLeft timertype:_timerType];
                 }
-            } else {
+                
+                if(timeDiff >= timeUserValue){
+                    [self pause];
+                    timeToShow = [date1970 dateByAddingTimeInterval:0];
+                    startCountDate = nil;
+                    timerEnded = true;
+                }else{
+                    timeToShow = [timeToCountOff dateByAddingTimeInterval:(timeDiff*-1)]; //added 0.999 to make it actually counting the whole first second
+                }
+                
+            }else{
+                timeToShow = timeToCountOff;
+            }
+        }
+        
+        //setting text value
+        if ([_delegate respondsToSelector:@selector(timerLabel:customTextToDisplayAtTime:)]) {
+            NSTimeInterval atTime = (_timerType == UDTimerLabelTypeStopWatch) ? timeDiff : ((timeUserValue - timeDiff) < 0 ? 0 : (timeUserValue - timeDiff));
+            NSString *customtext = [_delegate timerLabel:self customTextToDisplayAtTime:atTime];
+            if ([customtext length]) {
+                self.timeLabel.text = customtext;
+            }else{
                 self.timeLabel.text = [self.dateFormatter stringFromDate:timeToShow];
             }
-        }
-    }
-    
-    //0.5.1 moved below to the bottom
-    if(timerEnded) {
-        if([_delegate respondsToSelector:@selector(timerLabel:finshedCountDownTimerWithTime:)]){
-            [_delegate timerLabel:self finshedCountDownTimerWithTime:timeUserValue];
+        }else{
+            
+            if(_shouldCountBeyondHHLimit) {
+                //0.4.7 added---start//
+                NSString *originalTimeFormat = _timeFormat;
+                NSString *beyondFormat = [_timeFormat stringByReplacingOccurrencesOfString:@"HH" withString:kHourFormatReplace];
+                beyondFormat = [beyondFormat stringByReplacingOccurrencesOfString:@"H" withString:kHourFormatReplace];
+                self.dateFormatter.dateFormat = beyondFormat;
+                
+                int hours = (_timerType == UDTimerLabelTypeStopWatch)? ([self getTimeCounted] / 3600) : ([self getTimeRemaining] / 3600);
+                NSString *formmattedDate = [self.dateFormatter stringFromDate:timeToShow];
+                NSString *beyondedDate = [formmattedDate stringByReplacingOccurrencesOfString:kHourFormatReplace withString:[NSString stringWithFormat:@"%02d",hours]];
+                
+                self.timeLabel.text = beyondedDate;
+                self.dateFormatter.dateFormat = originalTimeFormat;
+                //0.4.7 added---endb//
+            }else{
+                if(self.textRange.length > 0){
+                    if(self.attributedDictionaryForTextInRange){
+                        
+                        NSAttributedString *attrTextInRange = [[NSAttributedString alloc] initWithString:[self.dateFormatter stringFromDate:timeToShow] attributes:self.attributedDictionaryForTextInRange];
+                        
+                        NSMutableAttributedString *attributedString;
+                        attributedString = [[NSMutableAttributedString alloc]initWithString:self.text];
+                        [attributedString replaceCharactersInRange:self.textRange withAttributedString:attrTextInRange];
+                        self.timeLabel.attributedText = attributedString;
+                        
+                    } else {
+                        NSString *labelText = [self.text stringByReplacingCharactersInRange:self.textRange withString:[self.dateFormatter stringFromDate:timeToShow]];
+                        self.timeLabel.text = labelText;
+                    }
+                } else {
+                    self.timeLabel.text = [self.dateFormatter stringFromDate:timeToShow];
+                }
+            }
         }
         
+        //0.5.1 moved below to the bottom
+        if(timerEnded) {
+            if([_delegate respondsToSelector:@selector(timerLabel:finshedCountDownTimerWithTime:)]){
+                [_delegate timerLabel:self finshedCountDownTimerWithTime:timeUserValue];
+            }
+            
 #if NS_BLOCKS_AVAILABLE
-        if(_endedBlock != nil){
-            _endedBlock(timeUserValue);
-        }
+            if(_endedBlock != nil){
+                _endedBlock(timeUserValue);
+            }
 #endif
-        if(_resetTimerAfterFinish){
-            [self reset];
+            if(_resetTimerAfterFinish){
+                [self reset];
+            }
+            
         }
         
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
 }
 
 @end

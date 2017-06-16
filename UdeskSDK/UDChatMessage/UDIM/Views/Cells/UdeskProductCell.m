@@ -38,28 +38,34 @@
 
 - (void)updateCellWithMessage:(id)message {
 
-    if ([message isKindOfClass:[UdeskProductMessage class]]) {
+    @try {
         
-        UdeskProductMessage *productMessage = (UdeskProductMessage *)message;
-        _productMessage = productMessage;
-        
-        if (![UdeskTools isBlankString:productMessage.productTitle]) {
-            self.productTitleLabel.text = productMessage.productTitle;
-        }
-        
-        if (![UdeskTools isBlankString:productMessage.productDetail]) {
-            self.productDetailLabel.text = productMessage.productDetail;
-        }
-        if (productMessage.productImage) {
-            if ([productMessage.productImage isKindOfClass:[UIImage class]]) {
-                self.productImageView.image = productMessage.productImage;
+        if ([message isKindOfClass:[UdeskProductMessage class]]) {
+            
+            UdeskProductMessage *productMessage = (UdeskProductMessage *)message;
+            _productMessage = productMessage;
+            
+            if (![UdeskTools isBlankString:productMessage.productTitle]) {
+                self.productTitleLabel.text = productMessage.productTitle;
             }
-            else {
-                self.productImageView.image = [UIImage ud_defaultLoadingImage];
+            
+            if (![UdeskTools isBlankString:productMessage.productDetail]) {
+                self.productDetailLabel.text = productMessage.productDetail;
             }
+            if (productMessage.productImage) {
+                if ([productMessage.productImage isKindOfClass:[UIImage class]]) {
+                    self.productImageView.image = productMessage.productImage;
+                }
+                else {
+                    self.productImageView.image = [UIImage ud_defaultLoadingImage];
+                }
+            }
+            
+            [self.productSendButton setTitle:productMessage.productSendText forState:UIControlStateNormal];
         }
-        
-        [self.productSendButton setTitle:productMessage.productSendText forState:UIControlStateNormal];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
 }
 

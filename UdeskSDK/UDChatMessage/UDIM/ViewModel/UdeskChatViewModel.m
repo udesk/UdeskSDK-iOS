@@ -96,25 +96,30 @@
 }
 
 - (void)showAlertNotWorkTime {
-
-    if (self.sdkSetting) {
-     
-        if (self.sdkSetting.enableWebImFeedback.boolValue) {
-#warning 这里以后需要做成用户在sdk端可自定义的
-            NSString *no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
-            [self.chatAlert showAgentNotOnlineAlertWithMessage:no_reply_hint enableWebImFeedback:YES];
+    
+    @try {
+        
+        if (self.sdkSetting) {
+            
+            if (self.sdkSetting.enableWebImFeedback.boolValue) {
+                NSString *no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
+                [self.chatAlert showAgentNotOnlineAlertWithMessage:no_reply_hint enableWebImFeedback:YES];
+            }
+            else {
+                
+                NSString *no_reply_hint = [NSString stringWithFormat:@"%@",self.sdkSetting.noReplyHint];
+                if (!no_reply_hint || no_reply_hint.length <= 0) {
+                    no_reply_hint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
+                }
+                [self.chatAlert showAgentNotOnlineAlertWithMessage:no_reply_hint enableWebImFeedback:NO];
+            }
         }
         else {
-            
-            NSString *no_reply_hint = [NSString stringWithFormat:@"%@",self.sdkSetting.noReplyHint];
-            if (!no_reply_hint || no_reply_hint.length <= 0) {
-                no_reply_hint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
-            }
-            [self.chatAlert showAgentNotOnlineAlertWithMessage:no_reply_hint enableWebImFeedback:NO];
+            [self.chatAlert showAgentNotOnlineAlert];
         }
-    }
-    else {
-        [self.chatAlert showAgentNotOnlineAlert];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
 }
 
@@ -203,26 +208,32 @@
     
     [UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:[NSDate date] messagesNumber:20 result:^(NSArray *messagesArray) {
         
-        if (messagesArray.count==20) {
-            self.isShowRefresh = YES;
-        }
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        @try {
             
-            if (messagesArray.count) {
-                self.messageArray = [self convertToChatViewMessageWithUdeskMessages:messagesArray];
+            if (messagesArray.count==20) {
+                self.isShowRefresh = YES;
             }
-            
-            //咨询对象
-            if ([UdeskSDKConfig sharedConfig].productDictionary) {
-                UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithProductMessage:[UdeskSDKConfig sharedConfig].productDictionary];
-                if (productMessage) {
-                    productMessage.delegate = self;
-                    [self.messageArray addObject:productMessage];
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                
+                if (messagesArray.count) {
+                    self.messageArray = [self convertToChatViewMessageWithUdeskMessages:messagesArray];
                 }
-            }
-            //更新UI
-            [self updateContent];
-        });
+                
+                //咨询对象
+                if ([UdeskSDKConfig sharedConfig].productDictionary) {
+                    UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithProductMessage:[UdeskSDKConfig sharedConfig].productDictionary];
+                    if (productMessage) {
+                        productMessage.delegate = self;
+                        [self.messageArray addObject:productMessage];
+                    }
+                }
+                //更新UI
+                [self updateContent];
+            });
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
+        }
         
     }];
     
@@ -231,66 +242,70 @@
 #pragma mark - 加载更多DB消息
 - (void)pullMoreDateBaseMessage {
     
-    UdeskChatMessage *lastMessage = self.messageArray.firstObject;
-    //根据最后列表最后一条消息的时间获取历史记录
-    [UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:lastMessage.date messagesNumber:20 result:^(NSArray *messagesArray) {
+    @try {
         
-        if (messagesArray.count) {
-            if (messagesArray.count>19) {
-                self.isShowRefresh = YES;
-            }
-            else {
-                self.isShowRefresh = NO;
-            }
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if (!self.messageArray) {
+            return;
+        }
+        UdeskChatMessage *lastMessage = self.messageArray.firstObject;
+        //根据最后列表最后一条消息的时间获取历史记录
+        [UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:lastMessage.date messagesNumber:20 result:^(NSArray *messagesArray) {
+            
+            @try {
                 
                 if (messagesArray.count) {
-                    
-                    NSRange range = NSMakeRange(0, [messagesArray count]);
-                    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
-                    
-                    NSArray *moreMessageArray = [self convertToChatViewMessageWithUdeskMessages:messagesArray];
-                    if (moreMessageArray.count) {
-                        [self.messageArray insertObjects:moreMessageArray atIndexes:indexSet];
-                        //更新UI
-                        [self updateContent];
+                    if (messagesArray.count>19) {
+                        self.isShowRefresh = YES;
                     }
+                    else {
+                        self.isShowRefresh = NO;
+                    }
+                    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                        
+                        if (messagesArray.count) {
+                            
+                            NSRange range = NSMakeRange(0, [messagesArray count]);
+                            NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+                            
+                            NSArray *moreMessageArray = [self convertToChatViewMessageWithUdeskMessages:messagesArray];
+                            if (moreMessageArray.count) {
+                                [self.messageArray insertObjects:moreMessageArray atIndexes:indexSet];
+                                //更新UI
+                                [self updateContent];
+                            }
+                        }
+                        
+                    });
                 }
-                
-            });
-        }
-        else {
-            //没有数据不展示下拉刷新按钮
-            self.isShowRefresh = NO;
-        }
-    }];
-    
+                else {
+                    //没有数据不展示下拉刷新按钮
+                    self.isShowRefresh = NO;
+                }
+            } @catch (NSException *exception) {
+                NSLog(@"%@",exception);
+            } @finally {
+            }
+        }];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
 }
 
 //把UdeskMessage转换成UdeskChatMessage
 - (NSMutableArray *)convertToChatViewMessageWithUdeskMessages:(NSArray *)messagesArray {
     
-    NSMutableArray *toMessages = [[NSMutableArray alloc] init];
-    
-    if (messagesArray.count) {
+    @try {
         
-        for (int i = 0; i<messagesArray.count; i++) {
+        NSMutableArray *toMessages = [[NSMutableArray alloc] init];
+        
+        if (messagesArray.count) {
             
-            UdeskMessage *message = messagesArray[i];
-            
-            if(i==0 || i == messagesArray.count-1){
+            for (int i = 0; i<messagesArray.count; i++) {
                 
-                id chatMessage = [self addMessage:message withDisplayTimestamp:YES];
-                if (chatMessage) {
-                    [toMessages addObject:chatMessage];
-                }
-            }
-            else{
+                UdeskMessage *message = messagesArray[i];
                 
-                UdeskMessage *newMessage = [messagesArray objectAtIndexCheck:i];
-                UdeskMessage *previousMessage=[messagesArray objectAtIndexCheck:i-1];
-                NSInteger interval=[newMessage.timestamp timeIntervalSinceDate:previousMessage.timestamp];
-                if(interval>60*3){
+                if(i==0 || i == messagesArray.count-1){
                     
                     id chatMessage = [self addMessage:message withDisplayTimestamp:YES];
                     if (chatMessage) {
@@ -299,16 +314,32 @@
                 }
                 else{
                     
-                    id chatMessage = [self addMessage:message withDisplayTimestamp:NO];
-                    if (chatMessage) {
-                        [toMessages addObject:chatMessage];
+                    UdeskMessage *newMessage = [messagesArray objectAtIndexCheck:i];
+                    UdeskMessage *previousMessage=[messagesArray objectAtIndexCheck:i-1];
+                    NSInteger interval=[newMessage.timestamp timeIntervalSinceDate:previousMessage.timestamp];
+                    if(interval>60*3){
+                        
+                        id chatMessage = [self addMessage:message withDisplayTimestamp:YES];
+                        if (chatMessage) {
+                            [toMessages addObject:chatMessage];
+                        }
+                    }
+                    else{
+                        
+                        id chatMessage = [self addMessage:message withDisplayTimestamp:NO];
+                        if (chatMessage) {
+                            [toMessages addObject:chatMessage];
+                        }
                     }
                 }
             }
         }
+        
+        return toMessages;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    return toMessages;
 }
 
 - (id)addMessage:(UdeskMessage *)message withDisplayTimestamp:(BOOL)displayTimestamp {
@@ -321,7 +352,6 @@
     }
     else if (message.messageType == UDMessageContentTypeStruct) {
         UdeskStructMessage *strucrtMessage = [[UdeskStructMessage alloc] initWithUdeskMessage:message];
-        strucrtMessage.delegate = self;
         if (strucrtMessage) {
             return strucrtMessage;
         }
@@ -338,20 +368,26 @@
 //检查是否需要显示时间
 - (BOOL)addMessageDateAtLastWithNowDate:(NSDate *)date {
     
-    if (self.messageArray.count) {
+    @try {
         
-        UdeskBaseMessage *message = self.messageArray.lastObject;
-        NSDate *date = message.date;
-        
-        NSInteger interval = [date timeIntervalSinceDate:date];
-        if(interval>60*3){
-            return YES;
-        }else{
-            return NO;
+        if (self.messageArray.count) {
+            
+            UdeskBaseMessage *message = self.messageArray.lastObject;
+            NSDate *date = message.date;
+            
+            NSInteger interval = [date timeIntervalSinceDate:date];
+            if(interval>60*3){
+                return YES;
+            }else{
+                return NO;
+            }
         }
-    }
-    else {
-        return YES;
+        else {
+            return YES;
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
 }
 //UdeskMessage转换成UdeskChatMessage
@@ -366,28 +402,38 @@
 #pragma mark - UdeskChatMessageDelegate
 - (void)didUpdateCellDataWithMessageId:(NSString *)messageId {
     
-    if ([UdeskTools isBlankString:messageId]) {
-        return;
+    @try {
+        
+        if ([UdeskTools isBlankString:messageId]) {
+            return;
+        }
+        
+        //获取又更新的cell的index
+        NSInteger index = [self getIndexOfCellWithMessageId:messageId];
+        if (index < 0) {
+            return;
+        }
+        [self updateCellWithIndex:index];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    //获取又更新的cell的index
-    NSInteger index = [self getIndexOfCellWithMessageId:messageId];
-    if (index < 0) {
-        return;
-    }
-    [self updateCellWithIndex:index];
 }
 
 - (NSInteger)getIndexOfCellWithMessageId:(NSString *)messageId {
     
-    for (NSInteger index=0; index<self.messageArray.count; index++) {
-        
-        UdeskBaseMessage *message = [self.messageArray objectAtIndexCheck:index];
-        if ([message.messageId isEqualToString:messageId]) {
+    @try {
+
+        NSArray *array = [self.messageArray valueForKey:@"messageId"];
+        if ([array containsObject:messageId]) {
+            NSInteger index = [array indexOfObject:messageId];
             return index;
         }
+        return -1;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    return -1;
 }
 
 - (void)updateCellWithIndex:(NSInteger)index {
@@ -492,33 +538,38 @@
 #pragma mark - UDManagerDelegate
 - (void)didReceiveMessages:(UdeskMessage *)message {
     
-    if ([UdeskTools isBlankString:message.content]) {
-        return;
-    }
-    
-    BOOL displayTimestamp = [self addMessageDateAtLastWithNowDate:[NSDate date]];
-    
-    if (message.messageType == UDMessageContentTypeRedirect) {
-        UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
-        if (tipsMessage) {
-            [self.messageArray addObject:tipsMessage];
+    @try {
+        
+        if ([UdeskTools isBlankString:message.content]) {
+            return;
         }
-    }
-    else if (message.messageType == UDMessageContentTypeStruct) {
-        UdeskStructMessage *structMessage = [[UdeskStructMessage alloc] initWithUdeskMessage:message];
-        structMessage.delegate = self;
-        if (structMessage) {
-            [self.messageArray addObject:structMessage];
+        
+        BOOL displayTimestamp = [self addMessageDateAtLastWithNowDate:[NSDate date]];
+        
+        if (message.messageType == UDMessageContentTypeRedirect) {
+            UdeskTipsMessage *tipsMessage = [[UdeskTipsMessage alloc] initWithUdeskMessage:message];
+            if (tipsMessage) {
+                [self.messageArray addObject:tipsMessage];
+            }
         }
-    }
-    else {
-        UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:displayTimestamp];
-        if (chatMessage) {
-            [self.messageArray addObject:chatMessage];
+        else if (message.messageType == UDMessageContentTypeStruct) {
+            UdeskStructMessage *structMessage = [[UdeskStructMessage alloc] initWithUdeskMessage:message];
+            if (structMessage) {
+                [self.messageArray addObject:structMessage];
+            }
         }
+        else {
+            UdeskChatMessage *chatMessage = [self chatMessageWithModel:message withDisplayTimestamp:displayTimestamp];
+            if (chatMessage) {
+                [self.messageArray addObject:chatMessage];
+            }
+        }
+        
+        [self updateContent];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    [self updateContent];
 }
 
 //接受到转接
@@ -530,39 +581,45 @@
 //接收客服状态
 - (void)didReceivePresence:(NSDictionary *)presence {
     
-    NSString *statusType = [presence objectForKey:@"type"];
-    UDAgentStatusType agentCode = UDAgentStatusResultOffline;
-    NSString  *agentMessage = @"unavailable";
-    if([statusType isEqualToString:@"over"]) {
-
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"agentOver" object:nil];
-
-        agentCode = UDAgentConversationOver;
-        agentMessage = getUDLocalizedString(@"udesk_chat_end");
-    }
-    else if ([statusType isEqualToString:@"available"]) {
+    @try {
         
-        agentCode = UDAgentStatusResultOnline;
-        agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_online")];
+        NSString *statusType = [presence objectForKey:@"type"];
+        UDAgentStatusType agentCode = UDAgentStatusResultOffline;
+        NSString  *agentMessage = @"unavailable";
+        if([statusType isEqualToString:@"over"]) {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"agentOver" object:nil];
+            
+            agentCode = UDAgentConversationOver;
+            agentMessage = getUDLocalizedString(@"udesk_chat_end");
+        }
+        else if ([statusType isEqualToString:@"available"]) {
+            
+            agentCode = UDAgentStatusResultOnline;
+            agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_online")];
+            
+        }
+        else if ([statusType isEqualToString:@"unavailable"]) {
+            
+            agentCode = UDAgentStatusResultOffline;
+            agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_offline")];
+        }
         
-    }
-    else if ([statusType isEqualToString:@"unavailable"]) {
         
-        agentCode = UDAgentStatusResultOffline;
-        agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_offline")];
-    }
-    
-    
-    //与上次不同的code才抛给vc
-    if (self.agentModel.code != agentCode) {
-        self.agentModel.code = agentCode;
-        self.agentModel.message = agentMessage;
-        
-        if (self.delegate) {
-            if ([self.delegate respondsToSelector:@selector(didReceiveAgentPresence:)]) {
-                [self.delegate didReceiveAgentPresence:self.agentModel];
+        //与上次不同的code才抛给vc
+        if (self.agentModel.code != agentCode) {
+            self.agentModel.code = agentCode;
+            self.agentModel.message = agentMessage;
+            
+            if (self.delegate) {
+                if ([self.delegate respondsToSelector:@selector(didReceiveAgentPresence:)]) {
+                    [self.delegate didReceiveAgentPresence:self.agentModel];
+                }
             }
         }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
 }
 
@@ -587,7 +644,6 @@
              completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
     
     if (_agentModel.code != UDAgentStatusResultOnline) {
-        
         [self showAlertViewWithAgent];
         return;
     }
@@ -677,40 +733,42 @@
 //根据客服code展示alertview
 - (void)showAlertViewWithAgent {
     
-    if (self.sdkSetting) {
+    @try {
         
-        NSString *no_reply_hint = [NSString stringWithFormat:@"%@",self.sdkSetting.noReplyHint];
-        if(self.agentModel.code == UDAgentStatusResultQueue) {
-            no_reply_hint = self.agentModel.message;
-        }
-        
-        //开启留言
-        if (self.sdkSetting.enableWebImFeedback.boolValue) {
+        if (self.sdkSetting) {
             
-#warning 这里以后需要做成用户在sdk端可自定义的
-            if (self.agentModel.code == UDAgentStatusResultOffline) {
-                no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
+            NSString *no_reply_hint = [NSString stringWithFormat:@"%@",self.sdkSetting.noReplyHint];
+            if(self.agentModel.code == UDAgentStatusResultQueue) {
+                no_reply_hint = self.agentModel.message;
             }
             
-            [self.chatAlert showChatAlertViewWithCode:self.agentModel.code andMessage:no_reply_hint enableWebImFeedback:YES];
+            //开启留言
+            if (self.sdkSetting.enableWebImFeedback.boolValue) {
+                
+                if (self.agentModel.code == UDAgentStatusResultOffline) {
+                    no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
+                }
+                [self.chatAlert showChatAlertViewWithCode:self.agentModel.code andMessage:no_reply_hint enableWebImFeedback:YES];
+                return;
+            }
+            
+            //关闭留言
+            if (self.agentModel.code == UDAgentStatusResultOffline) {
+                if (!no_reply_hint || no_reply_hint.length <= 0) {
+                    no_reply_hint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
+                }
+            }
+            
+            [self.chatAlert showChatAlertViewWithCode:self.agentModel.code andMessage:no_reply_hint enableWebImFeedback:NO];
             return;
         }
         
-        //关闭留言
-        if (self.agentModel.code == UDAgentStatusResultOffline) {
-            if (!no_reply_hint || no_reply_hint.length <= 0) {
-                no_reply_hint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
-            }
-        }
-        
-        [self.chatAlert showChatAlertViewWithCode:self.agentModel.code andMessage:no_reply_hint enableWebImFeedback:NO];
-        
-        return;
+        [self.chatAlert showChatAlertViewWithCode:self.agentModel.code andMessage:self.agentModel.message enableWebImFeedback:YES];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
-    
-    [self.chatAlert showChatAlertViewWithCode:self.agentModel.code andMessage:self.agentModel.message enableWebImFeedback:YES];
 }
-
 
 #pragma mark - 更新消息内容
 - (void)updateContent {

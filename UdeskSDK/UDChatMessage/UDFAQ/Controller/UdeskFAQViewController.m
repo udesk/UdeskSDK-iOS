@@ -152,13 +152,19 @@
     //取消点击效果
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    UdeskContentController *content = [[UdeskContentController alloc] init];
-    UdeskProblemModel *model = _problemData[indexPath.row];
-    content.articleId = model.articleId;
-    content.articlesTitle = model.subject;
-    
-    UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
-    [show presentOnViewController:self udeskViewController:content transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+    @try {
+        
+        UdeskContentController *content = [[UdeskContentController alloc] init];
+        UdeskProblemModel *model = _problemData[indexPath.row];
+        content.articleId = model.articleId;
+        content.articlesTitle = model.subject;
+        
+        UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
+        [show presentOnViewController:self udeskViewController:content transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
 }
 
 #pragma mark UISearchBarDelegate
@@ -178,23 +184,29 @@
     @udWeakify(self);
     [UdeskManager getFaqArticles:^(id responseObject, NSError *error) {
         
-        if (!error) {
+        @try {
             
-            NSMutableArray *muArray = [NSMutableArray array];
-            NSArray *contents = [responseObject objectForKey:@"contents"];
-            for (NSDictionary *dic in contents) {
-                UdeskProblemModel *model = [[UdeskProblemModel alloc] initWithContentsOfDic:dic];
-                if (model) {
-                    [muArray addObject:model];
+            if (!error) {
+                
+                NSMutableArray *muArray = [NSMutableArray array];
+                NSArray *contents = [responseObject objectForKey:@"contents"];
+                for (NSDictionary *dic in contents) {
+                    UdeskProblemModel *model = [[UdeskProblemModel alloc] initWithContentsOfDic:dic];
+                    if (model) {
+                        [muArray addObject:model];
+                    }
                 }
+                
+                @udStrongify(self);
+                self.problemData = [muArray arrayByAddingObjectsFromArray:self.problemData];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.faqTableView reloadData];
+                });
             }
-            
-            @udStrongify(self);
-            self.problemData = [muArray arrayByAddingObjectsFromArray:self.problemData];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.faqTableView reloadData];
-            });
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
         }
     }];
     

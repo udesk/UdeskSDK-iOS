@@ -23,4 +23,6 @@
 //字符串转字典
 + (id)dictionaryWithJSON:(NSString *)json;
 
++ (NSMutableArray *)getRangeStr:(NSString *)text findText:(NSString *)findText;
+
 @end
