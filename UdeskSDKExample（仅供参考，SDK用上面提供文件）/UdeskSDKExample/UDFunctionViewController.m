@@ -231,18 +231,18 @@
 - (void)faq:(id)sender {
     
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWithType:UdeskFAQ viewController:self completion:nil];
+    [chatViewManager pushUdeskInViewController:self udeskType:UdeskFAQ completion:nil];
 }
 - (void)contactUs:(id)sender {
     
     //后台配置
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWith:self completion:nil];
+    [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 - (void)ticket:(id)sender {
     
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWithType:UdeskTicket viewController:self completion:nil];
+    [chatViewManager pushUdeskInViewController:self udeskType:UdeskTicket completion:nil];
 }
 - (void)developer:(id)sender {
     

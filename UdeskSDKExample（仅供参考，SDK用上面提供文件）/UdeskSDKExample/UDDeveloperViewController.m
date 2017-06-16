@@ -2,8 +2,8 @@
 //  UDDeveloperViewController.m
 //  UdeskSDK
 //
-//  Created by xuchen on 16/8/27.
-//  Copyright © 2016年 xuchen. All rights reserved.
+//  Created by Udesk on 16/8/27.
+//  Copyright © 2016年 Udesk. All rights reserved.
 //
 
 #import "UDDeveloperViewController.h"
@@ -16,7 +16,7 @@
 #import "UDLanguageViewController.h"
 
 @interface UDDeveloperViewController()<UIActionSheetDelegate> {
-
+    
     NSArray *developerDataArray;
     NSArray *developerImageArray;
 }
@@ -26,25 +26,27 @@
 @implementation UDDeveloperViewController
 
 - (void)viewDidLoad {
-
+    
     [super viewDidLoad];
     
     developerDataArray = @[
-                       @"指定分配客服",
-                       @"指定分配客服组",
-                       @"获取未读消息",
-                       @"获取未读消息数量",
-                       @"自定义客户信息",
-                       @"更换UI模版",
-                       @"客服导航栏菜单",
-                       @"添加咨询对象",
-                       @"切换语言",
-                       ];
+                           @"指定分配客服",
+                           @"指定分配客服组",
+                           @"获取未读消息",
+                           @"获取未读消息数量",
+                           @"清空未读消息",
+                           @"自定义客户信息",
+                           @"更换UI模版",
+                           @"客服导航栏菜单",
+                           @"添加咨询对象",
+                           @"切换语言",
+                           ];
     
     developerImageArray = @[
                             [UIImage imageNamed:@"agent"],
                             [UIImage imageNamed:@"group"],
                             [UIImage imageNamed:@"notReadMessage"],
+                            [UIImage imageNamed:@"notReadCount"],
                             [UIImage imageNamed:@"notReadCount"],
                             [UIImage imageNamed:@"custom"],
                             [UIImage imageNamed:@"changeUI"],
@@ -63,9 +65,9 @@
 }
 //滑动返回
 - (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
-
+    
     CGPoint translation = [recognizer translationInView:self.view];
-    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.7;
+    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan:
@@ -76,7 +78,7 @@
             [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
             break;
         default:
-            if (xPercent < .25) {
+            if (xPercent < .45) {
                 [UdeskTransitioningAnimation cancelInteractiveTransition];
             } else {
                 [UdeskTransitioningAnimation finishInteractiveTransition];
@@ -88,7 +90,7 @@
 }
 //点击返回
 - (void)dismissChatViewController {
-
+    
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
         [self dismissViewControllerAnimated:YES completion:nil];
     } else {
@@ -147,7 +149,7 @@
                     
                     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
                     [chatViewManager setScheduledAgentId:textField.text];
-                    [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+                    [chatViewManager pushUdeskInViewController:self udeskType:UdeskIM completion:nil];
                 }
                 else {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请输入ID" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
@@ -184,7 +186,7 @@
                     
                     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
                     [chatViewManager setScheduledGroupId:textField.text];
-                    [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+                    [chatViewManager pushUdeskInViewController:self udeskType:UdeskIM completion:nil];
                 }
                 else {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请输入ID" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
@@ -198,12 +200,11 @@
             }];
             
             [self presentViewController:inputAgentIdAlert animated:YES completion:nil];
-
             
             break;
         }
         case 2: {
-        
+            
             NSArray *array = [UdeskManager getLocalUnreadeMessages];
             NSString *message;
             
@@ -222,7 +223,7 @@
                     
                 }
             }
-
+            
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"未读消息(这里只展示最近10条)" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
             [alertView show];
             
@@ -232,20 +233,32 @@
         case 3: {
             
             NSString *title = [NSString stringWithFormat:@"当前会话有 %ld 条未读",(long)[UdeskManager getLocalUnreadeMessagesCount]];
+            
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
             [alertView show];
             
             break;
         }
         case 4: {
-        
+            
+            [UdeskManager markAllMessagesAsRead];
+            
+            NSString *title = [NSString stringWithFormat:@"清空成功"];
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alertView show];
+            
+            break;
+        }
+        case 5: {
+            
             UDCustomClientInfoViewController *custom = [[UDCustomClientInfoViewController alloc] init];
             [self presentOnViewController:self udeskViewController:custom transiteAnimation:UDTransiteAnimationTypePush];
             
             break;
         }
             
-        case 5: {
+        case 6: {
             
             UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"更换UI模版" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"原生",@"经典", nil];
             [sheet showInView:self.view];
@@ -253,30 +266,30 @@
             break;
         }
             
-        case 6: {
+        case 7: {
             
             UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-            [chatViewManager pushUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
+            [chatViewManager pushUdeskInViewController:self completion:nil];
             
             break;
         }
-        case 7: {
+        case 8: {
             
             UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
             
             NSDictionary *dict = @{
-                                   @"productImageUrl":@"http://img.club.pchome.net/kdsarticle/2013/11small/21/fd548da909d64a988da20fa0ec124ef3_1000x750.jpg",
+                                   @"productImageUrl":@"https://img.club.pchome.net/kdsarticle/2013/11small/21/fd548da909d64a988da20fa0ec124ef3_1000x750.jpg",
                                    @"productTitle":@"测试测试测试测你测试测试测你测试测试测你测试测试测你测试测试测你测试测试测你！",
                                    @"productDetail":@"¥88888.088888.088888.0",
                                    @"productURL":@"http://www.baidu.com"
                                    };
             [chatViewManager setProductMessage:dict];
-            [chatViewManager pushUdeskViewControllerWithType:UdeskIM viewController:self completion:nil];
+            [chatViewManager pushUdeskInViewController:self udeskType:UdeskIM completion:nil];
             
             break;
         }
-        case 8: {
-        
+        case 9: {
+            
             UDLanguageViewController *language = [[UDLanguageViewController alloc] init];
             [self presentOnViewController:self udeskViewController:language transiteAnimation:UDTransiteAnimationTypePush];
         }
@@ -289,8 +302,8 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:buttonIndex?[UdeskSDKStyle blueStyle]:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWithType:UdeskMenu viewController:self completion:nil];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+    [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 
 - (void)presentOnViewController:(UIViewController *)rootViewController udeskViewController:(id)udeskViewController transiteAnimation:(UDTransiteAnimationType)animation {
@@ -352,9 +365,9 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-
+    
     [super viewDidDisappear:animated];
-    [UdeskSDKConfig sharedConfig].productDictionary = nil;
+    //    [UdeskSDKConfig sharedConfig].productDictionary = nil;
 }
 
 @end
