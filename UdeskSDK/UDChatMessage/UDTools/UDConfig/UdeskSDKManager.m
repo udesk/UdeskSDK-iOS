@@ -206,7 +206,7 @@
             
             //查看导航栏错误，直接进入聊天页面
             if (error) {
-                [self presentIMController:viewController transiteAnimation:animationType sdkSetting:nil completion:completion];
+                [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
                 return ;
             }
             
@@ -217,14 +217,14 @@
                 if (result.count) {
                     
                     if (!agentMenu) {
-                        agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig menuArray:result withSetting:nil];
+                        agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig menuArray:result withSetting:setting];
                     }
                     
                     [_show presentOnViewController:viewController udeskViewController:agentMenu transiteAnimation:animationType completion:completion];
                 }
                 else {
                     //没有设置导航栏 直接进入聊天页面
-                    [self presentIMController:viewController transiteAnimation:animationType sdkSetting:nil completion:completion];
+                    [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
                 }
             }
         } @catch (NSException *exception) {

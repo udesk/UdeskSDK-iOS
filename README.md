@@ -709,6 +709,14 @@ BOOL isSession = [UdeskManager customersAreSession];
 
 #### 更新记录：
 
+sdk v3.6.4版本更新功能:
+
+1.客服关闭会话之后用户发送消息重连机制
+
+2.关闭留言弹窗文案bug修改
+
+------
+
 sdk v3.6.3版本更新功能:
 
 1.优化自定义字段调用方式

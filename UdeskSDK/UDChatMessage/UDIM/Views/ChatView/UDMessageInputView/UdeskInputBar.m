@@ -47,7 +47,6 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     CGRect      originalChatViewFrame;
     NSDate  *sendDate;
     NSInteger textViewHeight;
-    BOOL _agentOver;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -68,14 +67,6 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     self.opaque = YES;
     // 由于继承UIImageView，所以需要这个属性设置
     self.userInteractionEnabled = YES;
-
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(agentOver) name:@"agentOver" object:nil];
-}
-
-- (void)agentOver
-{
-    _agentOver = YES;
 }
 
 - (void)awakeFromNib {
@@ -346,33 +337,17 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
 
 - (BOOL)growingTextViewShouldBeginEditing:(UdeskHPGrowingTextView *)growingTextView {
     
-    if (self.agent.code == UDAgentStatusResultOnline) {
-        
-        if ([self.inputTextView.textColor isEqual:[UIColor lightGrayColor]] && [self.inputTextView.text isEqualToString:getUDLocalizedString(@"udesk_typing")]) {
-            self.inputTextView.text = @"";
-            self.inputTextView.textColor = [UIColor blackColor];
-        }
-        
-        if ([self.delegate respondsToSelector:@selector(inputTextViewWillBeginEditing:)]) {
-            [self.delegate inputTextViewWillBeginEditing:self.inputTextView];
-        }
-        
-        emotionButton.selected = NO;
-        voiceButton.selected = NO;
+    if ([self.inputTextView.textColor isEqual:[UIColor lightGrayColor]] && [self.inputTextView.text isEqualToString:getUDLocalizedString(@"udesk_typing")]) {
+        self.inputTextView.text = @"";
+        self.inputTextView.textColor = [UIColor blackColor];
     }
-    else {
-        
-        
-        if (_agentOver) {
-            
-        } else {
-            if ([self.delegate respondsToSelector:@selector(didUDMessageInputView)]) {
-                [self.delegate didUDMessageInputView];
-            }
-        }
-        
-        return NO;
+    
+    if ([self.delegate respondsToSelector:@selector(inputTextViewWillBeginEditing:)]) {
+        [self.delegate inputTextViewWillBeginEditing:self.inputTextView];
     }
+    
+    emotionButton.selected = NO;
+    voiceButton.selected = NO;
     
     return YES;
 }
@@ -389,11 +364,13 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     
     if ([text isEqualToString:@"\n"]) {
         //发送出去以后置空输入预知
-        [UdeskManager sendClientInputtingWithContent:@""];
-        if ([self.delegate respondsToSelector:@selector(didSendTextAction:)]) {
-            [self.delegate didSendTextAction:growingTextView.text];
+        if ([self checkAgentStatusValid]) {
+            [UdeskManager sendClientInputtingWithContent:@""];
+            if ([self.delegate respondsToSelector:@selector(didSendTextAction:)]) {
+                [self.delegate didSendTextAction:growingTextView.text];
+            }
+            return NO;
         }
-        return NO;
     }
     return YES;
 }

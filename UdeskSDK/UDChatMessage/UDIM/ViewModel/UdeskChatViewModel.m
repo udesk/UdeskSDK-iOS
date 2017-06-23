@@ -107,8 +107,8 @@
             }
             else {
                 
-                NSString *no_reply_hint = [NSString stringWithFormat:@"%@",self.sdkSetting.noReplyHint];
-                if (!no_reply_hint || no_reply_hint.length <= 0) {
+                NSString *no_reply_hint = self.sdkSetting.noReplyHint;
+                if ([UdeskTools isBlankString:self.sdkSetting.noReplyHint]) {
                     no_reply_hint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
                 }
                 [self.chatAlert showAgentNotOnlineAlertWithMessage:no_reply_hint enableWebImFeedback:NO];
@@ -588,8 +588,6 @@
         NSString  *agentMessage = @"unavailable";
         if([statusType isEqualToString:@"over"]) {
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"agentOver" object:nil];
-            
             agentCode = UDAgentConversationOver;
             agentMessage = getUDLocalizedString(@"udesk_chat_end");
         }
@@ -737,7 +735,7 @@
         
         if (self.sdkSetting) {
             
-            NSString *no_reply_hint = [NSString stringWithFormat:@"%@",self.sdkSetting.noReplyHint];
+            NSString *no_reply_hint = self.sdkSetting.noReplyHint;
             if(self.agentModel.code == UDAgentStatusResultQueue) {
                 no_reply_hint = self.agentModel.message;
             }
@@ -754,7 +752,7 @@
             
             //关闭留言
             if (self.agentModel.code == UDAgentStatusResultOffline) {
-                if (!no_reply_hint || no_reply_hint.length <= 0) {
+                if ([UdeskTools isBlankString:no_reply_hint]) {
                     no_reply_hint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
                 }
             }
