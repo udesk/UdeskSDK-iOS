@@ -705,6 +705,12 @@ BOOL isSession = [UdeskManager customersAreSession];
 
  如果设置了email 或者 cellphone  出现相同也会在一个客服的会话里。
 
+#### 出现类似异常+[UDXMLElement elementWithName:xmlns:]: unrecognized selector sent to class 0x10112abb8
+
+出现这种情况，请先检查手动导入时Xcode工程里的配置是否完善（参考2.2和2.3）。
+
+如果确认配置没有问题，请查看Other Linker Flags里是否写了-force_load，如果有写这个配置请在这个配置下面加入我们sdk .a文件的地址。
+
 # 八、更新记录
 
 #### 更新记录：
