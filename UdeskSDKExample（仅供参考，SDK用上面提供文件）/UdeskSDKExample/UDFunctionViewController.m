@@ -37,34 +37,7 @@
 
 - (void)viewDidLoad {
 
-    [super viewDidLoad];
-    
-    NSString *nick_name = [NSString stringWithFormat:@"sdk用户%u",arc4random()];
-    NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
-    
-    NSDictionary *parameters = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"parameters"];
-    
-    if (parameters) {
-        
-        //创建用户
-        [UdeskManager createCustomerWithCustomerInfo:parameters];
-    }
-    else {
-    
-#warning 注意sdktoken 是客户的唯一标识，用来识别身份，sdk_token: 传入的字符请使用 字母 / 数字 等常见字符集 。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;其次如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。 
-        NSDictionary *parameters = @{
-                                     @"user" :    @{
-                                             @"nick_name":nick_name,
-                                             @"sdk_token":sdk_token
-                                             }
-                                     };
-        
-        //创建用户
-        [UdeskManager createCustomerWithCustomerInfo:parameters];
-        
-        [[NSUserDefaults standardUserDefaults] setObject:parameters forKey:@"parameters"];
-    }
-    
+    [super viewDidLoad];    
     
     double text1 = 237/675.0f;
     CGFloat logoHeight = self.view.ud_height*text1;

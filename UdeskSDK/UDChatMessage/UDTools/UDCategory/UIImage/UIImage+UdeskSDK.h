@@ -216,6 +216,13 @@
  *  @return 图片
  */
 + (UIImage *)ud_defaultLoadingImage;
+
+/**
+ 默认重发图片
+
+ @return 图片
+ */
++ (UIImage *)ud_defaultResetButtonImage;
 /**
  *  修改图片颜色
  *

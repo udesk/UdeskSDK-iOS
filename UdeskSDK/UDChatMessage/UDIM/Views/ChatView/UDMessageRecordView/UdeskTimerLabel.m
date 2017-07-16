@@ -308,9 +308,11 @@
 -(void)updateLabel{
 
     @try {
-
+     
+        if (!startCountDate || startCountDate == (id)kCFNull) return ;
+        
         NSTimeInterval timeDiff = [[NSDate date] timeIntervalSinceDate:startCountDate];
-        NSDate *timeToShow = [NSDate date];
+        NSDate *timeToShow;
         BOOL timerEnded = false;
         
         /***MZTimerLabelTypeStopWatch Logic***/
@@ -414,7 +416,6 @@
             }
             
         }
-        
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {

@@ -60,3 +60,11 @@
 "udesk_agent" = "Agent";
 "udesk_online" = "Online";
 "udesk_offline" = "Offline";
+"udesk_failed_video" = "Cannot play";
+"udesk_has_send" = "has been sent";
+"udesk_has_downed" = "downloaded";
+"udesk_video_download" = "download";
+"udesk_has_uncomplete_tip" = "Download first, then click";
+"udesk_download_failure" = "Download failed. Please re Download";
+"udesk_customer_leave_msg" = "Customer Leave Message";
+"udesk_rollback" = "has recalled a message";

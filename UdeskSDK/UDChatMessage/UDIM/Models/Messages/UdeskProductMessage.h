@@ -20,6 +20,8 @@
 @property (nonatomic, copy  ) NSString *productSendText;
 /** 咨询对象图片 */
 @property (nonatomic, strong) UIImage  *productImage;
+/** 咨询对象图片 */
+@property (nonatomic, copy  ) NSString  *productImageURL;
 /** 咨询对象标题Frame */
 @property (nonatomic, assign, readonly) CGRect   productTitleFrame;
 /** 咨询对象副标题Frame */
@@ -30,7 +32,5 @@
 @property (nonatomic, assign, readonly) CGRect   productImageFrame;
 /** 咨询对象Frame */
 @property (nonatomic, assign, readonly) CGRect   productFrame;
-
-- (instancetype)initWithProductMessage:(NSDictionary *)message;
 
 @end

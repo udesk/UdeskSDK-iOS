@@ -10,9 +10,15 @@
 #import <UIKit/UIKit.h>
 
 typedef void(^DidFinishTakeMediaCompledBlock)(UIImage *image);
+typedef void(^DidFinishTakeMediaGIFCompledBlock)(NSData *imageData);
+typedef void(^DidFinishTakeMediaVideoCompledBlock)(NSData *video,NSString *fileName);
 
 @interface UdeskPhotographyHelper : NSObject
 
-- (void)showImagePickerControllerSourceType:(UIImagePickerControllerSourceType)sourceType onViewController:(UIViewController *)viewController compled:(DidFinishTakeMediaCompledBlock)compled;
+- (void)showImagePickerControllerSourceType:(UIImagePickerControllerSourceType)sourceType
+                           onViewController:(UIViewController *)viewController
+                                    compled:(DidFinishTakeMediaCompledBlock)compled
+                                 compledGif:(DidFinishTakeMediaGIFCompledBlock)compledGif
+                               compledVideo:(DidFinishTakeMediaVideoCompledBlock)compledVideo;
 
 @end

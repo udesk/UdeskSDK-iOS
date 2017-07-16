@@ -12,6 +12,7 @@
 #import "UdeskUtils.h"
 #import "UdeskOverlayTransitioningDelegate.h"
 #import "UdeskFoundationMacro.h"
+#import "UdeskTools.h"
 
 @implementation UdeskAgentSurvey {
     
@@ -31,11 +32,19 @@
 }
 
 - (void)showAgentSurveyAlertViewWithAgentId:(NSString *)agentId
-                                 completion:(void(^)())completion {
+                           isShowErrorAlert:(BOOL)isShowErrorAlert
+                                 completion:(void(^)(BOOL result, NSError *error))completion {
     
     [UdeskManager getSurveyOptions:^(id responseObject, NSError *error) {
         
         @try {
+            
+            if (error) {
+                if (completion) {
+                    completion(NO,error);
+                }
+                return ;
+            }
             
             if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
                 
@@ -64,8 +73,9 @@
                                 //根据点击的选项 提交到Udesk
                                 [UdeskManager survetVoteWithAgentId:agentId withOptionId:[option objectForKey:@"id"] completion:^(id responseObject, NSError *error) {
                                     
+                                    BOOL result = error?NO:YES;
                                     if (completion) {
-                                        completion();
+                                        completion(result,error);
                                     }
                                 }];
                             }]];
@@ -79,12 +89,21 @@
                         [self presentViewController:_optionsAlert];
                     }
                     else {
-                        [self showNotSurvey];
+                        
+                        //没有满意度调查选项
+                        [self surveyErrorWithIsShowErrorAlert:isShowErrorAlert error:error completion:completion];
                     }
                     
                 }
                 else {
-                    [self showNotSurvey];
+                    //没有满意度调查选项
+                    [self surveyErrorWithIsShowErrorAlert:isShowErrorAlert error:error completion:completion];
+                }
+            }
+            else {
+                NSError *error = [NSError errorWithDomain:@"获取满意度调查" code:3333 userInfo:nil];
+                if (completion) {
+                    completion(NO,error);
                 }
             }
         } @catch (NSException *exception) {
@@ -94,7 +113,21 @@
     }];
 }
 
-- (void)showNotSurvey {
+- (void)surveyErrorWithIsShowErrorAlert:(BOOL)isShowErrorAlert
+                                  error:(NSError *)error
+                             completion:(void(^)(BOOL result, NSError *error))completion {
+    
+    if (isShowErrorAlert) {
+        [self showNotSurvey:completion];
+    }
+    else {
+        if (completion) {
+            completion(NO,error);
+        }
+    }
+}
+
+- (void)showNotSurvey:(void(^)(BOOL result, NSError *error))completion {
     
     @try {
         
@@ -105,6 +138,11 @@
         _unKnownAlert = [UdeskAlertController alertControllerWithTitle:@"提示" message:@"没有满意度调查选项内容,请联系管理员添加！" preferredStyle:UDAlertControllerStyleAlert];
         [_unKnownAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
             _unKnownAlert = nil;
+            
+            NSError *error = [NSError errorWithDomain:@"没有满意度调查选项内容" code:3333 userInfo:nil];
+            if (completion) {
+                completion(NO,error);
+            }
         }]];
         
         //展示Alert
@@ -127,7 +165,7 @@
             alert.transitioningDelegate = _transitioningDelegate;
         }
         //展示Alert
-        [[self currentViewController] presentViewController:alert animated:YES completion:nil];
+        [[UdeskTools currentViewController] presentViewController:alert animated:YES completion:nil];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -135,31 +173,11 @@
 }
 
 - (void)checkHasSurveyWithAgentId:(NSString *)agentId
-                       completion:(void (^)(NSString *hasSurvey))completion {
+                       completion:(void (^)(NSString *hasSurvey,NSError *error))completion {
     
     if (_optionsAlert==nil) {
         [UdeskManager checkHasSurveyWithAgentId:agentId completion:completion];
     }
-}
-
-- (UIViewController *)currentViewController
-{
-    UIWindow *keyWindow  = [UIApplication sharedApplication].keyWindow;
-    UIViewController *vc = keyWindow.rootViewController;
-    while (vc.presentedViewController)
-    {
-        vc = vc.presentedViewController;
-        
-        if ([vc isKindOfClass:[UINavigationController class]])
-        {
-            vc = [(UINavigationController *)vc visibleViewController];
-        }
-        else if ([vc isKindOfClass:[UITabBarController class]])
-        {
-            vc = [(UITabBarController *)vc selectedViewController];
-        }
-    }
-    return vc;
 }
 
 @end

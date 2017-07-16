@@ -10,6 +10,7 @@
 #import "UdeskFoundationMacro.h"
 #import "UdeskManager.h"
 #import "UdeskFoundationMacro.h"
+#import "Udesk_YYWebImage.h"
 
 #define AnimationTime 0.25
 
@@ -20,7 +21,7 @@
 }
 
 //保存图片
-@property(nonatomic,weak)UIImageView *mainImageView;
+@property(nonatomic,weak) UIImageView *mainImageView;
 
 //双击动作,在下载完图片后才会有双击手势动作
 @property(nonatomic,strong)UITapGestureRecognizer *twoTap;
@@ -44,7 +45,7 @@
         self.delegate = self;
         
         //添加主图片显示View
-        UIImageView *mainImageView = [[UIImageView alloc]init];
+        UIImageView *mainImageView = [[Udesk_YYAnimatedImageView alloc]init];
         mainImageView.userInteractionEnabled = YES;
         [self addSubview:mainImageView];
         self.mainImageView = mainImageView;
@@ -116,14 +117,7 @@
         imageH = imageView.image.size.height;
         //放大的图片 显示原图片 不缩小
         self.mainImageView.image = imageView.image;
-        [UdeskManager downloadMediaWithUrlString:url done:^(NSString *key, id<NSCoding> object) {
-            
-            if (object) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.mainImageView.image = (UIImage *)object;
-                });
-            }
-        }];
+        [self.mainImageView yy_setImageWithURL:[NSURL URLWithString:url] placeholder:imageView.image];
     }
     
     //设置主图片Frame 与缩小比例
@@ -251,11 +245,8 @@
         [self setZoomScale:1.0 animated:YES];
     } else {//放大
        
-        CGRect zoomRect;
-        zoomRect.origin.x = touchPoint.x;
-        zoomRect.origin.y = touchPoint.y;
+        CGRect zoomRect = CGRectMake(touchPoint.x, touchPoint.y, self.mainImageView.frame.size.width, self.mainImageView.frame.size.height);
         [self zoomToRect:zoomRect animated:YES];
-        
     }
 }
 

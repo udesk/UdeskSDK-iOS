@@ -175,6 +175,15 @@
     [self presentViewController:notExistAgentAlert];
 }
 
+- (void)showBigVideoPoint {
+
+    UdeskAlertController *bigVideoAlert = [UdeskAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_video_big_tips") preferredStyle:UDAlertControllerStyleAlert];
+    [bigVideoAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
+    }]];
+    
+    [self presentViewController:bigVideoAlert];
+}
+
 //评价提交成功Alert
 - (void)surveyCompletion {
     
@@ -185,7 +194,7 @@
     [self presentViewController:completionAlert];
 }
 
-//评价提交成功Alert
+//客服重连Alert
 - (void)requestAgentAgain {
     
     //已经弹出不用再弹
@@ -209,28 +218,13 @@
     [self presentViewController:agentAlert];
 }
 
-- (UIViewController *)currentViewController
-{
-    UIWindow *keyWindow  = [UIApplication sharedApplication].keyWindow;
-    UIViewController *vc = keyWindow.rootViewController;
-    while (vc.presentedViewController)
-    {
-        vc = vc.presentedViewController;
-        
-        if ([vc isKindOfClass:[UINavigationController class]])
-        {
-            vc = [(UINavigationController *)vc visibleViewController];
-        }
-        else if ([vc isKindOfClass:[UITabBarController class]])
-        {
-            vc = [(UITabBarController *)vc selectedViewController];
-        }
-    }
-    
-    return vc;
-}
-
 - (void)presentViewController:(UdeskAlertController *)alertController {
+    
+    if ([[UdeskTools currentViewController] isKindOfClass:[UdeskAlertController class]]) {
+        sessionOverAlert = nil;
+        queueAlert = nil;
+        return;
+    }
     
     if (ud_isIOS7 && [[[UIDevice currentDevice]systemVersion] floatValue] < 8.0) {
         _transitioningDelegate = [[UdeskOverlayTransitioningDelegate alloc] init];
@@ -238,7 +232,7 @@
         alertController.transitioningDelegate = _transitioningDelegate;
     }
     
-    [[self currentViewController] presentViewController:alertController animated:YES completion:nil];
+    [[UdeskTools currentViewController] presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)showChatAlertViewWithCode:(NSInteger)code
@@ -273,15 +267,17 @@
         //正在连接提示
         [self showNotConnectedAlert];
     }
-
 }
 
 - (void)hideAlert {
 
-    if ([[self currentViewController] isKindOfClass:[UdeskAlertController class]]) {
-        [[self currentViewController] dismissViewControllerAnimated:YES completion:nil];
-        sessionOverAlert = nil;
-        queueAlert = nil;
+    if ([[UdeskTools currentViewController] isKindOfClass:[UdeskAlertController class]]) {
+        if (sessionOverAlert || queueAlert) {
+         
+            [[UdeskTools currentViewController] dismissViewControllerAnimated:YES completion:nil];
+            sessionOverAlert = nil;
+            queueAlert = nil;
+        }
     }
 }
 

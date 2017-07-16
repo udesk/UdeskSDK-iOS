@@ -7,15 +7,16 @@
 //
 
 #import "UdeskMessage.h"
-#import "UdeskChatMessage.h"
 
 @interface UdeskMessage (UdeskChatMessage)
 
-- (instancetype)initWithChatMessage:(UdeskChatMessage *)chatMessage;
-
 - (instancetype)initWithProductMessage:(NSDictionary *)productMessage;
-- (instancetype)initTextChatMessage:(UdeskChatMessage *)chatMessage text:(NSString *)text;
-- (instancetype)initImageChatMessage:(UdeskChatMessage *)chatMessage image:(UIImage *)image;
-- (instancetype)initVoiceChatMessage:(UdeskChatMessage *)chatMessage voiceData:(NSData *)voiceData;
+- (instancetype)initTextChatMessage:(NSString *)text;
+- (instancetype)initImageChatMessage:(UIImage *)image;
+- (instancetype)initGIFImageChatMessage:(NSData *)gifData;
+- (instancetype)initVoiceChatMessage:(NSData *)voiceData duration:(NSString *)duration;
+- (instancetype)initVideoChatMessage:(NSData *)videoData videoName:(NSString *)videoName;
+- (instancetype)initLeaveChatMessage:(NSString *)text;
+- (instancetype)initRollbackChatMessage:(NSString *)text;
 
 @end

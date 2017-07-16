@@ -23,9 +23,15 @@
 /** 是否在工作时间 */
 @property (nonatomic, strong, readonly) NSNumber *isWorktime;
 /** 留言文案 */
-@property (nonatomic, strong, readonly) NSString *noReplyHint;
+@property (nonatomic, copy  , readonly) NSString *noReplyHint;
 /** 机器人URL */
-@property (nonatomic, strong, readonly) NSString *robot;
+@property (nonatomic, copy  , readonly) NSString *robot;
+/** 留言类型 msg、form */
+@property (nonatomic, copy  , readonly) NSString *leaveMessageType;
+/** 返回弹出留言 */
+@property (nonatomic, strong, readonly) NSNumber *investigationWhenLeave;
+/** 是否开启了满意度调查 */
+@property (nonatomic, strong, readonly) NSNumber *enableImSurvey;
 
 /**
  *  JSON数据转换成UdeskSetting

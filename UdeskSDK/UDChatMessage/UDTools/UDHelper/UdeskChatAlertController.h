@@ -45,6 +45,8 @@
 //评价提交成功Alert
 - (void)surveyCompletion;
 
+- (void)showBigVideoPoint;
+
 - (void)showAlertWithMessage:(NSString *)message;
 
 - (void)hideAlert;

@@ -69,7 +69,6 @@ static double agentHttpDelayInSeconds = 25.0f;
         if (completion) {
             completion(agent,error);
         }
-
     }];
 }
 

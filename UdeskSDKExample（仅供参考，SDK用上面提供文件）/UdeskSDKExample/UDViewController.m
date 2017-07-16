@@ -107,7 +107,32 @@
         [[NSUserDefaults standardUserDefaults] setObject:self.appKeyTextField.text forKey:@"key"];
         [[NSUserDefaults standardUserDefaults] setObject:self.appIdTextField.text forKey:@"appId"];
         
-        [UdeskManager initWithAppKey:self.appKeyTextField.text appId:self.appIdTextField.text domain:self.domainTextField.text];
+        NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
+        
+        UdeskOrganization *organization = [[UdeskOrganization alloc] initWithDomain:self.domainTextField.text
+                                                                             appKey:self.appKeyTextField.text
+                                                                              appId:self.appIdTextField.text];
+        
+        UdeskCustomer *customer = [UdeskCustomer new];
+        customer.sdkToken = sdk_token;
+        customer.nickName = @"我是udesk测试(可以随时把我关闭)";
+        customer.email = @"test@udesk.cn";
+        customer.cellphone = @"18888888888";
+        customer.customerDescription = @"我是测试";
+        
+        UdeskCustomerCustomField *textField = [UdeskCustomerCustomField new];
+        textField.fieldKey = @"TextField_390";
+        textField.fieldValue = @"测试";
+        
+        UdeskCustomerCustomField *selectField = [UdeskCustomerCustomField new];
+        selectField.fieldKey = @"SelectField_455";
+        selectField.fieldValue = @[@"1"];
+        
+        customer.customField = @[textField,selectField];
+        
+        [UdeskManager updateCustomer:customer];
+        //初始化sdk
+        [UdeskManager initWithOrganization:organization customer:customer];
         
         UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         UDFunctionViewController *function = [storyboard instantiateViewControllerWithIdentifier:@"UDFunctionViewControllerID"];

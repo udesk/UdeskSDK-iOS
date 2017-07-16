@@ -72,8 +72,8 @@
 }
 
 - (void)presentUdeskInViewController:(UIViewController *)viewController
-                        udeskType:(UdeskType)udeskType
-                       completion:(void (^)(void))completion {
+                           udeskType:(UdeskType)udeskType
+                          completion:(void (^)(void))completion {
     
     [self customPresentViewController:viewController udeskType:udeskType transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
 }
@@ -161,7 +161,7 @@
     
     //如果选择了配置
     if (setting) {
-    
+        
         NSURL *url = [UdeskManager getServerRobotURLWithBaseURL:setting.robot];
         if (!robotChat) {
             robotChat = [[UdeskRobotViewController alloc] initWithSDKConfig:_sdkConfig withURL:url withSetting:setting];
@@ -174,6 +174,7 @@
 - (void)presentFAQController:(UIViewController *)viewController
            transiteAnimation:(UDTransiteAnimationType)animationType
                   completion:(void (^)(void))completion {
+    
     
     if (!faq) {
         faq = [[UdeskFAQViewController alloc] initWithSDKConfig:_sdkConfig];

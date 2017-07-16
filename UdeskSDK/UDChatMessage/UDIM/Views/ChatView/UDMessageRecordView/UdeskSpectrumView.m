@@ -120,8 +120,6 @@
 - (void)setLevel:(CGFloat)level
 {
     @try {
-        
-        //NSLog(@"setLevel:%f",level);
         level = (level+43)*3.2;
         if( level < 0 ) level = 0;
         
@@ -143,9 +141,10 @@
 
 - (void)updateItems
 {
+
+    //NSLog(@"updateMeters");
+    
     @try {
-        
-        //NSLog(@"updateMeters");
         
         UIGraphicsBeginImageContext(self.frame.size);
         

@@ -36,10 +36,10 @@
 
     self.view.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.tableViewBackGroundColor;
 
-    [UdeskManager createServerCustomerCompletion:^(BOOL success, NSError *error) {
+    [UdeskManager createCustomerForRobot:^(BOOL success, NSError *error) {
         
         @try {
-         
+
             if (success) {
                 
                 if (self.sdkSetting) {
@@ -69,6 +69,7 @@
                     [self showIsBlacklistedAlert];
                 }
             }
+
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
         } @finally {
@@ -157,7 +158,7 @@
                 [UdeskManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
                     
                     @try {
-                     
+                        
                         //查看导航栏错误，直接进入聊天页面
                         if (error) {
                             [self pushChatViewController:show];
@@ -183,7 +184,6 @@
                         NSLog(@"%@",exception);
                     } @finally {
                     }
-                    
                 }];
                 
             }else{

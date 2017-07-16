@@ -10,32 +10,53 @@
 #import <UIKit/UIKit.h>
 #import "UdeskMessage.h"
 
-@protocol UdeskMessageDelegate <NSObject>
-
-/**
- * 该委托定义了cell中有数据更新，通知tableView可以进行cell的刷新了；
- * @param messageId 该cell中的消息id
- */
-- (void)didUpdateCellDataWithMessageId:(NSString *)messageId;
-
-@end
+/** 头像距离屏幕水平边沿距离 */
+extern const CGFloat kUDAvatarToHorizontalEdgeSpacing;
+/** 头像距离屏幕垂直边沿距离 */
+extern const CGFloat kUDAvatarToVerticalEdgeSpacing;
+/** 头像与聊天气泡之间的距离 */
+extern const CGFloat kUDAvatarToBubbleSpacing;
+/** 聊天气泡和Indicator的间距 */
+extern const CGFloat kUDCellBubbleToIndicatorSpacing;
+/** 聊天头像大小 */
+extern const CGFloat kUDAvatarDiameter;
+/** 时间高度 */
+extern const CGFloat kUDChatMessageDateCellHeight;
+/** 发送状态大小 */
+extern const CGFloat kUDSendStatusDiameter;
+/** 发送状态与气泡的距离 */
+extern const CGFloat kUDBubbleToSendStatusSpacing;
+/** 时间 Y */
+extern const CGFloat kUDChatMessageDateLabelY;
+/** 气泡箭头宽度 */
+extern const CGFloat kUDArrowMarginWidth;
+/** 底部留白 */
+extern const CGFloat kUDCellBottomMargin;
 
 @interface UdeskBaseMessage : NSObject
 
+/** 消息气泡frame */
+@property (nonatomic, assign) CGRect     bubbleFrame;
+/** 头像frame */
+@property (nonatomic, assign) CGRect     avatarFrame;
+/** 发送失败图片frame */
+@property (nonatomic, assign) CGRect     failureFrame;
+/** 发送中frame */
+@property (nonatomic, assign) CGRect     loadingFrame;
+/** 时间frame */
+@property (nonatomic, assign) CGRect     dateFrame;
 /** 消息ID */
-@property (nonatomic, copy) NSString *messageId;
-/** 时间 */
-@property (nonatomic, copy) NSDate   *date;
+@property (nonatomic, copy, readonly) NSString   *messageId;
+/** 消息发送人头像 */
+@property (nonatomic, copy, readonly) NSString   *avatarURL;
+/** 消息发送人头像 */
+@property (nonatomic, strong, readonly) UIImage  *avatarImage;
 /** cell高度 */
 @property (nonatomic, assign) CGFloat  cellHeight;
-/** 消息类型 */
-@property (nonatomic, assign) UDMessageContentType messageType;
-/** 消息发送者 */
-@property (nonatomic, assign) UDMessageFromType    messageFrom;
-/** 消息发送状态 */
-@property (nonatomic, assign) UDMessageSendStatus  messageStatus;
+/** 消息model */
+@property (nonatomic, strong) UdeskMessage *message;
 
-@property (nonatomic, weak) id <UdeskMessageDelegate> delegate;
+- (instancetype)initWithMessage:(UdeskMessage *)message displayTimestamp:(BOOL)displayTimestamp;
 
 /**
  *  通过重用的名字初始化cell

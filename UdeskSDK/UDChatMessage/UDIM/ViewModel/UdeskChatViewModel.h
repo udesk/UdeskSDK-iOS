@@ -62,6 +62,11 @@
 @property (nonatomic, strong,readonly) NSMutableArray             *messageArray;
 /** ViewModel代理 */
 @property (nonatomic, weak           ) id <UdeskChatViewModelDelegate> delegate;
+/** 更新输入框 */
+@property (nonatomic, copy           ) void(^updateInputBarBlock)(void);
+
+//创建用户
+- (void)initCustomerWithSDKSetting:(UdeskSetting *)setting;
 
 //创建用户
 - (void)createCustomerWithSDKSetting:(UdeskSetting *)setting;
@@ -108,6 +113,26 @@
  */
 - (void)sendImageMessage:(UIImage *)image
               completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion;
+
+/**
+ *  发送gif图片消息
+ *
+ *  @param gifData    gif图片
+ *  @param completion 发送状态&发送消息体
+ */
+- (void)sendGIFImageMessage:(NSData *)gifData
+                 completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion;
+
+/**
+ *  发送视频消息
+ *
+ *  @param videoData    视频信息
+ *  @param completion 发送状态&发送消息体
+ */
+- (void)sendVideoMessage:(NSData *)videoData
+               videoName:(NSString *)videoName
+                progress:(void(^)(NSString *messageId,float percent))progress
+              completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion ;
 
 /**
  *  发送语音消息

@@ -12,6 +12,10 @@
 
 + (UIImage *)compressImage:(UIImage *)image toMaxFileSize:(CGSize)maxFileSize
 {
+    if (![image isKindOfClass:[UIImage class]]) {
+        return nil;
+    }
+    
     UIImage *sourceImage = image;
     UIImage *newImage = nil;
     CGSize imageSize = sourceImage.size;

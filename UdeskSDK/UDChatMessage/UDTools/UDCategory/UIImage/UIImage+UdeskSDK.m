@@ -205,6 +205,11 @@
 	return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udImageLoading.png")];
 }
 
++ (UIImage *)ud_defaultResetButtonImage {
+
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udrefreshButton.png")];
+}
+
 + (UIImage *)ud_defaultVoiceTooShortImageEN {
 	return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udVoiceTooshortEn.png")];
 }

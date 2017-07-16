@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.6.4
+//  Version: 3.7
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -12,6 +12,11 @@
 #import "UdeskMessage.h"
 #import "UdeskAgent.h"
 #import "UdeskSetting.h"
+#import "UdeskCustomer.h"
+#import "UdeskOrganization.h"
+
+typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
+typedef BOOL (^UDUploadCancellationSignal)(void);
 
 // 排队放弃类型枚举
 typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
@@ -22,7 +27,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 };
 
 /**
- *  Udesk客服系统当前有新消息，开发者可实现该协议方法，通过此方法显示小红点未读标识
+ *  Udesk客服系统当前有新消息，开发者可注册该通知接受未读消息，显示小红点未读标识
  */
 #define UD_RECEIVED_NEW_MESSAGES_NOTIFICATION @"UD_RECEIVED_NEW_MESSAGES_NOTIFICATION"
 
@@ -55,6 +60,17 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  *  @param agentId 是否调查满意度
  */
 - (void)didReceiveSurveyWithAgentId:(NSString *)agentId;
+/**
+ *  接收离线工单回复
+ *
+ */
+- (void)didReceiveTicketReply;
+/**
+ 接收撤回消息
+
+ @param messageId 撤回的消息ID
+ */
+- (void)didReceiveRollback:(NSString *)messageId agentNick:(NSString *)agentNick;
 
 @end
 
@@ -62,29 +78,20 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @interface UdeskManager : NSObject
 
 /**
- *  初始化Udesk，必须调用此函数，请正确填写参数。
- *
- *  @param appKey 应用key
- *  @param appId  应用ID
- *  @param domain 公司域名
+ 创建用户，必须调用此函数，请正确填写参数
+ @param organization 公司model
+ @param customer 客户model
+
  */
-+ (void)initWithAppKey:(NSString *)appKey
-                 appId:(NSString *)appId
-                domain:(NSString *)domain;
++ (void)initWithOrganization:(UdeskOrganization *)organization
+                    customer:(UdeskCustomer *)customer;
+
 /**
- *  创建用户，必须调用此函数，请正确填写参数
- *
- *  @param customerInfo 用户信息
+ 更新客户信息
+
+ @param customer 客户model
  */
-+ (void)createCustomerWithCustomerInfo:(NSDictionary *)customerInfo;
-/**
- *  更新用户信息
- *
- *  @param customerInfo 参数跟创建用户信息的结构体一样(不需要传sdk_token)
- *  @warning 用户自定义字段"customer_field"改为"custom_fields"其他不变
- *  @warning 请不要使用已经存在的邮箱或者手机号进行更新，否则会更新失败！
- */
-+ (void)updateUserInformation:(NSDictionary *)customerInfo;
++ (void)updateCustomer:(UdeskCustomer *)customer;
 
 /**
  *  获取后台分配的客服信息
@@ -293,7 +300,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  *  @param completion 回调结果
  */
 + (void)checkHasSurveyWithAgentId:(NSString *)agentId
-                       completion:(void (^)(NSString *hasSurvey))completion;
+                       completion:(void (^)(NSString *hasSurvey,NSError *error))completion;
 
 /**
  *  获取后台配置的导航菜单
@@ -305,21 +312,8 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 /**
  *  取消所有网络操作
  */
-+ (void)ud_cancelAllOperations;
 
-/**
- *  异步获取缓存里的聊天图片数据
- *
- *  @param key       图片消息id
- *  @param doneBlock 回调
- *
- */
-+ (void)downloadMediaWithUrlString:(NSString *)key done:(void(^)(NSString *key, id<NSCoding> object))doneBlock;
-
-/**
- *  清除所有Udesk的多媒体缓存
- */
-+ (void)removeAllUdeskDataWithCompletion:(void (^)())completion;
++ (void)cancelAllOperations;
 
 /**
  转换 emoji 别名为 Unicode
@@ -332,6 +326,13 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  *  @param completion 成功信息回调
  */
 + (void)createServerCustomerCompletion:(void (^)(BOOL success, NSError *error))completion;
+
+/**
+ 在机器人页面创建用户
+
+ @param completion 完成回调
+ */
++ (void)createCustomerForRobot:(void (^)(BOOL success, NSError *error))completion;
 
 /**
  开始推送
@@ -368,5 +369,42 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  @param quiteType 放弃排队类型
  */
 + (void)quitQueueWithType:(UDQuitQueueType)quiteType;
+
+/**
+ 发送留言
+ 
+ @param message 留言内容
+ @param isShowEvent 是否显示事件
+ @param completion 完成回调（发送成功error为nil）
+ */
++ (void)sendLeaveMessage:(UdeskMessage *)message
+             isShowEvent:(BOOL)isShowEvent
+              completion:(void(^)(NSError *error,BOOL sendStatus))completion;
+
+
+/**
+ 获取客服工单回复
+ 
+ @param lastDate  最后一条消息的时间
+ @param success 成功回调（dataSource的元素是UdeskMessage）
+ @param failure 失败回调
+ */
++ (void)fetchAgentTicketReply:(NSString *)lastDate
+                      success:(void(^)(NSArray *dataSource,NSString *lastDate))success
+                      failure:(void(^)(NSError *error))failure;
+
+/**
+ 发送视频信息
+
+ @param messsage 视频信息
+ @param progress 视频上传进度
+ @param cancellationSignal 取消上传
+ @param completion 完成回调
+ */
++ (void)sendVideoMessage:(UdeskMessage *)messsage
+               videoName:(NSString *)videoName
+                progress:(UDUploadProgressHandler)progress
+      cancellationSignal:(UDUploadCancellationSignal)cancellationSignal
+              completion:(void (^) (UdeskMessage *message,BOOL sendStatus))completion;
 
 @end

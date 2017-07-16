@@ -145,20 +145,9 @@
         
         CGFloat webY = _labelTitle.frame.origin.y+_labelTitle.frame.size.height+5;
         htmlWebView=[[UIWebView alloc] initWithFrame:CGRectMake(7, webY, UD_SCREEN_WIDTH-14, self.view.frame.size.height-webY)];
-        //    [htmlWebView setScalesPageToFit:YES];
         htmlWebView.backgroundColor = [UIColor whiteColor];
         htmlWebView.delegate = self;
         NSString *newBaseURL = [NSString stringWithFormat:@"http://%@",baseUrl];
-        
-        //    NSString *jsString = [NSString stringWithFormat:@"<html> \n"
-        //                          "<head> \n"
-        //                          "<style type=\"text/css\"> \n"
-        //                          "body {font-size: %d;}\n"
-        //                          "</style> \n"
-        //                          "</head> \n"
-        //                          "</html>", 47];
-        
-        //    NSString *newString = [NSString stringWithFormat:@"%@%@",jsString,htmlString];
         
         [htmlWebView loadHTMLString:htmlString baseURL:[NSURL URLWithString:newBaseURL]];
         

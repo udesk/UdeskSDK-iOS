@@ -60,3 +60,14 @@
 "udesk_agent" = "客服";
 "udesk_online" = "在线";
 "udesk_offline" = "离线";
+"udesk_failed_video" = "无法播放";
+"udesk_has_send" = "已发送";
+"udesk_has_downed" = "已下载";
+"udesk_video_download" = "下载";
+"udesk_has_uncomplete_tip" = "先下载完成后，在点击";
+"udesk_download_failure" = "下载失败,请重新下载";
+"udesk_wwan_tips" = "流量提醒";
+"udesk_video_send_tips" = "当前在非Wi-Fi环境，发送文件将消耗一定流量，是否继续？";
+"udesk_video_big_tips" = "文件过大无法发送";
+"udesk_customer_leave_msg" = "客户留言";
+"udesk_rollback" = "撤回了一条消息";

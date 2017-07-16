@@ -203,7 +203,7 @@
     
     //最大时间了，为了解决重复发送
     if (self.isMaxTime) {
-     
+        
         [spectrumView.stopwatch reset];
         [spectrumView.stopwatch pause];
         

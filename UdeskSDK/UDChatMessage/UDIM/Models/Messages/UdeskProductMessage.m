@@ -32,7 +32,7 @@ static CGFloat const kUDProductTitleToVerticalEdgeSpacing = 10.0;
 /** 咨询对象标题高度 */
 static CGFloat const kUDProductTitleHeight = 40.0;
 /** 咨询对象副标题距离屏幕水平边沿距离 */
-static CGFloat const kUDProductDetailToHorizontalEdgeSpacing = 89.0;
+//static CGFloat const kUDProductDetailToHorizontalEdgeSpacing = 89.0;
 /** 咨询对象副标题距离标题垂直距离 */
 static CGFloat const kUDProductDetailToTitleVerticalEdgeSpacing = 5.0;
 /** 咨询对象副标题高度 */
@@ -63,45 +63,32 @@ static CGFloat const kUDProductSendButtonHeight = 25.0;
 
 @implementation UdeskProductMessage
 
-- (instancetype)initWithProductMessage:(NSDictionary *)message {
-    
-    self = [super init];
+- (instancetype)initWithMessage:(UdeskMessage *)message displayTimestamp:(BOOL)displayTimestamp
+{
+    self = [super initWithMessage:message displayTimestamp:displayTimestamp];
     if (self) {
         
         @try {
             
             self.cellHeight = kUDProductCellHeight;
             
-            self.date = [NSDate date];
-            self.messageId = [NSUUID UUID].UUIDString;
-            NSString *productURL = [message objectForKey:@"productURL"];
+            NSString *productURL = [message.productMessage objectForKey:@"productURL"];
             if ([UdeskTools isBlankString:productURL]) {
                 return nil;
             }
             self.productURL = productURL;
             
             //咨询对象图片
-            NSString *productImageUrl = [message objectForKey:@"productImageUrl"];
-            if (![UdeskTools isBlankString:productImageUrl]) {
+            self.productImageURL = [message.productMessage objectForKey:@"productImageUrl"];
+            
+            if (![UdeskTools isBlankString:self.productImageURL]) {
                 
                 self.productImage = [UIImage ud_defaultLoadingImage];
-                
-                [UdeskManager downloadMediaWithUrlString:productImageUrl done:^(NSString *key, id<NSCoding> object) {
-                    
-                    self.productImage = (UIImage *)object;
-                    //通知更新
-                    if (self.delegate) {
-                        if ([self.delegate respondsToSelector:@selector(didUpdateCellDataWithMessageId:)]) {
-                            [self.delegate didUpdateCellDataWithMessageId:self.messageId];
-                        }
-                    }
-                }];
-                
                 self.productImageFrame = CGRectMake(kUDProductImageToHorizontalEdgeSpacing, kUDProductImageToVerticalEdgeSpacing, kUDProductImageDiameter, kUDProductImageDiameter);
             }
             
             //咨询对象标题
-            NSString *productTitle = [message objectForKey:@"productTitle"];
+            NSString *productTitle = [message.productMessage objectForKey:@"productTitle"];
             if (![UdeskTools isBlankString:productTitle]) {
                 self.productTitle = productTitle;
                 CGFloat productTitleX = self.productImageFrame.origin.x+self.productImageFrame.size.width+kUDProductTitleToProductImageHorizontalEdgeSpacing;
@@ -109,7 +96,7 @@ static CGFloat const kUDProductSendButtonHeight = 25.0;
             }
             
             //咨询对象副标题
-            NSString *productDetail = [message objectForKey:@"productDetail"];
+            NSString *productDetail = [message.productMessage objectForKey:@"productDetail"];
             if (![UdeskTools isBlankString:productDetail]) {
                 self.productDetail = productDetail;
                 self.productDetailFrame = CGRectMake(CGRectGetMinX(self.productTitleFrame), self.productTitleFrame.origin.y+self.productTitleFrame.size.height+ kUDProductDetailToTitleVerticalEdgeSpacing, self.productTitleFrame.size.width/2, kUDProductDetailHeight);

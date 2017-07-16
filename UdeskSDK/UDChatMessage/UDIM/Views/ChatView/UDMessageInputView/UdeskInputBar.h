@@ -62,13 +62,16 @@ typedef NS_ENUM(NSUInteger, UDInputViewType) {
 
 @property (nonatomic, strong) UdeskAgent *agent;
 
-//@property (nonatomic, strong) UdeskTextView *inputTextView;//输入框
-
 @property (nonatomic, strong) UdeskHPGrowingTextView *inputTextView;
 
 @property (nonatomic, weak) id <UdeskInputBarDelegate> delegate;
 
+@property (nonatomic, strong) NSNumber *enableImSurvey;
+
 - (instancetype)initWithFrame:(CGRect)frame
                     tableView:(UdeskMessageTableView *)tabelView;
+
+//离线留言不显示任何功能按钮
+- (void)updateInputBarForLeaveMessage;
 
 @end

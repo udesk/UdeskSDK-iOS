@@ -59,29 +59,29 @@
 
 - (void)saveClientInfo {
 
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    UdeskCustomer *customer = [UdeskCustomer new];
     
     for (UITextField *textField in self.textFieldArray) {
         
         switch (textField.tag) {
             case 0:
                 if (textField.text.length > 0) {
-                    [dict setObject:textField.text forKey:@"nick_name"];
+                    customer.nickName = textField.text;
                 }
                 break;
             case 1:
                 if (textField.text.length > 0) {
-                    [dict setObject:textField.text forKey:@"email"];
+                    customer.email = textField.text;
                 }
                 break;
             case 2:
                 if (textField.text.length > 0) {
-                    [dict setObject:textField.text forKey:@"cellphone"];
+                    customer.cellphone = textField.text;
                 }
                 break;
             case 3:
                 if (textField.text.length > 0) {
-                    [dict setObject:textField.text forKey:@"description"];
+                    customer.customerDescription = textField.text;
                 }
                 break;
                 
@@ -91,13 +91,10 @@
         
     }
     
-    NSDictionary *newdic = @{
-                             @"user":dict
-                             };
-    
-    [UdeskManager updateUserInformation:newdic];
+    [UdeskManager updateCustomer:customer];
     
     [self dismissChatViewController];
+
 }
 
 //滑动返回

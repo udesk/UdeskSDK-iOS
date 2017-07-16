@@ -12,6 +12,7 @@
 #import "UdeskFoundationMacro.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskTools.h"
+#import "Udesk_YYWebImage.h"
 
 @interface UdeskProductCell()
 
@@ -40,29 +41,20 @@
 
     @try {
         
-        if ([message isKindOfClass:[UdeskProductMessage class]]) {
-            
-            UdeskProductMessage *productMessage = (UdeskProductMessage *)message;
-            _productMessage = productMessage;
-            
-            if (![UdeskTools isBlankString:productMessage.productTitle]) {
-                self.productTitleLabel.text = productMessage.productTitle;
-            }
-            
-            if (![UdeskTools isBlankString:productMessage.productDetail]) {
-                self.productDetailLabel.text = productMessage.productDetail;
-            }
-            if (productMessage.productImage) {
-                if ([productMessage.productImage isKindOfClass:[UIImage class]]) {
-                    self.productImageView.image = productMessage.productImage;
-                }
-                else {
-                    self.productImageView.image = [UIImage ud_defaultLoadingImage];
-                }
-            }
-            
-            [self.productSendButton setTitle:productMessage.productSendText forState:UIControlStateNormal];
+        UdeskProductMessage *productMessage = (UdeskProductMessage *)message;
+        _productMessage = productMessage;
+        
+        if (![UdeskTools isBlankString:productMessage.productTitle]) {
+            self.productTitleLabel.text = productMessage.productTitle;
         }
+        
+        if (![UdeskTools isBlankString:productMessage.productDetail]) {
+            self.productDetailLabel.text = productMessage.productDetail;
+        }
+        if (productMessage.productImage) {
+            [self.productImageView yy_setImageWithURL:[NSURL URLWithString:productMessage.productImageURL] placeholder:productMessage.productImage];
+        }
+        
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -136,6 +128,7 @@
         _productSendButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _productSendButton.frame = CGRectZero;
         _productSendButton.titleLabel.font = [UIFont systemFontOfSize:14];
+        [_productSendButton setTitleColor:[UdeskSDKConfig sharedConfig].sdkStyle.productSendTitleColor forState:UIControlStateNormal];
         _productSendButton.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.productSendBackGroundColor;
         [_productSendButton addTarget:self action:@selector(sendProductUrlAction:) forControlEvents:UIControlEventTouchUpInside];
         UDViewRadius(_productSendButton, 2);

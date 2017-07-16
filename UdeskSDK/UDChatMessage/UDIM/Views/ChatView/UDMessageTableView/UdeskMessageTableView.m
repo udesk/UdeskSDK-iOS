@@ -23,6 +23,12 @@
         self.separatorColor = [UIColor clearColor];
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
         
+        if (ud_isIOS11) {
+            self.estimatedRowHeight = 0;
+            self.estimatedSectionHeaderHeight = 0;
+            self.estimatedSectionFooterHeight = 0;
+        }
+        
         UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 25)];
         headView.backgroundColor = [UIColor clearColor];
         
@@ -105,12 +111,18 @@
 //滚动TableView
 - (void)scrollToBottomAnimated:(BOOL)animated {
     
-    NSInteger rows = [self numberOfRowsInSection:0];
-    
-    if (rows > 0) {
-        [self scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rows - 1 inSection:0]
-                                     atScrollPosition:UITableViewScrollPositionBottom
-                                             animated:animated];
+    @try {
+        
+        NSInteger rows = [self numberOfRowsInSection:0];
+        
+        if (rows > 0) {
+            [self scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rows - 1 inSection:0]
+                        atScrollPosition:UITableViewScrollPositionBottom
+                                animated:animated];
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
 }
 

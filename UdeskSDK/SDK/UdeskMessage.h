@@ -23,6 +23,9 @@ typedef NS_ENUM(NSInteger, UDMessageContentType) {
     UDMessageContentTypeRedirect = 4,//转接
     UDMessageContentTypeRich     = 5,//欢迎语
     UDMessageContentTypeStruct   = 6,//结构化消息
+    UDMessageContentTypeLeave    = 7,//离线留言
+    UDMessageContentTypeVideo    = 8,//视频
+    UDMessageContentTypeRollback = 9,//消息撤回
 };
 
 typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
@@ -38,8 +41,12 @@ typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
 @property (nonatomic, copy  ) NSString             *content;
 /** 图片消息 */
 @property (nonatomic, strong) UIImage              *image;
+/** 图片原始数据 */
+@property (nonatomic, strong) NSData               *imageData;
 /** 语音消息 */
 @property (nonatomic, strong) NSData               *voiceData;
+/** 视频消息 */
+@property (nonatomic, strong) NSData               *videoData;
 /** 消息ID */
 @property (nonatomic, copy  ) NSString             *messageId;
 /** 消息时间 */
@@ -50,10 +57,14 @@ typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
 @property (nonatomic, copy  ) NSString             *avatar;
 /** 消息发送人昵称 */
 @property (nonatomic, copy  ) NSString             *nickName;
+/** 语音时长 */
+@property (nonatomic, assign) CGFloat              voiceDuration;
 /** 图片宽度 */
 @property (nonatomic, assign) CGFloat              width;
 /** 图片高度 */
 @property (nonatomic, assign) CGFloat              height;
+/** 图片是否是GIF */
+@property (nonatomic, assign) BOOL                 isGif;
 /** 消息类型 */
 @property (nonatomic, assign) UDMessageContentType messageType;
 /** 消息发送者 */

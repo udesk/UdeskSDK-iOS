@@ -100,7 +100,6 @@
     _agentMenuScrollView.scrollEnabled = NO;
     
     [self.view addSubview:_agentMenuScrollView];
-
 }
 
 #pragma mark - 请求客服组选择菜单
@@ -157,7 +156,7 @@
         NSLog(@"%@",exception);
     } @finally {
     }
-    
+
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -185,7 +184,6 @@
         cell.textLabel.text = agentMenuModel.item_name;
         
     }
-    
     
     return cell;
 }

@@ -45,7 +45,6 @@
     UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
     popRecognizer.edges = UIRectEdgeLeft;
     [self.view addGestureRecognizer:popRecognizer];
-
 }
 
 - (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {

@@ -135,10 +135,11 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     [self addSubview:albumButton];
     
     //评价
-     surveyButton = [self createButtonWithImage:[UIImage ud_defaultSurveyImage] HLImage:[UIImage ud_defaultSurveyHighlightedImage]];
-     surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
-     [surveyButton addTarget:self action:@selector(surveyButton:) forControlEvents:UIControlEventTouchUpInside];
-     [self addSubview:surveyButton];
+    surveyButton = [self createButtonWithImage:[UIImage ud_defaultSurveyImage] HLImage:[UIImage ud_defaultSurveyHighlightedImage]];
+    surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    surveyButton.hidden = !self.enableImSurvey.boolValue;
+    [surveyButton addTarget:self action:@selector(surveyButton:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:surveyButton];
 }
 
 //点击表情按钮
@@ -285,11 +286,11 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
         
         if (self.agent.agentId) {
             
-            [[UdeskAgentSurvey sharedManager] checkHasSurveyWithAgentId:self.agent.agentId completion:^(NSString *hasSurvey) {
+            [[UdeskAgentSurvey sharedManager] checkHasSurveyWithAgentId:self.agent.agentId completion:^(NSString *hasSurvey,NSError *error) {
                 
                 if (![hasSurvey boolValue]) {
                     
-                    [[UdeskAgentSurvey sharedManager] showAgentSurveyAlertViewWithAgentId:self.agent.agentId completion:^{
+                    [[UdeskAgentSurvey sharedManager] showAgentSurveyAlertViewWithAgentId:self.agent.agentId isShowErrorAlert:YES completion:^(BOOL result, NSError *error){
                         
                         //评价提交成功Alert
                         if ([self.delegate respondsToSelector:@selector(didSurveyWithMessage:hasSurvey:)]) {
@@ -309,7 +310,8 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
 
 - (BOOL)checkAgentStatusValid {
 
-    if (self.agent.code != UDAgentStatusResultOnline) {
+    if (self.agent.code != UDAgentStatusResultOnline &&
+        self.agent.code != UDAgentStatusResultLeaveMessage) {
         
         if ([self.delegate respondsToSelector:@selector(didUDMessageInputView)]) {
             [self.delegate didUDMessageInputView];
@@ -401,6 +403,31 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
 }
 
+//离线留言不显示任何功能按钮
+- (void)updateInputBarForLeaveMessage {
+    
+    if (self.ud_height == 50.f) {
+        return;
+    }
+    emotionButton.hidden = YES;
+    voiceButton.hidden = YES;
+    cameraButton.hidden = YES;
+    albumButton.hidden = YES;
+    surveyButton.hidden = YES;
+    
+    CGFloat inputViewHeight = 50.f;
+    self.ud_height = inputViewHeight;
+    self.ud_y += 30;
+    [messageTableView setTableViewInsetsWithBottomValue:inputViewHeight];
+}
+
+- (void)setEnableImSurvey:(NSNumber *)enableImSurvey {
+
+    _enableImSurvey = enableImSurvey;
+    if (surveyButton) {
+        surveyButton.hidden = enableImSurvey.boolValue;
+    }
+}
 
 - (void)dealloc
 {

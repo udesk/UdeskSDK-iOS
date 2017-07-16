@@ -30,19 +30,11 @@ static CGFloat const kUDStructViewWidth = 250.0;
 @property (nonatomic, copy  ) NSString *imgURL;
 @property (nonatomic, strong) NSArray  *buttons;
 
-/** 消息发送人头像 */
-@property (nonatomic, strong          ) UIImage    *avatarImage;
-/** 结构化消息图片 */
-@property (nonatomic, strong          ) UIImage    *structImage;
-/** 时间frame */
-@property (nonatomic, assign, readonly) CGRect     dateFrame;
-/** 头像frame */
-@property (nonatomic, assign, readonly) CGRect     avatarFrame;
-/** 结构消息Point */
-@property (nonatomic, assign, readonly) CGPoint    structPoint;
-/** 结构消息 */
 @property (nonatomic, strong          ) UdeskStructView *structContentView;
 
-- (instancetype)initWithUdeskMessage:(UdeskMessage *)message;
+/** 结构化消息图片 */
+@property (nonatomic, strong          ) UIImage    *structImage;
+/** 结构消息Point */
+@property (nonatomic, assign, readonly) CGPoint    structPoint;
 
 @end

@@ -13,9 +13,10 @@
 + (instancetype)sharedManager;
 
 - (void)showAgentSurveyAlertViewWithAgentId:(NSString *)agentId
-                                 completion:(void(^)())completion;
+                           isShowErrorAlert:(BOOL)isShowErrorAlert
+                                 completion:(void(^)(BOOL result, NSError *error))completion;
 
 - (void)checkHasSurveyWithAgentId:(NSString *)agentId
-                       completion:(void (^)(NSString *hasSurvey))completion;
+                       completion:(void (^)(NSString *hasSurvey,NSError *error))completion;
 
 @end

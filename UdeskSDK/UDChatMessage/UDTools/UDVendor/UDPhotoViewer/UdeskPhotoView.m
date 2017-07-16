@@ -9,8 +9,8 @@
 #import "UdeskPhotoView.h"
 #import "UdeskOneScrollView.h"
 #import "UdeskFoundationMacro.h"
-#import "UdeskManager.h"
 #import "UdeskUtils.h"
+#import "Udesk_YYWebImage.h"
 
 #define Gap 10   //俩照片间黑色间距
 
@@ -49,7 +49,6 @@
     
     [oneScroll setLocalImage:photoImageView withMessageURL:url];
  
-    
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(UD_SCREEN_WIDTH-45-15, UD_SCREEN_HEIGHT-26-15, 45, 26);
     [button setTitle:getUDLocalizedString(@"udesk_save") forState:UIControlStateNormal];
@@ -62,14 +61,21 @@
 
 - (void)saveImageAction:(UIButton *)button {
     
-    [UdeskManager downloadMediaWithUrlString:imageUrl done:^(NSString *key, id<NSCoding> object) {
-        
-        if (object) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIImageWriteToSavedPhotosAlbum((UIImage *)object, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);
-            });
-        }
-    }];
+    UIImage *image;
+    if ([[Udesk_YYWebImageManager sharedManager].cache containsImageForKey:imageUrl]) {
+        image = [[Udesk_YYWebImageManager sharedManager].cache getImageForKey:imageUrl];
+    }
+    else {
+    
+        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUrl]];
+        image = [UIImage imageWithData:data];
+    }
+    
+    if (image) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);
+        });
+    }
 }
 
 - (void)image: (UIImage *) image didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo

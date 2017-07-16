@@ -13,20 +13,9 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskManager.h"
 #import "UdeskImageUtil.h"
-#import "UdeskStructView.h"
 #import "UdeskViewExt.h"
 #import "UdeskStructCell.h"
-
-/** 时间 Y */
-static const CGFloat kUDChatMessageDateLabelY   = 10.0f;
-/** 聊天头像大小 */
-static CGFloat const kUDAvatarDiameter = 40.0;
-/** 时间高度 */
-static CGFloat const kUDChatMessageDateCellHeight = 14.0f;
-/** 头像距离屏幕水平边沿距离 */
-static CGFloat const kUDAvatarToHorizontalEdgeSpacing = 15.0;
-/** 头像距离屏幕垂直边沿距离 */
-static CGFloat const kUDAvatarToVerticalEdgeSpacing = 15.0;
+#import "Udesk_YYWebImage.h"
 
 @implementation UdeskStructButton
 
@@ -34,10 +23,6 @@ static CGFloat const kUDAvatarToVerticalEdgeSpacing = 15.0;
 
 @interface UdeskStructMessage()
 
-/** 时间frame */
-@property (nonatomic, assign, readwrite) CGRect     dateFrame;
-/** 头像frame */
-@property (nonatomic, assign, readwrite) CGRect     avatarFrame;
 /** 结构消息Point */
 @property (nonatomic, assign, readwrite) CGPoint    structPoint;
 
@@ -45,11 +30,11 @@ static CGFloat const kUDAvatarToVerticalEdgeSpacing = 15.0;
 
 @implementation UdeskStructMessage
 
-- (instancetype)initWithUdeskMessage:(UdeskMessage *)message
+- (instancetype)initWithMessage:(UdeskMessage *)message displayTimestamp:(BOOL)displayTimestamp
 {
-    self = [super init];
+    self = [super initWithMessage:message displayTimestamp:displayTimestamp];
     if (self) {
-        
+
         @try {
             
             if ([UdeskTools isBlankString:message.messageId]) {
@@ -57,23 +42,6 @@ static CGFloat const kUDAvatarToVerticalEdgeSpacing = 15.0;
             }
             if ([UdeskTools isBlankString:message.content]) {
                 return nil;
-            }
-            
-            self.date = message.timestamp;
-            self.messageId = message.messageId;
-            
-            //时间frame
-            self.dateFrame = CGRectMake(0, kUDChatMessageDateLabelY, UD_SCREEN_WIDTH, kUDChatMessageDateCellHeight);
-            //用户头像frame
-            self.avatarFrame = CGRectMake(kUDAvatarToHorizontalEdgeSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
-            
-            //客服头像
-            self.avatarImage = [UIImage ud_defaultAgentImage];
-            if (message.avatar.length > 0) {
-                
-                NSString *newURL = [message.avatar stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-                UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:newURL]]];
-                self.avatarImage = [UdeskImageUtil compressImage:image toMaxFileSize:CGSizeMake(kUDAvatarDiameter*2, kUDAvatarDiameter*2)];
             }
             
             NSDictionary *structMsg = [UdeskTools dictionaryWithJSON:message.content];
@@ -131,16 +99,13 @@ static CGFloat const kUDAvatarToVerticalEdgeSpacing = 15.0;
                     
                     self.cellHeight = self.structContentView.ud_height+CGRectGetHeight(self.dateFrame)+(kUDStructPadding*3);
                 });
-                
             }
-            
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
         } @finally {
         }
-        
+
     }
-    
     return self;
 }
 

@@ -47,83 +47,91 @@ static CGFloat EmojiFontSize;
         EmojiFontSize = 32;
     }
     
-    // init emojis
-    self.emojis = [NSArray arrayWithContentsOfFile:getUDBundlePath(@"UDEmojiList.plist")];
-
-    //
-    NSInteger rowNum = (CGRectGetHeight(self.bounds) / EmojiHeight);
-    NSInteger colNum = (CGRectGetWidth(self.bounds) / EmojiWidth);
-    colNum = 8;
-    NSInteger numOfPage = ceil((float)[self.emojis count] / (float)(rowNum * colNum));
-    
-    // init backGroundView
-    
-    UIView *backGroundView = [[UIView alloc] initWithFrame:self.bounds];
-    [self addSubview:backGroundView];
-    
-    // add emojis
-    
-    NSInteger row = 0;
-    NSInteger column = 0;
-    NSInteger page = 0;
-    
-    NSInteger emojiPointer = 0;
-    for (int i = 0; i < [self.emojis count] + numOfPage - 1; i++) {
+    @try {
         
-        // Pagination
-        if (i % (rowNum * colNum) == 0) {
-            page ++;    // Increase the number of pages
-            row = 0;    // the number of lines is 0
-            column = 0; // the number of columns is 0
-        }else if (i % colNum == 0) {
-            // NewLine
-            row += 1;   // Increase the number of lines
-            column = 0; // The number of columns is 0
+        // init emojis
+        self.emojis = [NSArray arrayWithContentsOfFile:getUDBundlePath(@"UDEmojiList.plist")];
+        
+        //
+        NSInteger rowNum = (CGRectGetHeight(self.bounds) / EmojiHeight);
+        NSInteger colNum = 8;
+        NSInteger numOfPage = ceil((float)[self.emojis count] / (float)(rowNum * colNum));
+        
+        // init backGroundView
+        
+        UIView *backGroundView = [[UIView alloc] initWithFrame:self.bounds];
+        [self addSubview:backGroundView];
+        
+        // add emojis
+        
+        NSInteger row = 0;
+        NSInteger column = 0;
+        NSInteger page = 0;
+        
+        NSInteger emojiPointer = 0;
+        for (int i = 0; i < [self.emojis count] + numOfPage - 1; i++) {
+            
+            // Pagination
+            if (i % (rowNum * colNum) == 0) {
+                page ++;    // Increase the number of pages
+                row = 0;    // the number of lines is 0
+                column = 0; // the number of columns is 0
+            }else if (i % colNum == 0) {
+                // NewLine
+                row += 1;   // Increase the number of lines
+                column = 0; // The number of columns is 0
+            }
+            
+            CGRect currentRect = CGRectMake(((page-1) * self.bounds.size.width) + (column * EmojiWidth),
+                                            row * EmojiHeight+10,
+                                            EmojiWidth,
+                                            EmojiHeight);
+            
+            if (row == (rowNum - 1) && column == (colNum - 1)) {
+                // last position of page, add delete button
+                
+            }else{
+                NSString *emoji = self.emojis[emojiPointer++];
+                
+                // init Emoji Button
+                UIButton *emojiButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                emojiButton.titleLabel.font = [UIFont fontWithName:@"Apple color emoji" size:EmojiFontSize];
+                [emojiButton setTitle:emoji forState:UIControlStateNormal];
+                [emojiButton addTarget:self action:@selector(emojiButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                emojiButton.frame = currentRect;
+                [backGroundView addSubview:emojiButton];
+            }
+            
+            column++;
         }
         
-        CGRect currentRect = CGRectMake(((page-1) * self.bounds.size.width) + (column * EmojiWidth),
-                                        row * EmojiHeight+10,
-                                        EmojiWidth,
-                                        EmojiHeight);
+        UIButton *sendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [sendBtn setTitle:getUDLocalizedString(@"udesk_send") forState:UIControlStateNormal];
+        sendBtn.frame = CGRectMake(UD_SCREEN_WIDTH-90, UD_SCREEN_WIDTH<375?150:166, 75, 38);;
+        sendBtn.backgroundColor = UDRGBACOLOR(8, 125, 253, 1);
+        UDViewRadius(sendBtn, 4);
+        [sendBtn addTarget:self action:@selector(sendAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:sendBtn];
         
-        if (row == (rowNum - 1) && column == (colNum - 1)) {
-            // last position of page, add delete button
-            
-        }else{
-            NSString *emoji = self.emojis[emojiPointer++];
-            
-            // init Emoji Button
-            UIButton *emojiButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            emojiButton.titleLabel.font = [UIFont fontWithName:@"Apple color emoji" size:EmojiFontSize];
-            [emojiButton setTitle:emoji forState:UIControlStateNormal];
-            [emojiButton addTarget:self action:@selector(emojiButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-            
-            emojiButton.frame = currentRect;
-            [backGroundView addSubview:emojiButton];
-        }
         
-        column++;
+        UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        deleteButton.frame = CGRectMake(sendBtn.frame.origin.x-50, UD_SCREEN_WIDTH<375?153:169, 36, 33);
+        deleteButton.titleLabel.font = [UIFont systemFontOfSize:12];
+        UIImage *deleteImage = [UIImage ud_defaultDeleteImage];
+        UIImage *deleteImageh = [UIImage ud_defaultDeleteHighlightedImage];
+        [deleteButton setBackgroundImage:deleteImage forState:UIControlStateNormal];
+        [deleteButton setBackgroundImage:deleteImageh forState:UIControlStateHighlighted];
+        deleteButton.tintColor = [UIColor blackColor];
+        [backGroundView addSubview:deleteButton];
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
     
-    UIButton *sendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [sendBtn setTitle:getUDLocalizedString(@"udesk_send") forState:UIControlStateNormal];
-    sendBtn.frame = CGRectMake(UD_SCREEN_WIDTH-90, UD_SCREEN_WIDTH<375?150:166, 75, 38);;
-    sendBtn.backgroundColor = UDRGBACOLOR(8, 125, 253, 1);
-    UDViewRadius(sendBtn, 4);
-    [sendBtn addTarget:self action:@selector(sendAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:sendBtn];
-    
-    
-    UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    deleteButton.frame = CGRectMake(sendBtn.frame.origin.x-50, UD_SCREEN_WIDTH<375?153:169, 36, 33);
-    deleteButton.titleLabel.font = [UIFont systemFontOfSize:12];
-    UIImage *deleteImage = [UIImage ud_defaultDeleteImage];
-    UIImage *deleteImageh = [UIImage ud_defaultDeleteHighlightedImage];
-    [deleteButton setBackgroundImage:deleteImage forState:UIControlStateNormal];
-    [deleteButton setBackgroundImage:deleteImageh forState:UIControlStateHighlighted];
-    deleteButton.tintColor = [UIColor blackColor];
-    [backGroundView addSubview:deleteButton];}
+}
 
 - (void)awakeFromNib {
     

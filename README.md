@@ -80,34 +80,24 @@ Udesk提供了一套开源的聊天界面，帮助开发者快速创建对话窗
 
 ![udesk](http://7xr0de.com1.z0.glb.clouddn.com/initUdesk.png)
 
-##### 注意：appKey、appID、domain都是必传字段
-
-```objective-c
-//初始化Udesk
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	// Override point for customization after application launch.
-    [UdeskManager initWithAppKey:@"App Key" appId:@"App ID" domain:@"公司注册的Udesk域名"];
-	return YES;
-}
-```
-#### 3.2初始化客户信息
+#### 3.1初始化客户信息
 
 用户系统字段是Udesk已定义好的字段，开发者可以传入这些用户信息，供客服查看。
 
 ```objective-c
-NSDictionary *parameters = @{
-@"user": @{
-@"nick_name": @"小明",
-@"cellphone":@"18888888888",
-@"email":@"xiaoming@qq.com",
-@"description":@"用户描述",
-@"sdk_token":@"xxxxxxxxxxx"
-}
-}
-[UdeskManager createCustomerWithCustomerInfo:parameters];
+//初始化公司（appKey、appID、domain都是必传字段）
+UdeskOrganization *organization = [[UdeskOrganization alloc] initWithDomain:"域名" appKey:"appKey" appId:"appId"];
+
+//注意sdktoken 是客户的唯一标识，用来识别身份,是你们生成传入给我们的。
+//sdk_token: 传入的字符请使用 字母 / 数字 等常见字符集 。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;其次如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。
+UdeskCustomer *customer = [UdeskCustomer new];
+customer.sdkToken = sdk_token;
+customer.nickName = @"我是udesk测试(可以随时把我关闭)";
+//初始化sdk
+[UdeskManager initWithOrganization:organization customer:customer];
 ```
 
-#### 3.3推出聊天页面
+#### 3.2推出聊天页面
 
 ```objective-c
 //使用push
@@ -306,8 +296,6 @@ App 进入后台后，Udesk推送给开发者服务端的消息数据格式中�
 **基本要求**
 
 - 推送接口只支持 http，不支持 https
-- 数据将以 JSON 格式发送
-- 请求 Body 数据为 JSON 格式，见示例
 - 请求时使用的 content-type 为 application/x-www-form-urlencoded
 
 **参数**
@@ -376,34 +364,25 @@ App 进入后台后，Udesk推送给开发者服务端的消息数据格式中�
 
 注意：以下接口在Udesk开源UI里均有调用，如果你使用Udesk的开源UI则不需要调用以下任何接口
 
-#### 6.1初始化SDK
-
-```objective-c
-//初始化Udesk
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-// Override point for customization after application launch.    
-[UdeskManager initWithAppKey:@"App Key" appId:@"App ID" domain:@"公司注册的Udesk域名"]; 
-return YES;
-}
-```
-
-#### 6.2初始化客户信息
+#### 6.1初始化公司和客户信息
 
 注意：若要在SDK中使用 用户自定义字段 需先在管理员网页端设置添加用户自定义字字段。 用户字段包含了一名客户的所用数据。目前Udesk支持自定义客户字段，您可以选择输入型字段、选择型字段或其他类型字段。
 
 用户系统字段是Udesk已定义好的字段，开发者可以传入这些用户信息，供客服查看。
 
 ```objective-c
-NSDictionary *parameters = @{
-@"user": @{
-@"nick_name": @"小明",
-@"cellphone":@"18888888888",
-@"email":@"xiaoming@qq.com",
-@"description":@"用户描述",
-@"sdk_token":@"xxxxxxxxxxx"
-}
-}
-[UdeskManager createCustomerWithCustomerInfo:parameters];
+//公司信息
+UdeskOrganization *organization = [[UdeskOrganization alloc] initWithDomain:"域名" appKey:"appKey" appId:"appId"];
+
+//客户信息
+UdeskCustomer *customer = [UdeskCustomer new];
+customer.sdkToken = sdk_token;
+customer.nickName = @"我是udesk测试(可以随时把我关闭)";
+customer.email = @"test@udesk.cn";
+customer.cellphone = @"18888888888";
+customer.customerDescription = @"我是测试";
+//初始化sdk
+[UdeskManager initWithOrganization:organization customer:customer];
 ```
 
 默认客户字段说明
@@ -416,13 +395,17 @@ NSDictionary *parameters = @{
 | description   | 可选     | 用户描述       |
 | nick_name     | 可选     | 用户名字       |
 
-**注意sdktoken** 是客户的唯一标识，用来识别身份，**sdk_token: 传入的字符请使用 字母 / 数字 等常见字符集** 。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;**其次**如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。 
+**注意sdktoken** 是客户的唯一标识，用来识别身份，是你们定义好传给我们，**sdk_token: 传入的字符请使用 字母 / 数字 等常见字符集** 。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;**其次**如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。 
 
-##### 6.2.1添加客户自定义字段
+##### 6.1.1添加客户自定义字段
 
 客户自定义字段需要管理员登录Udesk后台进入【管理中心-用户字段】添加用户自定义字段。![udesk](http://7xr0de.com1.z0.glb.clouddn.com/custom.jpeg)
 
 调用用户自定义字段函数
+
+注意：调用这个函数之前必须先调用[UdeskManager initWithOrganization:organization customer:customer];
+
+这个API调用一次获取到数据即可
 
 ```objective-c
 //获取用户自定义字段
@@ -455,61 +438,68 @@ requirment = 1;
 }
 ```
 
-使用:添加key值"customer_field" 类型为字典，根据返回的信息field_name的value 作为key，value根据需求定义。把这个键值对添加到customer_field。最后把customer_field添加到用户信息参数的user字典里  示例:
+使用:创建自定义字段对象，输入数值
+
+示例:
 
 ```objective-c
-NSDictionary *parameters = @{
-@"user": @{
-@"sdk_token": sdk_token,
-@"nick_name":nick_name,
-@"email":email,
-@"cellphone":cellphone,
-@"description":@"用户描述",
-@"customer_field":@{
-@"TextField_390":@"测试测试",
-@"SelectField_455":@[@"1"]
-}
+//公司
+UdeskOrganization *organization = [[UdeskOrganization alloc] initWithDomain:"域名" appKey:"appKey" appId:"appId"];
+//客户
+UdeskCustomer *customer = [UdeskCustomer new];
+customer.sdkToken = sdk_token;
+customer.nickName = @"我是udesk测试(可以随时把我关闭)";
 
-}
-};
+//文本类型字段
+UdeskCustomerCustomField *textField = [UdeskCustomerCustomField new];
+textField.fieldKey = @"TextField_390";
+textField.fieldValue = @"测试";
+
+//选择类型字段
+UdeskCustomerCustomField *selectField = [UdeskCustomerCustomField new];
+selectField.fieldKey = @"SelectField_455";
+selectField.fieldValue = @[@"1"];
+customer.customField = @[textField,selectField];
 ```
 
-**6.2.2创建用户**
+**6.1.2创建用户**
 
 此接口为必调用，否则无法使用SDK
 
 ```objective-c
-[UdeskManager createCustomerWithCustomerInfo:parameters];
+[UdeskManager initWithOrganization:organization customer:customer];
 ```
 
-##### 6.2.3更新用户信息
+##### 6.1.3更新用户信息
 
 根据需求自定义，不调用不影响主流程
 
 注意：
 
-- 参数跟创建用户信息的结构体大致一样(不需要传sdk_token)  
-- 用户自定义字段"customer_field"改为"custom_fields"其他不变
 - 请不要使用已经存在的邮箱或者手机号进行更新，否则会更新失败！
 
 ```objective-c
-NSDictionary *updateParameters = @{
-@"user" : @{
-@"nick_name":@"测试更新10",
-@"cellphone":@"323312110198754326231123",
-@"description":@"用户10描述",
-@"email":@"889092340491087556233290111@163.com",
-@"custom_fields":@{
-@"TextField_390":@"测试测试",
-@"SelectField_455":@[@"1"]
-}
-}
-};
+ UdeskCustomer *customer = [UdeskCustomer new];
+ customer.sdkToken = sdk_token;
+ customer.nickName = @"我是udesk测试(可以随时把我关闭)";
+ customer.email = @"test@udesk.cn";
+ customer.cellphone = @"18888888888";
+ customer.customerDescription = @"我是测试";
+ 
+ UdeskCustomerCustomField *textField = [UdeskCustomerCustomField new];
+ textField.fieldKey = @"TextField_390";
+ textField.fieldValue = @"测试";
+ 
+ UdeskCustomerCustomField *selectField = [UdeskCustomerCustomField new];
+ selectField.fieldKey = @"SelectField_455";
+ selectField.fieldValue = @[@"1"];
+ 
+ customer.customField = @[textField,selectField];
 
-[UdeskManager updateUserInformation:updateParameters];
+ [UdeskManager updateCustomer:customer];
 ```
 
-#### **6.3**添加咨询对象
+#### **6.2**添加咨询对象
 
 根据需求自定义，不调用不影响主流程
 
@@ -540,7 +530,7 @@ SDK 咨询对象展示:
 
 
 
-#### 6.4请求分配客服
+#### 6.3请求分配客服
 
 在获取当前客户的帐号信息后，调用此接口，请求分配客服，获得客服信息和以及排队信息，可参考开源UI
 
@@ -551,7 +541,7 @@ SDK 咨询对象展示:
 }];
 ```
 
-#### 6.5指定分配客服 
+#### 6.4指定分配客服 
 
 在获取当前客户的帐号信息后，调用此接口可主动指定分配客服，获得客服信息和以及排队信息，可参考开源UI
 
@@ -561,7 +551,7 @@ SDK 咨询对象展示:
 }];
 ```
 
-#### 6.6指定分配客服组
+#### 6.5指定分配客服组
 
 在获取当前客户的帐号信息后，调用此接口可主动指定分配客服组，获得客服信息和以及排队信息，可参考开源UI
 
@@ -577,7 +567,7 @@ SDK 咨询对象展示:
 
 管理员在【管理中心-即时通讯-网页插件-管理默认网站接入插件-基本信息-专用链接】中选择指定的客服组或客服，可看到客服ID和客服组ID。
 
-#### 6.7断开与Udesk服务器连接 
+#### 6.6断开与Udesk服务器连接 
 
 切换用户时，调用此接口断开上一个客户的连接
 
@@ -585,7 +575,7 @@ SDK 咨询对象展示:
 [UdeskManager logoutUdesk];
 ```
 
-#### 6.8设置客户上线
+#### 6.7设置客户上线
 
 连接Udesk服务器后客户默认在线，在设置客户离线后，调用此接口可以上客户重新上线。
 
@@ -714,6 +704,16 @@ BOOL isSession = [UdeskManager customersAreSession];
 # 八、更新记录
 
 #### 更新记录：
+
+sdk v3.7版本更新功能:
+
+1.支持离线直接留言
+2.SDK支持返回满意度调查和支持开关设置
+3.SDK支持接收和发送GIF
+4.SDK支持接收和发送视频
+5.SDK支持客服消息撤回
+
+------
 
 sdk v3.6.4版本更新功能:
 
