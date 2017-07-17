@@ -53,42 +53,53 @@ const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
         if (self.message.messageType == UDMessageContentTypeText) {
             [self linkText];
             textSize = [self setAttributedCellText:self.message.content messageFrom:self.message.messageFrom];
+            
+            switch (self.message.messageFrom) {
+                case UDMessageTypeSending:{
+                    
+                    //文本气泡frame
+                    self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x-kUDArrowMarginWidth-kUDBubbleToTextHorizontalSpacing*2-kUDAvatarToBubbleSpacing-textSize.width, self.avatarFrame.origin.y, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
+                    //文本frame
+                    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing, textSize.width, textSize.height);
+                    //加载中frame
+                    self.loadingFrame = CGRectMake(self.bubbleFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.bubbleFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
+                    
+                    //加载失败frame
+                    self.failureFrame = self.loadingFrame;
+                    
+                    break;
+                }
+                case UDMessageTypeReceiving:{
+                    
+                    //接收文字气泡frame
+                    self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
+                    //接收文字frame
+                    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing, textSize.width, textSize.height);
+                    
+                    break;
+                }
+                    
+                default:
+                    break;
+            }
+
+            //cell高度
+            self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
         }
         else if (self.message.messageType == UDMessageContentTypeRich) {
-            textSize = [self setRichAttributedCellText:self.message.content messageFrom:self.message.messageFrom];
-        }
-        
-        switch (self.message.messageFrom) {
-            case UDMessageTypeSending:{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 
-                //文本气泡frame
-                self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x-kUDArrowMarginWidth-kUDBubbleToTextHorizontalSpacing*2-kUDAvatarToBubbleSpacing-textSize.width, self.avatarFrame.origin.y, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
-                //文本frame
-                self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing, textSize.width, textSize.height);
-                //加载中frame
-                self.loadingFrame = CGRectMake(self.bubbleFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.bubbleFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
-                
-                //加载失败frame
-                self.failureFrame = self.loadingFrame;
-                
-                break;
-            }
-            case UDMessageTypeReceiving:{
-                
+                CGSize richTextSize = [self setRichAttributedCellText:self.message.content messageFrom:self.message.messageFrom];
                 //接收文字气泡frame
-                self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
+                self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, richTextSize.width+(kUDBubbleToTextHorizontalSpacing*3), richTextSize.height+(kUDBubbleToTextVerticalSpacing*2));
                 //接收文字frame
-                self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing, textSize.width, textSize.height);
-                
-                break;
-            }
-                
-            default:
-                break;
+                self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing, richTextSize.width, richTextSize.height);
+        
+                //cell高度
+                self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
+            });
         }
         
-        //cell高度
-        self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
