@@ -262,15 +262,18 @@ static const CGFloat kUDAnimationVoiceImageViewHeight    = 17.0f;
                 //欢迎语超链接
                 else if (message.messageType == UDMessageContentTypeRich) {
 
-                    [self setRichAttributedCellText:message.content messageFrom:message.messageFrom];
-
-                    CGSize textSize = [self neededSizeForText:message.content];
-                    //接收文字气泡frame
-                    self.bubbleImageFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
-                    //接收文字frame
-                    self.textFrame = CGRectMake(self.bubbleImageFrame.origin.x+kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, self.bubbleImageFrame.origin.y+kUDBubbleToTextVerticalSpacing, textSize.width, textSize.height);
-                    //cell高度
-                    self.cellHeight = self.bubbleImageFrame.size.height+self.bubbleImageFrame.origin.y+dateHeight;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                      
+                        [self setRichAttributedCellText:message.content messageFrom:message.messageFrom];
+                        
+                        CGSize textSize = [self neededSizeForText:message.content];
+                        //接收文字气泡frame
+                        self.bubbleImageFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
+                        //接收文字frame
+                        self.textFrame = CGRectMake(self.bubbleImageFrame.origin.x+kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, self.bubbleImageFrame.origin.y+kUDBubbleToTextVerticalSpacing, textSize.width, textSize.height);
+                        //cell高度
+                        self.cellHeight = self.bubbleImageFrame.size.height+self.bubbleImageFrame.origin.y+dateHeight;
+                    });
                 }
                 //图片消息
                 else if (message.messageType == UDMessageContentTypeImage) {
