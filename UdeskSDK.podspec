@@ -6,22 +6,29 @@
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
 #
 
-Pod::Spec.new do |spec|
-  spec.name         = 'UdeskSDK'
-  spec.version      = '3.6.4'
-  spec.license      = 'MIT'
-  spec.summary      = 'Udesk SDK for iOS'
-  spec.homepage     = 'https://github.com/udesk/UdeskSDK-iOS'
-  spec.author       = {'xuchen ' => 'xuc@udesk.cn'}
-  spec.source       =  {:git => 'https://github.com/udesk/UdeskSDK-iOS.git', :tag => spec.version.to_s }
-  spec.source_files = 'UdeskSDK/SDK/*.{h}','UdeskSDK/UDChatMessage/**/*.{h,m}'
-  spec.platform     = :ios, '6.0'
-  spec.requires_arc = true
-  spec.frameworks = 'AVFoundation', 'CoreTelephony', 'SystemConfiguration', 'MobileCoreServices'
-  spec.libraries    = 'z', 'xml2', 'resolv', 'sqlite3'
-  spec.resource     = 'UdeskSDK/UDChatMessage/UDResource/UdeskBundle.bundle'
-  spec.vendored_libraries = 'UdeskSDK/SDK/libUdesk.a'
-  spec.xcconfig     = {'OTHER_LDFLAGS' => '-ObjC',
+Pod::Spec.new do |s|
+  s.name         = 'UdeskSDK'
+  s.version      = '3.7'
+  s.license      = 'MIT'
+  s.summary      = 'Udesk SDK for iOS'
+  s.homepage     = 'https://github.com/udesk/UdeskSDK-iOS'
+  s.author       = {'xuchen ' => 'xuc@udesk.cn'}
+  s.source       =  {:git => 'https://github.com/udesk/UdeskSDK-iOS.git', :tag => spec.version.to_s }
+  s.platform     = :ios, '6.0'
+  s.requires_arc = true
+
+  s.subspec 'SDK' do |ss|
+    ss.frameworks = 'AVFoundation', 'CoreTelephony', 'SystemConfiguration', 'MobileCoreServices'
+    ss.source_files = 'UdeskSDK/SDK/*.{h}'
+    ss.vendored_libraries = 'UdeskSDK/SDK/libUdesk.a'
+    ss.libraries    = 'z', 'xml2', 'resolv', 'sqlite3'
+    ss.xcconfig     = {'OTHER_LDFLAGS' => '-ObjC',
                        'HEADER_SEARCH_PATHS' => '$(SDKROOT)/usr/include/libxml2'}
+  end
+  s.subspec 'UIKit' do |ss|
+    ss.source_files = 'UdeskSDK/UDChatMessage/**/*.{h,m}'
+    ss.resource     = 'UdeskSDK/UDChatMessage/UDResource/UdeskBundle.bundle'
+    ss.dependency 'UdeskSDK/SDK'
+  end
 
 end
