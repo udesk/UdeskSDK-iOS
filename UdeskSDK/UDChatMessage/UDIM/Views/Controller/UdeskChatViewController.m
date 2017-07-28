@@ -194,12 +194,12 @@
 //刷新表
 - (void)reloadChatTableView {
 
-    //是否需要下拉刷新
-    [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
     @udWeakify(self);
     //更新消息内容
     dispatch_async(dispatch_get_main_queue(), ^{
         @udStrongify(self);
+        //是否需要下拉刷新
+        [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
         [self.messageTableView reloadData];
     });
 }
