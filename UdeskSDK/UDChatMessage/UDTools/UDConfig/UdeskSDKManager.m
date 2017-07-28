@@ -44,6 +44,9 @@
         _sdkConfig = [UdeskSDKConfig sharedConfig];
         _sdkConfig.sdkStyle = style;
         _show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
+        
+        //做清除缓存数据操作
+        [self cleanSDKConfigData];
     }
     return self;
 }
@@ -355,6 +358,20 @@
 - (void)leaveChatViewControllerCallBack:(void(^)(void))completion {
     
     _sdkConfig.leaveChatViewController = completion;
+}
+
+- (void)cleanSDKConfigData {
+    
+    if (!_sdkConfig) {
+        return;
+    }
+    _sdkConfig.scheduledGroupId = nil;
+    _sdkConfig.scheduledGroupId = nil;
+    _sdkConfig.productDictionary = nil;
+    _sdkConfig.customerImage = nil;
+    _sdkConfig.customerImageURL = nil;
+    _sdkConfig.imTitle = nil;
+    _sdkConfig.robotTtile = nil;
 }
 
 @end
