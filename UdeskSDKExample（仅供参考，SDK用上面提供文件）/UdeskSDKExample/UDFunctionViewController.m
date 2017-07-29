@@ -240,7 +240,7 @@
     [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 - (void)ticket:(id)sender {
-    
+
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
     [chatViewManager pushUdeskInViewController:self udeskType:UdeskTicket completion:nil];
 }

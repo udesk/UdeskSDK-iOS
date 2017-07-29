@@ -1365,7 +1365,7 @@
 					"-lxml2",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp11321;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1398,7 +1398,7 @@
 					"-lxml2",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp11321;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

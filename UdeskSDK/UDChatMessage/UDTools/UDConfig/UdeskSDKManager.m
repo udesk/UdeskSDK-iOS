@@ -365,13 +365,20 @@
     if (!_sdkConfig) {
         return;
     }
-    _sdkConfig.scheduledGroupId = nil;
+    
+    _sdkConfig.scheduledAgentId = nil;
     _sdkConfig.scheduledGroupId = nil;
     _sdkConfig.productDictionary = nil;
-    _sdkConfig.customerImage = nil;
+    _sdkConfig.customerImage = [UIImage ud_defaultCustomerImage];
     _sdkConfig.customerImageURL = nil;
     _sdkConfig.imTitle = nil;
     _sdkConfig.robotTtile = nil;
+    _sdkConfig.faqTitle = nil;
+    _sdkConfig.transferText = nil;
+    _sdkConfig.ticketTitle = nil;
+    _sdkConfig.articleTitle = nil;
+    _sdkConfig.agentMenuTitle = nil;
+    _sdkConfig.name = nil;
 }
 
 @end
