@@ -18,14 +18,12 @@
 #import "UdeskSDKManager.h"
 #import "UdeskSDKShow.h"
 #import "UdeskAgentMenuViewController.h"
+#import <WebKit/WebKit.h>
 
 @interface UdeskRobotViewController ()
 
 @property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
 @property (nonatomic, strong) NSURL *robotURL;
-
-
-@property (nonatomic, strong) UIWebView *sbWebView;
 
 @end
 
@@ -49,17 +47,30 @@
                 }
                 
                 CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
-                UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:webViewRect];
-                intelligenceWeb.backgroundColor=[UIColor whiteColor];
+
+                if (ud_isIOS8) {
+                    WKWebView *intelligenceWeb = [[WKWebView alloc] initWithFrame:webViewRect];
+                    intelligenceWeb.backgroundColor=[UIColor whiteColor];
+                    
+                    NSURL *ticketURL = self.robotURL;
+                    
+                    NSURLRequest *request = [NSURLRequest requestWithURL:ticketURL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
+                    [intelligenceWeb loadRequest:request];
+                    
+                    [self.view addSubview:intelligenceWeb];
+                }
+                else {
                 
-                NSURL *ticketURL = self.robotURL;
-                
-                NSURLRequest *request = [NSURLRequest requestWithURL:ticketURL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
-                [intelligenceWeb loadRequest:request];
-                
-                [self.view addSubview:intelligenceWeb];
-                
-                self.sbWebView = intelligenceWeb;
+                    UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:webViewRect];
+                    intelligenceWeb.backgroundColor=[UIColor whiteColor];
+                    
+                    NSURL *ticketURL = self.robotURL;
+                    
+                    NSURLRequest *request = [NSURLRequest requestWithURL:ticketURL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
+                    [intelligenceWeb loadRequest:request];
+                    
+                    [self.view addSubview:intelligenceWeb];
+                }
             }
             else {
                 

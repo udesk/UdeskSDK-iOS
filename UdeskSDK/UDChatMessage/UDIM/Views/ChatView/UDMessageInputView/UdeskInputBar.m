@@ -110,33 +110,81 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     self.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.inputViewColor;
     [self addSubview:_inputTextView];
     
+    //所有都隐藏了
+    if (self.hiddenEmotionButton && self.hiddenVoiceButton && self.hiddenCameraButton && self.hiddenAlbumButton && !self.enableImSurvey.boolValue) {
+        [self updateInputBarForLeaveMessage];
+        return;
+    }
+    
     //表情
     emotionButton = [self createButtonWithImage:[UIImage ud_defaultSmileImage] HLImage:[UIImage ud_defaultSmileHighlightedImage]];
     emotionButton.frame = CGRectMake(InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    emotionButton.hidden = self.hiddenEmotionButton;
     [emotionButton addTarget:self action:@selector(emotionClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:emotionButton];
     
     //语音
     voiceButton = [self createButtonWithImage:[UIImage ud_defaultVoiceImage] HLImage:[UIImage ud_defaultVoiceHighlightedImage]];
-    voiceButton.frame = CGRectMake(emotionButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    CGFloat voiceButtonX = emotionButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing;
+    if (self.hiddenEmotionButton) {
+        voiceButtonX = InputBarViewButtonToHorizontalEdgeSpacing;
+    }
+    voiceButton.frame = CGRectMake(voiceButtonX, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    voiceButton.hidden = self.hiddenVoiceButton;
     [voiceButton addTarget:self action:@selector(voiceClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:voiceButton];
     
     //相机
     cameraButton = [self createButtonWithImage:[UIImage ud_defaultCameraImage] HLImage:[UIImage ud_defaultCameraHighlightedImage]];
-    cameraButton.frame = CGRectMake(voiceButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    
+    CGFloat cameraButtonX = InputBarViewButtonToHorizontalEdgeSpacing + voiceButton.ud_right;
+    if (self.hiddenVoiceButton) {
+        cameraButtonX = cameraButtonX - voiceButton.ud_right + emotionButton.ud_right;
+        if (self.hiddenEmotionButton) {
+            cameraButtonX = InputBarViewButtonToHorizontalEdgeSpacing;
+        }
+    }
+
+    cameraButton.frame = CGRectMake(cameraButtonX, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    cameraButton.hidden = self.hiddenCameraButton;
     [cameraButton addTarget:self action:@selector(cameraButton:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:cameraButton];
     
+    CGFloat albumButtonX = cameraButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing;
+    if (self.hiddenCameraButton) {
+        albumButtonX = albumButtonX - cameraButton.ud_right + voiceButton.ud_right;
+        if (self.hiddenVoiceButton) {
+            albumButtonX = albumButtonX - voiceButton.ud_right + emotionButton.ud_right;
+            if (self.hiddenEmotionButton) {
+                albumButtonX = InputBarViewButtonToHorizontalEdgeSpacing;
+            }
+        }
+    }
+
     //相册
     albumButton = [self createButtonWithImage:[UIImage ud_defaultPhotoImage] HLImage:[UIImage ud_defaultPhotoHighlightedImage]];
-    albumButton.frame = CGRectMake(cameraButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    albumButton.frame = CGRectMake(albumButtonX, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    albumButton.hidden = self.hiddenAlbumButton;
     [albumButton addTarget:self action:@selector(albumButton:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:albumButton];
     
+    CGFloat surveyButtonX = albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing;
+    if (self.hiddenAlbumButton) {
+        surveyButtonX = surveyButtonX - albumButton.ud_right + cameraButton.ud_right;
+        if (self.hiddenCameraButton) {
+            surveyButtonX = surveyButtonX - cameraButton.ud_right + voiceButton.ud_right;
+            if (self.hiddenVoiceButton) {
+                surveyButtonX = surveyButtonX - voiceButton.ud_right + emotionButton.ud_right;
+                if (self.hiddenEmotionButton) {
+                    surveyButtonX = InputBarViewButtonToHorizontalEdgeSpacing;
+                }
+            }
+        }
+    }
+    
     //评价
     surveyButton = [self createButtonWithImage:[UIImage ud_defaultSurveyImage] HLImage:[UIImage ud_defaultSurveyHighlightedImage]];
-    surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    surveyButton.frame = CGRectMake(surveyButtonX, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
     surveyButton.hidden = !self.enableImSurvey.boolValue;
     [surveyButton addTarget:self action:@selector(surveyButton:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:surveyButton];
@@ -409,11 +457,21 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     if (self.ud_height == 50.f) {
         return;
     }
-    emotionButton.hidden = YES;
-    voiceButton.hidden = YES;
-    cameraButton.hidden = YES;
-    albumButton.hidden = YES;
-    surveyButton.hidden = YES;
+    if (emotionButton) {
+        emotionButton.hidden = YES;
+    }
+    if (voiceButton) {
+        voiceButton.hidden = YES;
+    }
+    if (cameraButton) {
+        cameraButton.hidden = YES;
+    }
+    if (albumButton) {
+        albumButton.hidden = YES;
+    }
+    if (surveyButton) {
+        surveyButton.hidden = YES;
+    }
     
     CGFloat inputViewHeight = 50.f;
     self.ud_height = inputViewHeight;
@@ -421,11 +479,58 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     [messageTableView setTableViewInsetsWithBottomValue:inputViewHeight];
 }
 
+//隐藏满意度
 - (void)setEnableImSurvey:(NSNumber *)enableImSurvey {
 
     _enableImSurvey = enableImSurvey;
     if (surveyButton) {
         surveyButton.hidden = enableImSurvey.boolValue;
+    }
+}
+
+//隐藏相册
+- (void)setHiddenAlbumButton:(BOOL)hiddenAlbumButton {
+    
+    _hiddenAlbumButton = hiddenAlbumButton;
+    if (albumButton) {
+        albumButton.hidden = hiddenAlbumButton;
+        surveyButton.frame = CGRectMake(cameraButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    }
+}
+
+//隐藏语音
+- (void)setHiddenVoiceButton:(BOOL)hiddenVoiceButton {
+    
+    _hiddenVoiceButton = hiddenVoiceButton;
+    if (voiceButton) {
+        voiceButton.hidden = hiddenVoiceButton;
+        cameraButton.frame = CGRectMake(emotionButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+        albumButton.frame = CGRectMake(cameraButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+        surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    }
+}
+
+//隐藏表情
+- (void)setHiddenEmotionButton:(BOOL)hiddenEmotionButton {
+    
+    _hiddenEmotionButton = hiddenEmotionButton;
+    if (emotionButton) {
+        emotionButton.hidden = hiddenEmotionButton;
+        voiceButton.frame = CGRectMake(InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+        cameraButton.frame = CGRectMake(voiceButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+        albumButton.frame = CGRectMake(cameraButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+        surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    }
+}
+
+//隐藏相机
+- (void)setHiddenCameraButton:(BOOL)hiddenCameraButton {
+    
+    _hiddenCameraButton = hiddenCameraButton;
+    if (cameraButton) {
+        cameraButton.hidden = hiddenCameraButton;
+        albumButton.frame = CGRectMake(voiceButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+        surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
     }
 }
 

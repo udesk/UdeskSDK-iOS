@@ -10,22 +10,9 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#if __has_include(<YYCache/YYCache.h>)
-FOUNDATION_EXPORT double YYCacheVersionNumber;
-FOUNDATION_EXPORT const unsigned char YYCacheVersionString[];
-#import <YYCache/Udesk_YYMemoryCache.h>
-#import <YYCache/Udesk_YYDiskCache.h>
-#import <YYCache/Udesk_YYKVStorage.h>
-#elif __has_include(<YYWebImage/YYCache.h>)
-#import <YYWebImage/Udesk_YYMemoryCache.h>
-#import <YYWebImage/Udesk_YYDiskCache.h>
-#import <YYWebImage/Udesk_YYKVStorage.h>
-#else
 #import "Udesk_YYMemoryCache.h"
 #import "Udesk_YYDiskCache.h"
 #import "Udesk_YYKVStorage.h"
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 

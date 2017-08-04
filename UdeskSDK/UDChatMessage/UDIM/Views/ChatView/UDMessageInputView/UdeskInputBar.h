@@ -67,6 +67,10 @@ typedef NS_ENUM(NSUInteger, UDInputViewType) {
 @property (nonatomic, weak) id <UdeskInputBarDelegate> delegate;
 
 @property (nonatomic, strong) NSNumber *enableImSurvey;
+@property (nonatomic, assign) BOOL     hiddenVoiceButton;
+@property (nonatomic, assign) BOOL     hiddenEmotionButton;
+@property (nonatomic, assign) BOOL     hiddenCameraButton;
+@property (nonatomic, assign) BOOL     hiddenAlbumButton;
 
 - (instancetype)initWithFrame:(CGRect)frame
                     tableView:(UdeskMessageTableView *)tabelView;

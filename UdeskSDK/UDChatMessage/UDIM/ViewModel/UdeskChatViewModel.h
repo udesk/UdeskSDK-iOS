@@ -78,7 +78,6 @@
 /**
  *  重发失败的消息
  *
- *  @param message    失败的消息
  *  @param completion 发送回调
  */
 - (void)resendFailedMessage:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion;

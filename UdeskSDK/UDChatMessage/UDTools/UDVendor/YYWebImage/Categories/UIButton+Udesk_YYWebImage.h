@@ -1,5 +1,5 @@
 //
-//  UIImageView+YYWebImage.h
+//  UIButton+YYWebImage.h
 //  YYWebImage <https://github.com/ibireme/YYWebImage>
 //
 //  Created by ibireme on 15/2/23.
@@ -10,64 +10,65 @@
 //
 
 #import <UIKit/UIKit.h>
-
-#if __has_include(<YYWebImage/YYWebImage.h>)
-#import <YYWebImage/Udesk_YYWebImageManager.h>
-#else
 #import "Udesk_YYWebImageManager.h"
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- Web image methods for UIImageView.
+ Web image methods for UIButton.
  */
-@interface UIImageView (YYWebImage)
+@interface UIButton (Udesk_YYWebImage)
 
 #pragma mark - image
 
 /**
- Current image URL.
- 
- @discussion Set a new value to this property will cancel the previous request 
- operation and create a new request operation to fetch image. Set nil to clear 
- the image and image URL.
+ Current image URL for the specified state.
+ @return The image URL, or nil.
  */
-@property (nullable, nonatomic, strong) NSURL *yy_imageURL;
+- (nullable NSURL *)yy_imageURLForState:(UIControlState)state;
 
 /**
- Set the view's `image` with a specified URL.
+ Set the button's image with a specified URL for the specified state.
  
  @param imageURL    The image url (remote or local file path).
+ @param state       The state that uses the specified image.
  @param placeholder The image to be set initially, until the image request finishes.
  */
-- (void)yy_setImageWithURL:(nullable NSURL *)imageURL placeholder:(nullable UIImage *)placeholder;
+- (void)yy_setImageWithURL:(nullable NSURL *)imageURL
+                  forState:(UIControlState)state
+               placeholder:(nullable UIImage *)placeholder;
 
 /**
- Set the view's `image` with a specified URL.
+ Set the button's image with a specified URL for the specified state.
  
  @param imageURL The image url (remote or local file path).
+ @param state    The state that uses the specified image.
  @param options  The options to use when request the image.
  */
-- (void)yy_setImageWithURL:(nullable NSURL *)imageURL options:(YYWebImageOptions)options;
+- (void)yy_setImageWithURL:(nullable NSURL *)imageURL
+                  forState:(UIControlState)state
+                   options:(YYWebImageOptions)options;
 
 /**
- Set the view's `image` with a specified URL.
+ Set the button's image with a specified URL for the specified state.
  
  @param imageURL    The image url (remote or local file path).
+ @param state       The state that uses the specified image.
  @param placeholder The image to be set initially, until the image request finishes.
  @param options     The options to use when request the image.
  @param completion  The block invoked (on main thread) when image request completed.
  */
 - (void)yy_setImageWithURL:(nullable NSURL *)imageURL
+                  forState:(UIControlState)state
                placeholder:(nullable UIImage *)placeholder
                    options:(YYWebImageOptions)options
                 completion:(nullable YYWebImageCompletionBlock)completion;
 
 /**
- Set the view's `image` with a specified URL.
+ Set the button's image with a specified URL for the specified state.
  
  @param imageURL    The image url (remote or local file path).
+ @param state       The state that uses the specified image.
  @param placeholder The image to be set initially, until the image request finishes.
  @param options     The options to use when request the image.
  @param progress    The block invoked (on main thread) during image request.
@@ -75,6 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completion  The block invoked (on main thread) when image request completed.
  */
 - (void)yy_setImageWithURL:(nullable NSURL *)imageURL
+                  forState:(UIControlState)state
                placeholder:(nullable UIImage *)placeholder
                    options:(YYWebImageOptions)options
                   progress:(nullable YYWebImageProgressBlock)progress
@@ -82,10 +84,11 @@ NS_ASSUME_NONNULL_BEGIN
                 completion:(nullable YYWebImageCompletionBlock)completion;
 
 /**
- Set the view's `image` with a specified URL.
+ Set the button's image with a specified URL for the specified state.
  
  @param imageURL    The image url (remote or local file path).
- @param placeholder he image to be set initially, until the image request finishes.
+ @param state       The state that uses the specified image.
+ @param placeholder The image to be set initially, until the image request finishes.
  @param options     The options to use when request the image.
  @param manager     The manager to create image request operation.
  @param progress    The block invoked (on main thread) during image request.
@@ -93,6 +96,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completion  The block invoked (on main thread) when image request completed.
  */
 - (void)yy_setImageWithURL:(nullable NSURL *)imageURL
+                  forState:(UIControlState)state
                placeholder:(nullable UIImage *)placeholder
                    options:(YYWebImageOptions)options
                    manager:(nullable Udesk_YYWebImageManager *)manager
@@ -101,73 +105,82 @@ NS_ASSUME_NONNULL_BEGIN
                 completion:(nullable YYWebImageCompletionBlock)completion;
 
 /**
- Cancel the current image request.
+ Cancel the current image request for a specified state.
+ @param state The state that uses the specified image.
  */
-- (void)yy_cancelCurrentImageRequest;
+- (void)yy_cancelImageRequestForState:(UIControlState)state;
 
 
 
-#pragma mark - highlight image
+#pragma mark - background image
 
 /**
- Current highlighted image URL.
- 
- @discussion Set a new value to this property will cancel the previous request
- operation and create a new request operation to fetch image. Set nil to clear
- the highlighted image and image URL.
+ Current backgroundImage URL for the specified state.
+ @return The image URL, or nil.
  */
-@property (nullable, nonatomic, strong) NSURL *yy_highlightedImageURL;
+- (nullable NSURL *)yy_backgroundImageURLForState:(UIControlState)state;
 
 /**
- Set the view's `highlightedImage` with a specified URL.
+ Set the button's backgroundImage with a specified URL for the specified state.
  
  @param imageURL    The image url (remote or local file path).
+ @param state       The state that uses the specified image.
  @param placeholder The image to be set initially, until the image request finishes.
  */
-- (void)yy_setHighlightedImageWithURL:(nullable NSURL *)imageURL placeholder:(nullable UIImage *)placeholder;
+- (void)yy_setBackgroundImageWithURL:(nullable NSURL *)imageURL
+                            forState:(UIControlState)state
+                         placeholder:(nullable UIImage *)placeholder;
 
 /**
- Set the view's `highlightedImage` with a specified URL.
+ Set the button's backgroundImage with a specified URL for the specified state.
  
  @param imageURL The image url (remote or local file path).
+ @param state    The state that uses the specified image.
  @param options  The options to use when request the image.
  */
-- (void)yy_setHighlightedImageWithURL:(nullable NSURL *)imageURL options:(YYWebImageOptions)options;
+- (void)yy_setBackgroundImageWithURL:(nullable NSURL *)imageURL
+                            forState:(UIControlState)state
+                             options:(YYWebImageOptions)options;
 
 /**
- Set the view's `highlightedImage` with a specified URL.
+ Set the button's backgroundImage with a specified URL for the specified state.
  
  @param imageURL    The image url (remote or local file path).
+ @param state       The state that uses the specified image.
  @param placeholder The image to be set initially, until the image request finishes.
  @param options     The options to use when request the image.
  @param completion  The block invoked (on main thread) when image request completed.
  */
-- (void)yy_setHighlightedImageWithURL:(nullable NSURL *)imageURL
-                          placeholder:(nullable UIImage *)placeholder
-                              options:(YYWebImageOptions)options
-                           completion:(nullable YYWebImageCompletionBlock)completion;
+- (void)yy_setBackgroundImageWithURL:(nullable NSURL *)imageURL
+                            forState:(UIControlState)state
+                         placeholder:(nullable UIImage *)placeholder
+                             options:(YYWebImageOptions)options
+                          completion:(nullable YYWebImageCompletionBlock)completion;
 
 /**
- Set the view's `highlightedImage` with a specified URL.
+ Set the button's backgroundImage with a specified URL for the specified state.
  
  @param imageURL    The image url (remote or local file path).
+ @param state       The state that uses the specified image.
  @param placeholder The image to be set initially, until the image request finishes.
  @param options     The options to use when request the image.
  @param progress    The block invoked (on main thread) during image request.
  @param transform   The block invoked (on background thread) to do additional image process.
  @param completion  The block invoked (on main thread) when image request completed.
  */
-- (void)yy_setHighlightedImageWithURL:(nullable NSURL *)imageURL
-                          placeholder:(nullable UIImage *)placeholder
-                              options:(YYWebImageOptions)options
-                             progress:(nullable YYWebImageProgressBlock)progress
-                            transform:(nullable YYWebImageTransformBlock)transform
-                           completion:(nullable YYWebImageCompletionBlock)completion;
+- (void)yy_setBackgroundImageWithURL:(nullable NSURL *)imageURL
+                            forState:(UIControlState)state
+                         placeholder:(nullable UIImage *)placeholder
+                             options:(YYWebImageOptions)options
+                            progress:(nullable YYWebImageProgressBlock)progress
+                           transform:(nullable YYWebImageTransformBlock)transform
+                          completion:(nullable YYWebImageCompletionBlock)completion;
 
 /**
- Set the view's `highlightedImage` with a specified URL.
+ Set the button's backgroundImage with a specified URL for the specified state.
  
  @param imageURL    The image url (remote or local file path).
+ @param state       The state that uses the specified image.
  @param placeholder The image to be set initially, until the image request finishes.
  @param options     The options to use when request the image.
  @param manager     The manager to create image request operation.
@@ -175,18 +188,20 @@ NS_ASSUME_NONNULL_BEGIN
  @param transform   The block invoked (on background thread) to do additional image process.
  @param completion  The block invoked (on main thread) when image request completed.
  */
-- (void)yy_setHighlightedImageWithURL:(nullable NSURL *)imageURL
-                          placeholder:(nullable UIImage *)placeholder
-                              options:(YYWebImageOptions)options
-                              manager:(nullable Udesk_YYWebImageManager *)manager
-                             progress:(nullable YYWebImageProgressBlock)progress
-                            transform:(nullable YYWebImageTransformBlock)transform
-                           completion:(nullable YYWebImageCompletionBlock)completion;
+- (void)yy_setBackgroundImageWithURL:(nullable NSURL *)imageURL
+                            forState:(UIControlState)state
+                         placeholder:(nullable UIImage *)placeholder
+                             options:(YYWebImageOptions)options
+                             manager:(nullable Udesk_YYWebImageManager *)manager
+                            progress:(nullable YYWebImageProgressBlock)progress
+                           transform:(nullable YYWebImageTransformBlock)transform
+                          completion:(nullable YYWebImageCompletionBlock)completion;
 
 /**
- Cancel the current highlighed image request.
+ Cancel the current backgroundImage request for a specified state.
+ @param state The state that uses the specified image.
  */
-- (void)yy_cancelCurrentHighlightedImageRequest;
+- (void)yy_cancelBackgroundImageRequestForState:(UIControlState)state;
 
 @end
 

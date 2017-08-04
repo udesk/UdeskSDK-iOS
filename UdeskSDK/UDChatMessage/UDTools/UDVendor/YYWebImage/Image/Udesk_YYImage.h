@@ -10,25 +10,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
-#if __has_include(<YYImage/YYImage.h>)
-FOUNDATION_EXPORT double YYImageVersionNumber;
-FOUNDATION_EXPORT const unsigned char YYImageVersionString[];
-#import <YYImage/Udesk_YYFrameImage.h>
-#import <YYImage/Udesk_YYSpriteSheetImage.h>
-#import <YYImage/Udesk_YYImageCoder.h>
-#import <YYImage/Udesk_YYAnimatedImageView.h>
-#elif __has_include(<YYWebImage/YYImage.h>)
-#import <YYWebImage/Udesk_YYFrameImage.h>
-#import <YYWebImage/YYSpriteSheetImage.h>
-#import <YYWebImage/Udesk_YYImageCoder.h>
-#import <YYWebImage/Udesk_YYAnimatedImageView.h>
-#else
 #import "Udesk_YYFrameImage.h"
 #import "Udesk_YYSpriteSheetImage.h"
 #import "Udesk_YYImageCoder.h"
 #import "Udesk_YYAnimatedImageView.h"
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 

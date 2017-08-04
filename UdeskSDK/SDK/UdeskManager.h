@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.7
+//  Version: 3.7.1
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -267,13 +267,6 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  *  @warning 需要先调用创建用户接口
  */
 + (BOOL)isBlacklisted;
-
-/**
- *  获取sdk版本
- *
- *  @return sdk版本
- */
-+ (NSString *)udeskSDKVersion;
 
 /**
  *  获取满意度调查选项

@@ -10,14 +10,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-#if __has_include(<YYImage/YYImage.h>)
-#import <YYImage/Udesk_YYAnimatedImageView.h>
-#elif __has_include(<YYWebImage/YYImage.h>)
-#import <YYWebImage/Udesk_YYAnimatedImageView.h>
-#else
 #import "Udesk_YYAnimatedImageView.h"
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 

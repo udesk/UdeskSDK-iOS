@@ -1,5 +1,5 @@
 //
-//  CALayer+YYWebImage.m
+//  MKAnnotationView+YYWebImage.m
 //  YYWebImage <https://github.com/ibireme/YYWebImage>
 //
 //  Created by ibireme on 15/2/23.
@@ -9,19 +9,19 @@
 //  LICENSE file in the root directory of this source tree.
 //
 
-#import "CALayer+YYWebImage.h"
+#import "MKAnnotationView+Udesk_YYWebImage.h"
 #import "Udesk_YYWebImageOperation.h"
 #import "Udesk_YYWebImageSetter.h"
 #import <objc/runtime.h>
 
 // Dummy class for category
-@interface Udesk_CALayer_YYWebImage : NSObject @end
-@implementation Udesk_CALayer_YYWebImage @end
+@interface Udesk_MKAnnotationView_YYWebImage : NSObject @end
+@implementation Udesk_MKAnnotationView_YYWebImage @end
 
 
 static int Udesk_YYWebImageSetterKey;
 
-@implementation CALayer (YYWebImage)
+@implementation MKAnnotationView (Udesk_YYWebImage)
 
 - (NSURL *)yy_imageURL {
     Udesk_YYWebImageSetter *setter = objc_getAssociatedObject(self, &Udesk_YYWebImageSetterKey);
@@ -96,7 +96,6 @@ static int Udesk_YYWebImageSetterKey;
     if ([imageURL isKindOfClass:[NSString class]]) imageURL = [NSURL URLWithString:(id)imageURL];
     manager = manager ? manager : [Udesk_YYWebImageManager sharedManager];
     
-    
     Udesk_YYWebImageSetter *setter = objc_getAssociatedObject(self, &Udesk_YYWebImageSetterKey);
     if (!setter) {
         setter = [Udesk_YYWebImageSetter new];
@@ -107,12 +106,13 @@ static int Udesk_YYWebImageSetterKey;
     _yy_dispatch_sync_on_main_queue(^{
         if ((options & YYWebImageOptionSetImageWithFadeAnimation) &&
             !(options & YYWebImageOptionAvoidSetImage)) {
-            [self removeAnimationForKey:Udesk_YYWebImageFadeAnimationKey];
+            if (!self.highlighted) {
+                [self.layer removeAnimationForKey:Udesk_YYWebImageFadeAnimationKey];
+            }
         }
-        
         if (!imageURL) {
             if (!(options & YYWebImageOptionIgnorePlaceHolder)) {
-                self.contents = (id)placeholder.CGImage;
+                self.image = placeholder;
             }
             return;
         }
@@ -126,14 +126,14 @@ static int Udesk_YYWebImageSetterKey;
         }
         if (imageFromMemory) {
             if (!(options & YYWebImageOptionAvoidSetImage)) {
-                self.contents = (id)imageFromMemory.CGImage;
+                self.image = imageFromMemory;
             }
             if(completion) completion(imageFromMemory, imageURL, YYWebImageFromMemoryCacheFast, YYWebImageStageFinished, nil);
             return;
         }
         
         if (!(options & YYWebImageOptionIgnorePlaceHolder)) {
-            self.contents = (id)placeholder.CGImage;
+            self.image = placeholder;
         }
         
         __weak typeof(self) _self = self;
@@ -150,7 +150,7 @@ static int Udesk_YYWebImageSetterKey;
             YYWebImageCompletionBlock _completion = ^(UIImage *image, NSURL *url, YYWebImageFromType from, YYWebImageStage stage, NSError *error) {
                 __strong typeof(_self) self = _self;
                 BOOL setImage = (stage == YYWebImageStageFinished || stage == YYWebImageStageProgress) && image && !(options & YYWebImageOptionAvoidSetImage);
-                BOOL showFade = (options & YYWebImageOptionSetImageWithFadeAnimation);
+                BOOL showFade = ((options & YYWebImageOptionSetImageWithFadeAnimation) && !self.highlighted);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     BOOL sentinelChanged = weakSetter && weakSetter.sentinel != newSentinel;
                     if (setImage && self && !sentinelChanged) {
@@ -159,9 +159,9 @@ static int Udesk_YYWebImageSetterKey;
                             transition.duration = stage == YYWebImageStageFinished ? Udesk_YYWebImageFadeTime : Udesk_YYWebImageProgressiveFadeTime;
                             transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
                             transition.type = kCATransitionFade;
-                            [self addAnimation:transition forKey:Udesk_YYWebImageFadeAnimationKey];
+                            [self.layer addAnimation:transition forKey:Udesk_YYWebImageFadeAnimationKey];
                         }
-                        self.contents = (id)image.CGImage;
+                        self.image = image;
                     }
                     if (completion) {
                         if (sentinelChanged) {
@@ -176,8 +176,6 @@ static int Udesk_YYWebImageSetterKey;
             newSentinel = [setter setOperationWithSentinel:sentinel url:imageURL options:options manager:manager progress:_progress transform:transform completion:_completion];
             weakSetter = setter;
         });
-        
-        
     });
 }
 

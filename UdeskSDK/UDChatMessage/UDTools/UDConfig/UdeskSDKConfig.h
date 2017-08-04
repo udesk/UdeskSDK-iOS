@@ -90,6 +90,21 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 /** 离开聊天页面回调 */
 @property (nonatomic, copy) void(^leaveChatViewController)(void);
 
+/** 是否隐藏语音 */
+@property (nonatomic, assign) BOOL     hiddenVoiceButton;
+
+/** 是否隐藏表情 */
+@property (nonatomic, assign) BOOL     hiddenEmotionButton;
+
+/** 是否隐藏相机 */
+@property (nonatomic, assign) BOOL     hiddenCameraButton;
+
+/** 是否隐藏相册 */
+@property (nonatomic, assign) BOOL     hiddenAlbumButton;
+
+/** 是否隐藏发送视频 */
+@property (nonatomic, assign) BOOL     hiddenSendVideo;
+
 + (instancetype)sharedConfig;
 
 @end

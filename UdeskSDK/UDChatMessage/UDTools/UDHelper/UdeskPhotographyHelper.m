@@ -35,6 +35,7 @@
 
 - (void)showImagePickerControllerSourceType:(UIImagePickerControllerSourceType)sourceType
                            onViewController:(UIViewController *)viewController
+                                hiddenVideo:(BOOL)hiddenVideo
                                     compled:(DidFinishTakeMediaCompledBlock)compled
                                  compledGif:(DidFinishTakeMediaGIFCompledBlock)compledGif
                                compledVideo:(DidFinishTakeMediaVideoCompledBlock)compledVideo {
@@ -55,6 +56,9 @@
         NSString *movieType = (NSString *)kUTTypeMovie;
         NSString *imageType = (NSString *)kUTTypeImage;
         NSArray *arrMediaTypes=[NSArray arrayWithObjects:imageType,movieType,nil];
+        if (hiddenVideo) {
+            arrMediaTypes = [NSArray arrayWithObjects:imageType,nil];
+        }
         [imagePickerController setMediaTypes: arrMediaTypes];
         
         imagePickerController.editing = YES;

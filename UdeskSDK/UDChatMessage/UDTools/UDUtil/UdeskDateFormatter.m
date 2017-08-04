@@ -43,9 +43,25 @@
 - (NSString *)ud_styleDateForDate:(NSDate *)date
 {
     
-    NSString *timeText = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle];
+    if (!date) return @"";
     
-    return timeText;
+    NSString *dateText = nil;
+    NSString *timeText = nil;
+    
+    NSDate *today = [NSDate date];
+    
+    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:date];
+    NSDateComponents *todayComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:today];
+    
+    if (dateComponents.year == todayComponents.year && dateComponents.month == todayComponents.month && dateComponents.day == todayComponents.day) {
+        dateText = getUDLocalizedString(@"udesk_today");
+    } else {
+        dateText = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
+    }
+    
+    timeText = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle];
+    
+    return [NSString stringWithFormat:@"%@ %@",dateText,timeText];
 }
 
 @end

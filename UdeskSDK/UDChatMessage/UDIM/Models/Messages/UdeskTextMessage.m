@@ -82,7 +82,7 @@ const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
                 default:
                     break;
             }
-
+            
             //cell高度
             self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
         }
@@ -94,7 +94,7 @@ const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
                 self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, richTextSize.width+(kUDBubbleToTextHorizontalSpacing*3), richTextSize.height+(kUDBubbleToTextVerticalSpacing*2));
                 //接收文字frame
                 self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing, richTextSize.width, richTextSize.height);
-        
+                
                 //cell高度
                 self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
             });
@@ -104,7 +104,6 @@ const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
         NSLog(@"%@",exception);
     } @finally {
     }
-    
 }
 
 - (void)linkText {
@@ -208,8 +207,21 @@ const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
         } else {
             [att addAttribute:NSForegroundColorAttributeName value:[UdeskSDKConfig sharedConfig].sdkStyle.agentTextColor range:range];
         }
-        //字间距
-        [att addAttribute:NSKernAttributeName value:@(2) range:range];
+
+        NSMutableParagraphStyle *contentParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+        contentParagraphStyle.lineSpacing = 6.0f;
+        contentParagraphStyle.lineHeightMultiple = 1.0f;
+        contentParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        contentParagraphStyle.alignment = NSTextAlignmentLeft;
+        
+        //富文本末尾会有\n，为了不影响正常显示 这里前端过滤掉
+        if (att.length) {
+            NSAttributedString *last = [att attributedSubstringFromRange:NSMakeRange(att.length - 1, 1)];
+            if ([[last string] isEqualToString:@"\n"]) {
+                [att replaceCharactersInRange:NSMakeRange(att.length - 1, 1) withString:@""];
+            }
+        }
+        
         self.cellText = att;
         
         CGSize textSize = [UdeskStringSizeUtil getSizeForAttributedText:self.cellText textWidth:UD_SCREEN_WIDTH>320?235:180];

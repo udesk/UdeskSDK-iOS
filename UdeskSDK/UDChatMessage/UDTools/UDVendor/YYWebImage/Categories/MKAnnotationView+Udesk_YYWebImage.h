@@ -1,5 +1,5 @@
 //
-//  CALayer+YYWebImage.h
+//  MKAnnotationView+YYWebImage.h
 //  YYWebImage <https://github.com/ibireme/YYWebImage>
 //
 //  Created by ibireme on 15/2/23.
@@ -10,23 +10,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
-
-#if __has_include(<YYWebImage/YYWebImage.h>)
-#import <YYWebImage/Udesk_YYWebImageManager.h>
-#else
+#import <MapKit/MapKit.h>
 #import "Udesk_YYWebImageManager.h"
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- Web image methods for CALayer.
- It will set image to layer.contents.
+ Web image methods for MKAnnotationView.
  */
-@interface CALayer (YYWebImage)
-
-#pragma mark - image
+@interface MKAnnotationView (Udesk_YYWebImage)
 
 /**
  Current image URL.

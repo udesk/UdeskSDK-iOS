@@ -44,6 +44,9 @@
         _sdkConfig = [UdeskSDKConfig sharedConfig];
         _sdkConfig.sdkStyle = style;
         _show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
+        
+        //做清除缓存数据操作
+        [self cleanSDKConfigData];
     }
     return self;
 }
@@ -356,6 +359,57 @@
 - (void)leaveChatViewControllerCallBack:(void(^)(void))completion {
     
     _sdkConfig.leaveChatViewController = completion;
+}
+
+- (void)setHiddenSendVideo:(BOOL)hiddenSendVideo {
+
+    _hiddenSendVideo = hiddenSendVideo;
+    _sdkConfig.hiddenSendVideo = hiddenSendVideo;
+}
+
+- (void)setHiddenAlbumButton:(BOOL)hiddenAlbumButton {
+
+    _hiddenAlbumButton = hiddenAlbumButton;
+    _sdkConfig.hiddenAlbumButton = hiddenAlbumButton;
+}
+
+- (void)setHiddenVoiceButton:(BOOL)hiddenVoiceButton {
+
+    _hiddenVoiceButton = hiddenVoiceButton;
+    _sdkConfig.hiddenVoiceButton = hiddenVoiceButton;
+}
+
+- (void)setHiddenEmotionButton:(BOOL)hiddenEmotionButton {
+
+    _hiddenEmotionButton = hiddenEmotionButton;
+    _sdkConfig.hiddenEmotionButton = hiddenEmotionButton;
+}
+
+- (void)setHiddenCameraButton:(BOOL)hiddenCameraButton {
+
+    _hiddenCameraButton = hiddenCameraButton;
+    _sdkConfig.hiddenCameraButton = hiddenCameraButton;
+}
+
+- (void)cleanSDKConfigData {
+    
+    if (!_sdkConfig) {
+        return;
+    }
+    
+    _sdkConfig.scheduledAgentId = nil;
+    _sdkConfig.scheduledGroupId = nil;
+    _sdkConfig.productDictionary = nil;
+    _sdkConfig.customerImage = [UIImage ud_defaultCustomerImage];
+    _sdkConfig.customerImageURL = nil;
+    _sdkConfig.imTitle = nil;
+    _sdkConfig.robotTtile = nil;
+    _sdkConfig.faqTitle = nil;
+    _sdkConfig.transferText = nil;
+    _sdkConfig.ticketTitle = nil;
+    _sdkConfig.articleTitle = nil;
+    _sdkConfig.agentMenuTitle = nil;
+    _sdkConfig.name = nil;
 }
 
 @end

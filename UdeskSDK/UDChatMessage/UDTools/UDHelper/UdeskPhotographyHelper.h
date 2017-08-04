@@ -17,6 +17,7 @@ typedef void(^DidFinishTakeMediaVideoCompledBlock)(NSData *video,NSString *fileN
 
 - (void)showImagePickerControllerSourceType:(UIImagePickerControllerSourceType)sourceType
                            onViewController:(UIViewController *)viewController
+                                hiddenVideo:(BOOL)hiddenVideo
                                     compled:(DidFinishTakeMediaCompledBlock)compled
                                  compledGif:(DidFinishTakeMediaGIFCompledBlock)compledGif
                                compledVideo:(DidFinishTakeMediaVideoCompledBlock)compledVideo;

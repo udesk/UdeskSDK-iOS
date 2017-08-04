@@ -388,13 +388,22 @@
     
     _inputBar = [[UdeskInputBar alloc] initWithFrame:inputFrame tableView:_messageTableView];
     _inputBar.delegate = self;
-    _inputBar.enableImSurvey = self.sdkSetting.enableImSurvey;
+    [self setInputBarButton];
     [self.view addSubview:_inputBar];
     
     //根据系统版本去掉自动调整
     if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
+}
+
+- (void)setInputBarButton {
+
+    _inputBar.enableImSurvey = self.sdkSetting.enableImSurvey;
+    _inputBar.hiddenCameraButton = self.sdkConfig.hiddenCameraButton;
+    _inputBar.hiddenAlbumButton = self.sdkConfig.hiddenAlbumButton;
+    _inputBar.hiddenVoiceButton = self.sdkConfig.hiddenVoiceButton;
+    _inputBar.hiddenEmotionButton = self.sdkConfig.hiddenEmotionButton;
 }
 
 #pragma mark - UdeskInputBarDelegate
@@ -456,6 +465,7 @@
     [self layoutOtherMenuViewHiden:NO];
     [self.photographyHelper showImagePickerControllerSourceType:sourceType
                                                onViewController:self
+                                                    hiddenVideo:self.sdkConfig.hiddenSendVideo
                                                         compled:PickerMediaBlock
                                                      compledGif:PickerMediaGIFBlock
                                                    compledVideo:PickerMediaVideoBlock];

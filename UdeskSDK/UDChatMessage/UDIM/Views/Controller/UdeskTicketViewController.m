@@ -16,6 +16,7 @@
 #import "UdeskLanguageTool.h"
 #import "UdeskCustomNavigation.h"
 #import "UdeskViewExt.h"
+#import <WebKit/WebKit.h>
 
 @interface UdeskTicketViewController () 
 
@@ -72,9 +73,6 @@
         
         if (![UdeskTools isBlankString:key]||[UdeskTools isBlankString:domain]) {
             
-            _ticketWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, customNav.ud_bottom, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-customNav.ud_bottom)];
-            _ticketWebView.backgroundColor = [UIColor whiteColor];
-            
             NSURL *ticketURL =  [UdeskManager getSubmitTicketURL];
             // 设置语言
             NSString *tmp = [[NSUserDefaults standardUserDefaults] objectForKey:LANGUAGE_SET];
@@ -94,11 +92,21 @@
             
             ticketURL = [NSURL URLWithString:[ticketURL.absoluteString stringByAppendingString:language]];
             
-            [_ticketWebView loadRequest:[NSURLRequest requestWithURL:ticketURL]];
+            if (ud_isIOS8) {
+                
+                WKWebView *ticketWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, customNav.ud_bottom, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-customNav.ud_bottom)];
+                ticketWebView.backgroundColor = [UIColor whiteColor];
+                [ticketWebView loadRequest:[NSURLRequest requestWithURL:ticketURL]];
+                [self.view addSubview:ticketWebView];
+            }
+            else {
             
-            [self.view addSubview:_ticketWebView];
+                UIWebView *ticketWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, customNav.ud_bottom, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-customNav.ud_bottom)];
+                ticketWebView.backgroundColor = [UIColor whiteColor];
+                [ticketWebView loadRequest:[NSURLRequest requestWithURL:ticketURL]];
+                [self.view addSubview:ticketWebView];
+            }
             
-            [_ticketWebView stringByEvaluatingJavaScriptFromString:@"ticketCallBack()"];
         }
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);

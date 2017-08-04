@@ -53,6 +53,8 @@
 @property (nonatomic, assign          ) BOOL                     leaveMsgFlag;
 /** 最后一条离线消息时间 */
 @property (nonatomic, copy            ) NSString                 *lastLeaveMsgDate;
+/** 是否关闭会话 */
+@property (nonatomic, assign          ) BOOL                     isOverConversion;
 
 @end
 
@@ -233,6 +235,11 @@
 #pragma mark - 根据是否有客服id和客服组id请求客服数据
 - (void)requestAgentData {
     
+    //会话已关闭
+    if (self.isOverConversion) {
+        return;
+    }
+    
     NSString *agentId = [UdeskSDKConfig sharedConfig].scheduledAgentId;
     NSString *groupId = [UdeskSDKConfig sharedConfig].scheduledGroupId;
     
@@ -265,7 +272,7 @@
 
 //获取分配客服
 - (void)distributionAgent:(UdeskAgent *)agentModel {
-    
+
     //回调客服信息到vc显示
     [self callbackAgentModel:agentModel];
     
@@ -727,6 +734,7 @@
             
             agentCode = UDAgentConversationOver;
             agentMessage = getUDLocalizedString(@"udesk_chat_end");
+            self.isOverConversion = YES;
         }
         else if ([statusType isEqualToString:@"available"]) {
             
@@ -1028,6 +1036,8 @@
 - (void)clickInputViewShowAlertView {
     
     if (self.agentModel.code == UDAgentConversationOver) {
+        //新会话
+        self.isOverConversion = NO;
         [self createServerCustomer];
     }
     

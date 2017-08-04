@@ -9,7 +9,7 @@
 //  LICENSE file in the root directory of this source tree.
 //
 
-#import "UIButton+YYWebImage.h"
+#import "UIButton+Udesk_YYWebImage.h"
 #import "Udesk_YYWebImageOperation.h"
 #import "Udesk_YYWebImageSetter.h"
 #import <objc/runtime.h>
@@ -73,7 +73,7 @@ static int _YYWebImageBackgroundSetterKey;
 @end
 
 
-@implementation UIButton (YYWebImage)
+@implementation UIButton (Udesk_YYWebImage)
 
 #pragma mark - image
 

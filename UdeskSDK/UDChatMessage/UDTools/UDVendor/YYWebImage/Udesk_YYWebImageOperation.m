@@ -10,15 +10,10 @@
 //
 
 #import "Udesk_YYWebImageOperation.h"
-#import "UIImage+YYWebImage.h"
+#import "UIImage+Udesk_YYWebImage.h"
 #import <ImageIO/ImageIO.h>
 #import <libkern/OSAtomic.h>
-
-#if __has_include(<YYImage/YYImage.h>)
-#import <YYImage/Udesk_YYImage.h>
-#else
 #import "Udesk_YYImage.h"
-#endif
 
 
 #define MIN_PROGRESSIVE_TIME_INTERVAL 0.2

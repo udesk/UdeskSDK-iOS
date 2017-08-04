@@ -8,13 +8,7 @@
 
 #import "UdeskBaseViewController.h"
 
-@interface UdeskTicketViewController : UdeskBaseViewController <UIWebViewDelegate>
-
-/**
- *  ticket webView
- */
-@property (nonatomic,strong ) UIWebView *ticketWebView;
-
+@interface UdeskTicketViewController : UdeskBaseViewController
 
 - (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config;
 

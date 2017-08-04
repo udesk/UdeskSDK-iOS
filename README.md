@@ -585,7 +585,7 @@ SDK 咨询对象展示:
 
 #### 6.8设置客户离线
 
-设置客户离线，用户开启推送，开发者可以不必调用。
+设置客户离线。
 
 ```objective-c
 [UdeskManager setupCustomerOffline];
@@ -701,16 +701,46 @@ BOOL isSession = [UdeskManager customersAreSession];
 
 如果确认配置没有问题，请查看Other Linker Flags里是否写了-force_load，如果有写这个配置请在这个配置下面加入我们sdk .a文件的地址。
 
+#### 客服消息发送一直在转圈
+
+SDK在退到后台之后不会马上离线，会导致客服发送消息一直发不出去，只有在SDK离线之后会发送离线消息。
+
+可以在APP退到后台的时候主动调用下我们的离线方法
+
+```objective-c
+[UdeskManager setupCustomerOffline];
+```
+
 # 八、更新记录
 
 #### 更新记录：
 
+sdk v3.7.1版本更新功能:
+
+1.欢迎语空白bug修改
+
+2.时间显示bug修改
+
+3.指定分配客服、客服组bug修改
+
+4.使用导入pod 和YYWebimage冲突修改
+
+5.输入框功能按钮可配置
+
+6.根据iOS版本切换使用WKWebview或者UIWebview
+
+------
+
 sdk v3.7版本更新功能:
 
 1.支持离线直接留言
+
 2.SDK支持返回满意度调查和支持开关设置
+
 3.SDK支持接收和发送GIF
+
 4.SDK支持接收和发送视频
+
 5.SDK支持客服消息撤回
 
 ------

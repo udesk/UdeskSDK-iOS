@@ -9,7 +9,7 @@
 //  LICENSE file in the root directory of this source tree.
 //
 
-#import "UIImageView+YYWebImage.h"
+#import "UIImageView+Udesk_YYWebImage.h"
 #import "Udesk_YYWebImageOperation.h"
 #import "Udesk_YYWebImageSetter.h"
 #import <objc/runtime.h>
@@ -22,7 +22,7 @@ static int Udesk_YYWebImageSetterKey;
 static int _YYWebImageHighlightedSetterKey;
 
 
-@implementation UIImageView (YYWebImage)
+@implementation UIImageView (Udesk_YYWebImage)
 
 #pragma mark - image
 
