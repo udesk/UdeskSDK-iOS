@@ -55,6 +55,10 @@
             [self.productImageView yy_setImageWithURL:[NSURL URLWithString:productMessage.productImageURL] placeholder:productMessage.productImage];
         }
         
+        if (![UdeskTools isBlankString:productMessage.productSendText]) {
+            [self.productSendButton setTitle:productMessage.productSendText forState:UIControlStateNormal];
+        }
+        
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
