@@ -50,6 +50,8 @@ libz.tbd
 libxml2.tbd
 libresolv.tbd
 libsqlite3.tbd
+WebKit.framework
+MapKit.framework
 ```
 
 #### 2.3添加SDK到你的工程
