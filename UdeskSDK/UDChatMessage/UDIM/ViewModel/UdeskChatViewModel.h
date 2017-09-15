@@ -12,6 +12,7 @@
 @class UdeskMessage;
 @class UdeskAgent;
 @class UdeskSetting;
+@class UdeskLocationModel;
 
 @protocol UdeskChatViewModelDelegate <NSObject>
 
@@ -145,6 +146,15 @@
               completion:(void(^)(UdeskMessage *message,BOOL sendStatus))comletion;
 
 /**
+ *  发送地理位置消息
+ *
+ *  @param model   地理位置
+ *  @param completion 发送状态&发送消息体
+ */
+- (void)sendLocationMessage:(UdeskLocationModel *)model
+                 completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion;
+
+/**
  *  添加需要重新发送消息
  *
  *  @param message 发送失败的消息
@@ -159,5 +169,8 @@
 
 //根据客服code展示alertview
 - (void)showAlertViewWithAgent;
+
+//获取LocationModel
+- (UdeskLocationModel *)getLocationModel:(UdeskMessage *)message;
 
 @end

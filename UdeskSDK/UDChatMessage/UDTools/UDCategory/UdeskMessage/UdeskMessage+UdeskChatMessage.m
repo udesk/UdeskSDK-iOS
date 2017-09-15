@@ -9,6 +9,7 @@
 #import "UdeskMessage+UdeskChatMessage.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskTools.h"
+#import "UdeskLocationModel.h"
 
 @implementation UdeskMessage (UdeskChatMessage)
 
@@ -140,6 +141,23 @@
         self.messageStatus = UDMessageSendStatusSuccess;
         self.timestamp = [NSDate date];
         self.content = text;
+    }
+    
+    return self;
+}
+
+- (instancetype)initLocationChatMessage:(UdeskLocationModel *)model {
+
+    self = [super init];
+    if (self) {
+        
+        self.messageId = [[NSUUID UUID] UUIDString];
+        self.messageType = UDMessageContentTypeLocation;
+        self.messageFrom = UDMessageTypeSending;
+        self.messageStatus = UDMessageSendStatusSending;
+        self.timestamp = [NSDate date];
+        self.image = model.image;
+        self.content = [NSString stringWithFormat:@"%f;%f;%ld;%@",model.latitude,model.longitude,(long)model.zoomLevel,model.name];;
     }
     
     return self;

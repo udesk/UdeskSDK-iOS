@@ -18,7 +18,7 @@
 /**
  *  获取客服Model
  *
- *  @param callback 客服model
+ *  @param completion 客服model
  */
 - (void)requestRandomAgent:(void(^)(UdeskAgent *agentModel,NSError *error))completion;
 /**
@@ -32,7 +32,7 @@
 /**
  *  指定分配客服组
  *
- *  @param agentId    客服组id
+ *  @param groupId    客服组id
  *  @param completion 完成之后回调
  */
 - (void)scheduledGroupId:(NSString *)groupId

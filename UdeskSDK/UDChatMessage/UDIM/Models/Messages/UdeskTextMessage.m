@@ -16,7 +16,9 @@
 /** 聊天气泡和其中的文字水平间距 */
 const CGFloat kUDBubbleToTextHorizontalSpacing = 10.0;
 /** 聊天气泡和其中的文字垂直间距 */
-const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
+const CGFloat kUDBubbleToTextVerticalSpacing = 10.0;
+/** 聊天气泡和其中的文字垂直间距 */
+const CGFloat kUDTextMendSpacing = 2.0;
 
 @interface UdeskTextMessage()
 
@@ -51,16 +53,15 @@ const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
         CGSize textSize = CGSizeMake(100, 50);
         
         if (self.message.messageType == UDMessageContentTypeText) {
-            [self linkText];
-            textSize = [self setAttributedCellText:self.message.content messageFrom:self.message.messageFrom];
             
+            textSize = [self setAttributedCellText:self.message.content messageFrom:self.message.messageFrom];
             switch (self.message.messageFrom) {
                 case UDMessageTypeSending:{
                     
                     //文本气泡frame
                     self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x-kUDArrowMarginWidth-kUDBubbleToTextHorizontalSpacing*2-kUDAvatarToBubbleSpacing-textSize.width, self.avatarFrame.origin.y, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
                     //文本frame
-                    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing, textSize.width, textSize.height);
+                    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+kUDTextMendSpacing, textSize.width, textSize.height);
                     //加载中frame
                     self.loadingFrame = CGRectMake(self.bubbleFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.bubbleFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
                     
@@ -74,7 +75,7 @@ const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
                     //接收文字气泡frame
                     self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
                     //接收文字frame
-                    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing, textSize.width, textSize.height);
+                    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing+kUDTextMendSpacing, textSize.width, textSize.height);
                     
                     break;
                 }
@@ -106,7 +107,7 @@ const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
     }
 }
 
-- (void)linkText {
+- (void)linkText:(NSString *)content {
 
     @try {
         
@@ -115,10 +116,14 @@ const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
         
         for (NSString *linkRegex in [UdeskSDKConfig sharedConfig].linkRegexs) {
             
-            NSRange range = [self.message.content rangeOfString:linkRegex options:NSRegularExpressionSearch];
+            NSRange range = [content rangeOfString:linkRegex options:NSRegularExpressionSearch];
             if (range.location != NSNotFound) {
-                [richURLDictionary setValue:[NSValue valueWithRange:range] forKey:[self.message.content substringWithRange:range]];
-                [richContetnArray addObject:[self.message.content substringWithRange:range]];
+                NSValue *value = [NSValue valueWithRange:range];
+                NSString *key = [content substringWithRange:range];
+                if (value && key) {
+                    [richURLDictionary setValue:value forKey:key];
+                    [richContetnArray addObject:key];
+                }
             }
         }
         
@@ -128,12 +133,17 @@ const CGFloat kUDBubbleToTextVerticalSpacing = 12.0;
         NSMutableDictionary *numberDictionary = [NSMutableDictionary dictionary];
         for (NSString *linkRegex in [UdeskSDKConfig sharedConfig].numberRegexs) {
             
-            NSRange range = [self.message.content rangeOfString:linkRegex options:NSRegularExpressionSearch];
+            NSRange range = [content rangeOfString:linkRegex options:NSNumericSearch|NSRegularExpressionSearch];
             if (range.location != NSNotFound) {
-                [numberDictionary setValue:[NSValue valueWithRange:range] forKey:[self.message.content substringWithRange:range]];
+                NSValue *value = [NSValue valueWithRange:range];
+                NSString *key = [content substringWithRange:range];
+                if (value && key) {
+                    [numberDictionary setValue:value forKey:key];
+                }
             }
         }
         self.numberRangeDic = [NSDictionary dictionaryWithDictionary:numberDictionary];
+        
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {

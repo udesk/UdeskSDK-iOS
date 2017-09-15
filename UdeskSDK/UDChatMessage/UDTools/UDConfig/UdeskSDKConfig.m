@@ -41,10 +41,8 @@
         
         [self setDefaultConfig];
         
-        self.numberRegexs = [[NSMutableArray alloc] initWithArray:@[@"^(\\d{3,4}-?)\\d{7,8}$",
-                                                                    @"^1[3|4|5|7|8]\\d{9}",
-                                                                    @"[0-9]\\d{4,10}",
-                                                                    @"^400(-\\d{3,4}){2}$"]];
+        self.numberRegexs = [[NSMutableArray alloc] initWithArray:@[@"0?(13|14|15|18)[0-9]{9}",
+                                                                    @"[0-9-()()]{7,18}"]];
         
         self.linkRegexs   = [[NSMutableArray alloc] initWithArray:@[@"((http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|([a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)"]];
     }
@@ -56,6 +54,7 @@
 
     self.sdkStyle = [UdeskSDKStyle defaultStyle];
     self.customerImage = [UIImage ud_defaultCustomerImage];
+    self.hiddenLocationButton = YES;
 }
 
 @end

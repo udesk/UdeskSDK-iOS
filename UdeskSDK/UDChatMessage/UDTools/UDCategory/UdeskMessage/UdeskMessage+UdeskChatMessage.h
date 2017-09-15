@@ -7,6 +7,7 @@
 //
 
 #import "UdeskMessage.h"
+@class UdeskLocationModel;
 
 @interface UdeskMessage (UdeskChatMessage)
 
@@ -18,5 +19,6 @@
 - (instancetype)initVideoChatMessage:(NSData *)videoData videoName:(NSString *)videoName;
 - (instancetype)initLeaveChatMessage:(NSString *)text;
 - (instancetype)initRollbackChatMessage:(NSString *)text;
+- (instancetype)initLocationChatMessage:(UdeskLocationModel *)model;
 
 @end

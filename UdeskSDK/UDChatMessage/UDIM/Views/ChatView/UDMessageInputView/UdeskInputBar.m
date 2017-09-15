@@ -27,7 +27,7 @@ static CGFloat const InputBarViewToVerticalEdgeSpacing = 5.0;
 /** 输入框距离顶部的横行距离 */
 static CGFloat const InputBarViewToHorizontalEdgeSpacing = 10.0;
 /** 输入框功能按钮横行的间距 */
-static CGFloat const InputBarViewButtonToHorizontalEdgeSpacing = 25.0;
+static CGFloat const InputBarViewButtonToHorizontalEdgeSpacing = 20.0;
 /** 输入框按钮距离顶部的垂直距离 */
 static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
 
@@ -42,6 +42,7 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     UIButton *cameraButton;//相机
     UIButton *albumButton;//相册
     UIButton *surveyButton;//评价
+    UIButton *locationButton;//地理位置
     UIView   *lineView;
     UdeskMessageTableView *messageTableView;
     CGRect      originalChatViewFrame;
@@ -147,7 +148,7 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
 
     cameraButton.frame = CGRectMake(cameraButtonX, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
     cameraButton.hidden = self.hiddenCameraButton;
-    [cameraButton addTarget:self action:@selector(cameraButton:) forControlEvents:UIControlEventTouchUpInside];
+    [cameraButton addTarget:self action:@selector(cameraClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:cameraButton];
     
     CGFloat albumButtonX = cameraButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing;
@@ -165,7 +166,7 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     albumButton = [self createButtonWithImage:[UIImage ud_defaultPhotoImage] HLImage:[UIImage ud_defaultPhotoHighlightedImage]];
     albumButton.frame = CGRectMake(albumButtonX, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
     albumButton.hidden = self.hiddenAlbumButton;
-    [albumButton addTarget:self action:@selector(albumButton:) forControlEvents:UIControlEventTouchUpInside];
+    [albumButton addTarget:self action:@selector(albumClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:albumButton];
     
     CGFloat surveyButtonX = albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing;
@@ -186,8 +187,31 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     surveyButton = [self createButtonWithImage:[UIImage ud_defaultSurveyImage] HLImage:[UIImage ud_defaultSurveyHighlightedImage]];
     surveyButton.frame = CGRectMake(surveyButtonX, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
     surveyButton.hidden = !self.enableImSurvey.boolValue;
-    [surveyButton addTarget:self action:@selector(surveyButton:) forControlEvents:UIControlEventTouchUpInside];
+    [surveyButton addTarget:self action:@selector(surveyClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:surveyButton];
+    
+    CGFloat locationButtonX = surveyButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing;
+    if (!self.enableImSurvey.boolValue) {
+        locationButtonX = locationButtonX - surveyButton.ud_right + albumButton.ud_right;
+        if (self.hiddenAlbumButton) {
+            locationButtonX = locationButtonX - albumButton.ud_right + voiceButton.ud_right;
+            if (self.hiddenCameraButton) {
+                locationButtonX = locationButtonX - cameraButton.ud_right + voiceButton.ud_right;
+                if (self.hiddenVoiceButton) {
+                    locationButtonX = locationButtonX - voiceButton.ud_right + emotionButton.ud_right;
+                    if (self.hiddenEmotionButton) {
+                        locationButtonX = InputBarViewButtonToHorizontalEdgeSpacing;
+                    }
+                }
+            }
+        }
+    }
+    
+    locationButton = [self createButtonWithImage:[UIImage ud_defaultLocationImage] HLImage:[UIImage ud_defaultLocationHighlightedImage]];
+    locationButton.frame = CGRectMake(locationButtonX, InputBarViewButtonToVerticalEdgeSpacing, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    locationButton.hidden = self.hiddenLocationButton;
+    [locationButton addTarget:self action:@selector(locationClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:locationButton];
 }
 
 //点击表情按钮
@@ -248,7 +272,7 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
 }
 
 //点击相机按钮
-- (void)cameraButton:(UIButton *)button {
+- (void)cameraClick:(UIButton *)button {
     
     //检查客服状态
     if ([self checkAgentStatusValid]) {
@@ -256,11 +280,10 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
             [self.delegate sendImageWithSourceType:UIImagePickerControllerSourceTypeCamera];
         }
     }
-    
 }
 
 //点击相册按钮
-- (void)albumButton:(UIButton *)button {
+- (void)albumClick:(UIButton *)button {
     
     if ([ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusNotDetermined) {
         
@@ -319,8 +342,19 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     
 }
 
+- (void)locationClick:(UIButton *)button {
+
+    //检查客服状态
+    if ([self checkAgentStatusValid]) {
+        button.selected = !button.selected;
+        if ([self.delegate respondsToSelector:@selector(didSelectLocationButton:)]) {
+            [self.delegate didSelectLocationButton:button.selected];
+        }
+    }
+}
+
 //点击评价
-- (void)surveyButton:(UIButton *)button {
+- (void)surveyClick:(UIButton *)button {
 
     //先将未到时间执行前的任务取消。
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showAgentSurvey:) object:button];
@@ -449,6 +483,13 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     cameraButton.frame = CGRectMake(voiceButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
     albumButton.frame = CGRectMake(cameraButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
     surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    
+    CGFloat locationButtonX = surveyButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing;
+    if (!self.enableImSurvey.boolValue) {
+        locationButtonX = locationButtonX - surveyButton.ud_right + albumButton.ud_right;
+    }
+    
+    locationButton.frame = CGRectMake(locationButtonX, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
 }
 
 //离线留言不显示任何功能按钮
@@ -471,6 +512,9 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
     }
     if (surveyButton) {
         surveyButton.hidden = YES;
+    }
+    if (locationButton) {
+        locationButton.hidden = YES;
     }
     
     CGFloat inputViewHeight = 50.f;

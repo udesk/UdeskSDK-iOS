@@ -10,6 +10,8 @@
 #import <UIKit/UIKit.h>
 #import "UdeskSDKStyle.h"
 #import "UdeskManager.h"
+@class UdeskChatViewController;
+@class UdeskLocationModel;
 
 /*
  显示聊天窗口的动画
@@ -90,6 +92,12 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 /** 离开聊天页面回调 */
 @property (nonatomic, copy) void(^leaveChatViewController)(void);
 
+/** 地理位置功能按钮回调 */
+@property (nonatomic, copy) void(^locationButtonCallBack)(UdeskChatViewController *viewController);
+
+/** 地理位置消息回调 */
+@property (nonatomic, copy) void(^locationMessageCallBack)(UdeskChatViewController *viewController, UdeskLocationModel *locationModel);
+
 /** 是否隐藏语音 */
 @property (nonatomic, assign) BOOL     hiddenVoiceButton;
 
@@ -101,6 +109,9 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 
 /** 是否隐藏相册 */
 @property (nonatomic, assign) BOOL     hiddenAlbumButton;
+
+/** 是否隐藏定位 */
+@property (nonatomic, assign) BOOL     hiddenLocationButton;
 
 /** 是否隐藏发送视频 */
 @property (nonatomic, assign) BOOL     hiddenSendVideo;

@@ -89,6 +89,18 @@
  */
 + (UIImage *)ud_defaultSurveyHighlightedImage;
 /**
+ *  地理位置
+ *
+ *  @return 地理位置
+ */
++ (UIImage *)ud_defaultLocationImage;
+/**
+ *  地理位置高亮
+ *
+ *  @return 地理位置高亮
+ */
++ (UIImage *)ud_defaultLocationHighlightedImage;
+/**
  *  用户头像图片
  *
  *  @return 用户头像图片
@@ -231,5 +243,11 @@
  *  @return 图片
  */
 - (UIImage *)convertImageColor:(UIColor *)toColor;
+
+//地图大头针
++ (UIImage *)ud_defaultLocationPinImage;
+
+//打勾
++ (UIImage *)ud_defaultMarkImage;
 
 @end

@@ -7,9 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UdeskSDKConfig.h"
+#import "UdeskSetting.h"
 
-@class UdeskSDKConfig;
 @interface UdeskBaseViewController : UIViewController
+
+@property (nonatomic, strong) UdeskSDKConfig     *sdkConfig;//sdk配置
+@property (nonatomic, strong) UdeskSetting       *sdkSetting;//sdk后台配置
+
+- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
+                          setting:(UdeskSetting *)setting;
 
 - (void)dismissChatViewController;
 

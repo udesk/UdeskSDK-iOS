@@ -15,10 +15,7 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskStringSizeUtil.h"
 #import "UdeskTools.h"
-#import "UdeskSDKConfig.h"
-#import "UdeskTransitioningAnimation.h"
 #import "UdeskSDKManager.h"
-#import "UdeskSetting.h"
 #import "UdeskSDKShow.h"
 
 @interface UdeskAgentMenuViewController () <UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
@@ -35,55 +32,25 @@
 @property (nonatomic, assign) int            menuPage;
 /** 客服组路径名字 */
 @property (nonatomic, strong) NSString       *pathString;
-/** 菜单数据 */
-@property (nonatomic, strong) NSArray        *agentMenu;
-/** sdk配置 */
-@property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
-/** sdk后台配置 */
-@property (nonatomic, strong) UdeskSetting   *sdkSetting;
 
 @end
 
 @implementation UdeskAgentMenuViewController
 
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
-                        menuArray:(NSArray *)menu
-                      withSetting:(UdeskSetting *)setting {
-
-    self = [super init];
-    if (self) {
-
-        self.sdkSetting = setting;
-        self.sdkConfig = config;
-        self.hidesBottomBarWhenPushed = YES;
-        
-        self.agentMenu = menu;
-        
-        self.allAgentMenuData = [NSMutableArray array];
-        
-        self.menuPage = 0;
-    }
-    return self;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.view.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.tableViewBackGroundColor;
-
+    self.view.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
     
-    if ([UdeskSDKConfig sharedConfig].agentMenuTitle) {
-        self.title = [UdeskSDKConfig sharedConfig].agentMenuTitle;
+    if (self.sdkConfig.agentMenuTitle) {
+        self.title = self.sdkConfig.agentMenuTitle;
     }
     else {
         self.title = getUDLocalizedString(@"udesk_choose_group");
     }
     
     [self setAgentMenuScrollView];
-    
-    [self requestAgentMenu:self.agentMenu];
-
 }
 
 #pragma mark - 设置MenuScrollView
@@ -102,6 +69,11 @@
     [self.view addSubview:_agentMenuScrollView];
 }
 
+- (void)setMenuDataSource:(NSArray *)menuDataSource {
+    _menuDataSource = menuDataSource;
+    [self requestAgentMenu:menuDataSource];
+}
+
 #pragma mark - 请求客服组选择菜单
 - (void)requestAgentMenu:(NSArray *)result {
     
@@ -110,7 +82,6 @@
         for (NSDictionary *menuDict in result) {
             
             UdeskAgentMenuModel *agentMenuModel = [[UdeskAgentMenuModel alloc] initWithContentsOfDic:menuDict];
-            
             [self.allAgentMenuData addObject:agentMenuModel];
         }
         
@@ -212,7 +183,7 @@
             
             self.sdkConfig.scheduledGroupId = didSelectModel.group_id;
             UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:self.sdkConfig];
-            UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig withSettings:self.sdkSetting];
+            UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig setting:self.sdkSetting];
             [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
         }
         else {
@@ -388,8 +359,13 @@
     } @finally {
     }
 }
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+
+- (NSMutableArray *)allAgentMenuData {
+
+    if (!_allAgentMenuData) {
+        _allAgentMenuData = [NSMutableArray array];
+    }
+    return _allAgentMenuData;
 }
 
 - (void)dealloc
@@ -401,15 +377,5 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 @end

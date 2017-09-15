@@ -7,7 +7,6 @@
 //
 
 #import "UdeskMessageTableView.h"
-#import "UdeskChatViewModel.h"
 #import "UdeskFoundationMacro.h"
 
 @interface UdeskMessageTableView()
@@ -90,7 +89,6 @@
     
         _isRefresh = YES;
     }
-    
 }
 
 //设置TabelView bottom

@@ -26,4 +26,6 @@ extern const CGFloat kUDBubbleToTextVerticalSpacing;
 /** 高亮文字对应的超链接 */
 @property (nonatomic, strong) NSDictionary  *numberRangeDic;
 
+- (void)linkText:(NSString *)content;
+
 @end

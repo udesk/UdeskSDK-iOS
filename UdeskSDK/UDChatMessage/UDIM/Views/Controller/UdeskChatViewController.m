@@ -14,13 +14,11 @@
 #import "UdeskEmotionManagerView.h"
 #import "UdeskVoiceRecordHUD.h"
 #import "UdeskPhotographyHelper.h"
-#import "UdeskChatViewModel.h"
 #import "UIViewController+UdeskKeyboardAnimation.h"
 #import "UdeskViewExt.h"
 #import "UdeskUtils.h"
 #import "UdeskAudioPlayerHelper.h"
 #import "UdeskManager.h"
-#import "UdeskSDKConfig.h"
 #import "UdeskBaseCell.h"
 #import "UdeskTransitioningAnimation.h"
 #import "UdeskStringSizeUtil.h"
@@ -29,9 +27,10 @@
 #import "UdeskSDKShow.h"
 #import "UdeskBaseMessage.h"
 #import "UdeskSDKManager.h"
-#import "UdeskSetting.h"
 #import "UdeskVideoCell.h"
 #import "UdeskAgentSurvey.h"
+#import "UdeskChatTitleView.h"
+#import "UdeskLocationViewController.h"
 
 @interface UdeskChatViewController ()<UIGestureRecognizerDelegate,UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskInputBarDelegate,UdeskVoiceRecordViewDelegate,UdeskCellDelegate>
 
@@ -42,131 +41,16 @@
 @property (nonatomic, strong) UdeskVoiceRecordHUD       *voiceRecordHUD;//语音录制动画
 @property (nonatomic, strong) UdeskPhotographyHelper    *photographyHelper;//管理本机的摄像和图片库的工具对象
 @property (nonatomic, strong) UdeskVoiceRecordView      *voiceRecordView;//管理本机的摄像和图片库的工具对象
-@property (nonatomic, strong) UdeskChatViewModel        *chatViewModel;//viewModel
 @property (nonatomic, strong) UdeskInputBar     *inputBar;//用于显示发送消息类型控制的工具条，在底部
-@property (nonatomic, strong) UdeskSDKConfig     *sdkConfig;//sdk配置
-@property (nonatomic, strong) UdeskSetting       *sdkSetting;//sdk后台配置
+@property (nonatomic, strong) UdeskChatTitleView *titleView;//标题
 
 @end
 
 @implementation UdeskChatViewController
 
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
-                     withSettings:(UdeskSetting *)setting {
-    
-    if (self = [super init]) {
-        _sdkSetting = setting;
-        _sdkConfig = config;
-        self.hidesBottomBarWhenPushed = YES;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendProductMessageURL:) name:UdeskTouchProductUrlSendButton object:nil];
-    }
-    return self;
-}
-
-- (void)setupBase {
-    
-    if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
-        self.navigationController.navigationBar.translucent = NO;
-    }
-    
-    self.navigationItem.title = getUDLocalizedString(@"udesk_connecting_agent");
-    //设置返回按钮文字
-    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] init];
-    barButtonItem.title = getUDLocalizedString(@"udesk_back");
-    self.navigationItem.backBarButtonItem = barButtonItem;
-}
-
-//点击返回
-- (void)dismissChatViewController {
-
-    //隐藏键盘
-    [self.inputBar.inputTextView resignFirstResponder];
-    if (self.sdkSetting) {
-        [self checkInvestigationWhenLeave];
-    }
-    else {
-        [self dismissViewController];
-    }
-}
-
-//检查是否设置返回弹出满意度评价
-- (void)checkInvestigationWhenLeave {
-    
-    //后台开启了满意度调查
-    if (!self.sdkSetting.enableImSurvey.boolValue) {
-        [self dismissViewController];
-        return;
-    }
-    
-    //是否开启返回弹出满意度调查
-    if (!self.sdkSetting.investigationWhenLeave.boolValue) {
-        [self dismissViewController];
-        return;
-    }
-    
-    //有客服ID才弹出评价
-    if (!self.inputBar.agent.agentId) {
-        [self dismissViewController];
-        return;
-    }
-    
-    //检查是否已经评价
-    [[UdeskAgentSurvey sharedManager] checkHasSurveyWithAgentId:self.inputBar.agent.agentId completion:^(NSString *hasSurvey,NSError *error) {
-        
-        //失败
-        if (error) {
-            [self dismissViewController];
-            return ;
-        }
-        //还未评价
-        if (![hasSurvey boolValue]) {
-            
-            [[UdeskAgentSurvey sharedManager] showAgentSurveyAlertViewWithAgentId:self.inputBar.agent.agentId isShowErrorAlert:NO completion:^(BOOL result, NSError *error) {
-                if (!result) {
-                    [self dismissViewController];
-                }
-                else {
-                    [self didSurveyCompletion:getUDLocalizedString(@"udesk_top_view_thanks_evaluation")];
-                }
-            }];
-        }
-        else {
-            [self dismissViewController];
-        }
-    }];
-}
-
-- (void)dismissViewController {
-    
-    //离开页面
-    [self leaveChatViewController];
-    if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-        } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:self.sdkConfig.presentingAnimation] forKey:nil];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-}
-
-- (void)leaveChatViewController {
-    
-    if (self.sdkConfig) {
-        if (self.sdkConfig.leaveChatViewController) {
-            self.sdkConfig.leaveChatViewController();
-        }
-    }
-}
-
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-
-    [self setupBase];
 
     //初始化viewModel
     [self initViewModel];
@@ -247,10 +131,12 @@
 
 //接受客服状态，弹出下拉动画
 - (void)didReceiveAgentPresence:(UdeskAgent *)agent {
+    
+    if (!agent) return;
     if (agent.code) {
         //显示top AlertView
         [UdeskTopAlertView showWithCode:agent.code withMessage:agent.message parentView:self.view];
-        [self setNavigationTitle:agent];
+        [self updateAgent:agent];
     }
 }
 
@@ -258,7 +144,7 @@
 - (void)didFetchAgentModel:(UdeskAgent *)agent {
     
     if (!agent) return;
-    [self setNavigationTitle:agent];
+    [self updateAgent:agent];
 }
 
 - (void)didSurveyCompletion:(NSString *)message {
@@ -266,72 +152,10 @@
     [UdeskTopAlertView showAlertType:UDAlertTypeGreen withMessage:message parentView:self.view];
 }
 
-- (void)setNavigationTitle:(UdeskAgent *)agent {
+- (void)updateAgent:(UdeskAgent *)agent {
 
-    @try {
-        
-        //底部功能栏根据客服状态code做操作
-        self.inputBar.agent = agent;
-        //如果开发者设定了 title ，则不更新 title
-        if (self.sdkConfig.imTitle) {
-            self.navigationItem.title = self.sdkConfig.imTitle;
-            return;
-        }
-        
-        NSString *titleText;
-        if (agent.code == UDAgentStatusResultOnline) {
-            titleText = agent.nick;
-        }
-        else if (agent.code == UDAgentStatusResultOffline) {
-            titleText = agent.nick?agent.nick:getUDLocalizedString(@"udesk_agent_offline");
-        }
-        else {
-            titleText = agent.message;
-        }
-        
-        CGSize titleSize = [UdeskStringSizeUtil textSize:titleText withFont:self.sdkConfig.sdkStyle.titleFont withSize:CGSizeMake(200, 44)];
-        UIImage *titleImage;
-        switch (agent.code) {
-            case UDAgentStatusResultOnline:
-                titleImage = [UIImage ud_defaultAgentOnlineImage];
-                break;
-            case UDAgentStatusResultQueue:
-                titleImage = [UIImage ud_defaultAgentBusyImage];
-                break;
-            case UDAgentStatusResultOffline:
-            case UDAgentStatusResultLeaveMessage:
-                titleImage = [UIImage ud_defaultAgentOfflineImage];
-                break;
-            default:
-                break;
-        }
-        
-        UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        titleButton.userInteractionEnabled = NO;
-        titleButton.frame = CGRectMake(0, 0, titleSize.width, titleSize.height);
-        [titleButton setTitle:titleText forState:UIControlStateNormal];
-        [titleButton setTitleColor:self.sdkConfig.sdkStyle.titleColor forState:UIControlStateNormal];
-        titleButton.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        titleButton.titleLabel.font = self.sdkConfig.sdkStyle.titleFont;
-        if (titleImage) {
-            [titleButton setImage:titleImage forState:UIControlStateNormal];
-            [titleButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -titleImage.size.width-10, 0, titleImage.size.width)];
-            [titleButton setImageEdgeInsets:UIEdgeInsetsMake(0, titleSize.width, 0, -titleSize.width)];
-        }
-        
-        if (agent.code == UDAgentStatusResultQueue) {
-            titleButton.imageView.hidden = YES;
-            CGFloat x = CGRectGetMaxX(titleButton.titleLabel.frame);
-            [titleButton setImageEdgeInsets:UIEdgeInsetsMake(0, x+40, 0, 0)];
-        } else {
-            titleButton.imageView.hidden = NO;
-        }
-        
-        self.navigationItem.titleView = titleButton;
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
+    self.inputBar.agent = agent;
+    [self.titleView updateTitle:agent];
 }
 
 //点击发送留言
@@ -345,7 +169,7 @@
         return;
     }
     
-    UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig];
+    UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] initWithSDKConfig:self.sdkConfig setting:self.sdkSetting];
     [self presentViewController:offLineTicket animated:YES completion:nil];
 }
 
@@ -358,6 +182,8 @@
 
 #pragma mark - 初始化视图
 - (void)initilzer {
+    
+    self.navigationItem.titleView = self.titleView;
     
     // 初始化message tableView
 	_messageTableView = [[UdeskMessageTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
@@ -404,6 +230,7 @@
     _inputBar.hiddenAlbumButton = self.sdkConfig.hiddenAlbumButton;
     _inputBar.hiddenVoiceButton = self.sdkConfig.hiddenVoiceButton;
     _inputBar.hiddenEmotionButton = self.sdkConfig.hiddenEmotionButton;
+    _inputBar.hiddenLocationButton = self.sdkConfig.hiddenLocationButton;
 }
 
 #pragma mark - UdeskInputBarDelegate
@@ -429,6 +256,29 @@
         [self.inputBar.inputTextView becomeFirstResponder];
     }
 }
+
+//点击地理位置
+- (void)didSelectLocationButton:(BOOL)selected {
+
+    //用户自己选择回调方式定位
+    if (self.sdkConfig.locationButtonCallBack) {
+        self.sdkConfig.locationButtonCallBack(self);
+        return;
+    }
+    
+    UdeskLocationViewController *location = [[UdeskLocationViewController alloc] initWithSDKConfig:self.sdkConfig hasSend:NO];
+    [self presentViewController:location animated:YES completion:nil];
+    @udWeakify(self);
+    location.sendLocationBlock = ^(UdeskLocationModel *model) {
+        
+        @udStrongify(self);
+        [self.chatViewModel sendLocationMessage:model completion:^(UdeskMessage *message, BOOL sendStatus) {
+            //处理发送结果UI
+            [self sendMessageStatus:sendStatus message:message];
+        }];
+    };
+}
+
 //点击满意度按钮
 - (void)didSurveyWithMessage:(NSString *)message hasSurvey:(BOOL)hasSurvey {
 
@@ -552,6 +402,21 @@
     }
 }
 
+//查看地理位置
+- (void)didSelectLocationCell:(UdeskMessage *)message {
+
+    UdeskLocationModel *model = [self.chatViewModel getLocationModel:message];
+    //用户自己选择回调方式定位
+    if (self.sdkConfig.locationMessageCallBack) {
+        self.sdkConfig.locationMessageCallBack(self,model);
+        return;
+    }
+    
+    UdeskLocationViewController *location = [[UdeskLocationViewController alloc] initWithSDKConfig:self.sdkConfig hasSend:YES];
+    location.locationModel = model;
+    [self presentViewController:location animated:YES completion:nil];
+}
+
 //重发消息
 - (void)resendMessageInCell:(UITableViewCell *)cell resendMessage:(UdeskMessage *)resendMessage {
 
@@ -609,6 +474,17 @@
     } @finally {
     }
 }
+
+#pragma title
+- (UdeskChatTitleView *)titleView {
+
+    if (!_titleView) {
+        CGFloat titleViewWidth = UD_SCREEN_WIDTH>320?250:200;
+        _titleView = [[UdeskChatTitleView alloc] initWithFrame:CGRectMake(0, 0, titleViewWidth, 44) sdkConfig:self.sdkConfig];
+    }
+    return _titleView;
+}
+
 #pragma mark - 表情view
 - (UdeskEmotionManagerView *)emotionManagerView {
 
@@ -758,7 +634,6 @@
 
 }
 
-
 #pragma mark - 发送文字
 - (void)didSendTextAction:(NSString *)text {
 
@@ -854,19 +729,6 @@
     
 }
 
-#pragma mark - 发送咨询对象url
-- (void)sendProductMessageURL:(NSNotification *)notif {
-
-    @try {
-        
-        NSString *productUrl = [notif.userInfo objectForKey:@"productUrl"];
-        [self didSendTextAction:productUrl];
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
-}
-
 //根据发送状态更新UI
 - (void)sendMessageStatus:(BOOL)sendStatus message:(UdeskMessage *)message {
     
@@ -941,6 +803,91 @@
 - (void)didEmotionViewSendAction {
 
     [self didSendTextAction:self.inputBar.inputTextView.text];
+}
+
+//点击返回
+- (void)dismissChatViewController {
+    
+    //隐藏键盘
+    [self.inputBar.inputTextView resignFirstResponder];
+    if (self.sdkSetting) {
+        [self checkInvestigationWhenLeave];
+    }
+    else {
+        [self dismissViewController];
+    }
+}
+
+//检查是否设置返回弹出满意度评价
+- (void)checkInvestigationWhenLeave {
+    
+    //后台开启了满意度调查
+    if (!self.sdkSetting.enableImSurvey.boolValue) {
+        [self dismissViewController];
+        return;
+    }
+    
+    //是否开启返回弹出满意度调查
+    if (!self.sdkSetting.investigationWhenLeave.boolValue) {
+        [self dismissViewController];
+        return;
+    }
+    
+    //有客服ID才弹出评价
+    if (!self.inputBar.agent.agentId) {
+        [self dismissViewController];
+        return;
+    }
+    
+    //检查是否已经评价
+    [[UdeskAgentSurvey sharedManager] checkHasSurveyWithAgentId:self.inputBar.agent.agentId completion:^(NSString *hasSurvey,NSError *error) {
+        
+        //失败
+        if (error) {
+            [self dismissViewController];
+            return ;
+        }
+        //还未评价
+        if (![hasSurvey boolValue]) {
+            
+            [[UdeskAgentSurvey sharedManager] showAgentSurveyAlertViewWithAgentId:self.inputBar.agent.agentId isShowErrorAlert:NO completion:^(BOOL result, NSError *error) {
+                if (!result) {
+                    [self dismissViewController];
+                }
+                else {
+                    [self didSurveyCompletion:getUDLocalizedString(@"udesk_top_view_thanks_evaluation")];
+                }
+            }];
+        }
+        else {
+            [self dismissViewController];
+        }
+    }];
+}
+
+- (void)dismissViewController {
+    
+    //离开页面
+    [self leaveChatViewController];
+    if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        } else {
+            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:self.sdkConfig.presentingAnimation] forKey:nil];
+            [self dismissViewControllerAnimated:NO completion:nil];
+        }
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (void)leaveChatViewController {
+    
+    if (self.sdkConfig) {
+        if (self.sdkConfig.leaveChatViewController) {
+            self.sdkConfig.leaveChatViewController();
+        }
+    }
 }
 
 #pragma mark - 设置背景颜色
@@ -1020,7 +967,7 @@
 {
     [super viewDidDisappear:animated];
     //离开页面放弃排队
-    [UdeskManager quitQueueWithType:_sdkConfig.quitQueueType];
+    [UdeskManager quitQueueWithType:self.sdkConfig.quitQueueType];
     //取消所有请求
     [UdeskManager cancelAllOperations];
 }
@@ -1028,7 +975,6 @@
 - (void)dealloc {
     
     NSLog(@"%@销毁了",[self class]);
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UdeskTouchProductUrlSendButton object:nil];
     _messageTableView.delegate = nil;
     _messageTableView.dataSource = nil;
 }

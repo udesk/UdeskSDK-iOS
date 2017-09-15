@@ -55,6 +55,9 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 /** 导航栏返回按钮颜色（默认蓝色）*/
 @property (nonatomic, strong) UIColor  *navBackButtonColor;
 
+/** 导航栏右侧按钮颜色（默认蓝色）*/
+@property (nonatomic, strong) UIColor  *navRightButtonColor;
+
 /** 导航栏返回按钮图片 */
 @property (nonatomic, strong) UIImage  *navBackButtonImage;
 
@@ -73,7 +76,7 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 /** 机器人转人工按钮颜色 */
 @property (nonatomic, strong) UIColor  *transferButtonColor;
 
-/** 机器人转人工按钮颜色 */
+/** 录音颜色 */
 @property (nonatomic, strong) UIColor  *recordViewColor;
 
 /** 客户语音时长颜色 */
@@ -82,7 +85,7 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 /** 客服语音时长颜色 */
 @property (nonatomic, strong) UIColor  *agentVoiceDurationColor;
 
-/** 客服语音时长颜色 */
+/** 背景颜色 */
 @property (nonatomic, strong) UIColor  *tableViewBackGroundColor;
 
 /** 帮助中心搜索文章按钮颜色 */

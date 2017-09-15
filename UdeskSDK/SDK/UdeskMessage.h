@@ -26,6 +26,7 @@ typedef NS_ENUM(NSInteger, UDMessageContentType) {
     UDMessageContentTypeLeave    = 7,//离线留言
     UDMessageContentTypeVideo    = 8,//视频
     UDMessageContentTypeRollback = 9,//消息撤回
+    UDMessageContentTypeLocation = 10,//地理位置消息
 };
 
 typedef NS_ENUM(NSInteger,UDMessageSendStatus) {

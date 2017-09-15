@@ -130,6 +130,9 @@
     
     @try {
         
+        //正则号吗
+        [textMessage linkText:self.textContentLabel.text];
+        
         //获取文字中的可选中的元素
         if (textMessage.numberRangeDic.count > 0) {
             NSString *longestKey = @"";
@@ -144,16 +147,14 @@
             }
         }
         
-        if (textMessage.message.messageType == UDMessageContentTypeText) {
+        //设置高亮
+        for (NSString *richContent in textMessage.matchArray) {
             
-            //设置高亮
-            for (NSString *richContent in textMessage.matchArray) {
-                
-                if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
-                    [self.textContentLabel addLinkToURL:[NSURL URLWithString:richContent] withRange:[textMessage.richURLDictionary[richContent] rangeValue]];
-                }
+            if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
+                [self.textContentLabel addLinkToURL:[NSURL URLWithString:richContent] withRange:[textMessage.richURLDictionary[richContent] rangeValue]];
             }
         }
+        
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -188,7 +189,7 @@
     
     switch (buttonIndex) {
         case 0:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@", actionSheet.title]]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@", number]]];
             break;
         case 1:
             [UIPasteboard generalPasteboard].string = number;

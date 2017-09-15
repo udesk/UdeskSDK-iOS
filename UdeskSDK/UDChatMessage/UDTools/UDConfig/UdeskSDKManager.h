@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "UdeskSDKConfig.h"
-#import "UdeskManager.h"
+@class UdeskChatViewController;
+@class UdeskLocationModel;
 
 typedef enum : NSUInteger {
     UdeskFAQ,
@@ -29,6 +30,9 @@ typedef enum : NSUInteger {
 
 /** 是否隐藏相册 */
 @property (nonatomic, assign) BOOL     hiddenAlbumButton;
+
+/** 是否隐藏定位(默认隐藏) */
+@property (nonatomic, assign) BOOL     hiddenLocationButton;
 
 /** 是否隐藏发送视频 */
 @property (nonatomic, assign) BOOL     hiddenSendVideo;
@@ -192,5 +196,20 @@ typedef enum : NSUInteger {
  @param completion 事件完成回调
  */
 - (void)leaveChatViewControllerCallBack:(void(^)(void))completion;
+
+/**
+ 地理位置功能按钮点击事件
+
+ @param completion 回调viewModel
+ * 等你要发送消息的时候可以 viewModel sendLocationMessage:
+ */
+- (void)locationButtonCallBack:(void(^)(UdeskChatViewController *viewController))completion;
+
+/**
+ 地理位置消息点击事件
+
+ @param completion 回调这个消息的model
+ */
+- (void)locationMessageCallBack:(void(^)(UdeskChatViewController *viewController, UdeskLocationModel *locationModel))completion;
 
 @end

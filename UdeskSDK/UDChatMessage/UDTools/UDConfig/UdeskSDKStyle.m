@@ -59,6 +59,7 @@
         
         //nav
         self.navBackButtonColor = [UIColor colorWithHexString:@"#007AFF"];
+        self.navRightButtonColor = [UIColor colorWithHexString:@"#007AFF"];
         self.navBackButtonImage = nil;
         self.navigationColor = [UIColor colorWithRed:0.976f  green:0.976f  blue:0.976f alpha:1];
         self.navBarBackgroundImage = nil;

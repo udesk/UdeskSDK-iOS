@@ -21,6 +21,7 @@
 #import "UdeskUtils.h"
 #import "UdeskStructMessage.h"
 #import "UdeskEventMessage.h"
+#import "UdeskLocationMessage.h"
 #import "UdeskDateFormatter.h"
 #import "UdeskTextMessage.h"
 #import "UdeskImageMessage.h"
@@ -30,6 +31,7 @@
 #import "UdeskCaheHelper.h"
 #import "UdeskAlertController.h"
 #import "UdeskResendManager.h"
+#import "UdeskLocationModel.h"
 
 @interface UdeskChatViewModel()<UDManagerDelegate,UdeskChatAlertDelegate>
 
@@ -115,6 +117,7 @@
     else {
         UdeskAgent *agentModel = [[UdeskAgent alloc] init];
         agentModel.code = UDAgentStatusResultOffline;
+        agentModel.message = getUDLocalizedString(@"udesk_agent_offline");
         //回调客服信息到vc显示
         [self callbackAgentModel:agentModel];
         //显示不在工作时间alert
@@ -184,11 +187,10 @@
     //退出
     [UdeskManager setupCustomerOffline];
     
-    UdeskAgent *agentModel = [[UdeskAgent alloc] init];
-    agentModel.message = [UdeskTools isBlankString:message]?getUDLocalizedString(@"udesk_im_title_blocked_list"):message;
-    agentModel.code = UDAgentStatusResultUnKnown;
+    self.agentModel.message = [UdeskTools isBlankString:message]?getUDLocalizedString(@"udesk_im_title_blocked_list"):message;
+    self.agentModel.code = UDAgentStatusResultUnKnown;
     
-    [self callbackAgentModel:agentModel];
+    [self callbackAgentModel:self.agentModel];
     //显示客户黑名单提示
     [self.chatAlert showIsBlacklistedAlert:message];
 }
@@ -272,7 +274,7 @@
 
 //获取分配客服
 - (void)distributionAgent:(UdeskAgent *)agentModel {
-
+    
     //回调客服信息到vc显示
     [self callbackAgentModel:agentModel];
     
@@ -317,11 +319,10 @@
             //直接留言
             if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
                 
-                UdeskAgent *agentModel = [[UdeskAgent alloc] init];
-                agentModel.code = UDAgentStatusResultLeaveMessage;
-                agentModel.message = getUDLocalizedString(@"udesk_leave_msg");
+                self.agentModel.code = UDAgentStatusResultLeaveMessage;
+                self.agentModel.message = getUDLocalizedString(@"udesk_leave_msg");
                 //回调客服信息到vc显示
-                [self callbackAgentModel:agentModel];
+                [self callbackAgentModel:self.agentModel];
                 //更新输入框
                 if (self.updateInputBarBlock) {
                     self.updateInputBarBlock();
@@ -657,6 +658,12 @@
                 }
                     break;
                     
+                case UDMessageContentTypeLocation: {
+                    
+                    UdeskLocationMessage *locationMessage = [[UdeskLocationMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:locationMessage];
+                }
+                    
                 default:
                     break;
             }
@@ -726,6 +733,11 @@
 - (void)didReceivePresence:(NSDictionary *)presence {
     
     @try {
+        
+        //直接留言 不切换客服的状态
+        if (self.agentModel.code == UDAgentStatusResultLeaveMessage) {
+            return;
+        }
         
         NSString *statusType = [NSString stringWithFormat:@"%@",[presence objectForKey:@"type"]];
         UDAgentStatusType agentCode = UDAgentStatusResultOffline;
@@ -1018,6 +1030,26 @@
     }
 }
 
+//发送地理位置
+- (void)sendLocationMessage:(UdeskLocationModel *)model
+                 completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
+    
+    if (_agentModel.code != UDAgentStatusResultOnline) {
+        [self showAlertViewWithAgent];
+        return;
+    }
+    
+    if (model) {
+        
+        UdeskMessage *locationMsg = [[UdeskMessage alloc] initLocationChatMessage:model];
+        if (locationMsg) {
+            [[Udesk_YYWebImageManager sharedManager].cache setImage:model.image forKey:locationMsg.messageId];
+            [self addMessageToChatMessageArray:@[locationMsg]];
+            [UdeskManager sendMessage:locationMsg completion:completion];
+        }
+    }
+}
+
 //添加消息到数组
 - (void)addMessageToChatMessageArray:(NSArray *)messageArray {
     
@@ -1147,6 +1179,36 @@
 - (id)objectAtIndexPath:(NSInteger)row {
     
     return [self.messageArray objectAtIndexCheck:row];
+}
+
+//获取LocationModel
+- (UdeskLocationModel *)getLocationModel:(UdeskMessage *)message {
+    
+    @try {
+        
+        UdeskLocationModel *location = [[UdeskLocationModel alloc] init];
+        if ([UdeskTools isBlankString:message.content]) {
+            return location;
+        }
+        
+        NSArray *array = [message.content componentsSeparatedByString:@";"];
+        if (array.count < 4) {
+            return location;
+        }
+        
+        double latitude = [array[0] doubleValue];
+        double longitude = [array[1] doubleValue];
+        location.longitude = longitude;
+        location.latitude = latitude;
+        location.image = message.image;
+        location.zoomLevel = [array[2] integerValue];
+        location.name = array[3];
+        
+        return location;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
 }
 
 - (void)dealloc

@@ -8,7 +8,6 @@
 
 #import "UdeskSDKManager.h"
 #import "UdeskChatViewController.h"
-#import "UdeskTransitioningAnimation.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskRobotViewController.h"
@@ -16,6 +15,7 @@
 #import "UdeskAgentMenuViewController.h"
 #import "UdeskTicketViewController.h"
 #import "UdeskSDKShow.h"
+#import "UdeskLocationModel.h"
 
 @interface UdeskSDKManager()
 
@@ -150,7 +150,7 @@
                  completion:(void (^)(void))completion {
     
     if (!chatViewController) {
-        chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig withSettings:setting];
+        chatViewController = [[UdeskChatViewController alloc] initWithSDKConfig:_sdkConfig setting:setting];
     }
     
     [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:animationType completion:completion];
@@ -167,7 +167,8 @@
         
         NSURL *url = [UdeskManager getServerRobotURLWithBaseURL:setting.robot];
         if (!robotChat) {
-            robotChat = [[UdeskRobotViewController alloc] initWithSDKConfig:_sdkConfig withURL:url withSetting:setting];
+            robotChat = [[UdeskRobotViewController alloc] initWithSDKConfig:_sdkConfig setting:setting];
+            robotChat.robotURL = url;
         }
         [_show presentOnViewController:viewController udeskViewController:robotChat transiteAnimation:animationType completion:completion];
     }
@@ -192,7 +193,7 @@
                      completion:(void (^)(void))completion {
     
     if (!ticket) {
-        ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig];
+        ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig setting:nil];
     }
     [viewController presentViewController:ticket animated:YES completion:nil];
 }
@@ -214,23 +215,27 @@
                 return ;
             }
             
-            if ([[responseObject objectForKey:@"code"] integerValue] == 1000) {
-                
-                NSArray *result = [responseObject objectForKey:@"result"];
-                //有设置客服导航栏
-                if (result.count) {
-                    
-                    if (!agentMenu) {
-                        agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig menuArray:result withSetting:setting];
-                    }
-                    
-                    [_show presentOnViewController:viewController udeskViewController:agentMenu transiteAnimation:animationType completion:completion];
-                }
-                else {
-                    //没有设置导航栏 直接进入聊天页面
-                    [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
-                }
+            if ([[responseObject objectForKey:@"code"] integerValue] != 1000) {
+                [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
+                return ;
             }
+            
+            NSArray *result = [responseObject objectForKey:@"result"];
+            //有设置客服导航栏
+            if (result.count) {
+                
+                if (!agentMenu) {
+                    agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig setting:setting];
+                    agentMenu.menuDataSource = result;
+                }
+                
+                [_show presentOnViewController:viewController udeskViewController:agentMenu transiteAnimation:animationType completion:completion];
+            }
+            else {
+                //没有设置导航栏 直接进入聊天页面
+                [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
+            }
+            
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
         } @finally {
@@ -361,6 +366,27 @@
     _sdkConfig.leaveChatViewController = completion;
 }
 
+/**
+ 地理位置功能按钮点击事件
+ 
+ @param completion 回调viewModel
+ * 等你要发送消息的时候可以 viewModel sendLocationMessage:
+ */
+- (void)locationButtonCallBack:(void(^)(UdeskChatViewController *viewController))completion {
+
+    _sdkConfig.locationButtonCallBack = completion;
+}
+
+/**
+ 地理位置消息点击事件
+ 
+ @param completion 回调这个消息的model
+ */
+- (void)locationMessageCallBack:(void(^)(UdeskChatViewController *viewController, UdeskLocationModel *locationModel))completion {
+
+    _sdkConfig.locationMessageCallBack = completion;
+}
+
 - (void)setHiddenSendVideo:(BOOL)hiddenSendVideo {
 
     _hiddenSendVideo = hiddenSendVideo;
@@ -371,6 +397,12 @@
 
     _hiddenAlbumButton = hiddenAlbumButton;
     _sdkConfig.hiddenAlbumButton = hiddenAlbumButton;
+}
+
+- (void)setHiddenLocationButton:(BOOL)hiddenLocationButton {
+
+    _hiddenLocationButton = hiddenLocationButton;
+    _sdkConfig.hiddenLocationButton = hiddenLocationButton;
 }
 
 - (void)setHiddenVoiceButton:(BOOL)hiddenVoiceButton {

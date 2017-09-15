@@ -1,5 +1,11 @@
 # UdeskSDK-iOS
-Udesk为了让开发者更好的集成移动SDK,与企业业务结合更加紧密，我们开源了SDK的UI界面。用户可以根据自身业务以及APP不同风格重写页面。当然开发者也可以直接用我们提供的默认的界面。
+### 公告
+
+SDK适配iOS11的版本是从3.7开始，如果还没升级到最新版本的请尽快升级
+
+### SDK下载地址
+
+https://github.com/udesk/UdeskSDK-iOS
 
 ## 目录
 - [一、SDK工作流程](#%E4%B8%80sdk%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B)
@@ -178,8 +184,8 @@ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle
 
 ```objective-c
 #import "UdeskLanguageTool.h"
-//SDK提供两种语言，中文(CNS) 、英文 (EN) ，默认中文
-[[UdeskLanguageTool sharedInstance] setNewLanguage:EN]
+//SDK提供两种语言，中文(UDLanguageTypeCN) 、英文 (UDLanguageTypeEN) ，默认中文
+[[UdeskLanguageTool sharedInstance] setNewLanguage:UDLanguageTypeEN]
 ```
 
 #### 4.7设置放弃排队类型
@@ -674,6 +680,62 @@ BOOL isSession = [UdeskManager customersAreSession];
 [UdeskManager markAllMessagesAsRead];
 ```
 
+#### 6.19SDK支持发送地址位置
+
+注：自iOS8起，开发者在使用定位功能之前，需要在info.plist里添加（以下二选一，两个都添加默认使用NSLocationWhenInUseUsageDescription）：
+
+NSLocationWhenInUseUsageDescription ，允许在前台使用时获取GPS的描述
+
+NSLocationAlwaysUsageDescription ，允许永久使用GPS的描述
+
+
+
+SDK默认不可以发送地理位置，如果需要SDK发送地理位置
+
+//原生（SDK内部自己实现定位、发送、搜索、查看，用的是苹果自带的原生地图控件）
+
+```objective-c
+UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+manager.hiddenLocationButton = NO;
+[manager pushUdeskInViewController:self completion:nil];
+```
+
+//API（通过API回调的方式接入地理位置，需要开发者自己实现相应功能，SDKDemo里有提供一个百度地图的示例，仅供参考。）
+
+```objective-c
+#import "UdeskChatViewController.h"
+
+UdeskSDKManager *manager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+manager.hiddenLocationButton = NO;
+//用户点击地理位置按钮回调
+[manager locationButtonCallBack:^(UdeskChatViewController *viewController) {
+        
+  //打开地理位置VC
+   UdeskCustomLocationViewController *custom = [[UdeskCustomLocationViewController alloc] initWithHasSend:NO];
+   UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:custom];
+   [viewController presentViewController:nav animated:YES completion:nil];
+   //地理位置VC 发送回调
+   custom.sendLocationBlock = ^(UdeskLocationModel *model) {
+       [viewController.chatViewModel sendLocationMessage:model completion:^(UdeskMessage *message, BOOL sendStatus) {
+                //处理发送结果UI
+           [viewController sendMessageStatus:sendStatus message:message];
+        }];
+     };
+}];
+    
+//用户点击已经发送的地理位置消息回调
+[manager locationMessageCallBack:^(UdeskChatViewController *viewController, UdeskLocationModel *locationModel) {
+          //打开地理位置VC
+    	UdeskCustomLocationViewController *custom = [[UdeskCustomLocationViewController alloc] initWithHasSend:YES];
+  		//把需要查看的model传入
+        custom.locationModel = locationModel;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:custom];
+        [viewController presentViewController:nav animated:YES completion:nil];
+ }];
+    
+[manager pushUdeskInViewController:self completion:nil];
+```
+
 # 七、常见问题
 
 #### 键盘弹起后输入框和键盘之间有偏移
@@ -711,9 +773,67 @@ SDK在退到后台之后不会马上离线，会导致客服发送消息一直�
 [UdeskManager setupCustomerOffline];
 ```
 
+在APP进入到前台的时候主动调用下我们的上线方法
+
+```objective-c
+[UdeskManager setupCustomerOnline];
+```
+
+#### APP旋转屏幕 SDK UI没有适配问题
+
+SDK暂时还没有支持旋转的UI适配。下面是临时解决办法
+
+如果你的 ViewController 是管理在 UINavigationController 中，则需要去修改 UINavigationController 对应的行为，比如通过 Category 的方式实现思路大致如下：
+
+Objective-C：
+
+```objective-c
+#import "UINavigationController.h"
+#import "UdeskBaseViewController.h"
+
+@implementation UINavigationController (Overrides)
+- (BOOL)shouldAutorotate {
+    id currentViewController = self.topViewController;
+    if ([currentViewController isKindOfClass:[UdeskBaseViewController class]]) {
+        return NO;
+    }
+    return YES;
+}
+@end
+```
+
+Swift：
+
+```swift
+import UIKit
+
+extension UINavigationController {
+  
+    open override var shouldAutorotate: Bool{
+        if let vc = viewControllers.last,
+            vc.description.contains("Udesk") {
+            return false
+        }
+        return super.shouldAutorotate
+    }
+}
+```
+
 # 八、更新记录
 
 #### 更新记录：
+
+sdk v3.8版本更新功能:
+
+1.SDK支持地理位置发送（支持原生和API形式）
+
+2.欢迎语支持电话网址识别
+
+3.解决pod导入中英文切换问题
+
+4.解决APP切换网络SDK不会相应传给客服修改问题
+
+------
 
 sdk v3.7.1版本更新功能:
 

@@ -120,11 +120,11 @@
         customizedBackItem = [[UIBarButtonItem alloc]initWithImage:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:(UIBarButtonItemStylePlain) target:viewController action:@selector(dismissChatViewController)];
     }
     
+    NSString *backText = getUDLocalizedString(@"udesk_back");
     if (_sdkConfig.presentingAnimation == UDTransiteAnimationTypePresent) {
-        viewController.navigationItem.leftBarButtonItem = customizedBackItem ?: [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:viewController action:@selector(dismissChatViewController)];
+        viewController.navigationItem.leftBarButtonItem = customizedBackItem ?: [[UIBarButtonItem alloc] initWithTitle:backText style:UIBarButtonItemStylePlain target:viewController action:@selector(dismissChatViewController)];
     } else {
         
-        NSString *backText = getUDLocalizedString(@"udesk_back");
         UIImage *backImage = [UIImage ud_defaultBackImage];
         
         CGSize backTextSize = [UdeskStringSizeUtil textSize:backText withFont:[UIFont systemFontOfSize:17] withSize:CGSizeMake(70, 30)];

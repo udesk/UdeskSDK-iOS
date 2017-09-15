@@ -6,14 +6,15 @@
 //  Copyright (c) 2015年 Udesk. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "UdeskBaseViewController.h"
+#import "UdeskChatViewModel.h"
 
-@class UdeskSDKConfig;
-@class UdeskSetting;
+@interface UdeskChatViewController : UdeskBaseViewController
 
-@interface UdeskChatViewController : UIViewController
+@property (nonatomic, strong) UdeskChatViewModel        *chatViewModel;//viewModel
 
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
-                     withSettings:(UdeskSetting *)setting;
+//更新发送消息的状态
+- (void)sendMessageStatus:(BOOL)sendStatus
+                  message:(UdeskMessage *)message;
 
 @end

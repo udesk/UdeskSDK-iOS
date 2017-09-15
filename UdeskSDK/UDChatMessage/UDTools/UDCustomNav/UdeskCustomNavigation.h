@@ -11,8 +11,10 @@
 @interface UdeskCustomNavigation : UIView
 
 @property (nonatomic, copy) void(^closeViewController)(void);
+@property (nonatomic, copy) void(^rightButtonHandle)(void);
 
-@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel  *titleLabel;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UIButton *rightButton;
 
 @end

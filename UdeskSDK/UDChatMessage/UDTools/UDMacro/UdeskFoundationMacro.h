@@ -14,9 +14,6 @@
 //语音最大时长
 #define UdeskVoiceRecorderTotalTime 60.0
 
-#define UdeskTouchProductUrlSendButton        @"UdeskTouchProductUrlSendButton"
-
-
 // image STRETCH
 #define UD_STRETCH_IMAGE(image, edgeInsets) ([image resizableImageWithCapInsets:edgeInsets resizingMode:UIImageResizingModeStretch])
 
@@ -121,4 +118,7 @@ _Pragma("clang diagnostic pop")
                                 \
                                 [View.layer setCornerRadius:(Radius)];\
                                 [View.layer setMasksToBounds:YES]
+
+#define UdeskNearbySpan     50
+
 #endif

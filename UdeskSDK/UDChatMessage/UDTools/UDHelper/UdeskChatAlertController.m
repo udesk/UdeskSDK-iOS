@@ -10,7 +10,6 @@
 #import "UdeskAlertController.h"
 #import "UdeskFoundationMacro.h"
 #import "UdeskUtils.h"
-#import "UdeskTicketViewController.h"
 #import "UdeskSDKShow.h"
 #import "UdeskOverlayTransitioningDelegate.h"
 #import "UdeskTools.h"

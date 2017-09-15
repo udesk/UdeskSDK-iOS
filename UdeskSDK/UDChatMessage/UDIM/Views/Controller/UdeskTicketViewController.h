@@ -10,6 +10,4 @@
 
 @interface UdeskTicketViewController : UdeskBaseViewController
 
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config;
-
 @end

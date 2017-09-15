@@ -50,7 +50,7 @@ static UdeskLanguageTool *sharedModel;
         //默认是中文
         if ([UdeskTools isBlankString:tmp])
         {
-            tmp = CNS;
+            tmp = @"zh-Hans";
         }
         
         self.language = tmp;
@@ -77,38 +77,23 @@ static UdeskLanguageTool *sharedModel;
     return NSLocalizedStringFromTable(key, table, @"");
 }
 
-- (void)changeNowLanguage
-{
-    if ([self.language isEqualToString:EN])
-    {
-        [self setNewLanguage:CNS];
-    }
-    else
-    {
-        [self setNewLanguage:EN];
-    }
-}
-
-- (void)setNewLanguage:(NSString *)language
+- (void)setNewLanguage:(UDLanguageType)language
 {
     @try {
         
-        if ([language isEqualToString:self.language])
-        {
-            return;
+        NSString *languageStr = @"zh-Hans";
+        if (language == UDLanguageTypeEN) {
+            languageStr = @"en";
         }
         
-        if ([language isEqualToString:EN] || [language isEqualToString:CNS])
-        {
-            
-            NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"UdeskBundle.bundle"];
-            NSBundle *bundle = [NSBundle bundleWithPath: path];
-            path = [bundle pathForResource:language ofType:@"lproj"];
-            self.bundle = [NSBundle bundleWithPath:path];
-        }
+        NSString *path = [[NSBundle bundleForClass:[UdeskLanguageTool class]] pathForResource:@"UdeskBundle" ofType:@"bundle"];
+        NSBundle *bundle = [NSBundle bundleWithPath: path];
+        path = [bundle pathForResource:languageStr ofType:@"lproj"];
+        self.bundle = [NSBundle bundleWithPath:path];
         
-        self.language = language;
-        [[NSUserDefaults standardUserDefaults]setObject:language forKey:LANGUAGE_SET];
+        self.language = languageStr;
+        
+        [[NSUserDefaults standardUserDefaults]setObject:languageStr forKey:LANGUAGE_SET];
         [[NSUserDefaults standardUserDefaults]synchronize];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);

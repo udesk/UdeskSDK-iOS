@@ -70,3 +70,4 @@
 "udesk_video_big_tips" = "文件过大无法发送";
 "udesk_customer_leave_msg" = "客户留言";
 "udesk_rollback" = "撤回了一条消息";
+"udesk_location" = "位置";

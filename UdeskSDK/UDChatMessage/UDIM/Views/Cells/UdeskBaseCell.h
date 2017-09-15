@@ -13,6 +13,8 @@
 
 - (void)didSelectImageCell;
 
+- (void)didSelectLocationCell:(UdeskMessage *)message;
+
 - (void)sendProductURL:(NSString *)url;
 
 - (void)didSelectStructButton;

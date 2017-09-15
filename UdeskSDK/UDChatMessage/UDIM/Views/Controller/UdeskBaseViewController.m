@@ -16,14 +16,23 @@
 
 @implementation UdeskBaseViewController
 
+- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
+                          setting:(UdeskSetting *)setting {
+
+    self = [super init];
+    if (self) {
+        _sdkConfig = config;
+        _sdkSetting = setting;
+        self.hidesBottomBarWhenPushed = YES;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     // 0.基本设置回
     [self setupBase];
-
-    // 1.添加左滑返回手势
-    [self addGesture];
 }
 
 - (void)setupBase
@@ -40,54 +49,22 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
 }
 
-- (void)addGesture
-{
-    UIScreenEdgePanGestureRecognizer *popRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopRecognizer:)];
-    popRecognizer.edges = UIRectEdgeLeft;
-    [self.view addGestureRecognizer:popRecognizer];
-}
-
-- (void)handlePopRecognizer:(UIScreenEdgePanGestureRecognizer*)recognizer {
-
-    CGPoint translation = [recognizer translationInView:self.view];
-    CGFloat xPercent = translation.x / CGRectGetWidth(self.view.bounds) * 0.9;
-
-    switch (recognizer.state) {
-        case UIGestureRecognizerStateBegan:
-            [UdeskTransitioningAnimation setInteractive:YES];
-            [self dismissViewControllerAnimated:YES completion:nil];
-            break;
-        case UIGestureRecognizerStateChanged:
-            [UdeskTransitioningAnimation updateInteractiveTransition:xPercent];
-            break;
-        default:
-            if (xPercent < .45) {
-                [UdeskTransitioningAnimation cancelInteractiveTransition];
-            } else {
-                [UdeskTransitioningAnimation finishInteractiveTransition];
-            }
-            [UdeskTransitioningAnimation setInteractive:NO];
-            break;
-    }
-}
-
-
-/**
- * 左侧按钮返回
- */
 - (void)dismissChatViewController {
-
-    if ([UdeskSDKConfig sharedConfig].presentingAnimation == UDTransiteAnimationTypePush) {
+    
+    if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
             [self dismissViewControllerAnimated:YES completion:nil];
         } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:[UdeskSDKConfig sharedConfig].presentingAnimation] forKey:nil];
+            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:self.sdkConfig.presentingAnimation] forKey:nil];
             [self dismissViewControllerAnimated:NO completion:nil];
         }
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
+}
 
+- (BOOL)shouldAutorotate {
+    return NO;
 }
 
 @end

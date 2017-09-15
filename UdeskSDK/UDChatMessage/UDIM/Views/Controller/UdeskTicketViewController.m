@@ -11,29 +11,16 @@
 #import "UdeskUtils.h"
 #import "UdeskTools.h"
 #import "UdeskFoundationMacro.h"
-#import "UdeskSDKConfig.h"
-#import "UdeskTransitioningAnimation.h"
 #import "UdeskLanguageTool.h"
 #import "UdeskCustomNavigation.h"
 #import "UdeskViewExt.h"
 #import <WebKit/WebKit.h>
 
-@interface UdeskTicketViewController () 
-
-@property (nonatomic, strong) UdeskSDKConfig *sdkConfig;
+@interface UdeskTicketViewController ()
 
 @end
 
 @implementation UdeskTicketViewController
-
-- (instancetype)initWithSDKConfig:(UdeskSDKConfig *)config
-{
-    self = [super init];
-    if (self) {
-        _sdkConfig = config;
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
@@ -41,21 +28,21 @@
 
     @try {
         
-        self.view.backgroundColor = _sdkConfig.sdkStyle.tableViewBackGroundColor;
+        self.view.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
         
         UdeskCustomNavigation *customNav = [[UdeskCustomNavigation alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 64)];
-        if (_sdkConfig.sdkStyle.navigationColor) {
-            customNav.backgroundColor = _sdkConfig.sdkStyle.navigationColor;
+        if (self.sdkConfig.sdkStyle.navigationColor) {
+            customNav.backgroundColor = self.sdkConfig.sdkStyle.navigationColor;
         }
-        if (_sdkConfig.sdkStyle.titleColor) {
-            customNav.titleLabel.textColor = _sdkConfig.sdkStyle.titleColor;
+        if (self.sdkConfig.sdkStyle.titleColor) {
+            customNav.titleLabel.textColor = self.sdkConfig.sdkStyle.titleColor;
         }
-        if (_sdkConfig.sdkStyle.navBackButtonColor) {
-            [customNav.closeButton setTitleColor:_sdkConfig.sdkStyle.navBackButtonColor forState:UIControlStateNormal];
+        if (self.sdkConfig.sdkStyle.navBackButtonColor) {
+            [customNav.closeButton setTitleColor:self.sdkConfig.sdkStyle.navBackButtonColor forState:UIControlStateNormal];
         }
         
-        if (_sdkConfig.ticketTitle) {
-            customNav.titleLabel.text = _sdkConfig.ticketTitle;
+        if (self.sdkConfig.ticketTitle) {
+            customNav.titleLabel.text = self.sdkConfig.ticketTitle;
         }
         else {
             customNav.titleLabel.text = getUDLocalizedString(@"udesk_leave_msg");
@@ -79,11 +66,11 @@
             // 默认是中文
             if (!tmp)
             {
-                tmp = CNS;
+                tmp = @"zh-Hans";
             }
             
             NSString *language;
-            if ([tmp isEqualToString:CNS]) {
+            if ([tmp isEqualToString:@"zh-Hans"]) {
                 language = @"&language=zh-cn";
             }
             else {

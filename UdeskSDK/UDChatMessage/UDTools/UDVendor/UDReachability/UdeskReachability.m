@@ -49,9 +49,13 @@ static void PrintReachabilityFlags(SCNetworkReachabilityFlags flags, const char*
 
 static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void* info)
 {
-#pragma unused (target, flags)
-	NSCAssert(info != NULL, @"info was NULL in ReachabilityCallback");
-	NSCAssert([(__bridge NSObject*) info isKindOfClass: [UdeskReachability class]], @"info was wrong class in ReachabilityCallback");
+    if (info == NULL) {
+        return;
+    }
+    
+    if (![(__bridge NSObject*) info isKindOfClass: [UdeskReachability class]]) {
+        return;
+    }
 
     UdeskReachability* noteObject = (__bridge UdeskReachability *)info;
     // Post a notification to notify the client that the network reachability changed.

@@ -68,3 +68,4 @@
 "udesk_download_failure" = "Download failed. Please re Download";
 "udesk_customer_leave_msg" = "Customer Leave Message";
 "udesk_rollback" = "has recalled a message";
+"udesk_location" = "Location";

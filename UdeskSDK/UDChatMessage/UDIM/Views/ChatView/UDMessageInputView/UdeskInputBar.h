@@ -16,6 +16,7 @@ typedef NS_ENUM(NSUInteger, UDInputViewType) {
     UDInputViewTypeText,
     UDInputViewTypeEmotion,
     UDInputViewTypeVoice,
+    UDInputViewTypeLocation,
 };
 
 @protocol UdeskInputBarDelegate <NSObject>
@@ -52,6 +53,10 @@ typedef NS_ENUM(NSUInteger, UDInputViewType) {
  */
 - (void)didSelectVoiceButton:(BOOL)selected;
 /**
+ *  点击地理位置
+ */
+- (void)didSelectLocationButton:(BOOL)selected;
+/**
  *  评价成功
  */
 - (void)didSurveyWithMessage:(NSString *)message hasSurvey:(BOOL)hasSurvey;
@@ -71,6 +76,7 @@ typedef NS_ENUM(NSUInteger, UDInputViewType) {
 @property (nonatomic, assign) BOOL     hiddenEmotionButton;
 @property (nonatomic, assign) BOOL     hiddenCameraButton;
 @property (nonatomic, assign) BOOL     hiddenAlbumButton;
+@property (nonatomic, assign) BOOL     hiddenLocationButton;
 
 - (instancetype)initWithFrame:(CGRect)frame
                     tableView:(UdeskMessageTableView *)tabelView;

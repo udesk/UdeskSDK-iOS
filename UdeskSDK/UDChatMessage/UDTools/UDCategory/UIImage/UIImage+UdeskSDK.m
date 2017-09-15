@@ -181,6 +181,14 @@
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udAlbumHigh.png")];
 }
 
++ (UIImage *)ud_defaultLocationImage {
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udLocation.png")];
+}
+
++ (UIImage *)ud_defaultLocationHighlightedImage {
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udLocationHigh.png")];
+}
+
 + (UIImage *)ud_defaultRecordVoiceImage {
 	return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udRecordVoice.png")];
 }
@@ -212,6 +220,16 @@
 
 + (UIImage *)ud_defaultVoiceTooShortImageEN {
 	return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udVoiceTooshortEn.png")];
+}
+
++ (UIImage *)ud_defaultLocationPinImage {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udMapLocation.png")];
+}
+
++ (UIImage *)ud_defaultMarkImage {
+
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udMark.png")];
 }
 
 @end

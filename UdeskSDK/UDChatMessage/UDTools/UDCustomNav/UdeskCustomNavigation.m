@@ -7,6 +7,9 @@
 //
 
 #import "UdeskCustomNavigation.h"
+#import "UdeskUtils.h"
+#import "UdeskFoundationMacro.h"
+#import "UdeskViewExt.h"
 
 @implementation UdeskCustomNavigation
 
@@ -18,6 +21,7 @@
         self.backgroundColor = [UIColor colorWithRed:0.976f  green:0.976f  blue:0.976f alpha:1];
         [self initNavTitleLabel];
         [self initNavCloseButton];
+        [self initNavRightButton];
     }
     return self;
 }
@@ -35,15 +39,33 @@
     _closeButton.frame = CGRectMake(10, 20, 50, 44);
     _closeButton.titleLabel.font = [UIFont systemFontOfSize:16];
     [_closeButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    [_closeButton setTitle:@"关闭" forState:UIControlStateNormal];
+    [_closeButton setTitle:getUDLocalizedString(@"udesk_close") forState:UIControlStateNormal];
     [_closeButton addTarget:self action:@selector(closeViewControllerAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_closeButton];
+}
+
+- (void)initNavRightButton {
+
+    _rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _rightButton.frame = CGRectMake(self.ud_right-50-10, 20, 50, 44);
+    _rightButton.titleLabel.font = [UIFont systemFontOfSize:16];
+    _rightButton.hidden = YES;
+    [_rightButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [_rightButton addTarget:self action:@selector(rightButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:_rightButton];
 }
 
 - (void)closeViewControllerAction {
 
     if (self.closeViewController) {
         self.closeViewController();
+    }
+}
+
+- (void)rightButtonAction {
+
+    if (self.rightButtonHandle) {
+        self.rightButtonHandle();
     }
 }
 

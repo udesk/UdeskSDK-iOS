@@ -8,9 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-#define CNS @"zh-Hans"
-#define EN  @"en"
 #define LANGUAGE_SET @"udLangeuageset"
+
+//语言类型枚举
+typedef NS_ENUM(NSUInteger, UDLanguageType) {
+    UDLanguageTypeCN = 0,
+    UDLanguageTypeEN,
+};
 
 @interface UdeskLanguageTool : NSObject
 
@@ -27,15 +31,10 @@
 - (NSString *)getStringForKey:(NSString *)key withTable:(NSString *)table;
 
 /**
- *  改变当前语言
- */
-- (void)changeNowLanguage;
-
-/**
  *  设置新的语言
  *
  *  @param language 新语言
  */
-- (void)setNewLanguage:(NSString*)language;
+- (void)setNewLanguage:(UDLanguageType)language;
 
 @end
