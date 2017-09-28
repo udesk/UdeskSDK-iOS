@@ -89,7 +89,7 @@
             if (!error) {
                 [self initialData:placemarks];
                 [self getAroundInfoMationWithCoordinate:CLLocationCoordinate2DMake(latitude, longitude) completion:^{
-                    
+             
                     if (completionHandler) {
                         completionHandler(nil);
                     }
@@ -108,7 +108,7 @@
 - (void)initialData:(NSArray *)places {
     
     @try {
-        
+     
         [self.nearbyArray removeAllObjects];
         
         for (CLPlacemark *placemark in places) {
@@ -156,7 +156,7 @@
 - (UdeskLocationModel *)getLocationModel:(CLLocationCoordinate2D)coordinate image:(UIImage *)image {
     
     @try {
-        
+     
         UdeskLocationModel *model = [[UdeskLocationModel alloc] init];
         if ([UdeskTools isBlankString:self.locationName]) {
             self.locationName = @"";
@@ -202,14 +202,14 @@
 }
 
 - (void)removeAllObjects {
-    
+
     [self.nearbyArray removeAllObjects];
 }
 
 - (NSString *)updateNearby:(NSInteger)row {
-    
+
     @try {
-        
+     
         for (UdeskNearbyModel *model in self.nearbyArray) {
             model.isSelect = NO;
         }

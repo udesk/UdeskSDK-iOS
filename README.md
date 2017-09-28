@@ -825,6 +825,12 @@ extension UINavigationController {
 
 #### 更新记录：
 
+sdk v3.8.1版本更新功能:
+
+1.修复sdk_token特殊字符导致消息无法保存问题
+
+------
+
 sdk v3.8版本更新功能:
 
 1.SDK支持地理位置发送（支持原生和API形式）

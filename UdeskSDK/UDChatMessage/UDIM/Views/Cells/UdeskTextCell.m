@@ -38,6 +38,13 @@
     _textContentLabel.textAlignment = NSTextAlignmentLeft;
     _textContentLabel.userInteractionEnabled = true;
     _textContentLabel.backgroundColor = [UIColor clearColor];
+    
+    //设置超链接颜色
+//    NSMutableDictionary *linkAttributes = [NSMutableDictionary dictionary];
+//    [linkAttributes setValue:[NSNumber numberWithInteger:NSUnderlineStyleSingle] forKey:(NSString *)NSUnderlineStyleAttributeName];
+//    [linkAttributes setValue:[UIColor redColor] forKey:(NSString *)kCTForegroundColorAttributeName];
+//    _textContentLabel.linkAttributes = linkAttributes;
+    
     [self.bubbleImageView addSubview:_textContentLabel];
     
     UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressContentLabelAction:)];

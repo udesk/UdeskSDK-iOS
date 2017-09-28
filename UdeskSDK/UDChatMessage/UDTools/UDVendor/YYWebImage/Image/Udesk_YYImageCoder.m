@@ -886,6 +886,7 @@ CGImageRef Udesk_YYCGImageCreateDecodedCopy(CGImageRef imageRef, BOOL decodeForD
         bitmapInfo |= hasAlpha ? kCGImageAlphaPremultipliedFirst : kCGImageAlphaNoneSkipFirst;
         CGContextRef context = CGBitmapContextCreate(NULL, width, height, 8, 0, Udesk_YYCGColorSpaceGetDeviceRGB(), bitmapInfo);
         if (!context) return NULL;
+//        CGContextClearRect(context, CGRectMake(0, 0, width, height));
         CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef); // decode
         CGImageRef newImage = CGBitmapContextCreateImage(context);
         CFRelease(context);

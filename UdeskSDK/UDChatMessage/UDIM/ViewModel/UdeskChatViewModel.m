@@ -274,7 +274,7 @@
 
 //获取分配客服
 - (void)distributionAgent:(UdeskAgent *)agentModel {
-    
+
     //回调客服信息到vc显示
     [self callbackAgentModel:agentModel];
     
@@ -296,6 +296,8 @@
         
         //隐藏弹窗
         [self.chatAlert hideAlert];
+        //客服在线 关闭推送
+        [UdeskManager endUdeskPush];
     }
 }
 
@@ -659,7 +661,7 @@
                     break;
                     
                 case UDMessageContentTypeLocation: {
-                    
+                
                     UdeskLocationMessage *locationMessage = [[UdeskLocationMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:locationMessage];
                 }
@@ -1033,7 +1035,7 @@
 //发送地理位置
 - (void)sendLocationMessage:(UdeskLocationModel *)model
                  completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
-    
+
     if (_agentModel.code != UDAgentStatusResultOnline) {
         [self showAlertViewWithAgent];
         return;
@@ -1183,7 +1185,7 @@
 
 //获取LocationModel
 - (UdeskLocationModel *)getLocationModel:(UdeskMessage *)message {
-    
+
     @try {
         
         UdeskLocationModel *location = [[UdeskLocationModel alloc] init];
