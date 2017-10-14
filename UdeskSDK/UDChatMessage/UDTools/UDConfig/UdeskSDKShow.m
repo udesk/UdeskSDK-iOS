@@ -140,6 +140,12 @@
         
         [leftBarButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
         
+        if (ud_isIOS11) {
+            leftBarButton.contentHorizontalAlignment =UIControlContentHorizontalAlignmentLeft;
+            [leftBarButton setImageEdgeInsets:UIEdgeInsetsMake(0, -5 * UD_SCREEN_WIDTH/375.0,0,0)];
+            [leftBarButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -2 * UD_SCREEN_WIDTH/375.0,0,0)];
+        }
+        
         UIBarButtonItem *otherNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:leftBarButton];
         
         UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
@@ -184,6 +190,12 @@
         navBarRightButton.frame = CGRectMake(0, 0, transferTextSize.width+rightImage.size.width, transferTextSize.height);
         navBarRightButton.titleLabel.font = [UIFont systemFontOfSize:16];
         [navBarRightButton setTitleColor:_sdkConfig.sdkStyle.transferButtonColor forState:UIControlStateNormal];
+        
+        if (ud_isIOS11) {
+            navBarRightButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+            [navBarRightButton setImageEdgeInsets:UIEdgeInsetsMake(0,0,0, -5 *UD_SCREEN_WIDTH /375.0)];
+            [navBarRightButton setTitleEdgeInsets:UIEdgeInsetsMake(0,0,0,-7 * UD_SCREEN_WIDTH/375.0)];
+        }
         
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"

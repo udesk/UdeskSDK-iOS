@@ -16,6 +16,7 @@
 		44210B5A1D7D6CAA003386F5 /* UDCustomInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 44210B031D7D6CAA003386F5 /* UDCustomInfoViewController.xib */; };
 		44210B5C1D7D6CAA003386F5 /* UDFunctionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44210B071D7D6CAA003386F5 /* UDFunctionViewController.m */; };
 		44210B5D1D7D6CAA003386F5 /* UDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44210B091D7D6CAA003386F5 /* UDViewController.m */; };
+		4427E56C1F9206B20069F215 /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4427E56B1F9205D80069F215 /* libUdesk.a */; };
 		4479FC1A1E8B8D84000D8DBF /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4479FC191E8B8D84000D8DBF /* CFNetwork.framework */; };
 		4479FC1C1E8B8D8B000D8DBF /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4479FC1B1E8B8D8B000D8DBF /* CoreFoundation.framework */; };
 		4479FC1E1E8B8D91000D8DBF /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4479FC1D1E8B8D91000D8DBF /* CoreTelephony.framework */; };
@@ -25,7 +26,6 @@
 		4479FC261E8B8DAD000D8DBF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4479FC251E8B8DAD000D8DBF /* UIKit.framework */; };
 		4479FC281E8B8DB4000D8DBF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4479FC271E8B8DB4000D8DBF /* Security.framework */; };
 		448CD8921C979EE40049DE3F /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 448CD8911C979EE40049DE3F /* libxml2.tbd */; };
-		448EBA171F7D155000EF61CC /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 448EBA141F7D154F00EF61CC /* libUdesk.a */; };
 		448EBB2B1F7D157900EF61CC /* UdeskContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 448EBA1D1F7D157900EF61CC /* UdeskContentController.m */; };
 		448EBB2C1F7D157900EF61CC /* UdeskFAQViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 448EBA1F1F7D157900EF61CC /* UdeskFAQViewController.m */; };
 		448EBB2D1F7D157900EF61CC /* UdeskSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 448EBA211F7D157900EF61CC /* UdeskSearchController.m */; };
@@ -167,6 +167,7 @@
 		44210B071D7D6CAA003386F5 /* UDFunctionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDFunctionViewController.m; sourceTree = "<group>"; };
 		44210B081D7D6CAA003386F5 /* UDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDViewController.h; sourceTree = "<group>"; };
 		44210B091D7D6CAA003386F5 /* UDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDViewController.m; sourceTree = "<group>"; };
+		4427E56B1F9205D80069F215 /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
 		4479FC111E8B82AF000D8DBF /* UdeskSDKExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = UdeskSDKExample.entitlements; sourceTree = "<group>"; };
 		4479FC191E8B8D84000D8DBF /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		4479FC1B1E8B8D8B000D8DBF /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -181,7 +182,6 @@
 		448EBA111F7D154F00EF61CC /* UdeskOrganization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskOrganization.h; sourceTree = "<group>"; };
 		448EBA121F7D154F00EF61CC /* UdeskSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskSetting.h; sourceTree = "<group>"; };
 		448EBA131F7D154F00EF61CC /* UdeskAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgent.h; sourceTree = "<group>"; };
-		448EBA141F7D154F00EF61CC /* libUdesk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUdesk.a; sourceTree = "<group>"; };
 		448EBA151F7D154F00EF61CC /* UdeskCustomer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskCustomer.h; sourceTree = "<group>"; };
 		448EBA161F7D155000EF61CC /* UdeskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskManager.h; sourceTree = "<group>"; };
 		448EBA191F7D157900EF61CC /* Udesk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Udesk.h; sourceTree = "<group>"; };
@@ -435,6 +435,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4427E56C1F9206B20069F215 /* libUdesk.a in Frameworks */,
 				44D3A3F01F66372B001145EA /* MapKit.framework in Frameworks */,
 				44E6F4181F34BBF400FEDCBB /* WebKit.framework in Frameworks */,
 				4479FC281E8B8DB4000D8DBF /* Security.framework in Frameworks */,
@@ -447,7 +448,6 @@
 				4479FC1A1E8B8D84000D8DBF /* CFNetwork.framework in Frameworks */,
 				44C3A07D1C93AE11004BDB2B /* libz.tbd in Frameworks */,
 				448CD8921C979EE40049DE3F /* libxml2.tbd in Frameworks */,
-				448EBA171F7D155000EF61CC /* libUdesk.a in Frameworks */,
 				44C3A0791C93AE05004BDB2B /* libresolv.tbd in Frameworks */,
 				44C3A0771C93ADFF004BDB2B /* libsqlite3.tbd in Frameworks */,
 				AAC74908B63DD1E4156730FD /* Pods_UdeskSDKExample.framework in Frameworks */,
@@ -1104,7 +1104,7 @@
 		449783FB1EA77068001CB96B /* SDK */ = {
 			isa = PBXGroup;
 			children = (
-				448EBA141F7D154F00EF61CC /* libUdesk.a */,
+				4427E56B1F9205D80069F215 /* libUdesk.a */,
 				448EBA131F7D154F00EF61CC /* UdeskAgent.h */,
 				448EBA151F7D154F00EF61CC /* UdeskCustomer.h */,
 				448EBA161F7D155000EF61CC /* UdeskManager.h */,
