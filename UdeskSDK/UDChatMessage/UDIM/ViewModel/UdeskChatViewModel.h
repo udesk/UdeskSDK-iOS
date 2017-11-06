@@ -81,7 +81,8 @@
  *
  *  @param completion 发送回调
  */
-- (void)resendFailedMessage:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion;
+- (void)resendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress
+                             completion:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion;
 /**
  *  获取消息数量
  */

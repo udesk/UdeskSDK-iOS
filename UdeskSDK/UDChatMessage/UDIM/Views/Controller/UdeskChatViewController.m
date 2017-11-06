@@ -183,7 +183,13 @@
 #pragma mark - 初始化视图
 - (void)initilzer {
     
-    self.navigationItem.titleView = self.titleView;
+    //用户自己设置了标题
+    if (self.sdkConfig.imTitle) {
+        self.title = self.sdkConfig.imTitle;
+    }
+    else {
+        self.navigationItem.titleView = self.titleView;
+    }
     
     // 初始化message tableView
 	_messageTableView = [[UdeskMessageTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
@@ -420,22 +426,40 @@
 //重发消息
 - (void)resendMessageInCell:(UITableViewCell *)cell resendMessage:(UdeskMessage *)resendMessage {
 
+    @udWeakify(self);
     if (self.inputBar.agent.code != UDAgentStatusResultOnline &&
         self.inputBar.agent.code != UDAgentStatusResultLeaveMessage) {
         [self.chatViewModel showAlertViewWithAgent];
     }
     else if (self.inputBar.agent.code == UDAgentStatusResultLeaveMessage) {
         
-        @udWeakify(self);
         [UdeskManager sendLeaveMessage:resendMessage isShowEvent:NO completion:^(NSError *error,BOOL sendStatus) {
             //处理发送结果UI
             @udStrongify(self);
             [self sendStatusConfigUI:sendStatus message:resendMessage];
         }];
     }
+    else if (resendMessage.messageType == UDMessageContentTypeVideo) {
+        
+        if ([cell isKindOfClass:[UdeskVideoCell class]]) {
+            UdeskVideoCell *videoCell = (UdeskVideoCell *)cell;
+            [UdeskManager sendVideoMessage:resendMessage videoName:videoCell.videoNameLabel.text progress:^(NSString *key, float percent) {
+                //更新进度
+                @udStrongify(self);
+                [self updateVideoPercentButtonTitle:resendMessage.messageId progress:percent sendStatus:NO];
+            } cancellationSignal:^BOOL{
+                return NO;
+            } completion:^(UdeskMessage *message, BOOL sendStatus) {
+                //处理发送结果UI
+                @udStrongify(self);
+                [self sendMessageStatus:sendStatus message:message];
+                //更新进度
+                [self updateVideoPercentButtonTitle:message.messageId progress:sendStatus?1:0 sendStatus:sendStatus];
+            }];
+        }
+    }
     else {
         
-        @udWeakify(self);
         [UdeskManager sendMessage:resendMessage completion:^(UdeskMessage *message, BOOL sendStatus) {
             //处理发送结果UI
             @udStrongify(self);
@@ -479,7 +503,7 @@
 - (UdeskChatTitleView *)titleView {
 
     if (!_titleView) {
-        CGFloat titleViewWidth = UD_SCREEN_WIDTH>320?250:200;
+        CGFloat titleViewWidth = UD_SCREEN_WIDTH>320?210:175;
         _titleView = [[UdeskChatTitleView alloc] initWithFrame:CGRectMake(0, 0, titleViewWidth, 44) sdkConfig:self.sdkConfig];
     }
     return _titleView;
@@ -686,7 +710,7 @@
         @udStrongify(self);
         [self sendMessageStatus:sendStatus message:message];
         //更新进度
-        [self updateVideoPercentButtonTitle:message.messageId progress:1 sendStatus:sendStatus];
+        [self updateVideoPercentButtonTitle:message.messageId progress:sendStatus?1:0 sendStatus:sendStatus];
     }];
 }
 
@@ -699,11 +723,13 @@
         NSArray *array = [self.chatViewModel.messageArray valueForKey:@"messageId"];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
         UdeskVideoCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
+        [cell setActivityIndicatorViewFrameWithSendStatus:UDMessageSendStatusSending];
         
         if ([cell isKindOfClass:[UdeskVideoCell class]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (progress == 1.0f && sendStatus) {
                     [cell.videoPercentButton setTitle:getUDLocalizedString(@"udesk_has_send") forState:UIControlStateNormal];
+                    [cell setActivityIndicatorViewFrameWithSendStatus:UDMessageSendStatusSuccess];
                 }
                 else {
                     cell.videoProgressView.progress = progress;
@@ -747,7 +773,14 @@
         
         [self.chatViewModel addResendMessageToArray:message];
         //开启重发
-        [self.chatViewModel resendFailedMessage:^(UdeskMessage *failedMessage, BOOL sendStatus) {
+        [self.chatViewModel resendFailedMessageWithProgress:^(NSString *messageId, float percent) {
+            
+            //更新进度
+            @udStrongify(self);
+            [self updateVideoPercentButtonTitle:messageId progress:percent sendStatus:NO];
+            
+        } completion:^(UdeskMessage *failedMessage, BOOL sendStatus) {
+            
             //发送成功删除失败消息数组里的消息
             @udStrongify(self);
             if (sendStatus) {
@@ -755,6 +788,10 @@
             }
             //根据发送状态更新UI
             [self sendStatusConfigUI:sendStatus message:message];
+            if (failedMessage.messageType == UDMessageContentTypeVideo) {
+                //更新进度
+                [self updateVideoPercentButtonTitle:message.messageId progress:sendStatus?1:0 sendStatus:sendStatus];
+            }
         }];
     }
 }

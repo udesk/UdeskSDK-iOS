@@ -8,6 +8,7 @@
 
 #import "UdeskVideoMessage.h"
 #import "UdeskVideoCell.h"
+#import "UdeskCaheHelper.h"
 
 /** 视频宽度 */
 const CGFloat kUDVideoMessageWidth = 180;
@@ -66,6 +67,11 @@ const CGFloat kUDVideoProgressPercentHeight = 35;
     self = [super initWithMessage:message displayTimestamp:displayTimestamp];
     if (self) {
 
+        if ([[UdeskCaheHelper sharedManager] containsObjectForKey:message.messageId]) {
+            NSString *path = [[UdeskCaheHelper sharedManager] filePathForkey:message.messageId];
+            self.message.videoData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:path]];
+        }
+        
         [self layoutVideoMessage];
     }
     return self;

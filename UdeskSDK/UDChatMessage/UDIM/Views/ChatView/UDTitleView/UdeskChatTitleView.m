@@ -37,9 +37,6 @@
     _titleLabel.text = getUDLocalizedString(@"udesk_connecting_agent");
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     [self addSubview:_titleLabel];
-    
-    _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-    [self addSubview:_imageView];
 }
 
 - (void)updateTitle:(UdeskAgent *)agent {
@@ -55,7 +52,6 @@
         titleText = agent.message;
     }
     
-    CGSize titleSize = [UdeskStringSizeUtil textSize:titleText withFont:_sdkConfig.sdkStyle.titleFont withSize:CGSizeMake(self.ud_width, self.ud_height)];
     UIImage *titleImage;
     switch (agent.code) {
         case UDAgentStatusResultOnline:
@@ -71,12 +67,21 @@
         default:
             break;
     }
-    _titleLabel.text = titleText;
-    CGFloat spilth = titleSize.width > 200 ? 0 : 20;
-    _titleLabel.frame = CGRectMake((self.ud_width-titleSize.width)/2-spilth, 0, titleSize.width, self.ud_height);
     
-    _imageView.image = titleImage;
-    _imageView.frame = CGRectMake(_titleLabel.ud_right+5, (self.ud_height-7)/2, 7, 7);
+    //创建富文本
+    NSMutableAttributedString *attri = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ ",titleText]];
+    //NSTextAttachment可以将要插入的图片作为特殊字符处理
+    NSTextAttachment *attch = [[NSTextAttachment alloc] init];
+    //定义图片内容及位置和大小
+    attch.image = titleImage;
+    attch.bounds = CGRectMake(0, 2, 7, 7);
+    //创建带有图片的富文本
+    NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:attch];
+    //将图片放在最后一位
+    [attri appendAttributedString:string];
+    _titleLabel.attributedText = attri;
+    
+    _titleLabel.frame = CGRectMake(0, 0, self.ud_width, self.ud_height);
 }
 
 @end

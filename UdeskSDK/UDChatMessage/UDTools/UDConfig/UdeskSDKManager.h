@@ -212,4 +212,11 @@ typedef enum : NSUInteger {
  */
 - (void)locationMessageCallBack:(void(^)(UdeskChatViewController *viewController, UdeskLocationModel *locationModel))completion;
 
+/**
+ 登陆成功回调
+
+ @param completion 完成回调
+ */
+- (void)loginSuccessCallBack:(void(^)(void))completion;
+
 @end

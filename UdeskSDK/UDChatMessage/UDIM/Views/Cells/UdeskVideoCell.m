@@ -261,6 +261,9 @@
             _videoPercentButton.titleLabel.text = @"0%";
             
             _videoNameLabel.text = videoMessage.message.content;
+            if ([videoMessage.message.content rangeOfString:@".mp4"].location == NSNotFound) {
+                _videoNameLabel.text = [videoMessage.message.content stringByAppendingString:@".mp4"];
+            }
             
             break;
         }

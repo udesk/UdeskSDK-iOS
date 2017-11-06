@@ -12,7 +12,6 @@
 #import "NSArray+UdeskSDK.h"
 #import "UdeskAgentHttpData.h"
 #import "UdeskReachability.h"
-#import "UdeskManager.h"
 #import "UdeskMessage+UdeskChatMessage.h"
 #import "UdeskChatAlertController.h"
 #import "UdeskProductMessage.h"
@@ -109,48 +108,7 @@
 - (void)createCustomerWithSDKSetting:(UdeskSetting *)setting {
     
     self.sdkSetting = setting;
-    //在工作时间
-    if (setting.isWorktime.boolValue) {
-        [self createServerCustomer];
-    }
-    //不在工作时间
-    else {
-        UdeskAgent *agentModel = [[UdeskAgent alloc] init];
-        agentModel.code = UDAgentStatusResultOffline;
-        agentModel.message = getUDLocalizedString(@"udesk_agent_offline");
-        //回调客服信息到vc显示
-        [self callbackAgentModel:agentModel];
-        //显示不在工作时间alert
-        [self showAlertNotWorkTime];
-    }
-}
-
-- (void)showAlertNotWorkTime {
-    
-    @try {
-        
-        if (self.sdkSetting) {
-            
-            if (self.sdkSetting.enableWebImFeedback.boolValue) {
-                NSString *no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
-                [self.chatAlert showAgentNotOnlineAlertWithMessage:no_reply_hint enableWebImFeedback:YES];
-            }
-            else {
-                
-                NSString *no_reply_hint = self.sdkSetting.noReplyHint;
-                if ([UdeskTools isBlankString:no_reply_hint]) {
-                    no_reply_hint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
-                }
-                [self.chatAlert showAgentNotOnlineAlertWithMessage:no_reply_hint enableWebImFeedback:NO];
-            }
-        }
-        else {
-            [self.chatAlert showAgentNotOnlineAlert];
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
+    [self createServerCustomer];
 }
 
 //创建用户
@@ -288,6 +246,11 @@
     }
     //只有客服在线才发送消息
     if (agentModel.code == UDAgentStatusResultOnline) {
+        
+        //登陆成功回调
+        if ([UdeskSDKConfig sharedConfig].loginSuccessCallBack) {
+            [UdeskSDKConfig sharedConfig].loginSuccessCallBack();
+        }
         
         if ([UdeskSDKConfig sharedConfig].productDictionary) {
             UdeskMessage *productMessage = [[UdeskMessage alloc] initWithProductMessage:[UdeskSDKConfig sharedConfig].productDictionary];
@@ -1139,9 +1102,10 @@
 }
 
 #pragma mark - 重发失败的消息
-- (void)resendFailedMessage:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion {
+- (void)resendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress
+                             completion:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion {
     
-    [UdeskResendManager resendFailedMessage:self.resendArray completion:completion];
+    [UdeskResendManager resendFailedMessage:self.resendArray progress:progress completion:completion];
 }
 
 //失败的消息数组

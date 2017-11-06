@@ -63,6 +63,7 @@ const CGFloat kUDCellBottomMargin = 10.0;
         _message = message;
         _messageId = message.messageId;
         _displayTimestamp = displayTimestamp;
+        
         [self defaultLayout];
     }
     return self;

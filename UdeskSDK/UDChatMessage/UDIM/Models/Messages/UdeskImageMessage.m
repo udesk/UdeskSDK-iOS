@@ -9,6 +9,7 @@
 #import "UdeskImageMessage.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskImageCell.h"
+#import "Udesk_YYWebImage.h"
 
 /** 聊天气泡和其中的图片水平间距 */
 const CGFloat kUDBubbleToImageHorizontalSpacing = 5.0;
@@ -26,6 +27,12 @@ const CGFloat kUDBubbleToImageHorizontalSpacing = 5.0;
 {
     self = [super initWithMessage:message displayTimestamp:displayTimestamp];
     if (self) {
+        
+        if (!message.image) {
+            if ([[Udesk_YYWebImageManager sharedManager].cache containsImageForKey:message.messageId]) {
+                self.message.image = [[Udesk_YYWebImageManager sharedManager].cache getImageForKey:message.messageId];
+            }
+        }
         
         [self layoutImageMessage];
     }

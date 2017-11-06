@@ -158,6 +158,9 @@
             negativeSpacer.width = -13;
             if (customizedBackItem) {
                 viewController.navigationItem.leftBarButtonItems = @[negativeSpacer,customizedBackItem];
+                if (ud_isIOS11) {
+                    viewController.navigationItem.leftBarButtonItem = customizedBackItem;
+                }
             }
             else {
                 viewController.navigationItem.leftBarButtonItems = @[negativeSpacer,otherNavigationItem];

@@ -98,6 +98,9 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 /** 地理位置消息回调 */
 @property (nonatomic, copy) void(^locationMessageCallBack)(UdeskChatViewController *viewController, UdeskLocationModel *locationModel);
 
+/** 登陆成功 */
+@property (nonatomic, copy) void(^loginSuccessCallBack)(void);
+
 /** 是否隐藏语音 */
 @property (nonatomic, assign) BOOL     hiddenVoiceButton;
 

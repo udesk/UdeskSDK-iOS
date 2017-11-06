@@ -8,13 +8,13 @@
 
 #import "UdeskResendManager.h"
 #import "NSTimer+UdeskSDK.h"
-#import "UdeskMessage.h"
 #import "UdeskManager.h"
 
 @implementation UdeskResendManager
 
 #pragma mark - 重发失败的消息
 + (void)resendFailedMessage:(NSMutableArray *)resendMessageArray
+                   progress:(void(^)(NSString *messageId,float percent))progress
                  completion:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion {
     
     if (resendMessageArray.count) {
@@ -43,12 +43,25 @@
                             
                         } else {
                             
-                            [UdeskManager sendMessage:resendMessage completion:^(UdeskMessage *message, BOOL sendStatus) {
-                                
-                                if (completion) {
-                                    completion(message,sendStatus);
-                                }
-                            }];
+                            if (resendMessage.messageType == UDMessageContentTypeVideo) {
+                            
+                                [UdeskManager sendVideoMessage:resendMessage videoName:resendMessage.content progress:^(NSString *key, float percent) {
+                                    
+                                    if ([resendMessageArray containsObject:resendMessage]) {
+                                        [resendMessageArray removeObject:resendMessage];
+                                    }
+                                    
+                                    if (progress) {
+                                        progress(resendMessage.messageId,percent);
+                                    }
+                                    
+                                } cancellationSignal:^BOOL{
+                                    return NO;
+                                } completion:completion];
+                            }
+                            else {
+                                [UdeskManager sendMessage:resendMessage completion:completion];
+                            }
                         }
                     }
                 }

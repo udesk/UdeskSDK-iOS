@@ -13,7 +13,6 @@
 @interface UdeskChatTitleView : UIView
 
 @property (nonatomic, strong) UILabel     *titleLabel;
-@property (nonatomic, strong) UIImageView *imageView;
 
 - (instancetype)initWithFrame:(CGRect)frame sdkConfig:(UdeskSDKConfig *)sdkConfig;
 

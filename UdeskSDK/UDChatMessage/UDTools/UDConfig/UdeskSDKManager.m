@@ -387,6 +387,11 @@
     _sdkConfig.locationMessageCallBack = completion;
 }
 
+- (void)loginSuccessCallBack:(void(^)(void))completion {
+    
+    _sdkConfig.loginSuccessCallBack = completion;
+}
+
 - (void)setHiddenSendVideo:(BOOL)hiddenSendVideo {
 
     _hiddenSendVideo = hiddenSendVideo;
