@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.subspec 'SDK' do |ss|
-    ss.frameworks = 'AVFoundation', 'CoreTelephony', 'SystemConfiguration', 'MobileCoreServices', 'WebKit', 'MapKit'
+    ss.frameworks = 'AVFoundation', 'CoreTelephony', 'SystemConfiguration', 'MobileCoreServices', 'WebKit', 'MapKit','AssetsLibrary','ImageIO','Accelerate','MediaPlayer'
     ss.source_files = 'UdeskSDK/SDK/*.{h}'
     ss.vendored_libraries = 'UdeskSDK/SDK/libUdesk.a'
     ss.libraries    = 'z', 'xml2', 'resolv', 'sqlite3'

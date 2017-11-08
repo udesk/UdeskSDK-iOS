@@ -52,6 +52,10 @@ libresolv.tbd
 libsqlite3.tbd
 WebKit.framework
 MapKit.framework
+AssetsLibrary.framework
+ImageIO.framework
+Accelerate.framework
+MediaPlayer.framework
 ```
 
 #### 2.3添加SDK到你的工程
