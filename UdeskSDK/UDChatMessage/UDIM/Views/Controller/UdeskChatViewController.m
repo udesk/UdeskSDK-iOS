@@ -210,7 +210,7 @@
     [_messageTableView setTableViewInsetsWithBottomValue:inputViewHeight];
     
     // 设置整体背景颜色
-    [self setBackgroundColor:self.sdkConfig.sdkStyle.tableViewBackGroundColor];
+    [self setBackgroundColor];
     
     // 输入工具条的frame
     CGRect inputFrame = CGRectMake(0.0f,
@@ -226,6 +226,13 @@
     //根据系统版本去掉自动调整
     if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
         self.automaticallyAdjustsScrollViewInsets = NO;
+    }
+    
+    //适配X
+    if (ud_is_iPhoneX) {
+        _inputBar.ud_bottom -= 34;
+        _messageTableView.ud_height -= 34;
+        [_messageTableView setTableViewInsetsWithBottomValue:self.view.ud_height - self.inputBar.ud_y];
     }
 }
 
@@ -575,14 +582,19 @@
         __block CGRect inputViewFrame = self.inputBar.frame;
         __block CGRect otherMenuViewFrame = CGRectMake(0, 0, 0, 0);
         
+        CGFloat spacing = 0;
+        if (ud_is_iPhoneX) {
+            spacing = 34;
+        }
+        
         void (^InputViewAnimation)(BOOL hide) = ^(BOOL hide) {
-            inputViewFrame.origin.y = (hide ? (CGRectGetHeight(self.view.bounds) - CGRectGetHeight(inputViewFrame)) : (CGRectGetMinY(otherMenuViewFrame) - CGRectGetHeight(inputViewFrame)));
+            inputViewFrame.origin.y = (hide ? (CGRectGetHeight(self.view.bounds) - CGRectGetHeight(inputViewFrame)) - spacing : (CGRectGetMinY(otherMenuViewFrame) - CGRectGetHeight(inputViewFrame)));
             self.inputBar.frame = inputViewFrame;
         };
         
         void (^EmotionManagerViewAnimation)(BOOL hide) = ^(BOOL hide) {
             otherMenuViewFrame = self.emotionManagerView.frame;
-            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
+            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) - spacing  : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)) - spacing);
             self.emotionManagerView.alpha = !hide;
             self.emotionManagerView.frame = otherMenuViewFrame;
             
@@ -590,7 +602,7 @@
         
         void (^VoiceManagerViewAnimation)(BOOL hide) = ^(BOOL hide) {
             otherMenuViewFrame = self.voiceRecordView.frame;
-            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
+            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) - spacing : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)) - spacing);
             self.voiceRecordView.alpha = !hide;
             self.voiceRecordView.frame = otherMenuViewFrame;
             
@@ -928,9 +940,10 @@
 }
 
 #pragma mark - 设置背景颜色
-- (void)setBackgroundColor:(UIColor *)color {
-    self.view.backgroundColor = color;
-    _messageTableView.backgroundColor = color;
+- (void)setBackgroundColor {
+    
+    self.view.backgroundColor = self.sdkConfig.sdkStyle.chatViewControllerBackGroundColor;
+    self.messageTableView.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
 }
 
 #pragma mark - 监听键盘通知做出相应的操作
@@ -957,6 +970,14 @@
                                                  inputViewFrameY,
                                                  inputViewFrame.size.width,
                                                  inputViewFrame.size.height);
+                
+                //适配X
+                if (!isShowing) {
+                    if (ud_is_iPhoneX) {
+                        self.inputBar.ud_bottom -= 34;
+                    }
+                }
+                
                 //改变tableview frame
                 [self.messageTableView setTableViewInsetsWithBottomValue:self.view.frame.size.height
                  - self.inputBar.frame.origin.y];

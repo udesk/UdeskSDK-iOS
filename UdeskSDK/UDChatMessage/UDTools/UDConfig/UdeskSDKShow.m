@@ -117,6 +117,7 @@
     //导航栏左键
     UIBarButtonItem *customizedBackItem = nil;
     if (_sdkConfig.sdkStyle.navBackButtonImage) {
+        
         customizedBackItem = [[UIBarButtonItem alloc]initWithImage:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:(UIBarButtonItemStylePlain) target:viewController action:@selector(dismissChatViewController)];
     }
     

@@ -11,6 +11,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "UdeskTools.h"
+#import "UdeskSDKConfig.h"
 
 @interface UdeskPhotographyHelper () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -65,6 +66,10 @@
         imagePickerController.delegate = self;
         imagePickerController.sourceType = sourceType;
         imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
+        
+        if ([UdeskSDKConfig sharedConfig].sdkStyle.albumCancelColor) {
+            imagePickerController.navigationBar.tintColor = [UdeskSDKConfig sharedConfig].sdkStyle.albumCancelColor;
+        }
         
         [viewController presentViewController:imagePickerController animated:YES completion:NULL];
     }];

@@ -16,6 +16,8 @@
 #import "UdeskTicketViewController.h"
 #import "UdeskSDKShow.h"
 #import "UdeskLocationModel.h"
+#import "UdeskToast.h"
+#import "UdeskUtils.h"
 
 @interface UdeskSDKManager()
 
@@ -139,7 +141,7 @@
         
     } failure:^(NSError *error) {
         
-        [self presentIMController:viewController transiteAnimation:animationType sdkSetting:nil completion:completion];
+        [UdeskToast showToast:getUDLocalizedString(@"udesk_has_bad_net") duration:0.35f window:viewController.view];
     }];
 }
 

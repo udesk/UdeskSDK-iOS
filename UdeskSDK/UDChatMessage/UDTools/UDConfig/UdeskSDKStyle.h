@@ -88,6 +88,9 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 /** 背景颜色 */
 @property (nonatomic, strong) UIColor  *tableViewBackGroundColor;
 
+/** 聊天vc背景颜色 (在iPhone x上这个和inputViewColor结合使用) */
+@property (nonatomic, strong) UIColor  *chatViewControllerBackGroundColor;
+
 /** 帮助中心搜索文章按钮颜色 */
 @property (nonatomic, strong) UIColor  *searchCancleButtonColor;
 
@@ -114,6 +117,9 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 
 /** 咨询对象发送按钮颜色 */
 @property (nonatomic, strong) UIColor  *productSendTitleColor;
+
+/** 相册取消按钮颜色 */
+@property (nonatomic, strong) UIColor  *albumCancelColor;
 
 + (instancetype)defaultStyle;
 + (instancetype)blueStyle;

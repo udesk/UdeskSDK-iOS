@@ -42,6 +42,7 @@
 "udesk_alert_view_leave_msg" = "当前客服不在线，您可以选择提交表单来描述您的问题，稍后我们会和您联系";
 "udesk_alert_view_no_reply_hint" = "当前无客服在线，请在工作时间联系客服";
 "udesk_network_disconnect" = "网络断开连接，请先连接网络";
+"udesk_has_bad_net" = "网络不好,请检查网络设置!";
 "udesk_wait_connecting" = "正在连接，请稍后...";
 "udesk_thanks" = "感谢您的评价";
 "udesk_reassign_agent"="重新分配客服，请稍后...";

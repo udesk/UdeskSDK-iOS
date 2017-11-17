@@ -267,11 +267,16 @@
 //回调客服信息到vc显示
 - (void)callbackAgentModel:(UdeskAgent *)agentModel {
     
+    if ([UdeskTools isBlankString:agentModel.nick]) {
+        agentModel.nick = self.agentModel.nick;
+    }
+    
     if (self.delegate) {
         if ([self.delegate respondsToSelector:@selector(didFetchAgentModel:)]) {
             [self.delegate didFetchAgentModel:agentModel];
         }
     }
+    
     self.agentModel = agentModel;
 }
 #pragma mark - UdeskChatAlertDelegate
@@ -707,6 +712,8 @@
         NSString *statusType = [NSString stringWithFormat:@"%@",[presence objectForKey:@"type"]];
         UDAgentStatusType agentCode = UDAgentStatusResultOffline;
         NSString *agentMessage = @"unavailable";
+        NSString *agentNick = [UdeskTools isBlankString:self.agentModel.nick]?self.agentModel.message:self.agentModel.nick;
+        
         if([statusType isEqualToString:@"over"]) {
             
             agentCode = UDAgentConversationOver;
@@ -716,13 +723,13 @@
         else if ([statusType isEqualToString:@"available"]) {
             
             agentCode = UDAgentStatusResultOnline;
-            agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_online")];
+            agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),agentNick,getUDLocalizedString(@"udesk_online")];
             
         }
         else if ([statusType isEqualToString:@"unavailable"]) {
             
             agentCode = UDAgentStatusResultOffline;
-            agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),self.agentModel.nick,getUDLocalizedString(@"udesk_offline")];
+            agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),agentNick,getUDLocalizedString(@"udesk_offline")];
         }
         
         
