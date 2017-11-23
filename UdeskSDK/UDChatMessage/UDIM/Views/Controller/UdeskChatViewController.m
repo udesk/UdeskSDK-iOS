@@ -889,7 +889,8 @@
     }
     
     //检查是否已经评价
-    [[UdeskAgentSurvey sharedManager] checkHasSurveyWithAgentId:self.inputBar.agent.agentId completion:^(NSString *hasSurvey,NSError *error) {
+    UdeskAgentSurvey *agentSurvey = [UdeskAgentSurvey survey];
+    [agentSurvey checkHasSurveyWithAgentId:self.inputBar.agent.agentId completion:^(NSString *hasSurvey,NSError *error) {
         
         //失败
         if (error) {
@@ -899,7 +900,7 @@
         //还未评价
         if (![hasSurvey boolValue]) {
             
-            [[UdeskAgentSurvey sharedManager] showAgentSurveyAlertViewWithAgentId:self.inputBar.agent.agentId isShowErrorAlert:NO completion:^(BOOL result, NSError *error) {
+            [agentSurvey showAgentSurveyAlertViewWithAgentId:self.inputBar.agent.agentId isShowErrorAlert:NO completion:^(BOOL result, NSError *error) {
                 if (!result) {
                     [self dismissViewController];
                 }

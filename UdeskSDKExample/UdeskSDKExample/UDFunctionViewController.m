@@ -212,6 +212,7 @@
     
     //后台配置
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+    //开启发送位置功能
     chatViewManager.hiddenLocationButton = NO;
     
     // 调用后台配置的push方法

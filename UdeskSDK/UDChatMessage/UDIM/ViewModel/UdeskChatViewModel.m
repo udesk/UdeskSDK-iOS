@@ -757,7 +757,7 @@
         return;
     }
     @udWeakify(self);
-    [[UdeskAgentSurvey sharedManager] showAgentSurveyAlertViewWithAgentId:agentId isShowErrorAlert:YES completion:^(BOOL result, NSError *error){
+    [[UdeskAgentSurvey survey] showAgentSurveyAlertViewWithAgentId:agentId isShowErrorAlert:YES completion:^(BOOL result, NSError *error){
         
         @udStrongify(self);
         if (result) {

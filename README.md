@@ -829,6 +829,12 @@ extension UINavigationController {
 
 #### 更新记录：
 
+sdk v3.8.5版本更新功能:
+
+1.满意度调查不弹窗bug修改
+
+------
+
 sdk v3.8.4版本更新功能:
 
 1.增加获取后端配置失败重试机制
