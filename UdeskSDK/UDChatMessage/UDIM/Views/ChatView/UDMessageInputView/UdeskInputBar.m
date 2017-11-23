@@ -285,11 +285,12 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
         
         if (self.agent.agentId) {
             
-            [[UdeskAgentSurvey sharedManager] checkHasSurveyWithAgentId:self.agent.agentId completion:^(NSString *hasSurvey) {
+            UdeskAgentSurvey *agentSurvey = [UdeskAgentSurvey survey];
+            [agentSurvey checkHasSurveyWithAgentId:self.agent.agentId completion:^(NSString *hasSurvey) {
                 
                 if (![hasSurvey boolValue]) {
                     
-                    [[UdeskAgentSurvey sharedManager] showAgentSurveyAlertViewWithAgentId:self.agent.agentId completion:^{
+                    [agentSurvey showAgentSurveyAlertViewWithAgentId:self.agent.agentId completion:^{
                         
                         //评价提交成功Alert
                         if ([self.delegate respondsToSelector:@selector(didSurveyWithMessage:hasSurvey:)]) {

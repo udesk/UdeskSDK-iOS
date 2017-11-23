@@ -20,14 +20,8 @@
     UdeskOverlayTransitioningDelegate *_transitioningDelegate;
 }
 
-+ (instancetype)sharedManager {
-    static UdeskAgentSurvey *_sharedManager = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _sharedManager = [[UdeskAgentSurvey alloc] init];
-    });
-    
-    return _sharedManager;
++ (instancetype)survey {
+    return [[self alloc] init];
 }
 
 - (void)showAgentSurveyAlertViewWithAgentId:(NSString *)agentId

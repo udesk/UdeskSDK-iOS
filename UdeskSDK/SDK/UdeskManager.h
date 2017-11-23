@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.6.5
+//  Version: 3.6.6
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.

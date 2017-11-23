@@ -10,7 +10,7 @@
 
 @interface UdeskAgentSurvey : NSObject
 
-+ (instancetype)sharedManager;
++ (instancetype)survey;
 
 - (void)showAgentSurveyAlertViewWithAgentId:(NSString *)agentId
                                  completion:(void(^)())completion;
