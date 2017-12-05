@@ -70,6 +70,8 @@ MediaPlayer.framework
 
 如果你使用的是xcode8 请在你项目的Info.plist文件里添加使用相册、相机、麦克风的权限
 
+iOS11需要添加保存图片的权限（NSPhotoLibraryAddUsageDescription）
+
 #### 2.5CocoaPods 导入
 
 在 Podfile 中加入：
