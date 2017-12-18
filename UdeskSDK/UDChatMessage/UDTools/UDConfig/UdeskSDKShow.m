@@ -15,6 +15,7 @@
 #import "UdeskChatViewController.h"
 #import "UdeskUtils.h"
 #import "UdeskStringSizeUtil.h"
+#import "UIBarButtonItem+UdeskAddition.h"
 
 @interface UdeskSDKShow()
 
@@ -117,59 +118,33 @@
     //导航栏左键
     UIBarButtonItem *customizedBackItem = nil;
     if (_sdkConfig.sdkStyle.navBackButtonImage) {
-        
-        customizedBackItem = [[UIBarButtonItem alloc]initWithImage:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:(UIBarButtonItemStylePlain) target:viewController action:@selector(dismissChatViewController)];
+        customizedBackItem = [UIBarButtonItem itemWithIcon:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] target:viewController action:@selector(dismissChatViewController)];
     }
     
     NSString *backText = getUDLocalizedString(@"udesk_back");
     if (_sdkConfig.presentingAnimation == UDTransiteAnimationTypePresent) {
-        viewController.navigationItem.leftBarButtonItem = customizedBackItem ?: [[UIBarButtonItem alloc] initWithTitle:backText style:UIBarButtonItemStylePlain target:viewController action:@selector(dismissChatViewController)];
+       viewController.navigationItem.leftBarButtonItem = customizedBackItem ?: [[UIBarButtonItem alloc] initWithTitle:backText style:UIBarButtonItemStylePlain target:viewController action:@selector(dismissChatViewController)];
     } else {
-        
-        UIImage *backImage = [UIImage ud_defaultBackImage];
-        
-        CGSize backTextSize = [UdeskStringSizeUtil textSize:backText withFont:[UIFont systemFontOfSize:17] withSize:CGSizeMake(70, 30)];
-        
-        UIButton *leftBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftBarButton.frame = CGRectMake(0, 0, backTextSize.width+backImage.size.width+20, backTextSize.height);
-        [leftBarButton setTitle:backText forState:UIControlStateNormal];
-        backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [leftBarButton setTintColor:_sdkConfig.sdkStyle.navBackButtonColor];
-        [leftBarButton setImage:backImage forState:UIControlStateNormal];
-        [leftBarButton setTitleColor:_sdkConfig.sdkStyle.navBackButtonColor forState:UIControlStateNormal];
-        [leftBarButton addTarget:viewController action:@selector(dismissChatViewController) forControlEvents:UIControlEventTouchUpInside];
-        
-        [leftBarButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        
-        if (ud_isIOS11) {
-            leftBarButton.contentHorizontalAlignment =UIControlContentHorizontalAlignmentLeft;
-            [leftBarButton setImageEdgeInsets:UIEdgeInsetsMake(0, -5 * UD_SCREEN_WIDTH/375.0,0,0)];
-            [leftBarButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -2 * UD_SCREEN_WIDTH/375.0,0,0)];
-        }
-        
-        UIBarButtonItem *otherNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:leftBarButton];
-        
+
+        UIBarButtonItem *leftBarButtonItem = [UIBarButtonItem itemWithTitle:backText target:viewController action:@selector(dismissChatViewController)];
         UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
                                            initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
                                            target:nil action:nil];
-        
+
         // 调整 leftBarButtonItem 在 iOS7 下面的位置
         if((FUDSystemVersion>=7.0)){
-            
+
             negativeSpacer.width = -13;
             if (customizedBackItem) {
-                viewController.navigationItem.leftBarButtonItems = @[negativeSpacer,customizedBackItem];
-                if (ud_isIOS11) {
-                    viewController.navigationItem.leftBarButtonItem = customizedBackItem;
-                }
+                viewController.navigationItem.leftBarButtonItem = customizedBackItem;
             }
             else {
-                viewController.navigationItem.leftBarButtonItems = @[negativeSpacer,otherNavigationItem];
+                viewController.navigationItem.leftBarButtonItems = @[negativeSpacer,leftBarButtonItem];
             }
-            
-        }else
-            viewController.navigationItem.leftBarButtonItem = customizedBackItem ?: otherNavigationItem;
-        
+        }
+        else {
+            viewController.navigationItem.leftBarButtonItem = customizedBackItem ?: leftBarButtonItem;
+        }
     }
     
     if ([viewController isKindOfClass:[UdeskRobotViewController class]]) {
@@ -182,31 +157,11 @@
             transferText = getUDLocalizedString(@"udesk_redirect");
         }
         
-        CGSize transferTextSize = [UdeskStringSizeUtil textSize:transferText withFont:[UIFont systemFontOfSize:16] withSize:CGSizeMake(85, 30)];
-        UIImage *rightImage = [UIImage ud_defaultTransferImage];
-        
-        //导航栏右键
-        UIButton *navBarRightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [navBarRightButton setTitle:transferText forState:UIControlStateNormal];
-        rightImage = [rightImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [navBarRightButton setTintColor:_sdkConfig.sdkStyle.transferButtonColor];
-        [navBarRightButton setImage:rightImage forState:UIControlStateNormal];
-        navBarRightButton.frame = CGRectMake(0, 0, transferTextSize.width+rightImage.size.width, transferTextSize.height);
-        navBarRightButton.titleLabel.font = [UIFont systemFontOfSize:16];
-        [navBarRightButton setTitleColor:_sdkConfig.sdkStyle.transferButtonColor forState:UIControlStateNormal];
-        
-        if (ud_isIOS11) {
-            navBarRightButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-            [navBarRightButton setImageEdgeInsets:UIEdgeInsetsMake(0,0,0, -5 *UD_SCREEN_WIDTH /375.0)];
-            [navBarRightButton setTitleEdgeInsets:UIEdgeInsetsMake(0,0,0,-7 * UD_SCREEN_WIDTH/375.0)];
-        }
-        
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
-        [navBarRightButton addTarget:viewController action:@selector(didSelectNavigationRightButton) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *rightBarButtonItem = [UIBarButtonItem rightItemWithTitle:transferText target:viewController action:@selector(didSelectNavigationRightButton)];
 #pragma clang diagnostic pop
-        UIBarButtonItem *otherNavigationItem = [[UIBarButtonItem alloc] initWithCustomView:navBarRightButton];
-        
+
         UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
                                            initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
                                            target:nil action:nil];
@@ -215,10 +170,10 @@
         if((FUDSystemVersion>=7.0)){
             
             negativeSpacer.width = -10;
-            viewController.navigationItem.rightBarButtonItems = @[negativeSpacer,otherNavigationItem];
+            viewController.navigationItem.rightBarButtonItems = @[negativeSpacer,rightBarButtonItem];
             
         }else
-            viewController.navigationItem.rightBarButtonItem = otherNavigationItem;
+            viewController.navigationItem.rightBarButtonItem = rightBarButtonItem;
         
         //导航栏标题
         if (_sdkConfig.robotTtile) {

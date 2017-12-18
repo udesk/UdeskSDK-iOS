@@ -14,12 +14,13 @@
 #import "UdeskSDKConfig.h"
 #import "UdeskUtils.h"
 #import "UdeskVoiceRecordHelper.h"
+#import "UdeskButton.h"
 
 @interface UdeskVoiceRecordView()<AVAudioRecorderDelegate,MZTimerLabelDelegate> {
     
     UILabel  *tipLabel;
-    UIButton *deleteButton;
-    UIButton *recordButton;
+    UdeskButton *deleteButton;
+    UdeskButton *recordButton;
     UdeskSpectrumView *spectrumView;
     BOOL        isInDeleteButton;
     float  recordTime;
@@ -66,7 +67,7 @@
         [tipLabel setTextAlignment:NSTextAlignmentCenter];
         [self addSubview:tipLabel];
         
-        recordButton = [[UIButton alloc]initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 77, 100, 100)];
+        recordButton = [[UdeskButton alloc]initWithFrame:CGRectMake((UD_SCREEN_WIDTH-100)/2, 77, 100, 100)];
         
         [recordButton setBackgroundImage:[UIImage ud_defaultRecordVoiceImage] forState:UIControlStateNormal];
         [recordButton setBackgroundImage:[UIImage ud_defaultRecordVoiceHighImage] forState:UIControlStateHighlighted];
@@ -84,7 +85,7 @@
         [self addSubview:recordButton];
         
         
-        deleteButton = [[UIButton alloc]initWithFrame:CGRectMake(UD_SCREEN_WIDTH-40-25, 25, 40, 40)];
+        deleteButton = [[UdeskButton alloc]initWithFrame:CGRectMake(UD_SCREEN_WIDTH-40-25, 25, 40, 40)];
         deleteButton.hidden = YES;
         [deleteButton setImage:[UIImage ud_defaultDeleteRecordVoiceImage] forState:UIControlStateNormal];
         
@@ -148,6 +149,7 @@
 {
     if ([self canRecord]) {
         
+        isInDeleteButton = NO;
         @udWeakify(self);
         [self.voiceRecordHelper prepareRecordingCompletion:^BOOL{
             

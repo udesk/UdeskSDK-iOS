@@ -33,14 +33,14 @@
 	<string>cameraDesciption</string>
 	<key>NSContactsUsageDescription</key>
 	<string>contactsDesciption</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>App需要您的同意,才能访问位置</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>microphoneDesciption</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Udesk需要为您添加图片</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>photoLibraryDesciption</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -62,7 +62,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App需要您的同意,才能访问位置</string>
 </dict>
 </plist>

@@ -58,6 +58,7 @@
     
     CGRect scrollViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
     _agentMenuScrollView= [[UIScrollView alloc] initWithFrame:scrollViewRect];
+    _agentMenuScrollView.ud_height -= [self getSpacing];
     _agentMenuScrollView.delegate = self;
     _agentMenuScrollView.showsHorizontalScrollIndicator = NO;
     _agentMenuScrollView.showsVerticalScrollIndicator = NO;
@@ -67,6 +68,16 @@
     _agentMenuScrollView.scrollEnabled = NO;
     
     [self.view addSubview:_agentMenuScrollView];
+}
+
+- (CGFloat)getSpacing {
+    
+    CGFloat spacing = 0;
+    if (ud_is_iPhoneX) {
+        spacing = 34;
+    }
+    
+    return spacing;
 }
 
 - (void)setMenuDataSource:(NSArray *)menuDataSource {
@@ -105,6 +116,7 @@
         //根据最大的级数循环添加tableView
         for (int i = 0; i<tableViewCount;i++) {
             UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStylePlain];
+            agentMenuTableView.ud_height -= [self getSpacing];
             agentMenuTableView.delegate = self;
             agentMenuTableView.dataSource = self;
             agentMenuTableView.tag = 100+i;

@@ -479,18 +479,12 @@ static CGFloat const InputBarViewButtonToVerticalEdgeSpacing = 45.0;
 {
     CGFloat buttonY = self.ud_height-InputBarViewToVerticalEdgeSpacing-InputBarViewButtonDiameter;
     
-    emotionButton.frame = CGRectMake(InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
-    voiceButton.frame = CGRectMake(emotionButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
-    cameraButton.frame = CGRectMake(voiceButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
-    albumButton.frame = CGRectMake(cameraButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
-    surveyButton.frame = CGRectMake(albumButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
-    
-    CGFloat locationButtonX = surveyButton.ud_right+InputBarViewButtonToHorizontalEdgeSpacing;
-    if (!self.enableImSurvey.boolValue) {
-        locationButtonX = locationButtonX - surveyButton.ud_right + albumButton.ud_right;
-    }
-    
-    locationButton.frame = CGRectMake(locationButtonX, buttonY, InputBarViewButtonDiameter, InputBarViewButtonDiameter);
+    emotionButton.ud_top = buttonY;
+    voiceButton.ud_top = buttonY;
+    cameraButton.ud_top = buttonY;
+    albumButton.ud_top = buttonY;
+    surveyButton.ud_top = buttonY;
+    locationButton.ud_top = buttonY;
 }
 
 //离线留言不显示任何功能按钮

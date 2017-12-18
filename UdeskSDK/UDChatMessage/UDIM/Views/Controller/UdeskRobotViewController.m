@@ -18,6 +18,7 @@
 #import "UdeskSDKShow.h"
 #import "UdeskAgentMenuViewController.h"
 #import <WebKit/WebKit.h>
+#import "UdeskViewExt.h"
 
 @implementation UdeskRobotViewController
 
@@ -68,11 +69,17 @@
                     }
                 }
                 
+                CGFloat spacing = 0;
+                if (ud_is_iPhoneX) {
+                    spacing = 34;
+                }
+                
                 CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
                 NSURLRequest *request = [NSURLRequest requestWithURL:self.robotURL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
                 
                 if (ud_isIOS8) {
                     WKWebView *intelligenceWeb = [[WKWebView alloc] initWithFrame:webViewRect];
+                    intelligenceWeb.ud_height -= spacing;
                     intelligenceWeb.backgroundColor=[UIColor whiteColor];
                     [intelligenceWeb loadRequest:request];
                     
@@ -81,6 +88,7 @@
                 else {
                     
                     UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:webViewRect];
+                    intelligenceWeb.ud_height -= spacing;
                     intelligenceWeb.backgroundColor=[UIColor whiteColor];
                     [intelligenceWeb loadRequest:request];
                     

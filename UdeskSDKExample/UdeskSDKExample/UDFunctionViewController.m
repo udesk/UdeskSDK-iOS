@@ -210,10 +210,12 @@
 }
 - (void)contactUs:(id)sender {
     
+    UdeskSDKStyle *style = [UdeskSDKStyle customStyle];
     //后台配置
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:style];
     //开启发送位置功能
-    chatViewManager.hiddenLocationButton = NO;
+//    chatViewManager.hiddenLocationButton = NO;
+    chatViewManager.hiddenAlbumButton = YES;
     
     // 调用后台配置的push方法
     NSDictionary *dict = @{

@@ -1026,7 +1026,9 @@
 {
     [super viewDidDisappear:animated];
     //离开页面放弃排队
-    [UdeskManager quitQueueWithType:self.sdkConfig.quitQueueType];
+    if (self.inputBar.agent.code == UDAgentStatusResultQueue) {
+        [UdeskManager quitQueueWithType:self.sdkConfig.quitQueueType];
+    }
     //取消所有请求
     [UdeskManager cancelAllOperations];
 }

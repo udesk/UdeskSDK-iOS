@@ -13,4 +13,7 @@
 
 + (UIImage *)compressImage:(UIImage *)image toMaxFileSize:(CGSize)maxFileSize;
 
++ (UIImage *)resizeImage:(UIImage *)image maxSize:(CGSize)size;
++ (UIImage *)fixrotation:(UIImage *)image;
+
 @end

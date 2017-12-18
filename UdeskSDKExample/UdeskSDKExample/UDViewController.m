@@ -114,7 +114,7 @@
                                                                               appId:self.appIdTextField.text];
         
         UdeskCustomer *customer = [UdeskCustomer new];
-        customer.sdkToken = sdk_token;
+        customer.sdkToken = @"12312312";
 //        customer.nickName = @"我是udesk测试(可以随时把我关闭)";
 //        customer.email = @"test@udesk.cn";
 //        customer.cellphone = @"18888888888";

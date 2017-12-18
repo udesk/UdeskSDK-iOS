@@ -31,6 +31,7 @@
 #import "UdeskAlertController.h"
 #import "UdeskResendManager.h"
 #import "UdeskLocationModel.h"
+#import "UdeskImageUtil.h"
 
 @interface UdeskChatViewModel()<UDManagerDelegate,UdeskChatAlertDelegate>
 
@@ -872,6 +873,7 @@
     
     if (image) {
         
+        image = [UdeskImageUtil resizeImage:[UdeskImageUtil fixrotation:image] maxSize:CGSizeMake(1300, 1300)];
         UdeskMessage *imageMessage = [[UdeskMessage alloc] initImageChatMessage:image];
         if (imageMessage) {
             //缓存图片
