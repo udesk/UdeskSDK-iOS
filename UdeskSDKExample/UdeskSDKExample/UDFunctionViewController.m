@@ -15,6 +15,7 @@
 #import "UdeskTransitioningAnimation.h"
 #import "UdeskCustomLocationViewController.h"
 #import "UdeskChatViewController.h"
+#import "UDLanguageViewController.h"
 
 @interface UDFunctionViewController()
 
@@ -215,7 +216,6 @@
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:style];
     //开启发送位置功能
 //    chatViewManager.hiddenLocationButton = NO;
-    chatViewManager.hiddenAlbumButton = YES;
     
     // 调用后台配置的push方法
     NSDictionary *dict = @{

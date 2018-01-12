@@ -101,6 +101,9 @@ typedef NS_ENUM(NSUInteger, UDTransiteAnimationType) {
 /** 登陆成功 */
 @property (nonatomic, copy) void(^loginSuccessCallBack)(void);
 
+/** 点击文本链接回调 */
+@property (nonatomic, copy) void(^clickLinkCallBack)(UIViewController *viewController,NSURL *URL);
+
 /** 是否隐藏语音 */
 @property (nonatomic, assign) BOOL     hiddenVoiceButton;
 

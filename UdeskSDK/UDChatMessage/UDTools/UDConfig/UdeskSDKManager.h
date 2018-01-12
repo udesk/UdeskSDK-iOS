@@ -219,4 +219,10 @@ typedef enum : NSUInteger {
  */
 - (void)loginSuccessCallBack:(void(^)(void))completion;
 
+/**
+ 点击链接回调
+ @param completion 完成回调
+ */
+- (void)clickLinkCallBack:(void(^)(UIViewController *viewController,NSURL *URL))completion;
+
 @end

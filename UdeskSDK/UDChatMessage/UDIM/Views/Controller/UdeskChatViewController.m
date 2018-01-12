@@ -375,11 +375,16 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UdeskBaseMessage *message = [self.chatViewModel objectAtIndexPath:indexPath.row];
-    if (message.cellHeight) {        
-        return message.cellHeight;
+    if ([message isKindOfClass:[UdeskBaseMessage class]]) {
+        if (message.cellHeight) {
+            return message.cellHeight;
+        }
+        else {
+            return 44;
+        }
     }
     else {
-        return 0;
+        return 44;
     }
 }
 
@@ -888,6 +893,7 @@
         return;
     }
     
+    
     //检查是否已经评价
     UdeskAgentSurvey *agentSurvey = [UdeskAgentSurvey survey];
     [agentSurvey checkHasSurveyWithAgentId:self.inputBar.agent.agentId completion:^(NSString *hasSurvey,NSError *error) {
@@ -1025,6 +1031,7 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+    
     //离开页面放弃排队
     if (self.inputBar.agent.code == UDAgentStatusResultQueue) {
         [UdeskManager quitQueueWithType:self.sdkConfig.quitQueueType];

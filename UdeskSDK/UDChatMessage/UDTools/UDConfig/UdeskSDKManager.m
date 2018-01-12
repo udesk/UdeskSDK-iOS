@@ -394,6 +394,11 @@
     _sdkConfig.loginSuccessCallBack = completion;
 }
 
+- (void)clickLinkCallBack:(void(^)(UIViewController *viewController,NSURL *URL))completion {
+    
+    _sdkConfig.clickLinkCallBack = completion;
+}
+
 - (void)setHiddenSendVideo:(BOOL)hiddenSendVideo {
 
     _hiddenSendVideo = hiddenSendVideo;

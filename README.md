@@ -831,6 +831,14 @@ extension UINavigationController {
 
 #### 更新记录：
 
+sdk v3.8.7版本更新功能:
+
+1.增加消息文本网址点击回调接口
+
+2.修复调用.searchController导致的crash问题
+
+------
+
 sdk v3.8.6版本更新功能:
 
 1.机器人页面适配iPhone X

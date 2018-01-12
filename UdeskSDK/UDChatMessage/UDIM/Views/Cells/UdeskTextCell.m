@@ -158,7 +158,9 @@
         for (NSString *richContent in textMessage.matchArray) {
             
             if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
-                [self.textContentLabel addLinkToURL:[NSURL URLWithString:richContent] withRange:[textMessage.richURLDictionary[richContent] rangeValue]];
+                if ([richContent isKindOfClass:[NSString class]]) {
+                    [self.textContentLabel addLinkToURL:[NSURL URLWithString:richContent] withRange:[textMessage.richURLDictionary[richContent] rangeValue]];
+                }
             }
         }
         
@@ -169,6 +171,12 @@
 }
 
 - (void)attributedLabel:(UDTTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
+    
+    //如果用户实现了自定义留言界面
+    if ([UdeskSDKConfig sharedConfig].clickLinkCallBack) {
+        [UdeskSDKConfig sharedConfig].clickLinkCallBack([UdeskTools currentViewController],url);
+        return;
+    }
     
     if ([url.absoluteString rangeOfString:@"://"].location == NSNotFound) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", url.absoluteString]]];
