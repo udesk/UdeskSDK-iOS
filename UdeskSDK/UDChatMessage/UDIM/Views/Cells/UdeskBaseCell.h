@@ -21,6 +21,8 @@
 
 - (void)resendMessageInCell:(UITableViewCell *)cell resendMessage:(UdeskMessage *)resendMessage;
 
+- (void)callAgain;
+
 @end
 
 @interface UdeskBaseCell : UITableViewCell

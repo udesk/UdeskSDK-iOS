@@ -52,7 +52,8 @@ const CGFloat kUDTextMendSpacing = 2.0;
         
         CGSize textSize = CGSizeMake(100, 50);
         
-        if (self.message.messageType == UDMessageContentTypeText) {
+        if (self.message.messageType == UDMessageContentTypeText ||
+            self.message.messageType == UDMessageContentTypeLeaveMsg) {
             
             textSize = [self setAttributedCellText:self.message.content messageFrom:self.message.messageFrom];
             switch (self.message.messageFrom) {

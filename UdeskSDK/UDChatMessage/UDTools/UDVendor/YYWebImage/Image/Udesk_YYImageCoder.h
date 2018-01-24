@@ -264,7 +264,6 @@ typedef NS_ENUM(NSUInteger, YYImageBlendOperation) {
 
 /**
  Add an image from a file path to encoder.
- @param image    Image file path.
  @param duration Image duration for animation. Pass 0 to ignore this parameter.
  */
 - (void)addImageWithFile:(NSString *)path duration:(NSTimeInterval)duration;
@@ -368,10 +367,10 @@ CG_EXTERN NSString *_Nullable Udesk_YYImageTypeGetExtension(YYImageType type);
 
 
 /// Returns the shared DeviceRGB color space.
-CG_EXTERN CGColorSpaceRef Udesk_YYCGColorSpaceGetDeviceRGB();
+CG_EXTERN CGColorSpaceRef Udesk_YYCGColorSpaceGetDeviceRGB(void);
 
 /// Returns the shared DeviceGray color space.
-CG_EXTERN CGColorSpaceRef Udesk_YYCGColorSpaceGetDeviceGray();
+CG_EXTERN CGColorSpaceRef Udesk_YYCGColorSpaceGetDeviceGray(void);
 
 /// Returns whether a color space is DeviceRGB.
 CG_EXTERN BOOL Udesk_YYCGColorSpaceIsDeviceRGB(CGColorSpaceRef space);
@@ -446,7 +445,7 @@ CG_EXTERN CFDataRef _Nullable Udesk_YYCGImageCreateEncodedData(CGImageRef imageR
 /**
  Whether WebP is available in YYImage.
  */
-CG_EXTERN BOOL Udesk_YYImageWebPAvailable();
+CG_EXTERN BOOL Udesk_YYImageWebPAvailable(void);
 
 /**
  Get a webp image frame count;

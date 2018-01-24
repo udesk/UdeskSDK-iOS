@@ -14,6 +14,6 @@
 
 @property (nonatomic, copy) void(^didSeledctSearchResultBlock)(UdeskNearbyModel *model);
 
-- (void)searchPlace:(NSString *)place completion:(void(^)())completion;
+- (void)searchPlace:(NSString *)place completion:(void(^)(void))completion;
 
 @end

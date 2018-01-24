@@ -179,7 +179,7 @@ static void _YYDiskCacheSetGlobal(Udesk_YYDiskCache *cache) {
     Udesk_YYDiskCache *globalCache = _YYDiskCacheGetGlobal(path);
     if (globalCache) return globalCache;
     
-    YYKVStorageType type;
+    UdeskYYKVStorageType type;
     if (threshold == 0) {
         type = YYKVStorageTypeFile;
     } else if (threshold == NSUIntegerMax) {

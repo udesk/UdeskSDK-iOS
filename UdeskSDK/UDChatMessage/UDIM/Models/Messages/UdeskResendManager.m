@@ -14,8 +14,8 @@
 
 #pragma mark - 重发失败的消息
 + (void)resendFailedMessage:(NSMutableArray *)resendMessageArray
-                   progress:(void(^)(NSString *messageId,float percent))progress
-                 completion:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion {
+                   progress:(void(^)(NSString *key,float percent))progress
+                 completion:(void(^)(UdeskMessage *failedMessage))completion {
     
     if (resendMessageArray.count) {
         
@@ -35,33 +35,26 @@
                         
                         if (fabs (timeInterval) > 60) {
                             
+                            resendMessage.messageStatus = UDMessageSendStatusFailed;
                             if (completion) {
-                                completion(resendMessage,NO);
+                                completion(resendMessage);
                             }
                             
                             [resendMessageArray removeObject:resendMessage];
                             
                         } else {
                             
-                            if (resendMessage.messageType == UDMessageContentTypeVideo) {
-                            
-                                [UdeskManager sendVideoMessage:resendMessage videoName:resendMessage.content progress:^(NSString *key, float percent) {
-                                    
-                                    if ([resendMessageArray containsObject:resendMessage]) {
-                                        [resendMessageArray removeObject:resendMessage];
-                                    }
-                                    
-                                    if (progress) {
-                                        progress(resendMessage.messageId,percent);
-                                    }
-                                    
-                                } cancellationSignal:^BOOL{
-                                    return NO;
-                                } completion:completion];
-                            }
-                            else {
-                                [UdeskManager sendMessage:resendMessage completion:completion];
-                            }
+                            [UdeskManager sendMessage:resendMessage progress:^(NSString *key, float percent) {
+                                
+                                if ([resendMessageArray containsObject:resendMessage]) {
+                                    [resendMessageArray removeObject:resendMessage];
+                                }
+                                
+                                if (progress) {
+                                    progress(resendMessage.messageId,percent);
+                                }
+                                
+                            } completion:completion];
                         }
                     }
                 }

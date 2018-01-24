@@ -45,6 +45,9 @@
             }
             
             NSDictionary *structMsg = [UdeskTools dictionaryWithJSON:message.content];
+            if (!structMsg) {
+                return nil;
+            }
             
             NSString *title = [NSString stringWithFormat:@"%@",[structMsg objectForKey:@"title"]];
             NSString *description = [NSString stringWithFormat:@"%@",[structMsg objectForKey:@"description"]];

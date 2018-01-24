@@ -204,7 +204,7 @@
     if (self.recordPath) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (cancelledDeleteCompletion) {
-                cancelledDeleteCompletion(nil);
+                cancelledDeleteCompletion();
             }
         });
     }

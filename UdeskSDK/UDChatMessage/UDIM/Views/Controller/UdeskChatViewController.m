@@ -32,6 +32,13 @@
 #import "UdeskChatTitleView.h"
 #import "UdeskLocationViewController.h"
 
+//video call
+#if __has_include(<UdeskCall/UdeskCall.h>)
+#import <UdeskCall/UdeskCall.h>
+#import "UdeskCallInviteView.h"
+#import "UdeskCallingView.h"
+#endif
+
 @interface UdeskChatViewController ()<UIGestureRecognizerDelegate,UDEmotionManagerViewDelegate,UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskInputBarDelegate,UdeskVoiceRecordViewDelegate,UdeskCellDelegate>
 
 @property (nonatomic, assign) UDInputViewType           textViewInputViewType;//输入消息类型
@@ -43,6 +50,11 @@
 @property (nonatomic, strong) UdeskVoiceRecordView      *voiceRecordView;//管理本机的摄像和图片库的工具对象
 @property (nonatomic, strong) UdeskInputBar     *inputBar;//用于显示发送消息类型控制的工具条，在底部
 @property (nonatomic, strong) UdeskChatTitleView *titleView;//标题
+//video call
+#if __has_include(<UdeskCall/UdeskCall.h>)
+@property (nonatomic, strong) UdeskCallingView *callingView;
+@property (nonatomic, strong) UdeskCallInviteView *callInviteView;
+#endif
 
 @end
 
@@ -152,6 +164,23 @@
     [UdeskTopAlertView showAlertType:UDAlertTypeGreen withMessage:message parentView:self.view];
 }
 
+//收到视频邀请
+- (void)didReceiveInviteWithAgentModel:(UdeskAgent *)agent {
+    
+#if __has_include(<UdeskCall/UdeskCall.h>)
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [self.inputBar.inputTextView resignFirstResponder];
+        self.callInviteView.avatarURL = agent.avatar;
+        self.callInviteView.nickName = agent.nick;
+        [UIView animateWithDuration:0.35 animations:^{
+            self.callInviteView.ud_top = 0;
+        }];
+    });
+#endif
+    
+}
+
 - (void)updateAgent:(UdeskAgent *)agent {
 
     self.inputBar.agent = agent;
@@ -239,6 +268,7 @@
 - (void)setInputBarButton {
 
     _inputBar.enableImSurvey = self.sdkSetting.enableImSurvey;
+    _inputBar.enableImVideoCall = self.sdkSetting.sdkVCall;
     _inputBar.hiddenCameraButton = self.sdkConfig.hiddenCameraButton;
     _inputBar.hiddenAlbumButton = self.sdkConfig.hiddenAlbumButton;
     _inputBar.hiddenVoiceButton = self.sdkConfig.hiddenVoiceButton;
@@ -270,6 +300,20 @@
     }
 }
 
+//点击视频
+- (void)didSelectVideoButton:(BOOL)selected {
+    
+#if __has_include(<UdeskCall/UdeskCall.h>)
+    [self.inputBar.inputTextView resignFirstResponder];
+    [self callingView];
+    //邀请
+    [[UdeskCallSessionManager sharedManager] inviteVideo];
+    [UIView animateWithDuration:0.35 animations:^{
+        self.callingView.ud_top = 0;
+    }];
+#endif
+}
+
 //点击地理位置
 - (void)didSelectLocationButton:(BOOL)selected {
 
@@ -285,9 +329,9 @@
     location.sendLocationBlock = ^(UdeskLocationModel *model) {
         
         @udStrongify(self);
-        [self.chatViewModel sendLocationMessage:model completion:^(UdeskMessage *message, BOOL sendStatus) {
+        [self.chatViewModel sendLocationMessage:model completion:^(UdeskMessage *message) {
             //处理发送结果UI
-            [self sendMessageStatus:sendStatus message:message];
+            [self updateMessageStatus:message];
         }];
     };
 }
@@ -407,9 +451,16 @@
     [self.view endEditing:YES];
 }
 
+//发送咨询对象URL
 - (void)sendProductURL:(NSString *)url {
 
     [self didSendTextAction:url];
+}
+
+//再次呼叫
+- (void)callAgain {
+    
+    [self didSelectVideoButton:NO];
 }
 
 //结构化消息
@@ -443,39 +494,20 @@
         self.inputBar.agent.code != UDAgentStatusResultLeaveMessage) {
         [self.chatViewModel showAlertViewWithAgent];
     }
-    else if (self.inputBar.agent.code == UDAgentStatusResultLeaveMessage) {
-        
-        [UdeskManager sendLeaveMessage:resendMessage isShowEvent:NO completion:^(NSError *error,BOOL sendStatus) {
-            //处理发送结果UI
-            @udStrongify(self);
-            [self sendStatusConfigUI:sendStatus message:resendMessage];
-        }];
-    }
-    else if (resendMessage.messageType == UDMessageContentTypeVideo) {
-        
-        if ([cell isKindOfClass:[UdeskVideoCell class]]) {
-            UdeskVideoCell *videoCell = (UdeskVideoCell *)cell;
-            [UdeskManager sendVideoMessage:resendMessage videoName:videoCell.videoNameLabel.text progress:^(NSString *key, float percent) {
-                //更新进度
-                @udStrongify(self);
-                [self updateVideoPercentButtonTitle:resendMessage.messageId progress:percent sendStatus:NO];
-            } cancellationSignal:^BOOL{
-                return NO;
-            } completion:^(UdeskMessage *message, BOOL sendStatus) {
-                //处理发送结果UI
-                @udStrongify(self);
-                [self sendMessageStatus:sendStatus message:message];
-                //更新进度
-                [self updateVideoPercentButtonTitle:message.messageId progress:sendStatus?1:0 sendStatus:sendStatus];
-            }];
-        }
-    }
     else {
         
-        [UdeskManager sendMessage:resendMessage completion:^(UdeskMessage *message, BOOL sendStatus) {
+        //重发
+        [UdeskManager sendMessage:resendMessage progress:^(NSString *key, float percent) {
+            
+            //更新进度
+            @udStrongify(self);
+            [self updateVideoPercentButtonTitle:resendMessage.messageId progress:percent sendStatus:UDMessageSendStatusSending];
+            
+        } completion:^(UdeskMessage *message) {
+            
             //处理发送结果UI
             @udStrongify(self);
-            [self sendMessageStatus:sendStatus message:message];
+            [self updateMessageStatus:message];
         }];
     }
 }
@@ -511,7 +543,44 @@
     }
 }
 
-#pragma title
+#pragma mark - video
+#if __has_include(<UdeskCall/UdeskCall.h>)
+- (UdeskCallingView *)callingView {
+    if (!_callingView) {
+        _callingView = [UdeskCallingView instanceCallingView];
+        _callingView.frame = [UIScreen mainScreen].bounds;
+        _callingView.ud_top = UD_SCREEN_HEIGHT;
+        [[UIApplication sharedApplication].delegate.window addSubview:_callingView];
+        @udWeakify(self);
+        _callingView.callEndedBlock = ^{
+            @udStrongify(self);
+            [self.callingView removeFromSuperview];
+            self.callingView = nil;
+        };
+    }
+    return _callingView;
+}
+
+//邀请view
+- (UdeskCallInviteView *)callInviteView {
+    if (!_callInviteView) {
+        _callInviteView = [UdeskCallInviteView instanceCallInviteView];
+        _callInviteView.frame = [UIScreen mainScreen].bounds;
+        _callInviteView.ud_top = UD_SCREEN_HEIGHT;
+        [[UIApplication sharedApplication].delegate.window addSubview:_callInviteView];
+        @udWeakify(self);
+        _callInviteView.callEndedBlock = ^{
+            @udStrongify(self);
+            [self.callInviteView removeFromSuperview];
+            self.callInviteView = nil;
+            [self.chatViewModel stopPlayVideoCallRing];
+        };
+    }
+    return _callInviteView;
+}
+#endif
+
+#pragma mark - title
 - (UdeskChatTitleView *)titleView {
 
     if (!_titleView) {
@@ -545,6 +614,7 @@
     
     return _photographyHelper;
 }
+
 #pragma mark - 吐司提示view
 - (UdeskVoiceRecordHUD *)voiceRecordHUD {
 
@@ -553,6 +623,7 @@
     }
     return _voiceRecordHUD;
 }
+
 #pragma mark - 录音动画view
 - (UdeskVoiceRecordView *)voiceRecordView {
 
@@ -679,10 +750,10 @@
 - (void)didSendTextAction:(NSString *)text {
 
     @udWeakify(self);
-    [self.chatViewModel sendTextMessage:text completion:^(UdeskMessage *message, BOOL sendStatus) {
+    [self.chatViewModel sendTextMessage:text completion:^(UdeskMessage *message) {
         //处理发送结果UI
         @udStrongify(self);
-        [self sendMessageStatus:sendStatus message:message];
+        [self updateMessageStatus:message];
     }];
     
     [self.inputBar.inputTextView setText:nil];
@@ -692,10 +763,10 @@
 - (void)didSendMessageWithPhoto:(UIImage *)photo {
     
     @udWeakify(self);
-    [self.chatViewModel sendImageMessage:photo completion:^(UdeskMessage *message, BOOL sendStatus) {
+    [self.chatViewModel sendImageMessage:photo completion:^(UdeskMessage *message) {
         //处理发送结果UI
         @udStrongify(self);
-        [self sendMessageStatus:sendStatus message:message];
+        [self updateMessageStatus:message];
     }];
     
 }
@@ -704,10 +775,10 @@
 - (void)didSendGIFImageMessage:(NSData *)data {
     
     @udWeakify(self);
-    [self.chatViewModel sendGIFImageMessage:data completion:^(UdeskMessage *message, BOOL sendStatus) {
+    [self.chatViewModel sendGIFImageMessage:data completion:^(UdeskMessage *message) {
         //处理发送结果UI
         @udStrongify(self);
-        [self sendMessageStatus:sendStatus message:message];
+        [self updateMessageStatus:message];
     }];
 }
 
@@ -715,25 +786,28 @@
 - (void)didSendVideoMessage:(NSData *)videoData videoName:(NSString *)videoName {
 
     @udWeakify(self);
-    [self.chatViewModel sendVideoMessage:videoData videoName:videoName progress:^(NSString *messageId,float progress){
+    [self.chatViewModel sendVideoMessage:videoData videoName:videoName progress:^(NSString *key,float progress){
     
         //更新进度
         @udStrongify(self);
-        [self updateVideoPercentButtonTitle:messageId progress:progress sendStatus:NO];
+        [self updateVideoPercentButtonTitle:key progress:progress sendStatus:UDMessageSendStatusSending];
         
-    } completion:^(UdeskMessage *message, BOOL sendStatus) {
+    } completion:^(UdeskMessage *message) {
         
         //处理发送结果UI
         @udStrongify(self);
-        [self sendMessageStatus:sendStatus message:message];
+        [self updateMessageStatus:message];
         //更新进度
-        [self updateVideoPercentButtonTitle:message.messageId progress:sendStatus?1:0 sendStatus:sendStatus];
+        [self updateVideoPercentButtonTitle:message.messageId
+                                   progress:message.messageStatus == UDMessageSendStatusSuccess?1:0
+                                 sendStatus:message.messageStatus];
     }];
 }
 
+//更新视频上传进度
 - (void)updateVideoPercentButtonTitle:(NSString *)messageId
                              progress:(float)progress
-                           sendStatus:(BOOL)sendStatus {
+                           sendStatus:(UDMessageSendStatus)sendStatus {
 
     @try {
         
@@ -744,12 +818,12 @@
         
         if ([cell isKindOfClass:[UdeskVideoCell class]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if (progress == 1.0f && sendStatus) {
+                cell.videoProgressView.progress = progress;
+                if (progress == 1.0f || sendStatus == UDMessageSendStatusSuccess) {
                     [cell.videoPercentButton setTitle:getUDLocalizedString(@"udesk_has_send") forState:UIControlStateNormal];
                     [cell setActivityIndicatorViewFrameWithSendStatus:UDMessageSendStatusSuccess];
                 }
                 else {
-                    cell.videoProgressView.progress = progress;
                     [cell.videoPercentButton setTitle:[NSString stringWithFormat:@"%.f%%",progress*100] forState:UIControlStateNormal];
                 }
             });
@@ -764,56 +838,43 @@
 - (void)didSendMessageWithVoice:(NSString *)voicePath audioDuration:(NSString*)audioDuration {
     
     @udWeakify(self);
-    [self.chatViewModel sendAudioMessage:voicePath audioDuration:audioDuration completion:^(UdeskMessage *message, BOOL sendStatus) {
+    [self.chatViewModel sendAudioMessage:voicePath audioDuration:audioDuration completion:^(UdeskMessage *message) {
         //处理发送结果UI
         @udStrongify(self);
-        [self sendMessageStatus:sendStatus message:message];
+        [self updateMessageStatus:message];
     }];
     
 }
 
 //根据发送状态更新UI
-- (void)sendMessageStatus:(BOOL)sendStatus message:(UdeskMessage *)message {
+- (void)updateMessageStatus:(UdeskMessage *)message {
     
-    if (sendStatus) {
-        //根据发送状态更新UI
-        [self sendStatusConfigUI:sendStatus message:message];
-        
-    } else {
-        
-        @udWeakify(self);
-        if (self.inputBar.agent.code == UDAgentStatusResultLeaveMessage) {
+    switch (message.messageStatus) {
+        case UDMessageSendStatusSuccess:
             
-            [self sendStatusConfigUI:sendStatus message:message];
-            return;
-        }
-        
-        [self.chatViewModel addResendMessageToArray:message];
-        //开启重发
-        [self.chatViewModel resendFailedMessageWithProgress:^(NSString *messageId, float percent) {
+            //更新UI
+            [self updateChatMessageUI:message];
+            break;
+        case UDMessageSendStatusFailed:
+        case UDMessageSendStatusOffSending:
             
-            //更新进度
-            @udStrongify(self);
-            [self updateVideoPercentButtonTitle:messageId progress:percent sendStatus:NO];
-            
-        } completion:^(UdeskMessage *failedMessage, BOOL sendStatus) {
-            
-            //发送成功删除失败消息数组里的消息
-            @udStrongify(self);
-            if (sendStatus) {
-                [self.chatViewModel removeResendMessageInArray:failedMessage];
+            if (self.inputBar.agent.code == UDAgentStatusResultLeaveMessage) {
+                [self updateChatMessageUI:message];
+                break;
             }
-            //根据发送状态更新UI
-            [self sendStatusConfigUI:sendStatus message:message];
-            if (failedMessage.messageType == UDMessageContentTypeVideo) {
-                //更新进度
-                [self updateVideoPercentButtonTitle:message.messageId progress:sendStatus?1:0 sendStatus:sendStatus];
-            }
-        }];
+            
+            //开启重发
+            [self beginResendMessage:message];
+            
+            break;
+            
+        default:
+            break;
     }
 }
+
 //根据发送状态更新UI
-- (void)sendStatusConfigUI:(BOOL)sendStatus message:(UdeskMessage *)message {
+- (void)updateChatMessageUI:(UdeskMessage *)message {
     
     @try {
         
@@ -823,7 +884,7 @@
             
             if ([baseMessage.message.messageId isEqualToString:message.messageId]) {
                 
-                baseMessage.message.messageStatus = sendStatus?UDMessageSendStatusSuccess:UDMessageSendStatusFailed;
+                baseMessage.message.messageStatus = message.messageStatus;
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.chatViewModel.messageArray indexOfObject:baseMessage] inSection:0];
                 
                 UdeskBaseCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
@@ -834,6 +895,36 @@
         NSLog(@"%@",exception);
     } @finally {
     }
+}
+
+//开始重发
+- (void)beginResendMessage:(UdeskMessage *)message {
+    
+    [self.chatViewModel addResendMessageToArray:message];
+    //开启重发
+    @udWeakify(self);
+    [self.chatViewModel resendFailedMessageWithProgress:^(NSString *key, float percent) {
+        
+        //更新进度
+        @udStrongify(self);
+        [self updateVideoPercentButtonTitle:key progress:percent sendStatus:UDMessageSendStatusSending];
+        
+    } completion:^(UdeskMessage *failedMessage) {
+        
+        //发送成功删除失败消息数组里的消息
+        @udStrongify(self);
+        if (failedMessage.messageStatus == UDMessageSendStatusSuccess) {
+            [self.chatViewModel removeResendMessageInArray:failedMessage];
+        }
+        //根据发送状态更新UI
+        [self updateChatMessageUI:message];
+        if (failedMessage.messageType == UDMessageContentTypeVideo) {
+            //更新进度
+            [self updateVideoPercentButtonTitle:message.messageId
+                                       progress:failedMessage.messageStatus == UDMessageSendStatusSuccess?1:0
+                                     sendStatus:failedMessage.messageStatus];
+        }
+    }];
 }
 
 #pragma mark - UDEmotionManagerView Delegate

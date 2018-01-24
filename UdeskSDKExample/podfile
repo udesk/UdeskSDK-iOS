@@ -5,6 +5,7 @@ target 'UdeskSDKExample' do
 
    pod 'Masonry'
    pod 'JPush'
+   pod 'AgoraRtcEngine_iOS'
    pod 'BaiduMapKit'
 end
 

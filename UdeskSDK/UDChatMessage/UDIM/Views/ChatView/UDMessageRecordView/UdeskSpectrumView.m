@@ -79,7 +79,7 @@
     } @finally {
     }
 }
--(void)setItemLevelCallback:(void (^)())itemLevelCallback
+-(void)setItemLevelCallback:(void (^)(void))itemLevelCallback
 {
     
     @try {

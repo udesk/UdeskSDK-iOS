@@ -232,4 +232,22 @@
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udMark.png")];
 }
 
+//视频
++ (UIImage *)ud_defaultVideoImage {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udVideo.png")];
+}
+
+//视频高亮
++ (UIImage *)ud_defaultVideoHighImage {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udVideoHigh.png")];
+}
+
+//视频会话
++ (UIImage *)ud_defaultVideoCallImage {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udVideoCall.png")];
+}
+
 @end

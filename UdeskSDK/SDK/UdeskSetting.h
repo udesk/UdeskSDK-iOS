@@ -32,6 +32,18 @@
 @property (nonatomic, strong, readonly) NSNumber *investigationWhenLeave;
 /** 是否开启了满意度调查 */
 @property (nonatomic, strong, readonly) NSNumber *enableImSurvey;
+/** 公司是否开启了视频功能 */
+@property (nonatomic, strong, readonly) NSNumber *vCall;
+/** SDK是否开启了视频功能 */
+@property (nonatomic, strong, readonly) NSNumber *sdkVCall;
+/** 视频通话appid */
+@property (nonatomic, copy  , readonly) NSString *vcAppId;
+/** agora appid */
+@property (nonatomic, copy  , readonly) NSString *agoraAppId;
+/** socket */
+@property (nonatomic, copy  , readonly) NSString *serverURL;
+/** 获取tokenURL */
+@property (nonatomic, copy  , readonly) NSString *vCallTokenURL;
 
 /**
  *  JSON数据转换成UdeskSetting

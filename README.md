@@ -30,18 +30,14 @@ Udesk-SDK的工作流程如下图所示。
 
 #### 2.1文件介绍
 
-| Demo中的文件      | 说明                |
-| ------------- | ----------------- |
-| UDChatMessage | Udesk提供的开源聊天界面    |
-| SDK           | Udesk SDK的静态库和头文件 |
+| Demo中的文件  | 说明                      |
+| --------- | ----------------------- |
+| UdeskSDK  | Udesk在线咨询SDK            |
+| UdeskCall | Udesk视频会话SDK（依赖在线咨询SDK） |
 
-|    SDK中的文件     |                    说明                    |
-| :------------: | :--------------------------------------: |
-| UdeskMessage.h |                  实体类：消息                  |
-| UdeskManager.h | Udesk SDK 提供的逻辑 API，开发者可调用其中的逻辑接口，实现自定义在线客服界面 |
-|   libUdesk.a   |       Udesk SDK 提供的静态库，实现了SDK底层逻辑        |
+##### **注意：UdeskSDK并不依赖UdeskCall，如果不需要此功能则不要导入该SDK。**
 
-#### 2.2引入依赖库
+#### 2.2 UdeskSDK手动导入
 
 Udesk SDK 的实现，依赖了一些系统框架，在开发应用时，需要在工程里加入这些框架。开发者首先点击工程右边的工程名,然后在工程名右边依次选择 *TARGETS* -> *BuiLd Phases* -> *Link Binary With Libraries*，展开 *LinkBinary With Libraries* 后点击展开后下面的 *+* 来添加下面的依赖项:
 
@@ -58,7 +54,7 @@ Accelerate.framework
 MediaPlayer.framework
 ```
 
-#### 2.3添加SDK到你的工程
+#### 2.2.1添加SDK到你的工程
 
 把下载的文件夹中的UdeskSDK文件夹拖到你的工程里，并进行以下配置
 
@@ -66,13 +62,7 @@ MediaPlayer.framework
 - 搜索Other Linker Flags 加入 -lxml2 -ObjC
 - 搜索header search paths 加入/usr/include/libxml2
 
-#### 2.4权限问题
-
-如果你使用的是xcode8 请在你项目的Info.plist文件里添加使用相册、相机、麦克风的权限
-
-iOS11需要添加保存图片的权限（NSPhotoLibraryAddUsageDescription）
-
-#### 2.5CocoaPods 导入
+#### 2.2.2CocoaPods 导入
 
 在 Podfile 中加入：
 
@@ -83,6 +73,20 @@ pod 'UdeskSDK'
 ```objective-c
 #import "Udesk.h"
 ```
+
+#### 2.2.3权限问题
+
+如果你使用的是xcode8 请在你项目的Info.plist文件里添加使用相册、相机、麦克风的权限
+
+iOS11需要添加保存图片的权限（NSPhotoLibraryAddUsageDescription）
+
+#### 2.3 UdeskCall手动导入
+
+把下载的文件夹中的UdeskCall文件夹拖到你的工程里，并进行以下配置
+
+- pod导入AgoraRtcEngine_iOS
+
+**注意：UdeskCall最低支持iOS8.0，不支持bitcode**
 
 # 三、快速集成SDK
 
@@ -111,7 +115,7 @@ customer.nickName = @"我是udesk测试(可以随时把我关闭)";
 [UdeskManager initWithOrganization:organization customer:customer];
 ```
 
-#### 3.2推出聊天页面
+#### 3.2进入聊天页面
 
 ```objective-c
 //使用push
@@ -122,7 +126,7 @@ UdeskSDKManager *chat = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle
 [chat presentUdeskInViewController:self completion:nil];
 ```
 
-#### 3.4推出帮助中心
+#### 3.4进入帮助中心
 
 ```objective-c
 //使用push
@@ -415,44 +419,7 @@ customer.customerDescription = @"我是测试";
 
 客户自定义字段需要管理员登录Udesk后台进入【管理中心-用户字段】添加用户自定义字段。![udesk](http://7xr0de.com1.z0.glb.clouddn.com/custom.jpeg)
 
-调用用户自定义字段函数
-
-注意：调用这个函数之前必须先调用[UdeskManager initWithOrganization:organization customer:customer];
-
-这个API调用一次获取到数据即可
-
-```objective-c
-//获取用户自定义字段
-[UdeskManager getCustomerFields:^(id responseObject, NSError *error) {
-
-//NSLog(@"用户自定义字段：%@",responseObject);
-}];
-```
-
-返回信息：
-
-```objective-c
-fieldsDict:{
-message = success;
-status = 0;
-"user_fields" =     (
-{
-comment = “测试测试”;      
-"content_type" = droplist; 
-"field_label" = "测试";  
-"field_name" = “SelectField_109";   ——————用户自定义字段key
-options =             (    
-{
-0 = "测试用户自定义字段";
-}
-);
-permission = 0;
-requirment = 1;
-};
-}
-```
-
-使用:创建自定义字段对象，输入数值
+![udesk](http://qn-im.udesk.cn/Fj96Pf8dVipMfv3Zk7XovkWU4Evm)
 
 示例:
 
@@ -621,7 +588,7 @@ SDK 咨询对象展示:
 
 ```objective-c
 //message消息类型为 UdeskMessage
-[UdeskManager sendMessage:message completion:^(UdeskMessage *message,BOOL sendStatus) {    
+[UdeskManager sendMessage:message progress:nil completion:^(UdeskMessage *message) {    
 
 }];
 ```
@@ -830,6 +797,14 @@ extension UINavigationController {
 # 八、更新记录
 
 #### 更新记录：
+
+sdk v3.9版本更新功能:
+
+1.消息到达率优化
+
+2.SDK支持视频会话
+
+------
 
 sdk v3.8.7版本更新功能:
 

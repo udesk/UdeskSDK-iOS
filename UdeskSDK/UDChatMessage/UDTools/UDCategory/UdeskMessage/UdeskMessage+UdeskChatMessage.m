@@ -43,6 +43,7 @@
         CGSize size = [UdeskTools neededSizeForPhoto:image];
         self.height = size.height;
         self.width = size.width;
+        self.content = self.messageId;
     }
     
     return self;
@@ -60,6 +61,7 @@
         self.timestamp = [NSDate date];
         self.isGif = YES;
         self.imageData = gifData;
+        self.content = self.messageId;
     }
     
     return self;
@@ -114,17 +116,34 @@
     return self;
 }
 
-- (instancetype)initLeaveChatMessage:(NSString *)text {
+- (instancetype)initLeaveEventMessage:(NSString *)text {
 
     self = [super init];
     if (self) {
         
         self.messageId = [[NSUUID UUID] UUIDString];
-        self.messageType = UDMessageContentTypeLeave;
+        self.messageType = UDMessageContentTypeLeaveEvent;
         self.messageFrom = UDMessageTypeCenter;
         self.messageStatus = UDMessageSendStatusSuccess;
         self.timestamp = [NSDate date];
         self.content = text;
+    }
+    
+    return self;
+}
+
+- (instancetype)initLeaveChatMessage:(NSString *)text leaveMsgFlag:(BOOL)leaveMsgFlag {
+    
+    self = [super init];
+    if (self) {
+        
+        self.messageId = [[NSUUID UUID] UUIDString];
+        self.messageType = UDMessageContentTypeLeaveMsg;
+        self.messageFrom = UDMessageTypeSending;
+        self.messageStatus = UDMessageSendStatusSending;
+        self.timestamp = [NSDate date];
+        self.content = text;
+        self.leaveMsgFlag = leaveMsgFlag;
     }
     
     return self;
@@ -158,6 +177,22 @@
         self.timestamp = [NSDate date];
         self.image = model.image;
         self.content = [NSString stringWithFormat:@"%f;%f;%ld;%@",model.latitude,model.longitude,(long)model.zoomLevel,model.name];;
+    }
+    
+    return self;
+}
+
+- (instancetype)initVideoCallChatMessage:(NSString *)text {
+    
+    self = [super init];
+    if (self) {
+        
+        self.messageId = [[NSUUID UUID] UUIDString];
+        self.messageType = UDMessageContentTypeVideoCall;
+        self.messageFrom = UDMessageTypeSending;
+        self.messageStatus = UDMessageSendStatusSuccess;
+        self.timestamp = [NSDate date];
+        self.content = text;
     }
     
     return self;

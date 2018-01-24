@@ -11,7 +11,7 @@
 
 @interface UdeskSpectrumView : UIView
 
-@property (nonatomic, copy) void (^itemLevelCallback)();
+@property (nonatomic, copy) void (^itemLevelCallback)(void);
 
 @property (nonatomic) NSUInteger numberOfItems;
 

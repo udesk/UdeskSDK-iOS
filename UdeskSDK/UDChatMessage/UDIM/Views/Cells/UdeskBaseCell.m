@@ -94,7 +94,9 @@
     self.baseMessage = baseMessage;
     //时间
     self.dateLabel.frame = baseMessage.dateFrame;
-    if (baseMessage.message.messageType == UDMessageContentTypeLeave) {
+    if (baseMessage.message.messageType == UDMessageContentTypeLeaveEvent ||
+        baseMessage.message.messageType == UDMessageContentTypeRollback ||
+        baseMessage.message.messageType == UDMessageContentTypeRedirect) {
         
         NSDateFormatter *formatter = [UdeskDateFormatter sharedFormatter].dateFormatter;
         [formatter setDateFormat:@"yyyy/MM/dd HH:mm:ss"];
@@ -146,6 +148,7 @@
     }
     
     if (baseMessage.message.messageType == UDMessageContentTypeText ||
+        baseMessage.message.messageType == UDMessageContentTypeLeaveMsg ||
         baseMessage.message.messageType == UDMessageContentTypeImage ||
         baseMessage.message.messageType == UDMessageContentTypeVoice ||
         baseMessage.message.messageType == UDMessageContentTypeVideo) {
@@ -169,6 +172,7 @@
             self.resetButton.hidden = YES;
             break;
         case UDMessageSendStatusSuccess:
+        case UDMessageSendStatusOffSending:
             [self.sendingIndicator stopAnimating];
             self.sendingIndicator.hidden = YES;
             self.resetButton.hidden = YES;

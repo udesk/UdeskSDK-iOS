@@ -32,8 +32,16 @@
 #import "UdeskResendManager.h"
 #import "UdeskLocationModel.h"
 #import "UdeskImageUtil.h"
+#import "UdeskVideoCallMessage.h"
 
+#if __has_include(<UdeskCall/UdeskCall.h>)
+#import <UdeskCall/UdeskCall.h>
+#import <AVFoundation/AVFoundation.h>
+#import "UdeskAgoraRtcEngineManager.h"
+@interface UdeskChatViewModel()<UDManagerDelegate,UdeskChatAlertDelegate,UdeskCallSessionManagerDelegate>
+#else
 @interface UdeskChatViewModel()<UDManagerDelegate,UdeskChatAlertDelegate>
+#endif
 
 /** 消息 */
 @property (nonatomic, strong,readwrite) NSMutableArray           *messageArray;
@@ -43,6 +51,8 @@
 @property (nonatomic, strong          ) UdeskSetting             *sdkSetting;
 /** 客服Model */
 @property (nonatomic, strong          ) UdeskAgent               *agentModel;
+/** 客户Model */
+@property (nonatomic, strong          ) UdeskCustomer            *customerModel;
 /** 聊天弹窗 */
 @property (nonatomic, strong          ) UdeskChatAlertController *chatAlert;
 /** 网络状态检测 */
@@ -57,6 +67,14 @@
 @property (nonatomic, copy            ) NSString                 *lastLeaveMsgDate;
 /** 是否关闭会话 */
 @property (nonatomic, assign          ) BOOL                     isOverConversion;
+#if __has_include(<UdeskCall/UdeskCall.h>)
+/** 用户ID */
+@property (nonatomic, copy            ) NSString                 *currentUserId;
+/** 铃声播放 */
+@property (nonatomic, strong          ) AVAudioPlayer            *audioPlayer;
+/** 视频时间 */
+@property (nonatomic, copy            ) NSString                 *callTime;
+#endif
 
 @end
 
@@ -77,6 +95,11 @@
         [UdeskManager receiveUdeskDelegate:self];
         //获取db消息
         [self requestDataBaseMessageContent];
+        
+#if __has_include(<UdeskCall/UdeskCall.h>)
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udeskCallApplicationEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udeskCallApplicationBecomeActive) name:UIApplicationWillEnterForegroundNotification object:nil];
+#endif
         //网络监测
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kUdeskReachabilityChangedNotification object:nil];
         self.reachability  = [UdeskReachability reachabilityWithHostName:@"www.baidu.com"];
@@ -117,13 +140,14 @@
     
     @udWeakify(self);
     //创建用户(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
-    [UdeskManager createServerCustomerCompletion:^(BOOL success, NSError *error) {
+    [UdeskManager createServerCustomerCompletion:^(UdeskCustomer *customer, NSError *error) {
         
         @udStrongify(self);
         //获取留言
+        self.customerModel = customer;
         [self fetchNewAgentTickeReply];
         
-        if (success) {
+        if (customer) {
             //请求客服数据(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
             [self requestAgentData];
         }
@@ -137,6 +161,43 @@
             NSLog(@"Udesk SDK初始化失败，请查看控制台LOG");
         }
     }];
+}
+
+#pragma mark - 视频
+//初始化视频manager
+- (void)setUdeskVideoCallWithCustomer:(UdeskCustomer *)customer
+                            withAgent:(UdeskAgent *)agent {
+    
+#if __has_include(<UdeskCall/UdeskCall.h>)
+    @try {
+       
+        //没有开启视频功能
+        if (!self.sdkSetting.vCall.boolValue || !self.sdkSetting.sdkVCall.boolValue) {
+            [[UdeskCallSessionManager sharedManager] disConnect];
+            return;
+        }
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+    
+    self.currentUserId = customer.customerJID;
+    UdeskCallUserProfile *userProfile = [[UdeskCallUserProfile alloc] initWithAppId:self.sdkSetting.vcAppId
+                                                                          subdomain:[UdeskManager domain]
+                                                                       bizSessionId:agent.imSubSessionId];
+    userProfile.agoraAppId = self.sdkSetting.agoraAppId;
+    userProfile.serverURL = self.sdkSetting.serverURL;
+    userProfile.vCallTokenURL = self.sdkSetting.vCallTokenURL;
+    userProfile.userId = customer.customerJID;
+    userProfile.toUserId = agent.jid;
+    userProfile.resId = customer.customerJID;
+    userProfile.toResId = agent.jid;
+    
+    [[UdeskCallSessionManager sharedManager] setUserProfile:userProfile];
+    [[UdeskCallSessionManager sharedManager] removeDelegate:self];
+    [[UdeskCallSessionManager sharedManager] addDelegate:self];
+#endif
 }
 
 //客户在黑名单
@@ -193,6 +254,22 @@
     
 }
 
+//进入后台
+- (void)udeskCallApplicationEnterBackground {
+    
+#if __has_include(<UdeskCall/UdeskCall.h>)
+    [[UdeskCallSessionManager sharedManager] disConnect];
+#endif
+}
+
+//进入前台
+- (void)udeskCallApplicationBecomeActive {
+
+#if __has_include(<UdeskCall/UdeskCall.h>)
+    [[UdeskCallSessionManager sharedManager] connect];
+#endif
+}
+
 #pragma mark - 根据是否有客服id和客服组id请求客服数据
 - (void)requestAgentData {
     
@@ -234,6 +311,10 @@
 //获取分配客服
 - (void)distributionAgent:(UdeskAgent *)agentModel {
 
+    //初始化视频
+    [self setUdeskVideoCallWithCustomer:self.customerModel withAgent:agentModel];
+    //获取会话记录
+    [self fetchSessionMessages:nil];
     //回调客服信息到vc显示
     [self callbackAgentModel:agentModel];
     
@@ -255,7 +336,7 @@
         
         if ([UdeskSDKConfig sharedConfig].productDictionary) {
             UdeskMessage *productMessage = [[UdeskMessage alloc] initWithProductMessage:[UdeskSDKConfig sharedConfig].productDictionary];
-            [UdeskManager sendMessage:productMessage completion:nil];
+            [UdeskManager sendMessage:productMessage progress:nil completion:nil];
         }
         
         //隐藏弹窗
@@ -454,10 +535,14 @@
                 //咨询对象
                 if ([UdeskSDKConfig sharedConfig].productDictionary) {
                     
-                    UdeskMessage *productMsg = [[UdeskMessage alloc] initWithProductMessage:[UdeskSDKConfig sharedConfig].productDictionary];
-                    UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithMessage:productMsg displayTimestamp:YES];
-                    if (productMessage) {
-                        [self.messageArray addObject:productMessage];
+                    //检查咨询对象是否已经存在
+                    if (![self.messageArray.firstObject isKindOfClass:[UdeskProductMessage class]]) {
+                     
+                        UdeskMessage *productMsg = [[UdeskMessage alloc] initWithProductMessage:[UdeskSDKConfig sharedConfig].productDictionary];
+                        UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithMessage:productMsg displayTimestamp:YES];
+                        if (productMessage) {
+                            [self.messageArray addObject:productMessage];
+                        }
                     }
                 }
                 //更新UI
@@ -533,14 +618,15 @@
             
             if (![array containsObject:message.messageId]) {
                 
-                if (message.messageType == UDMessageContentTypeText) {
+                if (message.messageType == UDMessageContentTypeText||
+                    message.messageType == UDMessageContentTypeLeaveMsg) {
                     
                     UdeskTextMessage *textMessage = [[UdeskTextMessage alloc] initWithMessage:message displayTimestamp:NO];
                     if (textMessage) {
                         [messages addObject:textMessage];
                     }
                 }
-                else if (message.messageType == UDMessageContentTypeLeave) {
+                else if (message.messageType == UDMessageContentTypeLeaveEvent) {
                     
                     UdeskEventMessage *eventMessage = [[UdeskEventMessage alloc] initWithMessage:message displayTimestamp:YES];
                     if (eventMessage) {
@@ -579,6 +665,7 @@
             
             switch (message.messageType) {
                 case UDMessageContentTypeRich:
+                case UDMessageContentTypeLeaveMsg:
                 case UDMessageContentTypeText:{
                     
                     UdeskTextMessage *textMessage = [[UdeskTextMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
@@ -610,7 +697,7 @@
                     break;
                 }
                 case UDMessageContentTypeRedirect:
-                case UDMessageContentTypeLeave:{
+                case UDMessageContentTypeLeaveEvent:{
                     
                     UdeskEventMessage *eventMessage = [[UdeskEventMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:eventMessage];
@@ -626,13 +713,19 @@
                     message.content = rollbackText;
                     UdeskEventMessage *eventMessage = [[UdeskEventMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:eventMessage];
-                }
                     break;
-                    
+                }
                 case UDMessageContentTypeLocation: {
-                
+                    
                     UdeskLocationMessage *locationMessage = [[UdeskLocationMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:locationMessage];
+                    break;
+                }
+                case UDMessageContentTypeVideoCall: {
+                    
+                    UdeskVideoCallMessage *videoCallMessage = [[UdeskVideoCallMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:videoCallMessage];
+                    break;
                 }
                     
                 default:
@@ -657,7 +750,7 @@
         if (!previousMessage || previousMessage == (id)kCFNull) return YES;
         if (!laterMessage || laterMessage == (id)kCFNull) return YES;
         
-        if (laterMessage.messageType == UDMessageContentTypeLeave ||
+        if (laterMessage.messageType == UDMessageContentTypeLeaveEvent ||
             laterMessage.messageType == UDMessageContentTypeRedirect ||
             laterMessage.messageType == UDMessageContentTypeStruct ||
             laterMessage.messageType == UDMessageContentTypeRollback) {
@@ -698,6 +791,10 @@
 - (void)didReceiveRedirect:(UdeskAgent *)agent {
     
     [self callbackAgentModel:agent];
+    
+#if __has_include(<UdeskCall/UdeskCall.h>)
+    [self setUdeskVideoCallWithCustomer:self.customerModel withAgent:agent];
+#endif
 }
 
 //接收客服状态
@@ -778,6 +875,7 @@
     [self fetchNewAgentTickeReply];
 }
 
+//收到撤回消息
 - (void)didReceiveRollback:(NSString *)messageId agentNick:(NSString *)agentNick {
     
     @try {
@@ -803,9 +901,19 @@
     }
 }
 
+//需要重新拉下消息
+- (void)fetchSessionMessages:(NSString *)sessionId {
+    
+    @udWeakify(self);
+    [UdeskManager fetchServersMessageWithSessionId:sessionId completion:^{
+        @udStrongify(self);
+        [self requestDataBaseMessageContent];
+    }];
+}
+
 #pragma mark - 发送文字消息
 - (void)sendTextMessage:(NSString *)text
-             completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
+             completion:(void(^)(UdeskMessage *message))completion {
     
     if (_agentModel.code != UDAgentStatusResultOnline &&
         _agentModel.code != UDAgentStatusResultLeaveMessage) {
@@ -823,17 +931,14 @@
     if (_agentModel.code == UDAgentStatusResultLeaveMessage) {
         
         //消息内容
-        UdeskMessage *message = [[UdeskMessage alloc] initTextChatMessage:text];
-        [UdeskManager sendLeaveMessage:message isShowEvent:_leaveMsgFlag completion:^(NSError *error, BOOL sendStatus) {
-            if (completion) {
-                completion(message,sendStatus);
-            }
-        }];
+        UdeskMessage *message = [[UdeskMessage alloc] initLeaveChatMessage:text leaveMsgFlag:_leaveMsgFlag];
+        //发送离线留言
+        [UdeskManager sendMessage:message progress:nil completion:completion];
         
         //显示客户留言事件
         if (_leaveMsgFlag) {
             
-            UdeskMessage *leaveMessage = [[UdeskMessage alloc] initLeaveChatMessage:getUDLocalizedString(@"udesk_customer_leave_msg")];
+            UdeskMessage *leaveMessage = [[UdeskMessage alloc] initLeaveEventMessage:getUDLocalizedString(@"udesk_customer_leave_msg")];
             if (leaveMessage) {
                 [self addMessageToChatMessageArray:@[leaveMessage]];
             }
@@ -854,7 +959,7 @@
         UdeskMessage *textMessage = [[UdeskMessage alloc] initTextChatMessage:text];
         if (textMessage) {
             [self addMessageToChatMessageArray:@[textMessage]];
-            [UdeskManager sendMessage:textMessage completion:completion];
+            [UdeskManager sendMessage:textMessage progress:nil completion:completion];
         }
     }
     
@@ -864,7 +969,7 @@
 
 #pragma mark - 发送图片消息
 - (void)sendImageMessage:(UIImage *)image
-              completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
+              completion:(void(^)(UdeskMessage *message))completion {
     
     if (_agentModel.code != UDAgentStatusResultOnline) {
         [self showAlertViewWithAgent];
@@ -879,13 +984,13 @@
             //缓存图片
             [[Udesk_YYWebImageManager sharedManager].cache setImage:image forKey:imageMessage.messageId];
             [self addMessageToChatMessageArray:@[imageMessage]];
-            [UdeskManager sendMessage:imageMessage completion:completion];
+            [UdeskManager sendMessage:imageMessage progress:nil completion:completion];
         }
     }
 }
 
 - (void)sendGIFImageMessage:(NSData *)gifData
-                 completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
+                 completion:(void(^)(UdeskMessage *message))completion {
     
     if (_agentModel.code != UDAgentStatusResultOnline) {
         [self showAlertViewWithAgent];
@@ -907,7 +1012,7 @@
             [[Udesk_YYWebImageManager sharedManager].cache setImage:image forKey:gifMessage.messageId];
             
             [self addMessageToChatMessageArray:@[gifMessage]];
-            [UdeskManager sendMessage:gifMessage completion:completion];
+            [UdeskManager sendMessage:gifMessage progress:nil completion:completion];
         }
     }
 }
@@ -920,8 +1025,8 @@
  */
 - (void)sendVideoMessage:(NSData *)videoData
                videoName:(NSString *)videoName
-                progress:(void(^)(NSString *messageId,float percent))progress
-              completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
+                progress:(void(^)(NSString *key,float percent))progress
+              completion:(void(^)(UdeskMessage *message))completion {
     
     if (_agentModel.code != UDAgentStatusResultOnline) {
         [self showAlertViewWithAgent];
@@ -961,8 +1066,8 @@
 
 - (void)readySendVideoMessage:(NSData *)videoData
                     videoName:(NSString *)videoName
-                     progress:(void(^)(NSString *messageId,float percent))progress
-                   completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
+                     progress:(void(^)(NSString *key,float percent))progress
+                   completion:(void(^)(UdeskMessage *message))completion {
     
     if (videoData) {
         
@@ -972,14 +1077,12 @@
         [[UdeskCaheHelper sharedManager] storeVideo:videoData videoId:videoMessage.messageId];
         [self addMessageToChatMessageArray:@[videoMessage]];
         
-        [UdeskManager sendVideoMessage:videoMessage videoName:videoName progress:^(NSString *key, float percent) {
-            
+        [UdeskManager sendMessage:videoMessage progress:^(NSString *key, float percent) {
+          
             if (progress) {
                 progress(videoMessage.messageId,percent);
             }
             
-        } cancellationSignal:^BOOL{
-            return NO;
         } completion:completion];
     }
 }
@@ -987,7 +1090,7 @@
 #pragma mark - 发送语音消息
 - (void)sendAudioMessage:(NSString *)voicePath
            audioDuration:(NSString *)audioDuration
-              completion:(void (^)(UdeskMessage *message, BOOL sendStatus))completion {
+              completion:(void (^)(UdeskMessage *message))completion {
     
     if (_agentModel.code != UDAgentStatusResultOnline) {
         
@@ -1000,13 +1103,13 @@
         UdeskMessage *voiceMessage = [[UdeskMessage alloc] initVoiceChatMessage:[NSData dataWithContentsOfFile:voicePath] duration:audioDuration];
         [[UdeskCaheHelper sharedManager] setObject:[NSData dataWithContentsOfFile:voicePath] forKey:voiceMessage.messageId];
         [self addMessageToChatMessageArray:@[voiceMessage]];
-        [UdeskManager sendMessage:voiceMessage completion:completion];
+        [UdeskManager sendMessage:voiceMessage progress:nil completion:completion];
     }
 }
 
 //发送地理位置
 - (void)sendLocationMessage:(UdeskLocationModel *)model
-                 completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion {
+                 completion:(void(^)(UdeskMessage *message))completion {
 
     if (_agentModel.code != UDAgentStatusResultOnline) {
         [self showAlertViewWithAgent];
@@ -1019,7 +1122,7 @@
         if (locationMsg) {
             [[Udesk_YYWebImageManager sharedManager].cache setImage:model.image forKey:locationMsg.messageId];
             [self addMessageToChatMessageArray:@[locationMsg]];
-            [UdeskManager sendMessage:locationMsg completion:completion];
+            [UdeskManager sendMessage:locationMsg progress:nil completion:completion];
         }
     }
 }
@@ -1071,9 +1174,14 @@
             
             //开启留言
             if (self.sdkSetting.enableWebImFeedback.boolValue) {
-                
                 if (self.agentModel.code == UDAgentStatusResultOffline) {
-                    no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
+                    //直接留言
+                    if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
+                        no_reply_hint = getUDLocalizedString(@"udesk_alert_view_direct_msg");
+                    }
+                    else {
+                        no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
+                    }
                 }
                 
                 [self.chatAlert showChatAlertViewWithCode:self.agentModel.code andMessage:no_reply_hint enableWebImFeedback:YES];
@@ -1112,7 +1220,7 @@
 
 #pragma mark - 重发失败的消息
 - (void)resendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress
-                             completion:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion {
+                             completion:(void(^)(UdeskMessage *failedMessage))completion {
     
     [UdeskResendManager resendFailedMessage:self.resendArray progress:progress completion:completion];
 }
@@ -1158,7 +1266,7 @@
 
 //获取LocationModel
 - (UdeskLocationModel *)getLocationModel:(UdeskMessage *)message {
-
+    
     @try {
         
         UdeskLocationModel *location = [[UdeskLocationModel alloc] init];
@@ -1186,9 +1294,162 @@
     }
 }
 
+#pragma mark - @protocol UdeskSocketDelegate
+#if __has_include(<UdeskCall/UdeskCall.h>)
+//未登录
+- (void)remoteUserDidNotLogedIn:(NSString *)userId {
+
+    NSLog(@"用户%@未登录",userId);
+    [self setNotAnsweredAndDeclineVideoCallMessage:userId content:getUDLocalizedString(@"udesk_video_call_agent_not_logged_in")];
+}
+
+//挂断
+- (void)remoteUserDidHangup:(NSString *)userId {
+    NSLog(@"用户%@挂断",userId);
+    [self setVideoCallMessage:userId content:[NSString stringWithFormat:@"%@ %@",getUDLocalizedString(@"udesk_video_call_duration"),[UdeskAgoraRtcEngineManager shared].durationLabel.text]];
+    //停止播放
+    [self stopPlayVideoCallRing];
+}
+//邀请
+- (void)remoteUserDidInvite:(NSString *)userId {
+    
+    NSLog(@"用户%@被邀请",userId);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didReceiveInviteWithAgentModel:)]) {
+        [self.delegate didReceiveInviteWithAgentModel:self.agentModel];
+    }
+    
+    //开始播放
+    [self startPlayRing:getUDBundlePath(@"udeskCall.mp3")];
+}
+
+//拒绝
+- (void)remoteUserDidDecline:(NSString *)userId {
+    
+    NSLog(@"用户%@拒绝",userId);
+    NSString *content = getUDLocalizedString(@"udesk_video_call_agent_decline");
+    if ([userId isEqualToString:self.currentUserId]) {
+        content = getUDLocalizedString(@"udesk_video_call_customer_decline");
+    }
+    
+    [self setNotAnsweredAndDeclineVideoCallMessage:userId content:content];
+    //停止播放
+    [self stopPlayVideoCallRing];
+}
+
+//取消
+- (void)remoteUserDidCancel:(NSString *)userId {
+    
+    NSLog(@"用户%@取消",userId);
+    NSString *content = getUDLocalizedString(@"udesk_video_call_agent_cancel");
+    if (![userId isEqualToString:self.currentUserId]) {
+        content = getUDLocalizedString(@"udesk_video_call_customer_cancel");
+    }
+    [self setVideoCallMessage:userId content:content];
+    
+    //停止播放
+    [self stopPlayVideoCallRing];
+}
+
+//忙线
+- (void)remoteUserDidLineBusy:(NSString *)userId {
+    
+    NSLog(@"用户%@忙线",userId);
+    [self setNotAnsweredAndDeclineVideoCallMessage:userId content:getUDLocalizedString(@"udesk_video_call_agent_busy")];
+    
+    //停止播放
+    [self stopPlayVideoCallRing];
+}
+
+//无应答
+- (void)remoteUserDidNotAnswered:(NSString *)userId {
+    
+    NSLog(@"用户%@无应答",userId);
+    NSString *content = getUDLocalizedString(@"udesk_video_call_agent_not_answered");
+    if ([userId isEqualToString:self.currentUserId]) {
+        content = getUDLocalizedString(@"udesk_video_call_customer_cancel");
+    }
+    
+    [self setNotAnsweredAndDeclineVideoCallMessage:userId content:content];
+    //停止播放
+    [self stopPlayVideoCallRing];
+}
+
+//加入
+- (void)userJoinChannel:(NSString *)userId channelToken:(NSString *)channelToken channelId:(NSString *)channelId agoraUid:(NSUInteger)agoraUid {
+    
+    //停止播放
+    [self stopPlayVideoCallRing];
+}
+
+- (void)setNotAnsweredAndDeclineVideoCallMessage:(NSString *)userId content:(NSString *)content {
+    
+    UdeskMessage *message = [[UdeskMessage alloc] initVideoCallChatMessage:content];
+    message.agentJid = self.agentModel.jid;
+    message.imSubSessionId = [NSString stringWithFormat:@"%ld",self.agentModel.imSubSessionId];
+    if ([userId isEqualToString:self.currentUserId]) {
+        message.messageFrom = UDMessageTypeReceiving;
+    }
+    
+    [self addMessageToChatMessageArray:@[message]];
+    [UdeskManager sendMessage:message progress:nil completion:nil];
+}
+
+//设置视频消息
+- (void)setVideoCallMessage:(NSString *)userId content:(NSString *)content {
+    
+    UdeskMessage *message = [[UdeskMessage alloc] initVideoCallChatMessage:content];
+    message.agentJid = self.agentModel.jid;
+    message.imSubSessionId = [NSString stringWithFormat:@"%ld",self.agentModel.imSubSessionId];
+    if (![userId isEqualToString:self.currentUserId]) {
+        message.messageFrom = UDMessageTypeReceiving;
+    }
+    
+    [self addMessageToChatMessageArray:@[message]];
+    [UdeskManager sendMessage:message progress:nil completion:nil];
+}
+
+- (void)startPlayRing:(NSString *)ringPath {
+    if (ringPath) {
+        AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+        //默认情况按静音或者锁屏键会静音
+        [audioSession setCategory:AVAudioSessionCategorySoloAmbient error:nil];
+        [audioSession setActive:YES error:nil];
+        
+        if (self.audioPlayer) {
+            [self stopPlayVideoCallRing];
+        }
+        
+        NSURL *url = [NSURL URLWithString:ringPath];
+        NSError *error = nil;
+        self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];
+        if (!error) {
+            self.audioPlayer.numberOfLoops = -1;
+            self.audioPlayer.volume = 1.0;
+            [self.audioPlayer prepareToPlay];
+            [self.audioPlayer play];
+        }
+    }
+}
+
+- (void)stopPlayVideoCallRing {
+    if (self.audioPlayer) {
+        [self.audioPlayer stop];
+        self.audioPlayer = nil;
+        //设置铃声停止后恢复其他app的声音
+        [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation
+                                             error:nil];
+    }
+}
+#endif
+
 - (void)dealloc
 {
     NSLog(@"%@销毁了",[self class]);
+#if __has_include(<UdeskCall/UdeskCall.h>)
+    [[UdeskCallSessionManager sharedManager] removeDelegate:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+#endif
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUdeskReachabilityChangedNotification object:nil];
 }
 

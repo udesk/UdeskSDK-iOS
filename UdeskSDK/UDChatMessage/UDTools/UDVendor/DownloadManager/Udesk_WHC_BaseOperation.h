@@ -277,7 +277,6 @@ typedef void (^WHCProgress) (Udesk_WHC_BaseOperation * _Nullable operation ,uint
 
 /**
  * 添加依赖下载队列
- * @param downloadOperation 将要添加的下载队列对象
  */
 - (void)addDependOperation:(nonnull Udesk_WHC_BaseOperation *)operation;
 

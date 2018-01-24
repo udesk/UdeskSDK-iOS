@@ -37,6 +37,9 @@ typedef enum : NSUInteger {
 /** 客服头像URL */
 @property (nonatomic, strong) NSString          *avatar;
 
+/** 会话ID（不需要传这个参数)  */
+@property (nonatomic, assign) NSInteger         imSubSessionId;
+
 /** 客服状态code */
 @property (nonatomic, assign) UDAgentStatusType code;
 

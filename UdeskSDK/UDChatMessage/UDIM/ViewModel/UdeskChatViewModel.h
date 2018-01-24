@@ -50,6 +50,12 @@
  *  评价成功
  */
 - (void)didSurveyCompletion:(NSString *)message;
+/**
+ 收到邀请视频
+
+ @param agent 客服
+ */
+- (void)didReceiveInviteWithAgentModel:(UdeskAgent *)agent;
 
 @end
 
@@ -82,7 +88,7 @@
  *  @param completion 发送回调
  */
 - (void)resendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress
-                             completion:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion;
+                             completion:(void(^)(UdeskMessage *failedMessage))completion;
 /**
  *  获取消息数量
  */
@@ -104,7 +110,7 @@
  *  @param completion 发送状态&发送消息体
  */
 - (void)sendTextMessage:(NSString *)text
-             completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion;
+             completion:(void(^)(UdeskMessage *message))completion;
 
 /**
  *  发送图片消息
@@ -113,7 +119,7 @@
  *  @param completion 发送状态&发送消息体
  */
 - (void)sendImageMessage:(UIImage *)image
-              completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion;
+              completion:(void(^)(UdeskMessage *message))completion;
 
 /**
  *  发送gif图片消息
@@ -122,7 +128,7 @@
  *  @param completion 发送状态&发送消息体
  */
 - (void)sendGIFImageMessage:(NSData *)gifData
-                 completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion;
+                 completion:(void(^)(UdeskMessage *message))completion;
 
 /**
  *  发送视频消息
@@ -132,8 +138,8 @@
  */
 - (void)sendVideoMessage:(NSData *)videoData
                videoName:(NSString *)videoName
-                progress:(void(^)(NSString *messageId,float percent))progress
-              completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion ;
+                progress:(void(^)(NSString *key,float percent))progress
+              completion:(void(^)(UdeskMessage *message))completion ;
 
 /**
  *  发送语音消息
@@ -144,7 +150,7 @@
  */
 - (void)sendAudioMessage:(NSString *)voicePath
            audioDuration:(NSString *)audioDuration
-              completion:(void(^)(UdeskMessage *message,BOOL sendStatus))comletion;
+              completion:(void(^)(UdeskMessage *message))comletion;
 
 /**
  *  发送地理位置消息
@@ -153,7 +159,7 @@
  *  @param completion 发送状态&发送消息体
  */
 - (void)sendLocationMessage:(UdeskLocationModel *)model
-                 completion:(void(^)(UdeskMessage *message,BOOL sendStatus))completion;
+                 completion:(void(^)(UdeskMessage *message))completion;
 
 /**
  *  添加需要重新发送消息
@@ -173,5 +179,8 @@
 
 //获取LocationModel
 - (UdeskLocationModel *)getLocationModel:(UdeskMessage *)message;
+
+//关闭视频铃声
+- (void)stopPlayVideoCallRing;
 
 @end

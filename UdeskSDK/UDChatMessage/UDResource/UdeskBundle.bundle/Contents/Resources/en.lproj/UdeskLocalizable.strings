@@ -41,6 +41,7 @@
 "udesk_robot_title" = "Intelligent robot";
 "udesk_alert_view_agent_busy_leave_msg" = "Agent is busy, please press button to leave message.";
 "udesk_alert_view_leave_msg" = "Submit list to describe your questions and we will contact you later";
+"udesk_alert_view_direct_msg" = "Submit message to describe your questions and we will contact you later";
 "udesk_alert_view_no_reply_hint" = "No Agents available right now. Please contacting us at our working hours";
 "udesk_network_disconnect" = "Network disconnect, please connect it first.";
 "udesk_has_bad_net" = "Network is not good, please checking you network setting!";
@@ -70,3 +71,16 @@
 "udesk_customer_leave_msg" = "Customer Leave Message";
 "udesk_rollback" = "has recalled a message";
 "udesk_location" = "Location";
+
+"udesk_video_call_duration" = "Talk time：";
+
+//agent
+"udesk_video_call_agent_busy" = "Other user may be busy";
+"udesk_video_call_agent_decline" = "Call declined by user";
+"udesk_video_call_agent_cancel" = "Cancelled";
+"udesk_video_call_agent_not_answered" = "No response";
+"udesk_video_call_agent_not_logged_in" = "The agent has not logged in the video";
+
+//customer
+"udesk_video_call_customer_cancel" = "Other user cancelled";
+"udesk_video_call_customer_decline" = "Declined";

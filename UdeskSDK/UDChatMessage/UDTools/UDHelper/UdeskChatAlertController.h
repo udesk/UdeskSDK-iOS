@@ -25,8 +25,6 @@
 - (void)showQueueStatusAlertWithMessage:(NSString *)message
                     enableWebImFeedback:(BOOL)enableWebImFeedback;
 //客服不在线Alert
-- (void)showAgentNotOnlineAlert;
-//客服不在线Alert
 - (void)showAgentNotOnlineAlertWithMessage:(NSString *)message
                        enableWebImFeedback:(BOOL)enableWebImFeedback;
 //无网络Alert

@@ -677,7 +677,7 @@ static UIApplication *_YYSharedApplication() {
     return [self initWithPath:@"" type:YYKVStorageTypeFile];
 }
 
-- (instancetype)initWithPath:(NSString *)path type:(YYKVStorageType)type {
+- (instancetype)initWithPath:(NSString *)path type:(UdeskYYKVStorageType)type {
     if (path.length == 0 || path.length > kPathLengthMax) {
         NSLog(@"YYKVStorage init error: invalid path: [%@].", path);
         return nil;

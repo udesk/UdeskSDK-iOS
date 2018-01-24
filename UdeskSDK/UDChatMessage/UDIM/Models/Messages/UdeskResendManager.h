@@ -13,7 +13,7 @@
 
 #pragma mark - 重发失败的消息
 + (void)resendFailedMessage:(NSMutableArray *)resendMessageArray
-                   progress:(void(^)(NSString *messageId,float percent))progress
-                 completion:(void(^)(UdeskMessage *failedMessage,BOOL sendStatus))completion;
+                   progress:(void(^)(NSString *key,float percent))progress
+                 completion:(void(^)(UdeskMessage *failedMessage))completion;
 
 @end

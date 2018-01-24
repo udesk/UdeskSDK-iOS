@@ -14,6 +14,17 @@
 		</dict>
 		<dict>
 			<key>FooterText</key>
+			<string>Copyright 2017 agora.io. All rights reserved.
+</string>
+			<key>License</key>
+			<string>Copyright</string>
+			<key>Title</key>
+			<string>AgoraRtcEngine_iOS</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>FooterText</key>
 			<string>The MIT License (MIT)
 
 Copyright (c) 2015 BaiduLBS

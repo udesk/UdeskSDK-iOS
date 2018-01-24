@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Submits a block for execution on a main queue and waits until the block completes.
  */
-static inline void _yy_dispatch_sync_on_main_queue(void (^block)()) {
+static inline void _yy_dispatch_sync_on_main_queue(void (^block)(void)) {
     if (pthread_main_np()) {
         block();
     } else {

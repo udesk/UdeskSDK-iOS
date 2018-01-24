@@ -38,7 +38,7 @@
 }
 
 //获取附近地点
-- (void)getAroundInfoMationWithCoordinate:(CLLocationCoordinate2D)coordinate completion:(void(^)())completionHandler {
+- (void)getAroundInfoMationWithCoordinate:(CLLocationCoordinate2D)coordinate completion:(void(^)(void))completionHandler {
     
     MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coordinate, UdeskNearbySpan, UdeskNearbySpan);
     MKLocalSearchRequest *request = [[MKLocalSearchRequest alloc]init];

@@ -53,6 +53,10 @@ typedef NS_ENUM(NSUInteger, UDInputViewType) {
  */
 - (void)didSelectVoiceButton:(BOOL)selected;
 /**
+ *  点击视频
+ */
+- (void)didSelectVideoButton:(BOOL)selected;
+/**
  *  点击地理位置
  */
 - (void)didSelectLocationButton:(BOOL)selected;
@@ -72,6 +76,7 @@ typedef NS_ENUM(NSUInteger, UDInputViewType) {
 @property (nonatomic, weak) id <UdeskInputBarDelegate> delegate;
 
 @property (nonatomic, strong) NSNumber *enableImSurvey;
+@property (nonatomic, strong) NSNumber *enableImVideoCall;
 @property (nonatomic, assign) BOOL     hiddenVoiceButton;
 @property (nonatomic, assign) BOOL     hiddenEmotionButton;
 @property (nonatomic, assign) BOOL     hiddenCameraButton;

@@ -250,4 +250,13 @@
 //打勾
 + (UIImage *)ud_defaultMarkImage;
 
+//视频
++ (UIImage *)ud_defaultVideoImage;
+
+//视频高亮
++ (UIImage *)ud_defaultVideoHighImage;
+
+//视频会话
++ (UIImage *)ud_defaultVideoCallImage;
+
 @end

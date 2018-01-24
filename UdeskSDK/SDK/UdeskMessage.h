@@ -16,17 +16,19 @@ typedef NS_ENUM(NSInteger, UDMessageFromType) {
 };
 
 typedef NS_ENUM(NSInteger, UDMessageContentType) {
-    UDMessageContentTypeText     = 0,//文字
-    UDMessageContentTypeImage    = 1,//图片
-    UDMessageContentTypeVoice    = 2,//语音
-    UDMessageContentTypeProduct  = 3,//咨询对象
-    UDMessageContentTypeRedirect = 4,//转接
-    UDMessageContentTypeRich     = 5,//欢迎语
-    UDMessageContentTypeStruct   = 6,//结构化消息
-    UDMessageContentTypeLeave    = 7,//离线留言
-    UDMessageContentTypeVideo    = 8,//视频
-    UDMessageContentTypeRollback = 9,//消息撤回
-    UDMessageContentTypeLocation = 10,//地理位置消息
+    UDMessageContentTypeText       = 0,//文字
+    UDMessageContentTypeImage      = 1,//图片
+    UDMessageContentTypeVoice      = 2,//语音
+    UDMessageContentTypeProduct    = 3,//咨询对象
+    UDMessageContentTypeRedirect   = 4,//转接
+    UDMessageContentTypeRich       = 5,//欢迎语
+    UDMessageContentTypeStruct     = 6,//结构化消息
+    UDMessageContentTypeLeaveEvent = 7,//离线留言事件
+    UDMessageContentTypeVideo      = 8,//视频
+    UDMessageContentTypeRollback   = 9,//消息撤回
+    UDMessageContentTypeLocation   = 10,//地理位置消息
+    UDMessageContentTypeLeaveMsg   = 11,//离线留言消息
+    UDMessageContentTypeVideoCall  = 12,//视频聊天
 };
 
 typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
@@ -34,6 +36,7 @@ typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
     UDMessageSendStatusSending = 0,//发送中
     UDMessageSendStatusFailed  = 1,//发送失败
     UDMessageSendStatusSuccess = 2,//发送成功
+    UDMessageSendStatusOffSending = 3,//离线发送
 };
 
 @interface UdeskMessage : NSObject
@@ -66,6 +69,8 @@ typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
 @property (nonatomic, assign) CGFloat              height;
 /** 图片是否是GIF */
 @property (nonatomic, assign) BOOL                 isGif;
+/** 是否显示客户留言事件 */
+@property (nonatomic, assign) BOOL                 leaveMsgFlag;
 /** 消息类型 */
 @property (nonatomic, assign) UDMessageContentType messageType;
 /** 消息发送者 */
@@ -74,5 +79,9 @@ typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
 @property (nonatomic, assign) UDMessageSendStatus  messageStatus;
 /** 咨询对象 */
 @property (nonatomic, strong) NSDictionary         *productMessage;
+/** 用户会话id */
+@property (nonatomic, copy  ) NSString             *imSubSessionId;
+/** 会话序号 */
+@property (nonatomic, assign) NSInteger            seqNum;
 
 @end

@@ -14,7 +14,6 @@
 @property (nonatomic, strong) UdeskChatViewModel        *chatViewModel;//viewModel
 
 //更新发送消息的状态
-- (void)sendMessageStatus:(BOOL)sendStatus
-                  message:(UdeskMessage *)message;
+- (void)updateMessageStatus:(UdeskMessage *)message;
 
 @end

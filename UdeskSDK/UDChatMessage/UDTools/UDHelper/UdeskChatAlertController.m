@@ -62,33 +62,6 @@
 }
 
 //客服不在线Alert
-- (void)showAgentNotOnlineAlert {
-
-    NSString *title = getUDLocalizedString(@"udesk_agent_offline");
-    NSString *message = getUDLocalizedString(@"udesk_alert_view_leave_msg");
-    NSString *cancelButtonTitle = getUDLocalizedString(@"udesk_cancel");
-    NSString *ticketButtonTitle = getUDLocalizedString(@"udesk_leave_msg");
-    
-    UdeskAlertController *notOnlineAlert = [UdeskAlertController alertControllerWithTitle:title message:message preferredStyle:UDAlertControllerStyleAlert];
-    
-    [notOnlineAlert addAction:[UdeskAlertAction actionWithTitle:cancelButtonTitle style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
-    }]];
-    
-    @udWeakify(self);
-    [notOnlineAlert addAction:[UdeskAlertAction actionWithTitle:ticketButtonTitle style:UDAlertActionStyleDefault handler:^(UdeskAlertAction * _Nonnull action) {
-        
-        @udStrongify(self);
-        if (self.delegate) {
-            if ([self.delegate respondsToSelector:@selector(didSelectSendTicket)]) {
-                [self.delegate didSelectSendTicket];
-            }
-        }
-    }]];
-    
-    [self presentViewController:notOnlineAlert];
-}
-
-//客服不在线Alert
 - (void)showAgentNotOnlineAlertWithMessage:(NSString *)message
                        enableWebImFeedback:(BOOL)enableWebImFeedback {
 

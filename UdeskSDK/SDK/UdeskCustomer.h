@@ -32,4 +32,9 @@
 /** 客户自定义字段 */
 @property (nonatomic, strong) NSArray<UdeskCustomerCustomField *> *customField;
 
+/** 客户ID（不需要传这个参数) */
+@property (nonatomic, copy  ) NSString *customerId;
+/** 客户JID（不需要传这个参数)  */
+@property (nonatomic, copy  ) NSString *customerJID;
+
 @end

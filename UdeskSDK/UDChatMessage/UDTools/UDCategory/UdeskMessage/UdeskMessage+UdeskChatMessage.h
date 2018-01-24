@@ -17,8 +17,10 @@
 - (instancetype)initGIFImageChatMessage:(NSData *)gifData;
 - (instancetype)initVoiceChatMessage:(NSData *)voiceData duration:(NSString *)duration;
 - (instancetype)initVideoChatMessage:(NSData *)videoData videoName:(NSString *)videoName;
-- (instancetype)initLeaveChatMessage:(NSString *)text;
+- (instancetype)initLeaveChatMessage:(NSString *)text leaveMsgFlag:(BOOL)leaveMsgFlag;
+- (instancetype)initLeaveEventMessage:(NSString *)text;
 - (instancetype)initRollbackChatMessage:(NSString *)text;
 - (instancetype)initLocationChatMessage:(UdeskLocationModel *)model;
+- (instancetype)initVideoCallChatMessage:(NSString *)text;
 
 @end

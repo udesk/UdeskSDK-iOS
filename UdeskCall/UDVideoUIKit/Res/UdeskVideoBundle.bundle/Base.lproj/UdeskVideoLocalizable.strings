@@ -1,0 +1,19 @@
+/* 
+  UdeskVideoLocalizable.strings
+  UdeskSDK
+
+  Created by Udesk on 16/9/2.
+  Copyright © 2016年 Udesk. All rights reserved.
+*/
+
+"uvc_rejept" = "拒绝";
+"uvc_answer" = "接听";
+"uvc_microphone" = "话筒";
+"uvc_camera" = "摄像头";
+"uvc_speaker" = "扬声器";
+"uvc_put_way" = "收起";
+"uvc_wait_accpet" = "等待对方接受邀请....";
+"uvc_invite_detail" = "发起视频会话";
+"uvc_agent" = "客服";
+"uvc_disconnected_network" = "网络断开连接";
+"uvc_close" = "关闭";

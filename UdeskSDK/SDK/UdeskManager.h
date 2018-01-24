@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.8.7
+//  Version: 3.9
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -16,7 +16,6 @@
 #import "UdeskOrganization.h"
 
 typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
-typedef BOOL (^UDUploadCancellationSignal)(void);
 
 // 排队放弃类型枚举
 typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
@@ -71,6 +70,11 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  @param messageId 撤回的消息ID
  */
 - (void)didReceiveRollback:(NSString *)messageId agentNick:(NSString *)agentNick;
+
+/**
+ 需要重新拉取消息
+ */
+- (void)fetchSessionMessages:(NSString *)sessionId;
 
 @end
 
@@ -183,7 +187,8 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  *  @param completion 发送回调
  */
 + (void)sendMessage:(UdeskMessage *)message
-         completion:(void (^) (UdeskMessage *message,BOOL sendStatus))completion;
+           progress:(UDUploadProgressHandler)progress
+         completion:(void (^) (UdeskMessage *message))completion;
 
 /**
  * 将用户正在输入的内容，提供给客服查看。该接口没有调用限制，但每1秒内只会向服务器发送一次数据
@@ -263,6 +268,13 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 + (NSString *)key;
 
 /**
+ 获取用户Udesk App ID
+
+ @return App ID
+ */
++ (NSString *)appId;
+
+/**
  * 当前用户是否被加入黑名单
  *  @warning 需要先调用创建用户接口
  */
@@ -318,7 +330,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  *
  *  @param completion 成功信息回调
  */
-+ (void)createServerCustomerCompletion:(void (^)(BOOL success, NSError *error))completion;
++ (void)createServerCustomerCompletion:(void (^)(UdeskCustomer *customer, NSError *error))completion;
 
 /**
  在机器人页面创建用户
@@ -364,18 +376,6 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 + (void)quitQueueWithType:(UDQuitQueueType)quiteType;
 
 /**
- 发送留言
- 
- @param message 留言内容
- @param isShowEvent 是否显示事件
- @param completion 完成回调（发送成功error为nil）
- */
-+ (void)sendLeaveMessage:(UdeskMessage *)message
-             isShowEvent:(BOOL)isShowEvent
-              completion:(void(^)(NSError *error,BOOL sendStatus))completion;
-
-
-/**
  获取客服工单回复
  
  @param lastDate  最后一条消息的时间
@@ -387,17 +387,12 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
                       failure:(void(^)(NSError *error))failure;
 
 /**
- 发送视频信息
+ 获取会话消息记录
 
- @param messsage 视频信息
- @param progress 视频上传进度
- @param cancellationSignal 取消上传
+ @param sessionId 会话ID
  @param completion 完成回调
  */
-+ (void)sendVideoMessage:(UdeskMessage *)messsage
-               videoName:(NSString *)videoName
-                progress:(UDUploadProgressHandler)progress
-      cancellationSignal:(UDUploadCancellationSignal)cancellationSignal
-              completion:(void (^) (UdeskMessage *message,BOOL sendStatus))completion;
++ (void)fetchServersMessageWithSessionId:(NSString *)sessionId
+                              completion:(void(^)(void))completion;
 
 @end

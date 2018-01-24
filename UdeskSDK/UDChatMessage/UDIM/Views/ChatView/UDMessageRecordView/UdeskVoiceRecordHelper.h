@@ -9,13 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-typedef BOOL(^UDPrepareRecorderCompletion)();
-typedef void(^UDStartRecorderCompletion)();
-typedef void(^UDStopRecorderCompletion)();
-typedef void(^UDTooShortRecorderFailue)();
-typedef void(^UDPauseRecorderCompletion)();
-typedef void(^UDResumeRecorderCompletion)();
-typedef void(^UDCancellRecorderDeleteFileCompletion)();
+typedef BOOL(^UDPrepareRecorderCompletion)(void);
+typedef void(^UDStartRecorderCompletion)(void);
+typedef void(^UDStopRecorderCompletion)(void);
+typedef void(^UDTooShortRecorderFailue)(void);
+typedef void(^UDPauseRecorderCompletion)(void);
+typedef void(^UDResumeRecorderCompletion)(void);
+typedef void(^UDCancellRecorderDeleteFileCompletion)(void);
 typedef void(^UDRecordProgress)(float progress);
 typedef void(^UDPeakPowerForChannel)(float peakPowerForChannel);
 

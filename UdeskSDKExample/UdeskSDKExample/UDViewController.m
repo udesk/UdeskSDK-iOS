@@ -91,7 +91,6 @@
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapView)];
     [self.view addGestureRecognizer:tap];
-    
 }
 
 - (void)tapView {
@@ -114,7 +113,7 @@
                                                                               appId:self.appIdTextField.text];
         
         UdeskCustomer *customer = [UdeskCustomer new];
-        customer.sdkToken = @"12312312";
+        customer.sdkToken = sdk_token;
 //        customer.nickName = @"我是udesk测试(可以随时把我关闭)";
 //        customer.email = @"test@udesk.cn";
 //        customer.cellphone = @"18888888888";

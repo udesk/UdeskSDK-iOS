@@ -40,6 +40,7 @@
 "udesk_robot_title" = "智能机器人";
 "udesk_alert_view_agent_busy_leave_msg" = "当前客服正繁忙，如需留言请点击按钮进入表单留言";
 "udesk_alert_view_leave_msg" = "当前客服不在线，您可以选择提交表单来描述您的问题，稍后我们会和您联系";
+"udesk_alert_view_direct_msg" = "当前客服不在线，您可以选择直接留言来描述您的问题，稍后我们会和您联系";
 "udesk_alert_view_no_reply_hint" = "当前无客服在线，请在工作时间联系客服";
 "udesk_network_disconnect" = "网络断开连接，请先连接网络";
 "udesk_has_bad_net" = "网络不好,请检查网络设置!";
@@ -72,3 +73,17 @@
 "udesk_customer_leave_msg" = "客户留言";
 "udesk_rollback" = "撤回了一条消息";
 "udesk_location" = "位置";
+
+"udesk_video_call_duration" = "通话时长：";
+
+//agent
+"udesk_video_call_agent_busy" = "对方忙线中";
+"udesk_video_call_agent_decline" = "对方已拒绝";
+"udesk_video_call_agent_cancel" = "已取消";
+"udesk_video_call_agent_not_answered" = "对方无应答";
+"udesk_video_call_agent_not_logged_in" = "客服未登录视频";
+
+//customer
+"udesk_video_call_customer_cancel" = "对方已取消";
+"udesk_video_call_customer_decline" = "已拒绝";
+

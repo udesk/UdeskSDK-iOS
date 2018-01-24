@@ -29,7 +29,7 @@
     return self;
 }
 
-- (void)searchPlace:(NSString *)place completion:(void(^)())completion {
+- (void)searchPlace:(NSString *)place completion:(void(^)(void))completion {
 
     [self.resultArray removeAllObjects];
     MKLocalSearchRequest *request = [[MKLocalSearchRequest alloc]init];

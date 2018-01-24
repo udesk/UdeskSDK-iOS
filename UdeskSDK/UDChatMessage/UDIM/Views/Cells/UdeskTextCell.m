@@ -68,6 +68,7 @@
             switch (i) {
                 case 0: {
                     if (self.baseMessage.message.messageType == UDMessageContentTypeText ||
+                        self.baseMessage.message.messageType == UDMessageContentTypeLeaveMsg ||
                         self.baseMessage.message.messageType == UDMessageContentTypeRich) {
                         action = @selector(copyed:);
                     }

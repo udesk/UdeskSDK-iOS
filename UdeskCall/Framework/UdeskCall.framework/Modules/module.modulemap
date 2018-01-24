@@ -1,0 +1,6 @@
+framework module UdeskCall {
+  umbrella header "UdeskCall.h"
+
+  export *
+  module * { export * }
+}
