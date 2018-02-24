@@ -12,6 +12,7 @@
 #import "UdeskViewExt.h"
 #import "UIImage+UdeskSDK.h"
 #import "Udesk_YYWebImage.h"
+#import "UdeskTools.h"
 
 @implementation UdeskBaseCell
 
@@ -110,7 +111,12 @@
     //头像位置
     self.avatarImageView.frame = baseMessage.avatarFrame;
     //头像图片
-    [self.avatarImageView yy_setImageWithURL:[NSURL URLWithString:baseMessage.avatarURL] placeholder:baseMessage.avatarImage];
+    if ([UdeskTools isBlankString:baseMessage.avatarURL]) {
+        [self.avatarImageView yy_setImageWithURL:[NSURL URLWithString:baseMessage.avatarURL] placeholder:baseMessage.avatarImage];
+    }
+    else {
+        self.avatarImageView.image = baseMessage.avatarImage;
+    }
     
     //气泡
     self.bubbleImageView.frame = baseMessage.bubbleFrame;

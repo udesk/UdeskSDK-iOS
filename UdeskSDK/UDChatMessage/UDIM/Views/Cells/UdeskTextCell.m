@@ -145,9 +145,11 @@
         if (textMessage.numberRangeDic.count > 0) {
             NSString *longestKey = @"";
             for (NSString *key in textMessage.numberRangeDic.allKeys) {
-                //找到最长的key
-                if (key.length > longestKey.length) {
-                    longestKey = key;
+                if ([key isKindOfClass:[NSString class]]) {
+                    //找到最长的key
+                    if (key.length > longestKey.length) {
+                        longestKey = key;
+                    }
                 }
             }
             if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
