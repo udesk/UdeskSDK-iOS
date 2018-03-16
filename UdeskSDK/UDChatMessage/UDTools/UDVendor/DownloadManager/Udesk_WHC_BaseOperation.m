@@ -50,8 +50,8 @@ NSString  * const  kUdeskWHCUploadCode = @"WHC";
     self = [super init];
     if (self) {
         _timeoutInterval = kUdeskWHCRequestTimeout;
-        _requestType = WHCHttpRequestGet;
-        _requestStatus = WHCHttpRequestNone;
+        _requestType = Udesk_WHCHttpRequestGet;
+        _requestStatus = Udesk_WHCHttpRequestNone;
         _cachePolicy = NSURLRequestUseProtocolCachePolicy;
         _responseData = [NSMutableData data];
     }
@@ -71,13 +71,13 @@ NSString  * const  kUdeskWHCUploadCode = @"WHC";
         self.urlRequest.cachePolicy = self.cachePolicy;
         [_urlRequest setValue:self.contentType forHTTPHeaderField: @"Content-Type"];
         switch (self.requestType) {
-            case WHCHttpRequestGet:
-            case WHCHttpRequestFileDownload:{
+            case Udesk_WHCHttpRequestGet:
+            case Udesk_WHCHttpRequestFileDownload:{
                 [_urlRequest setHTTPMethod:@"GET"];
             }
                 break;
-            case WHCHttpRequestPost:
-            case WHCHttpRequestFileUpload:{
+            case Udesk_WHCHttpRequestPost:
+            case Udesk_WHCHttpRequestFileUpload:{
                 [_urlRequest setHTTPMethod:@"POST"];
                 if([Udesk_WHC_HttpManager shared].cookie && [Udesk_WHC_HttpManager shared].cookie.length > 0) {
                     [_urlRequest setValue:[Udesk_WHC_HttpManager shared].cookie forHTTPHeaderField:@"Cookie"];
@@ -104,21 +104,21 @@ NSString  * const  kUdeskWHCUploadCode = @"WHC";
             self.urlConnection = [[NSURLConnection alloc]initWithRequest:_urlRequest delegate:self startImmediately:NO];
         }
     }else {
-        [self handleReqeustError:nil code:WHCGeneralError];
+        [self handleReqeustError:nil code:Udesk_WHCGeneralError];
     }
 }
 
 - (BOOL)isExecuting {
-    return _requestStatus == WHCHttpRequestExecuting;
+    return _requestStatus == Udesk_WHCHttpRequestExecuting;
 }
 
 - (BOOL)isCancelled {
-    return _requestStatus == WHCHttpRequestCanceled ||
-    _requestStatus == WHCHttpRequestFinished;
+    return _requestStatus == Udesk_WHCHttpRequestCanceled ||
+    _requestStatus == Udesk_WHCHttpRequestFinished;
 }
 
 - (BOOL)isFinished {
-    return _requestStatus == WHCHttpRequestFinished;
+    return _requestStatus == Udesk_WHCHttpRequestFinished;
 }
 
 - (BOOL)isConcurrent{
@@ -148,7 +148,7 @@ NSString  * const  kUdeskWHCUploadCode = @"WHC";
     NSRunLoop * urnLoop = [NSRunLoop currentRunLoop];
     [_urlConnection scheduleInRunLoop:urnLoop forMode:NSDefaultRunLoopMode];
     [self willChangeValueForKey:@"isExecuting"];
-    _requestStatus = WHCHttpRequestExecuting;
+    _requestStatus = Udesk_WHCHttpRequestExecuting;
     [self didChangeValueForKey:@"isExecuting"];
     [_urlConnection start];
     [urnLoop run];
@@ -159,9 +159,9 @@ NSString  * const  kUdeskWHCUploadCode = @"WHC";
 }
 
 - (void)startSpeedTimer {
-    if (!_speedTimer && (_requestType == WHCHttpRequestFileUpload ||
-                         _requestType == WHCHttpRequestFileDownload ||
-                         _requestType == WHCHttpRequestGet)) {
+    if (!_speedTimer && (_requestType == Udesk_WHCHttpRequestFileUpload ||
+                         _requestType == Udesk_WHCHttpRequestFileDownload ||
+                         _requestType == Udesk_WHCHttpRequestGet)) {
         _speedTimer = [NSTimer scheduledTimerWithTimeInterval:kUdeskWHCDownloadSpeedDuring
                                                        target:self
                                                      selector:@selector(calculateNetworkSpeed)
@@ -176,11 +176,11 @@ NSString  * const  kUdeskWHCUploadCode = @"WHC";
     NSHTTPURLResponse  *  headerResponse = (NSHTTPURLResponse *)response;
     if(headerResponse.statusCode >= 400){
         isError = YES;
-        self.requestStatus = WHCHttpRequestFinished;
-        if (self.requestType != WHCHttpRequestFileDownload) {
+        self.requestStatus = Udesk_WHCHttpRequestFinished;
+        if (self.requestType != Udesk_WHCHttpRequestFileDownload) {
             [self cancelledRequest];
             NSError * error = [NSError errorWithDomain:kUdeskWHCDomain
-                                                  code:WHCGeneralError
+                                                  code:Udesk_WHCGeneralError
                                               userInfo:@{NSLocalizedDescriptionKey:
                                                              [NSString stringWithFormat:kUdeskWHCErrorCode,
                                                               (long)headerResponse.statusCode]}];
@@ -214,15 +214,15 @@ NSString  * const  kUdeskWHCUploadCode = @"WHC";
 - (void)cancelledRequest{
     if (_urlConnection) {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        _requestStatus = WHCHttpRequestFinished;
+        _requestStatus = Udesk_WHCHttpRequestFinished;
         [self willChangeValueForKey:@"isCancelled"];
         [self willChangeValueForKey:@"isFinished"];
         [_urlConnection cancel];
         _urlConnection = nil;
         [self didChangeValueForKey:@"isCancelled"];
         [self didChangeValueForKey:@"isFinished"];
-        if (_requestType == WHCHttpRequestFileUpload ||
-            _requestType == WHCHttpRequestFileDownload) {
+        if (_requestType == Udesk_WHCHttpRequestFileUpload ||
+            _requestType == Udesk_WHCHttpRequestFileDownload) {
             if (_speedTimer) {
                 [_speedTimer invalidate];
                 [_speedTimer fire];

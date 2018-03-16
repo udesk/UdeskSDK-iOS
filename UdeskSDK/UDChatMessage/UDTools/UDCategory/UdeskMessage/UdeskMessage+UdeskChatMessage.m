@@ -79,6 +79,7 @@
         self.timestamp = [NSDate date];
         self.voiceData = voiceData;
         self.voiceDuration = duration.floatValue;
+        self.content = self.messageId;
     }
     
     return self;

@@ -28,4 +28,7 @@
 
 + (UIViewController *)currentViewController;
 
++ (void)storeGroupId:(NSString *)groupId;
++ (NSString *)getGroupId;
+
 @end

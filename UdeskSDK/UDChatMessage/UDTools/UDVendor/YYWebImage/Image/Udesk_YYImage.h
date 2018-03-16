@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  If the image is created from data or file, then the value indicates the data type.
  */
-@property (nonatomic, readonly) YYImageType animatedImageType;
+@property (nonatomic, readonly) Udesk_YYImageType animatedImageType;
 
 /**
  If the image is created from animated image data (multi-frame GIF/APNG/WebP),

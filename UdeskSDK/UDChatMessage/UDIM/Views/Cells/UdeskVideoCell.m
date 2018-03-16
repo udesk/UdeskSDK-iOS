@@ -109,7 +109,7 @@
                                           }
                                           downloadObject.fileName = downloadOperation.saveFileName;
                                           downloadObject.downloadPath = downloadOperation.strUrl;
-                                          downloadObject.downloadState = WHCDownloading;
+                                          downloadObject.downloadState = Udesk_WHCDownloading;
                                           downloadObject.currentDownloadLenght = downloadOperation.recvDataLenght;
                                           downloadObject.totalLenght = downloadOperation.fileTotalLenght;
                                           
@@ -145,7 +145,7 @@
                                       [self saveDownloadStateOperation:(Udesk_WHC_DownloadOperation *)operation];
                                   }else {
                                       [self errorHandle:(Udesk_WHC_DownloadOperation *)operation error:error];
-                                      if (error != nil &&error.code == WHCCancelDownloadError) {
+                                      if (error != nil &&error.code == Udesk_WHCCancelDownloadError) {
                                           [self saveDownloadStateOperation:(Udesk_WHC_DownloadOperation *)operation];
                                       }
                                   }

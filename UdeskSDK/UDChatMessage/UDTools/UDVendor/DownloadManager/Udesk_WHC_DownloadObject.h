@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_OPTIONS(NSUInteger, WHCDownloadState) {
-    WHCNone = 1 << 0,
-    WHCDownloading = 1 << 1,
-    WHCDownloadCompleted = 1 << 2,
-    WHCDownloadCanceled = 1 << 3,
-    WHCDownloadWaitting = 1 << 4
+typedef NS_OPTIONS(NSUInteger, Udesk_WHCDownloadState) {
+    Udesk_WHCNone = 1 << 0,
+    Udesk_WHCDownloading = 1 << 1,
+    Udesk_WHCDownloadCompleted = 1 << 2,
+    Udesk_WHCDownloadCanceled = 1 << 3,
+    Udesk_WHCDownloadWaitting = 1 << 4
 };
 
 @interface Udesk_WHC_DownloadObject : NSObject<NSCoding>
@@ -24,7 +24,7 @@ typedef NS_OPTIONS(NSUInteger, WHCDownloadState) {
 @property (nonatomic , assign) UInt64 totalLenght;
 @property (nonatomic , assign) UInt64 currentDownloadLenght;
 @property (nonatomic , assign , readonly) float downloadProcessValue;
-@property (nonatomic , assign) WHCDownloadState downloadState;
+@property (nonatomic , assign) Udesk_WHCDownloadState downloadState;
 @property (nonatomic , copy , readonly)NSString * currentDownloadLenghtToString;
 @property (nonatomic , copy , readonly)NSString * totalLenghtToString;
 @property (nonatomic , copy , readonly)NSString * downloadProcessText;

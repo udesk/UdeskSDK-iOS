@@ -179,13 +179,13 @@ static void _YYDiskCacheSetGlobal(Udesk_YYDiskCache *cache) {
     Udesk_YYDiskCache *globalCache = _YYDiskCacheGetGlobal(path);
     if (globalCache) return globalCache;
     
-    UdeskYYKVStorageType type;
+    Udesk_YYKVStorageType type;
     if (threshold == 0) {
-        type = YYKVStorageTypeFile;
+        type = Udesk_YYKVStorageTypeFile;
     } else if (threshold == NSUIntegerMax) {
-        type = YYKVStorageTypeSQLite;
+        type = Udesk_YYKVStorageTypeSQLite;
     } else {
-        type = YYKVStorageTypeMixed;
+        type = Udesk_YYKVStorageTypeMixed;
     }
     
     Udesk_YYKVStorage *kv = [[Udesk_YYKVStorage alloc] initWithPath:path type:type];
@@ -282,7 +282,7 @@ static void _YYDiskCacheSetGlobal(Udesk_YYDiskCache *cache) {
     }
     if (!value) return;
     NSString *filename = nil;
-    if (_kv.type != YYKVStorageTypeSQLite) {
+    if (_kv.type != Udesk_YYKVStorageTypeSQLite) {
         if (value.length > _inlineThreshold) {
             filename = [self _filenameForKey:key];
         }

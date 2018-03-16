@@ -80,11 +80,11 @@ static int _YYWebImageBackgroundSetterKey;
 - (void)_yy_setImageWithURL:(NSURL *)imageURL
              forSingleState:(NSNumber *)state
                 placeholder:(UIImage *)placeholder
-                    options:(YYWebImageOptions)options
+                    options:(Udesk_YYWebImageOptions)options
                     manager:(Udesk_YYWebImageManager *)manager
-                   progress:(YYWebImageProgressBlock)progress
-                  transform:(YYWebImageTransformBlock)transform
-                 completion:(YYWebImageCompletionBlock)completion {
+                   progress:(Udesk_YYWebImageProgressBlock)progress
+                  transform:(Udesk_YYWebImageTransformBlock)transform
+                 completion:(Udesk_YYWebImageCompletionBlock)completion {
     if ([imageURL isKindOfClass:[NSString class]]) imageURL = [NSURL URLWithString:(id)imageURL];
     manager = manager ? manager : [Udesk_YYWebImageManager sharedManager];
     
@@ -96,9 +96,9 @@ static int _YYWebImageBackgroundSetterKey;
     Udesk_YYWebImageSetter *setter = [dic lazySetterForState:state];
     int32_t sentinel = [setter cancelWithNewURL:imageURL];
     
-    _yy_dispatch_sync_on_main_queue(^{
+    _udesk_yy_dispatch_sync_on_main_queue(^{
         if (!imageURL) {
-            if (!(options & YYWebImageOptionIgnorePlaceHolder)) {
+            if (!(options & Udesk_YYWebImageOptionIgnorePlaceHolder)) {
                 [self setImage:placeholder forState:state.integerValue];
             }
             return;
@@ -107,26 +107,26 @@ static int _YYWebImageBackgroundSetterKey;
         // get the image from memory as quickly as possible
         UIImage *imageFromMemory = nil;
         if (manager.cache &&
-            !(options & YYWebImageOptionUseNSURLCache) &&
-            !(options & YYWebImageOptionRefreshImageCache)) {
-            imageFromMemory = [manager.cache getImageForKey:[manager cacheKeyForURL:imageURL] withType:YYImageCacheTypeMemory];
+            !(options & Udesk_YYWebImageOptionUseNSURLCache) &&
+            !(options & Udesk_YYWebImageOptionRefreshImageCache)) {
+            imageFromMemory = [manager.cache getImageForKey:[manager cacheKeyForURL:imageURL] withType:Udesk_YYImageCacheTypeMemory];
         }
         if (imageFromMemory) {
-            if (!(options & YYWebImageOptionAvoidSetImage)) {
+            if (!(options & Udesk_YYWebImageOptionAvoidSetImage)) {
                 [self setImage:imageFromMemory forState:state.integerValue];
             }
-            if(completion) completion(imageFromMemory, imageURL, YYWebImageFromMemoryCacheFast, YYWebImageStageFinished, nil);
+            if(completion) completion(imageFromMemory, imageURL, Udesk_YYWebImageFromMemoryCacheFast, Udesk_YYWebImageStageFinished, nil);
             return;
         }
         
         
-        if (!(options & YYWebImageOptionIgnorePlaceHolder)) {
+        if (!(options & Udesk_YYWebImageOptionIgnorePlaceHolder)) {
             [self setImage:placeholder forState:state.integerValue];
         }
         
         __weak typeof(self) _self = self;
         dispatch_async([Udesk_YYWebImageSetter setterQueue], ^{
-            YYWebImageProgressBlock _progress = nil;
+            Udesk_YYWebImageProgressBlock _progress = nil;
             if (progress) _progress = ^(NSInteger receivedSize, NSInteger expectedSize) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     progress(receivedSize, expectedSize);
@@ -135,9 +135,9 @@ static int _YYWebImageBackgroundSetterKey;
             
             __block int32_t newSentinel = 0;
             __block __weak typeof(setter) weakSetter = nil;
-            YYWebImageCompletionBlock _completion = ^(UIImage *image, NSURL *url, YYWebImageFromType from, YYWebImageStage stage, NSError *error) {
+            Udesk_YYWebImageCompletionBlock _completion = ^(UIImage *image, NSURL *url, Udesk_YYWebImageFromType from, Udesk_YYWebImageStage stage, NSError *error) {
                 __strong typeof(_self) self = _self;
-                BOOL setImage = (stage == YYWebImageStageFinished || stage == YYWebImageStageProgress) && image && !(options & YYWebImageOptionAvoidSetImage);
+                BOOL setImage = (stage == Udesk_YYWebImageStageFinished || stage == Udesk_YYWebImageStageProgress) && image && !(options & Udesk_YYWebImageOptionAvoidSetImage);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     BOOL sentinelChanged = weakSetter && weakSetter.sentinel != newSentinel;
                     if (setImage && self && !sentinelChanged) {
@@ -145,7 +145,7 @@ static int _YYWebImageBackgroundSetterKey;
                     }
                     if (completion) {
                         if (sentinelChanged) {
-                            completion(nil, url, YYWebImageFromNone, YYWebImageStageCancelled, nil);
+                            completion(nil, url, Udesk_YYWebImageFromNone, Udesk_YYWebImageStageCancelled, nil);
                         } else {
                             completion(image, url, from, stage, error);
                         }
@@ -186,7 +186,7 @@ static int _YYWebImageBackgroundSetterKey;
 
 - (void)yy_setImageWithURL:(NSURL *)imageURL
                   forState:(UIControlState)state
-                   options:(YYWebImageOptions)options {
+                   options:(Udesk_YYWebImageOptions)options {
     [self yy_setImageWithURL:imageURL
                     forState:state
                  placeholder:nil
@@ -200,8 +200,8 @@ static int _YYWebImageBackgroundSetterKey;
 - (void)yy_setImageWithURL:(NSURL *)imageURL
                   forState:(UIControlState)state
                placeholder:(UIImage *)placeholder
-                   options:(YYWebImageOptions)options
-                completion:(YYWebImageCompletionBlock)completion {
+                   options:(Udesk_YYWebImageOptions)options
+                completion:(Udesk_YYWebImageCompletionBlock)completion {
     [self yy_setImageWithURL:imageURL
                     forState:state
                  placeholder:placeholder
@@ -215,10 +215,10 @@ static int _YYWebImageBackgroundSetterKey;
 - (void)yy_setImageWithURL:(NSURL *)imageURL
                   forState:(UIControlState)state
                placeholder:(UIImage *)placeholder
-                   options:(YYWebImageOptions)options
-                  progress:(YYWebImageProgressBlock)progress
-                 transform:(YYWebImageTransformBlock)transform
-                completion:(YYWebImageCompletionBlock)completion {
+                   options:(Udesk_YYWebImageOptions)options
+                  progress:(Udesk_YYWebImageProgressBlock)progress
+                 transform:(Udesk_YYWebImageTransformBlock)transform
+                completion:(Udesk_YYWebImageCompletionBlock)completion {
     [self yy_setImageWithURL:imageURL
                     forState:state
                  placeholder:placeholder
@@ -232,11 +232,11 @@ static int _YYWebImageBackgroundSetterKey;
 - (void)yy_setImageWithURL:(NSURL *)imageURL
                   forState:(UIControlState)state
                placeholder:(UIImage *)placeholder
-                   options:(YYWebImageOptions)options
+                   options:(Udesk_YYWebImageOptions)options
                    manager:(Udesk_YYWebImageManager *)manager
-                  progress:(YYWebImageProgressBlock)progress
-                 transform:(YYWebImageTransformBlock)transform
-                completion:(YYWebImageCompletionBlock)completion {
+                  progress:(Udesk_YYWebImageProgressBlock)progress
+                 transform:(Udesk_YYWebImageTransformBlock)transform
+                completion:(Udesk_YYWebImageCompletionBlock)completion {
     for (NSNumber *num in UIControlStateMulti(state)) {
         [self _yy_setImageWithURL:imageURL
                    forSingleState:num
@@ -261,11 +261,11 @@ static int _YYWebImageBackgroundSetterKey;
 - (void)_yy_setBackgroundImageWithURL:(NSURL *)imageURL
                        forSingleState:(NSNumber *)state
                           placeholder:(UIImage *)placeholder
-                              options:(YYWebImageOptions)options
+                              options:(Udesk_YYWebImageOptions)options
                               manager:(Udesk_YYWebImageManager *)manager
-                             progress:(YYWebImageProgressBlock)progress
-                            transform:(YYWebImageTransformBlock)transform
-                           completion:(YYWebImageCompletionBlock)completion {
+                             progress:(Udesk_YYWebImageProgressBlock)progress
+                            transform:(Udesk_YYWebImageTransformBlock)transform
+                           completion:(Udesk_YYWebImageCompletionBlock)completion {
     if ([imageURL isKindOfClass:[NSString class]]) imageURL = [NSURL URLWithString:(id)imageURL];
     manager = manager ? manager : [Udesk_YYWebImageManager sharedManager];
     
@@ -277,9 +277,9 @@ static int _YYWebImageBackgroundSetterKey;
     Udesk_YYWebImageSetter *setter = [dic lazySetterForState:state];
     int32_t sentinel = [setter cancelWithNewURL:imageURL];
     
-    _yy_dispatch_sync_on_main_queue(^{
+    _udesk_yy_dispatch_sync_on_main_queue(^{
         if (!imageURL) {
-            if (!(options & YYWebImageOptionIgnorePlaceHolder)) {
+            if (!(options & Udesk_YYWebImageOptionIgnorePlaceHolder)) {
                 [self setBackgroundImage:placeholder forState:state.integerValue];
             }
             return;
@@ -288,26 +288,26 @@ static int _YYWebImageBackgroundSetterKey;
         // get the image from memory as quickly as possible
         UIImage *imageFromMemory = nil;
         if (manager.cache &&
-            !(options & YYWebImageOptionUseNSURLCache) &&
-            !(options & YYWebImageOptionRefreshImageCache)) {
-            imageFromMemory = [manager.cache getImageForKey:[manager cacheKeyForURL:imageURL] withType:YYImageCacheTypeMemory];
+            !(options & Udesk_YYWebImageOptionUseNSURLCache) &&
+            !(options & Udesk_YYWebImageOptionRefreshImageCache)) {
+            imageFromMemory = [manager.cache getImageForKey:[manager cacheKeyForURL:imageURL] withType:Udesk_YYImageCacheTypeMemory];
         }
         if (imageFromMemory) {
-            if (!(options & YYWebImageOptionAvoidSetImage)) {
+            if (!(options & Udesk_YYWebImageOptionAvoidSetImage)) {
                 [self setBackgroundImage:imageFromMemory forState:state.integerValue];
             }
-            if(completion) completion(imageFromMemory, imageURL, YYWebImageFromMemoryCacheFast, YYWebImageStageFinished, nil);
+            if(completion) completion(imageFromMemory, imageURL, Udesk_YYWebImageFromMemoryCacheFast, Udesk_YYWebImageStageFinished, nil);
             return;
         }
         
         
-        if (!(options & YYWebImageOptionIgnorePlaceHolder)) {
+        if (!(options & Udesk_YYWebImageOptionIgnorePlaceHolder)) {
             [self setBackgroundImage:placeholder forState:state.integerValue];
         }
         
         __weak typeof(self) _self = self;
         dispatch_async([Udesk_YYWebImageSetter setterQueue], ^{
-            YYWebImageProgressBlock _progress = nil;
+            Udesk_YYWebImageProgressBlock _progress = nil;
             if (progress) _progress = ^(NSInteger receivedSize, NSInteger expectedSize) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     progress(receivedSize, expectedSize);
@@ -316,9 +316,9 @@ static int _YYWebImageBackgroundSetterKey;
             
             __block int32_t newSentinel = 0;
             __block __weak typeof(setter) weakSetter = nil;
-            YYWebImageCompletionBlock _completion = ^(UIImage *image, NSURL *url, YYWebImageFromType from, YYWebImageStage stage, NSError *error) {
+            Udesk_YYWebImageCompletionBlock _completion = ^(UIImage *image, NSURL *url, Udesk_YYWebImageFromType from, Udesk_YYWebImageStage stage, NSError *error) {
                 __strong typeof(_self) self = _self;
-                BOOL setImage = (stage == YYWebImageStageFinished || stage == YYWebImageStageProgress) && image && !(options & YYWebImageOptionAvoidSetImage);
+                BOOL setImage = (stage == Udesk_YYWebImageStageFinished || stage == Udesk_YYWebImageStageProgress) && image && !(options & Udesk_YYWebImageOptionAvoidSetImage);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     BOOL sentinelChanged = weakSetter && weakSetter.sentinel != newSentinel;
                     if (setImage && self && !sentinelChanged) {
@@ -326,7 +326,7 @@ static int _YYWebImageBackgroundSetterKey;
                     }
                     if (completion) {
                         if (sentinelChanged) {
-                            completion(nil, url, YYWebImageFromNone, YYWebImageStageCancelled, nil);
+                            completion(nil, url, Udesk_YYWebImageFromNone, Udesk_YYWebImageStageCancelled, nil);
                         } else {
                             completion(image, url, from, stage, error);
                         }
@@ -367,7 +367,7 @@ static int _YYWebImageBackgroundSetterKey;
 
 - (void)yy_setBackgroundImageWithURL:(NSURL *)imageURL
                             forState:(UIControlState)state
-                             options:(YYWebImageOptions)options {
+                             options:(Udesk_YYWebImageOptions)options {
     [self yy_setBackgroundImageWithURL:imageURL
                               forState:state
                            placeholder:nil
@@ -381,8 +381,8 @@ static int _YYWebImageBackgroundSetterKey;
 - (void)yy_setBackgroundImageWithURL:(NSURL *)imageURL
                             forState:(UIControlState)state
                          placeholder:(UIImage *)placeholder
-                             options:(YYWebImageOptions)options
-                          completion:(YYWebImageCompletionBlock)completion {
+                             options:(Udesk_YYWebImageOptions)options
+                          completion:(Udesk_YYWebImageCompletionBlock)completion {
     [self yy_setBackgroundImageWithURL:imageURL
                               forState:state
                            placeholder:placeholder
@@ -396,10 +396,10 @@ static int _YYWebImageBackgroundSetterKey;
 - (void)yy_setBackgroundImageWithURL:(NSURL *)imageURL
                             forState:(UIControlState)state
                          placeholder:(UIImage *)placeholder
-                             options:(YYWebImageOptions)options
-                            progress:(YYWebImageProgressBlock)progress
-                           transform:(YYWebImageTransformBlock)transform
-                          completion:(YYWebImageCompletionBlock)completion {
+                             options:(Udesk_YYWebImageOptions)options
+                            progress:(Udesk_YYWebImageProgressBlock)progress
+                           transform:(Udesk_YYWebImageTransformBlock)transform
+                          completion:(Udesk_YYWebImageCompletionBlock)completion {
     [self yy_setBackgroundImageWithURL:imageURL
                               forState:state
                            placeholder:placeholder
@@ -413,11 +413,11 @@ static int _YYWebImageBackgroundSetterKey;
 - (void)yy_setBackgroundImageWithURL:(NSURL *)imageURL
                             forState:(UIControlState)state
                          placeholder:(UIImage *)placeholder
-                             options:(YYWebImageOptions)options
+                             options:(Udesk_YYWebImageOptions)options
                              manager:(Udesk_YYWebImageManager *)manager
-                            progress:(YYWebImageProgressBlock)progress
-                           transform:(YYWebImageTransformBlock)transform
-                          completion:(YYWebImageCompletionBlock)completion {
+                            progress:(Udesk_YYWebImageProgressBlock)progress
+                           transform:(Udesk_YYWebImageTransformBlock)transform
+                          completion:(Udesk_YYWebImageCompletionBlock)completion {
     for (NSNumber *num in UIControlStateMulti(state)) {
         [self _yy_setBackgroundImageWithURL:imageURL
                              forSingleState:num

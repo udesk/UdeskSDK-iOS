@@ -16,7 +16,7 @@ const static double k1MB = 1024 * 1024;
     self = [super init];
     if (self) {
         _downloadSpeed = @"0KB/s";
-        _downloadState = WHCNone;
+        _downloadState = Udesk_WHCNone;
     }
     return self;
 }
@@ -37,7 +37,7 @@ const static double k1MB = 1024 * 1024;
         _downloadPath = [aDecoder decodeObjectForKey:@"downloadPath"];
         _currentDownloadLenght = [aDecoder decodeInt64ForKey:@"currentDownloadLenght"];
         _totalLenght = [aDecoder decodeInt64ForKey:@"totalLenght"];
-        _downloadState = _totalLenght != 0 ? (self.currentDownloadLenght == self.totalLenght ? WHCDownloadCompleted : WHCDownloadCanceled) : WHCNone;
+        _downloadState = _totalLenght != 0 ? (self.currentDownloadLenght == self.totalLenght ? Udesk_WHCDownloadCompleted : Udesk_WHCDownloadCanceled) : Udesk_WHCNone;
     }
     return self;
 }

@@ -594,7 +594,7 @@
 - (UdeskEmotionManagerView *)emotionManagerView {
 
     if (!_emotionManagerView) {
-        CGFloat emotionHeight = UD_SCREEN_WIDTH<375?200:216;
+        CGFloat emotionHeight = (UD_SCREEN_WIDTH<375?200:216) + (ud_is_iPhoneX ? 34 : 0);
         _emotionManagerView = [[UdeskEmotionManagerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds), CGRectGetWidth(self.view.bounds), emotionHeight)];
         _emotionManagerView.delegate = self;
         _emotionManagerView.backgroundColor = [UIColor colorWithWhite:0.961 alpha:1.000];
@@ -628,7 +628,7 @@
 - (UdeskVoiceRecordView *)voiceRecordView {
 
     if (!_voiceRecordView) {
-        _voiceRecordView = [[UdeskVoiceRecordView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds), CGRectGetWidth(self.view.bounds), 200)];
+        _voiceRecordView = [[UdeskVoiceRecordView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds), CGRectGetWidth(self.view.bounds), ud_is_iPhoneX ? 234 : 200)];
         _voiceRecordView.alpha = 0.0;
         _voiceRecordView.delegate = self;
         [self.view addSubview:_voiceRecordView];
@@ -670,7 +670,7 @@
         
         void (^EmotionManagerViewAnimation)(BOOL hide) = ^(BOOL hide) {
             otherMenuViewFrame = self.emotionManagerView.frame;
-            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) - spacing  : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)) - spacing);
+            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
             self.emotionManagerView.alpha = !hide;
             self.emotionManagerView.frame = otherMenuViewFrame;
             
@@ -678,7 +678,7 @@
         
         void (^VoiceManagerViewAnimation)(BOOL hide) = ^(BOOL hide) {
             otherMenuViewFrame = self.voiceRecordView.frame;
-            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) - spacing : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)) - spacing);
+            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
             self.voiceRecordView.alpha = !hide;
             self.voiceRecordView.frame = otherMenuViewFrame;
             

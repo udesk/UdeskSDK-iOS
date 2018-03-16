@@ -30,7 +30,7 @@
         
         self.view.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
         
-        UdeskCustomNavigation *customNav = [[UdeskCustomNavigation alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 64)];
+        UdeskCustomNavigation *customNav = [[UdeskCustomNavigation alloc] init];
         if (self.sdkConfig.sdkStyle.navigationColor) {
             customNav.backgroundColor = self.sdkConfig.sdkStyle.navigationColor;
         }
@@ -102,7 +102,7 @@
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
-    if ( self.presentedViewController)
+    if (self.presentedViewController)
     {
         [super dismissViewControllerAnimated:flag completion:completion];
     }

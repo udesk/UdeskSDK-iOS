@@ -47,7 +47,7 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     [self.responseData appendData:data];
-    if (self.requestType == WHCHttpRequestGet) {
+    if (self.requestType == Udesk_WHCHttpRequestGet) {
         self.recvDataLenght += data.length;
         dispatch_async(dispatch_get_main_queue(), ^{
             if (self.progressBlock) {
@@ -62,7 +62,7 @@
          totalBytesWritten:(NSInteger)totalBytesWritten
         totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
-    if (self.requestType == WHCHttpRequestFileUpload) {
+    if (self.requestType == Udesk_WHCHttpRequestFileUpload) {
         [self startSpeedTimer];
         self.orderTimeDataLenght += bytesWritten;
         self.recvDataLenght += bytesWritten;
@@ -87,7 +87,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     self.delegate = nil;
     [self cancelledRequest];
-    [self handleReqeustError:error code:WHCGeneralError];
+    [self handleReqeustError:error code:Udesk_WHCGeneralError];
 }
 
 @end

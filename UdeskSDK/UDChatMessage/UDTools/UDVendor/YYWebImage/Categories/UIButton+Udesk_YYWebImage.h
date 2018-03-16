@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)yy_setImageWithURL:(nullable NSURL *)imageURL
                   forState:(UIControlState)state
-                   options:(YYWebImageOptions)options;
+                   options:(Udesk_YYWebImageOptions)options;
 
 /**
  Set the button's image with a specified URL for the specified state.
@@ -61,8 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)yy_setImageWithURL:(nullable NSURL *)imageURL
                   forState:(UIControlState)state
                placeholder:(nullable UIImage *)placeholder
-                   options:(YYWebImageOptions)options
-                completion:(nullable YYWebImageCompletionBlock)completion;
+                   options:(Udesk_YYWebImageOptions)options
+                completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Set the button's image with a specified URL for the specified state.
@@ -78,10 +78,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)yy_setImageWithURL:(nullable NSURL *)imageURL
                   forState:(UIControlState)state
                placeholder:(nullable UIImage *)placeholder
-                   options:(YYWebImageOptions)options
-                  progress:(nullable YYWebImageProgressBlock)progress
-                 transform:(nullable YYWebImageTransformBlock)transform
-                completion:(nullable YYWebImageCompletionBlock)completion;
+                   options:(Udesk_YYWebImageOptions)options
+                  progress:(nullable Udesk_YYWebImageProgressBlock)progress
+                 transform:(nullable Udesk_YYWebImageTransformBlock)transform
+                completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Set the button's image with a specified URL for the specified state.
@@ -98,11 +98,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)yy_setImageWithURL:(nullable NSURL *)imageURL
                   forState:(UIControlState)state
                placeholder:(nullable UIImage *)placeholder
-                   options:(YYWebImageOptions)options
+                   options:(Udesk_YYWebImageOptions)options
                    manager:(nullable Udesk_YYWebImageManager *)manager
-                  progress:(nullable YYWebImageProgressBlock)progress
-                 transform:(nullable YYWebImageTransformBlock)transform
-                completion:(nullable YYWebImageCompletionBlock)completion;
+                  progress:(nullable Udesk_YYWebImageProgressBlock)progress
+                 transform:(nullable Udesk_YYWebImageTransformBlock)transform
+                completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Cancel the current image request for a specified state.
@@ -140,7 +140,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)yy_setBackgroundImageWithURL:(nullable NSURL *)imageURL
                             forState:(UIControlState)state
-                             options:(YYWebImageOptions)options;
+                             options:(Udesk_YYWebImageOptions)options;
 
 /**
  Set the button's backgroundImage with a specified URL for the specified state.
@@ -154,8 +154,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)yy_setBackgroundImageWithURL:(nullable NSURL *)imageURL
                             forState:(UIControlState)state
                          placeholder:(nullable UIImage *)placeholder
-                             options:(YYWebImageOptions)options
-                          completion:(nullable YYWebImageCompletionBlock)completion;
+                             options:(Udesk_YYWebImageOptions)options
+                          completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Set the button's backgroundImage with a specified URL for the specified state.
@@ -171,10 +171,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)yy_setBackgroundImageWithURL:(nullable NSURL *)imageURL
                             forState:(UIControlState)state
                          placeholder:(nullable UIImage *)placeholder
-                             options:(YYWebImageOptions)options
-                            progress:(nullable YYWebImageProgressBlock)progress
-                           transform:(nullable YYWebImageTransformBlock)transform
-                          completion:(nullable YYWebImageCompletionBlock)completion;
+                             options:(Udesk_YYWebImageOptions)options
+                            progress:(nullable Udesk_YYWebImageProgressBlock)progress
+                           transform:(nullable Udesk_YYWebImageTransformBlock)transform
+                          completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Set the button's backgroundImage with a specified URL for the specified state.
@@ -191,11 +191,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)yy_setBackgroundImageWithURL:(nullable NSURL *)imageURL
                             forState:(UIControlState)state
                          placeholder:(nullable UIImage *)placeholder
-                             options:(YYWebImageOptions)options
+                             options:(Udesk_YYWebImageOptions)options
                              manager:(nullable Udesk_YYWebImageManager *)manager
-                            progress:(nullable YYWebImageProgressBlock)progress
-                           transform:(nullable YYWebImageTransformBlock)transform
-                          completion:(nullable YYWebImageCompletionBlock)completion;
+                            progress:(nullable Udesk_YYWebImageProgressBlock)progress
+                           transform:(nullable Udesk_YYWebImageTransformBlock)transform
+                          completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Cancel the current backgroundImage request for a specified state.

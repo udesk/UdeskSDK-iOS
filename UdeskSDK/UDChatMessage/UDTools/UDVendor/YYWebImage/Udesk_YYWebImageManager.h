@@ -17,92 +17,92 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// The options to control image operation.
-typedef NS_OPTIONS(NSUInteger, YYWebImageOptions) {
+typedef NS_OPTIONS(NSUInteger, Udesk_YYWebImageOptions) {
     
     /// Show network activity on status bar when download image.
-    YYWebImageOptionShowNetworkActivity = 1 << 0,
+    Udesk_YYWebImageOptionShowNetworkActivity = 1 << 0,
     
     /// Display progressive/interlaced/baseline image during download (same as web browser).
-    YYWebImageOptionProgressive = 1 << 1,
+    Udesk_YYWebImageOptionProgressive = 1 << 1,
     
     /// Display blurred progressive JPEG or interlaced PNG image during download.
     /// This will ignore baseline image for better user experience.
-    YYWebImageOptionProgressiveBlur = 1 << 2,
+    Udesk_YYWebImageOptionProgressiveBlur = 1 << 2,
     
     /// Use NSURLCache instead of YYImageCache.
-    YYWebImageOptionUseNSURLCache = 1 << 3,
+    Udesk_YYWebImageOptionUseNSURLCache = 1 << 3,
     
     /// Allows untrusted SSL ceriticates.
-    YYWebImageOptionAllowInvalidSSLCertificates = 1 << 4,
+    Udesk_YYWebImageOptionAllowInvalidSSLCertificates = 1 << 4,
     
     /// Allows background task to download image when app is in background.
-    YYWebImageOptionAllowBackgroundTask = 1 << 5,
+    Udesk_YYWebImageOptionAllowBackgroundTask = 1 << 5,
     
     /// Handles cookies stored in NSHTTPCookieStore.
-    YYWebImageOptionHandleCookies = 1 << 6,
+    Udesk_YYWebImageOptionHandleCookies = 1 << 6,
     
     /// Load the image from remote and refresh the image cache.
-    YYWebImageOptionRefreshImageCache = 1 << 7,
+    Udesk_YYWebImageOptionRefreshImageCache = 1 << 7,
     
     /// Do not load image from/to disk cache.
-    YYWebImageOptionIgnoreDiskCache = 1 << 8,
+    Udesk_YYWebImageOptionIgnoreDiskCache = 1 << 8,
     
     /// Do not change the view's image before set a new URL to it.
-    YYWebImageOptionIgnorePlaceHolder = 1 << 9,
+    Udesk_YYWebImageOptionIgnorePlaceHolder = 1 << 9,
     
     /// Ignore image decoding.
     /// This may used for image downloading without display.
-    YYWebImageOptionIgnoreImageDecoding = 1 << 10,
+    Udesk_YYWebImageOptionIgnoreImageDecoding = 1 << 10,
     
     /// Ignore multi-frame image decoding.
     /// This will handle the GIF/APNG/WebP/ICO image as single frame image.
-    YYWebImageOptionIgnoreAnimatedImage = 1 << 11,
+    Udesk_YYWebImageOptionIgnoreAnimatedImage = 1 << 11,
     
     /// Set the image to view with a fade animation.
     /// This will add a "fade" animation on image view's layer for better user experience.
-    YYWebImageOptionSetImageWithFadeAnimation = 1 << 12,
+    Udesk_YYWebImageOptionSetImageWithFadeAnimation = 1 << 12,
     
     /// Do not set the image to the view when image fetch complete.
     /// You may set the image manually.
-    YYWebImageOptionAvoidSetImage = 1 << 13,
+    Udesk_YYWebImageOptionAvoidSetImage = 1 << 13,
     
     /// This flag will add the URL to a blacklist (in memory) when the URL fail to be downloaded,
     /// so the library won't keep trying.
-    YYWebImageOptionIgnoreFailedURL = 1 << 14,
+    Udesk_YYWebImageOptionIgnoreFailedURL = 1 << 14,
 };
 
 /// Indicated where the image came from.
-typedef NS_ENUM(NSUInteger, YYWebImageFromType) {
+typedef NS_ENUM(NSUInteger, Udesk_YYWebImageFromType) {
     
     /// No value.
-    YYWebImageFromNone = 0,
+    Udesk_YYWebImageFromNone = 0,
     
     /// Fetched from memory cache immediately.
     /// If you called "setImageWithURL:..." and the image is already in memory,
     /// then you will get this value at the same call.
-    YYWebImageFromMemoryCacheFast,
+    Udesk_YYWebImageFromMemoryCacheFast,
     
     /// Fetched from memory cache.
-    YYWebImageFromMemoryCache,
+    Udesk_YYWebImageFromMemoryCache,
     
     /// Fetched from disk cache.
-    YYWebImageFromDiskCache,
+    Udesk_YYWebImageFromDiskCache,
     
     /// Fetched from remote (web or file path).
-    YYWebImageFromRemote,
+    Udesk_YYWebImageFromRemote,
 };
 
 /// Indicated image fetch complete stage.
-typedef NS_ENUM(NSInteger, YYWebImageStage) {
+typedef NS_ENUM(NSInteger, Udesk_YYWebImageStage) {
     
     /// Incomplete, progressive image.
-    YYWebImageStageProgress  = -1,
+    Udesk_YYWebImageStageProgress  = -1,
     
     /// Cancelled.
-    YYWebImageStageCancelled = 0,
+    Udesk_YYWebImageStageCancelled = 0,
     
     /// Finished (succeed or failed).
-    YYWebImageStageFinished  = 1,
+    Udesk_YYWebImageStageFinished  = 1,
 };
 
 
@@ -112,7 +112,7 @@ typedef NS_ENUM(NSInteger, YYWebImageStage) {
  @param receivedSize Current received size in bytes.
  @param expectedSize Expected total size in bytes (-1 means unknown).
  */
-typedef void(^YYWebImageProgressBlock)(NSInteger receivedSize, NSInteger expectedSize);
+typedef void(^Udesk_YYWebImageProgressBlock)(NSInteger receivedSize, NSInteger expectedSize);
 
 /**
  The block invoked before remote image fetch finished to do additional image process.
@@ -134,7 +134,7 @@ typedef void(^YYWebImageProgressBlock)(NSInteger receivedSize, NSInteger expecte
  @param url   The image url (remote or local file path).
  @return The transformed image.
  */
-typedef UIImage * _Nullable (^YYWebImageTransformBlock)(UIImage *image, NSURL *url);
+typedef UIImage * _Nullable (^Udesk_YYWebImageTransformBlock)(UIImage *image, NSURL *url);
 
 /**
  The block invoked when image fetch finished or cancelled.
@@ -144,11 +144,11 @@ typedef UIImage * _Nullable (^YYWebImageTransformBlock)(UIImage *image, NSURL *u
  @param from        Where the image came from.
  @param error       Error during image fetching.
  */
-typedef void (^YYWebImageCompletionBlock)(UIImage * _Nullable image,
-                                          NSURL *url,
-                                          YYWebImageFromType from,
-                                          YYWebImageStage stage,
-                                          NSError * _Nullable error);
+typedef void (^Udesk_YYWebImageCompletionBlock)(UIImage * _Nullable image,
+                                                NSURL *url,
+                                                Udesk_YYWebImageFromType from,
+                                                Udesk_YYWebImageStage stage,
+                                                NSError * _Nullable error);
 
 
 
@@ -190,10 +190,10 @@ typedef void (^YYWebImageCompletionBlock)(UIImage * _Nullable image,
  @return A new image operation.
  */
 - (nullable Udesk_YYWebImageOperation *)requestImageWithURL:(NSURL *)url
-                                              options:(YYWebImageOptions)options
-                                             progress:(nullable YYWebImageProgressBlock)progress
-                                            transform:(nullable YYWebImageTransformBlock)transform
-                                           completion:(nullable YYWebImageCompletionBlock)completion;
+                                              options:(Udesk_YYWebImageOptions)options
+                                             progress:(nullable Udesk_YYWebImageProgressBlock)progress
+                                            transform:(nullable Udesk_YYWebImageTransformBlock)transform
+                                           completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  The image cache used by image operation. 
@@ -216,7 +216,7 @@ typedef void (^YYWebImageCompletionBlock)(UIImage * _Nullable image,
  When called `requestImageWithURL:options:progress:transform:completion` and
  the `transform` is nil, this block will be used.
  */
-@property (nullable, nonatomic, copy) YYWebImageTransformBlock sharedTransformBlock;
+@property (nullable, nonatomic, copy) Udesk_YYWebImageTransformBlock sharedTransformBlock;
 
 /**
  The image request timeout interval in seconds. Default is 15.

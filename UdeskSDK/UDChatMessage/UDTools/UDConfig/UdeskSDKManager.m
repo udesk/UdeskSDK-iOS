@@ -18,6 +18,7 @@
 #import "UdeskLocationModel.h"
 #import "UdeskToast.h"
 #import "UdeskUtils.h"
+#import "UdeskTools.h"
 
 @interface UdeskSDKManager()
 
@@ -124,6 +125,9 @@
             [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
             return ;
         }
+        
+        //不在会话
+        [UdeskTools storeGroupId:_sdkConfig.scheduledGroupId];
         
         //开通机器人
         if (setting.enableRobot.boolValue) {

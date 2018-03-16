@@ -113,7 +113,7 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
  */
 
 - (nullable Udesk_WHC_HttpOperation *)get:(nonnull NSString *)strUrl
-               didFinished:(nullable WHCDidFinished)finishedBlock;
+               didFinished:(nullable Udesk_WHCDidFinished)finishedBlock;
 
 
 /**
@@ -124,8 +124,8 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
  */
 
 - (nullable Udesk_WHC_HttpOperation *)get:(nonnull NSString *)strUrl
-                            process:(nullable WHCProgress) processBlock
-                        didFinished:(nullable WHCDidFinished)finishedBlock;
+                            process:(nullable Udesk_WHCProgress) processBlock
+                        didFinished:(nullable Udesk_WHCDidFinished)finishedBlock;
 
 /**
  * POST 请求操作
@@ -136,7 +136,7 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
 
 - (nullable Udesk_WHC_HttpOperation *)post:(nonnull NSString *)strUrl
                                param:(nullable NSString *)param
-                         didFinished:(nullable WHCDidFinished)finishedBlock;
+                         didFinished:(nullable Udesk_WHCDidFinished)finishedBlock;
 
 /**
  * POST 请求操作
@@ -148,8 +148,8 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
 
 - (nullable Udesk_WHC_HttpOperation *)post:(nonnull NSString *)strUrl
                                param:(nullable NSString *)param
-                             process:(nullable WHCProgress)processBlock
-                         didFinished:(nullable WHCDidFinished)finishedBlock;
+                             process:(nullable Udesk_WHCProgress)processBlock
+                         didFinished:(nullable Udesk_WHCDidFinished)finishedBlock;
 
 /**
  * 文件上传 请求操作
@@ -160,7 +160,7 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
 
 - (nullable Udesk_WHC_HttpOperation *)upload:(nonnull NSString *)strUrl
                                  param:(nullable NSDictionary *)paramDict
-                           didFinished:(nullable WHCDidFinished)finishedBlock;
+                           didFinished:(nullable Udesk_WHCDidFinished)finishedBlock;
 
 /**
  * 文件上传 请求操作
@@ -172,8 +172,8 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
 
 - (nullable Udesk_WHC_HttpOperation *)upload:(nonnull NSString *)strUrl
                                  param:(nullable NSDictionary *)paramDict
-                               process:(nullable WHCProgress)processBlock
-                           didFinished:(nullable WHCDidFinished)finishedBlock;
+                               process:(nullable Udesk_WHCProgress)processBlock
+                           didFinished:(nullable Udesk_WHCDidFinished)finishedBlock;
 
 
 
@@ -212,9 +212,9 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
 
 - (nullable Udesk_WHC_DownloadOperation *)download:(nonnull NSString *)strUrl
                                     savePath:(nonnull NSString *)savePath
-                                    response:(nullable WHCResponse)responseBlock
-                                     process:(nullable WHCProgress)processBlock
-                                 didFinished:(nullable WHCDidFinished)finishedBlock;
+                                    response:(nullable Udesk_WHCResponse)responseBlock
+                                     process:(nullable Udesk_WHCProgress)processBlock
+                                 didFinished:(nullable Udesk_WHCDidFinished)finishedBlock;
 
 /**
  * 说明: 执行下载任务
@@ -229,9 +229,9 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
 - (nullable Udesk_WHC_DownloadOperation *)download:(nonnull NSString *)strUrl
                                     savePath:(nonnull NSString *)savePath
                                 saveFileName:(nullable NSString *)saveFileName
-                                    response:(nullable WHCResponse) responseBlock
-                                     process:(nullable WHCProgress) processBlock
-                                 didFinished:(nullable WHCDidFinished) finishedBlock;
+                                    response:(nullable Udesk_WHCResponse) responseBlock
+                                     process:(nullable Udesk_WHCProgress) processBlock
+                                 didFinished:(nullable Udesk_WHCDidFinished) finishedBlock;
 
 
 
@@ -317,9 +317,9 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
  * @param fileName 文件名
  */
 
-- (nullable Udesk_WHC_DownloadOperation *)replaceCurrentDownloadOperationBlockResponse:(nullable WHCResponse)responseBlock
-                                             process:(nullable WHCProgress)processBlock
-                                         didFinished:(nullable WHCDidFinished)didFinishedBlock
+- (nullable Udesk_WHC_DownloadOperation *)replaceCurrentDownloadOperationBlockResponse:(nullable Udesk_WHCResponse)responseBlock
+                                             process:(nullable Udesk_WHCProgress)processBlock
+                                         didFinished:(nullable Udesk_WHCDidFinished)didFinishedBlock
                                             fileName:(nonnull NSString *)fileName;
 
 /**
@@ -337,9 +337,9 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
  * @param processBlock 下载过程回调
  * @param didFinishedBlock 下载完成回调
  */
-- (nullable Udesk_WHC_DownloadOperation *)replaceAllDownloadOperationBlockResponse:(nullable WHCResponse)responseBlock
-                                         process:(nullable WHCProgress)processBlock
-                                     didFinished:(nullable WHCDidFinished)didFinishedBlock;
+- (nullable Udesk_WHC_DownloadOperation *)replaceAllDownloadOperationBlockResponse:(nullable Udesk_WHCResponse)responseBlock
+                                         process:(nullable Udesk_WHCProgress)processBlock
+                                     didFinished:(nullable Udesk_WHCDidFinished)didFinishedBlock;
 
 /**
  * 说明：替换当前所有下载代理(当从控制器B进入到控制器C然后在控制器C中进行下载，然后下载过程中突然退出到控制器B，在又进入到控制器C，这个时候还是在下载但是代理对象和之前的那个控制器C不是一个对象所以要替换)

@@ -87,7 +87,7 @@
 
     self.view.backgroundColor = _sdkConfig.sdkStyle.tableViewBackGroundColor;
     
-    _customNav = [[UdeskCustomNavigation alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 64)];
+    _customNav = [[UdeskCustomNavigation alloc] init];
     
     if (_sdkConfig.sdkStyle.navigationColor) {
         _customNav.backgroundColor = _sdkConfig.sdkStyle.navigationColor;
@@ -135,7 +135,7 @@
         _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, _customNav.ud_bottom, UD_SCREEN_WIDTH, 44)];
         _searchBar.placeholder = @"搜索地点";
         _searchBar.delegate = self;
-        [self.view addSubview:self.searchBar];
+        [self.view addSubview:_searchBar];
     }
 }
 
@@ -393,6 +393,12 @@
             
             @udStrongify(self);
             [self selecetSearchResult:model];
+        };
+        
+        _resultViewModel.scrollViewWillBeginDraggingBlock = ^(UIScrollView *scrollView) {
+            
+            @udStrongify(self);
+            [self.searchBar resignFirstResponder];
         };
     }
     return _resultViewModel;

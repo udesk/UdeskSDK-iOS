@@ -7,9 +7,6 @@
 //
 
 #import "UdeskOneScrollView.h"
-#import "UdeskFoundationMacro.h"
-#import "UdeskManager.h"
-#import "UdeskFoundationMacro.h"
 #import "Udesk_YYWebImage.h"
 
 #define AnimationTime 0.25
@@ -106,8 +103,8 @@
     if(imageView.image == nil || imageView.image.size.width == 0 || imageView.image.size.height ==0)
     {
         //设置主图片
-        imageH = UD_SCREEN_HEIGHT;
-        imageW = UD_SCREEN_WIDTH;
+        imageH = [[UIScreen mainScreen] bounds].size.height;
+        imageW = [[UIScreen mainScreen] bounds].size.width;
         self.mainImageView.image = [UIImage imageNamed:@"none"];
         
     }else//不空
@@ -121,14 +118,14 @@
     }
     
     //设置主图片Frame 与缩小比例
-    if(imageW >= (imageH * (UD_SCREEN_WIDTH/UD_SCREEN_HEIGHT)))//横着
+    if(imageW >= (imageH * ([[UIScreen mainScreen] bounds].size.width/[[UIScreen mainScreen] bounds].size.height)))//横着
     {
         
         //设置居中frame
         CGFloat  myX_ =  0;
-        CGFloat  myW_ = UD_SCREEN_WIDTH;
+        CGFloat  myW_ = [[UIScreen mainScreen] bounds].size.width;
         CGFloat  myH_  = myW_ *(imageH/imageW);;
-        CGFloat  myY_ = UD_SCREEN_HEIGHT - myH_ - ((UD_SCREEN_HEIGHT - myH_)/2);
+        CGFloat  myY_ = [[UIScreen mainScreen] bounds].size.height - myH_ - (([[UIScreen mainScreen] bounds].size.height - myH_)/2);
         
         
         self.mainImageView.frame = CGRectMake(myX_, myY_, myW_, myH_);
@@ -148,9 +145,9 @@
     }else//竖着
     {
         
-        CGFloat  myH_ = UD_SCREEN_HEIGHT;
+        CGFloat  myH_ = [[UIScreen mainScreen] bounds].size.height;
         CGFloat  myW_ = myH_ *(imageW/imageH);
-        CGFloat  myX_ = UD_SCREEN_WIDTH - myW_ - ((UD_SCREEN_WIDTH - myW_)/2);
+        CGFloat  myX_ = [[UIScreen mainScreen] bounds].size.width - myW_ - (([[UIScreen mainScreen] bounds].size.width - myW_)/2);
         CGFloat  myY_ = 0;
         
         //变换设置frame

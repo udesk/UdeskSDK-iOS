@@ -14,6 +14,9 @@
 //语音最大时长
 #define UdeskVoiceRecorderTotalTime 60.0
 
+//udesk groupid key
+#define kUdeskGroupId @"kUdeskGroupId"
+
 // image STRETCH
 #define UD_STRETCH_IMAGE(image, edgeInsets) ([image resizableImageWithCapInsets:edgeInsets resizingMode:UIImageResizingModeStretch])
 

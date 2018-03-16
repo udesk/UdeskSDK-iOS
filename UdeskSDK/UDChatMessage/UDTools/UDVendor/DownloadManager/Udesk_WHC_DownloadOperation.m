@@ -83,11 +83,11 @@
 }
 
 - (NSInteger)getCode {
-    NSInteger code = WHCGeneralError;
+    NSInteger code = Udesk_WHCGeneralError;
     NSFileManager * fm = [NSFileManager defaultManager];
     if (self.recvDataLenght > 0 ||
         [[fm attributesOfItemAtPath:self.saveFilePath error:nil] fileSize] > 100) {
-        code = WHCCancelDownloadError;
+        code = Udesk_WHCCancelDownloadError;
     }
     return code;
 }
@@ -107,7 +107,7 @@
         [_fileHandle writeData:self.responseData];
         [self clearResponseData];
     }
-    self.requestStatus = WHCHttpRequestFinished;
+    self.requestStatus = Udesk_WHCHttpRequestFinished;
     [self cancelledRequest];
     if(isDelete){
         [self removeDownloadFile];
@@ -146,7 +146,7 @@
 }
 
 - (void)handleReqeustError:(NSError *)error code:(NSInteger)code {
-    if (code != WHCCancelDownloadError) {
+    if (code != Udesk_WHCCancelDownloadError) {
         [self removeDownloadFile];
     }
     [super handleReqeustError:error code:code];
@@ -157,18 +157,18 @@
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     BOOL  isCancel = YES;
     NSError  * error = nil;
-    NSInteger code = WHCGeneralError;
+    NSInteger code = Udesk_WHCGeneralError;
     if (![self handleResponseError:response]){
         isCancel = NO;
         _actualFileSizeLenght = response.expectedContentLength + _localFileSizeLenght;
         
         if([self calculateFreeDiskSpace] < _actualFileSizeLenght){
             error = [[NSError alloc]initWithDomain:kUdeskWHCDomain
-                                              code:WHCFreeDiskSpaceLack
+                                              code:Udesk_WHCFreeDiskSpaceLack
                                           userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:kUdeskWHCFreeDiskSapceError,_actualFileSizeLenght]}];
             NSLog(@"%@",error);
             [self removeDownloadFile];
-            code = WHCFreeDiskSpaceLack;
+            code = Udesk_WHCFreeDiskSpaceLack;
             isCancel = YES;
             goto WHC1;
         }else{

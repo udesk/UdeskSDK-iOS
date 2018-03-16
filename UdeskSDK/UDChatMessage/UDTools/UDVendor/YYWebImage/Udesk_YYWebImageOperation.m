@@ -171,9 +171,9 @@ static void URLInBlackListAdd(NSURL *url) {
 @property (nonatomic, assign) NSUInteger progressiveScanedLength;
 @property (nonatomic, assign) NSUInteger progressiveDisplayCount;
 
-@property (nonatomic, copy) YYWebImageProgressBlock progress;
-@property (nonatomic, copy) YYWebImageTransformBlock transform;
-@property (nonatomic, copy) YYWebImageCompletionBlock completion;
+@property (nonatomic, copy) Udesk_YYWebImageProgressBlock progress;
+@property (nonatomic, copy) Udesk_YYWebImageTransformBlock transform;
+@property (nonatomic, copy) Udesk_YYWebImageCompletionBlock completion;
 @end
 
 
@@ -240,12 +240,12 @@ static void URLInBlackListAdd(NSURL *url) {
 }
 
 - (instancetype)initWithRequest:(NSURLRequest *)request
-                        options:(YYWebImageOptions)options
+                        options:(Udesk_YYWebImageOptions)options
                           cache:(Udesk_YYImageCache *)cache
                        cacheKey:(NSString *)cacheKey
-                       progress:(YYWebImageProgressBlock)progress
-                      transform:(YYWebImageTransformBlock)transform
-                     completion:(YYWebImageCompletionBlock)completion {
+                       progress:(Udesk_YYWebImageProgressBlock)progress
+                      transform:(Udesk_YYWebImageTransformBlock)transform
+                     completion:(Udesk_YYWebImageCompletionBlock)completion {
     self = [super init];
     if (!self) return nil;
     if (!request) return nil;
@@ -276,13 +276,13 @@ static void URLInBlackListAdd(NSURL *url) {
         self.finished = YES;
         if (_connection) {
             [_connection cancel];
-            if (![_request.URL isFileURL] && (_options & YYWebImageOptionShowNetworkActivity)) {
+            if (![_request.URL isFileURL] && (_options & Udesk_YYWebImageOptionShowNetworkActivity)) {
                 [Udesk_YYWebImageManager decrementNetworkActivityCount];
             }
         }
         if (_completion) {
             @autoreleasepool {
-                _completion(nil, _request.URL, YYWebImageFromNone, YYWebImageStageCancelled, nil);
+                _completion(nil, _request.URL, Udesk_YYWebImageFromNone, Udesk_YYWebImageStageCancelled, nil);
             }
         }
     }
@@ -312,26 +312,26 @@ static void URLInBlackListAdd(NSURL *url) {
     @autoreleasepool {
         // get image from cache
         if (_cache &&
-            !(_options & YYWebImageOptionUseNSURLCache) &&
-            !(_options & YYWebImageOptionRefreshImageCache)) {
-            UIImage *image = [_cache getImageForKey:_cacheKey withType:YYImageCacheTypeMemory];
+            !(_options & Udesk_YYWebImageOptionUseNSURLCache) &&
+            !(_options & Udesk_YYWebImageOptionRefreshImageCache)) {
+            UIImage *image = [_cache getImageForKey:_cacheKey withType:Udesk_YYImageCacheTypeMemory];
             if (image) {
                 [_lock lock];
                 if (![self isCancelled]) {
-                    if (_completion) _completion(image, _request.URL, YYWebImageFromMemoryCache, YYWebImageStageFinished, nil);
+                    if (_completion) _completion(image, _request.URL, Udesk_YYWebImageFromMemoryCache, Udesk_YYWebImageStageFinished, nil);
                 }
                 [self _finish];
                 [_lock unlock];
                 return;
             }
-            if (!(_options & YYWebImageOptionIgnoreDiskCache)) {
+            if (!(_options & Udesk_YYWebImageOptionIgnoreDiskCache)) {
                 __weak typeof(self) _self = self;
                 dispatch_async([self.class _imageQueue], ^{
                     __strong typeof(_self) self = _self;
                     if (!self || [self isCancelled]) return;
-                    UIImage *image = [self.cache getImageForKey:self.cacheKey withType:YYImageCacheTypeDisk];
+                    UIImage *image = [self.cache getImageForKey:self.cacheKey withType:Udesk_YYImageCacheTypeDisk];
                     if (image) {
-                        [self.cache setImage:image imageData:nil forKey:self.cacheKey withType:YYImageCacheTypeMemory];
+                        [self.cache setImage:image imageData:nil forKey:self.cacheKey withType:Udesk_YYImageCacheTypeMemory];
                         [self performSelector:@selector(_didReceiveImageFromDiskCache:) onThread:[self.class _networkThread] withObject:image waitUntilDone:NO];
                     } else {
                         [self performSelector:@selector(_startRequest:) onThread:[self.class _networkThread] withObject:nil waitUntilDone:NO];
@@ -348,11 +348,11 @@ static void URLInBlackListAdd(NSURL *url) {
 - (void)_startRequest:(id)object {
     if ([self isCancelled]) return;
     @autoreleasepool {
-        if ((_options & YYWebImageOptionIgnoreFailedURL) && URLBlackListContains(_request.URL)) {
+        if ((_options & Udesk_YYWebImageOptionIgnoreFailedURL) && URLBlackListContains(_request.URL)) {
             NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:@{ NSLocalizedDescriptionKey : @"Failed to load URL, blacklisted." }];
             [_lock lock];
             if (![self isCancelled]) {
-                if (_completion) _completion(nil, _request.URL, YYWebImageFromNone, YYWebImageStageFinished, error);
+                if (_completion) _completion(nil, _request.URL, Udesk_YYWebImageFromNone, Udesk_YYWebImageStageFinished, error);
             }
             [self _finish];
             [_lock unlock];
@@ -370,7 +370,7 @@ static void URLInBlackListAdd(NSURL *url) {
         [_lock lock];
         if (![self isCancelled]) {
             _connection = [[NSURLConnection alloc] initWithRequest:_request delegate:[Udesk_YYWebImageWeakProxy proxyWithTarget:self]];
-            if (![_request.URL isFileURL] && (_options & YYWebImageOptionShowNetworkActivity)) {
+            if (![_request.URL isFileURL] && (_options & Udesk_YYWebImageOptionShowNetworkActivity)) {
                 [Udesk_YYWebImageManager incrementNetworkActivityCount];
             }
         }
@@ -382,13 +382,13 @@ static void URLInBlackListAdd(NSURL *url) {
 - (void)_cancelOperation {
     @autoreleasepool {
         if (_connection) {
-            if (![_request.URL isFileURL] && (_options & YYWebImageOptionShowNetworkActivity)) {
+            if (![_request.URL isFileURL] && (_options & Udesk_YYWebImageOptionShowNetworkActivity)) {
                 [Udesk_YYWebImageManager decrementNetworkActivityCount];
             }
         }
         [_connection cancel];
         _connection = nil;
-        if (_completion) _completion(nil, _request.URL, YYWebImageFromNone, YYWebImageStageCancelled, nil);
+        if (_completion) _completion(nil, _request.URL, Udesk_YYWebImageFromNone, Udesk_YYWebImageStageCancelled, nil);
         [self _endBackgroundTask];
     }
 }
@@ -400,7 +400,7 @@ static void URLInBlackListAdd(NSURL *url) {
         [_lock lock];
         if (![self isCancelled]) {
             if (image) {
-                if (_completion) _completion(image, _request.URL, YYWebImageFromDiskCache, YYWebImageStageFinished, nil);
+                if (_completion) _completion(image, _request.URL, Udesk_YYWebImageFromDiskCache, Udesk_YYWebImageStageFinished, nil);
                 [self _finish];
             } else {
                 [self _startRequest:nil];
@@ -415,10 +415,10 @@ static void URLInBlackListAdd(NSURL *url) {
         [_lock lock];
         if (![self isCancelled]) {
             if (_cache) {
-                if (image || (_options & YYWebImageOptionRefreshImageCache)) {
+                if (image || (_options & Udesk_YYWebImageOptionRefreshImageCache)) {
                     NSData *data = _data;
                     dispatch_async([Udesk_YYWebImageOperation _imageQueue], ^{
-                        [_cache setImage:image imageData:data forKey:_cacheKey withType:YYImageCacheTypeAll];
+                        [_cache setImage:image imageData:data forKey:_cacheKey withType:Udesk_YYImageCacheTypeAll];
                     });
                 }
             }
@@ -426,7 +426,7 @@ static void URLInBlackListAdd(NSURL *url) {
             NSError *error = nil;
             if (!image) {
                 error = [NSError errorWithDomain:@"com.ibireme.image" code:-1 userInfo:@{ NSLocalizedDescriptionKey : @"Web image decode fail." }];
-                if (_options & YYWebImageOptionIgnoreFailedURL) {
+                if (_options & Udesk_YYWebImageOptionIgnoreFailedURL) {
                     if (URLBlackListContains(_request.URL)) {
                         error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:@{ NSLocalizedDescriptionKey : @"Failed to load URL, blacklisted." }];
                     } else {
@@ -434,7 +434,7 @@ static void URLInBlackListAdd(NSURL *url) {
                     }
                 }
             }
-            if (_completion) _completion(image, _request.URL, YYWebImageFromRemote, YYWebImageStageFinished, error);
+            if (_completion) _completion(image, _request.URL, Udesk_YYWebImageFromRemote, Udesk_YYWebImageStageFinished, error);
             [self _finish];
         }
         [_lock unlock];
@@ -450,7 +450,7 @@ static void URLInBlackListAdd(NSURL *url) {
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
     @autoreleasepool {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            if (!(_options & YYWebImageOptionAllowInvalidSSLCertificates) &&
+            if (!(_options & Udesk_YYWebImageOptionAllowInvalidSSLCertificates) &&
                 [challenge.sender respondsToSelector:@selector(performDefaultHandlingForAuthenticationChallenge:)]) {
                 [challenge.sender performDefaultHandlingForAuthenticationChallenge:challenge];
             } else {
@@ -473,7 +473,7 @@ static void URLInBlackListAdd(NSURL *url) {
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
     if (!cachedResponse) return cachedResponse;
-    if (_options & YYWebImageOptionUseNSURLCache) {
+    if (_options & Udesk_YYWebImageOptionUseNSURLCache) {
         return cachedResponse;
     } else {
         // ignore NSURLCache
@@ -526,8 +526,8 @@ static void URLInBlackListAdd(NSURL *url) {
         }
         
         /*--------------------------- progressive ----------------------------*/
-        BOOL progressive = (_options & YYWebImageOptionProgressive) > 0;
-        BOOL progressiveBlur = (_options & YYWebImageOptionProgressiveBlur) > 0;
+        BOOL progressive = (_options & Udesk_YYWebImageOptionProgressive) > 0;
+        BOOL progressiveBlur = (_options & Udesk_YYWebImageOptionProgressiveBlur) > 0;
         if (!_completion || !(progressive || progressiveBlur)) return;
         if (data.length <= 16) return;
         if (_expectedSize > 0 && data.length >= _expectedSize * 0.99) return;
@@ -543,16 +543,16 @@ static void URLInBlackListAdd(NSURL *url) {
         [_progressiveDecoder updateData:_data final:NO];
         if ([self isCancelled]) return;
         
-        if (_progressiveDecoder.type == YYImageTypeUnknown ||
-            _progressiveDecoder.type == YYImageTypeWebP ||
-            _progressiveDecoder.type == YYImageTypeOther) {
+        if (_progressiveDecoder.type == Udesk_YYImageTypeUnknown ||
+            _progressiveDecoder.type == Udesk_YYImageTypeWebP ||
+            _progressiveDecoder.type == Udesk_YYImageTypeOther) {
             _progressiveDecoder = nil;
             _progressiveIgnored = YES;
             return;
         }
         if (progressiveBlur) { // only support progressive JPEG and interlaced PNG
-            if (_progressiveDecoder.type != YYImageTypeJPEG &&
-                _progressiveDecoder.type != YYImageTypePNG) {
+            if (_progressiveDecoder.type != Udesk_YYImageTypeJPEG &&
+                _progressiveDecoder.type != Udesk_YYImageTypePNG) {
                 _progressiveDecoder = nil;
                 _progressiveIgnored = YES;
                 return;
@@ -565,14 +565,14 @@ static void URLInBlackListAdd(NSURL *url) {
             if (frame.image) {
                 [_lock lock];
                 if (![self isCancelled]) {
-                    _completion(frame.image, _request.URL, YYWebImageFromRemote, YYWebImageStageProgress, nil);
+                    _completion(frame.image, _request.URL, Udesk_YYWebImageFromRemote, Udesk_YYWebImageStageProgress, nil);
                     _lastProgressiveDecodeTimestamp = now;
                 }
                 [_lock unlock];
             }
             return;
         } else {
-            if (_progressiveDecoder.type == YYImageTypeJPEG) {
+            if (_progressiveDecoder.type == Udesk_YYImageTypeJPEG) {
                 if (!_progressiveDetected) {
                     NSDictionary *dic = [_progressiveDecoder framePropertiesAtIndex:0];
                     NSDictionary *jpeg = dic[(id)kCGImagePropertyJFIFDictionary];
@@ -593,7 +593,7 @@ static void URLInBlackListAdd(NSURL *url) {
                 if (markerRange.location == NSNotFound) return;
                 if ([self isCancelled]) return;
                 
-            } else if (_progressiveDecoder.type == YYImageTypePNG) {
+            } else if (_progressiveDecoder.type == Udesk_YYImageTypePNG) {
                 if (!_progressiveDetected) {
                     NSDictionary *dic = [_progressiveDecoder framePropertiesAtIndex:0];
                     NSDictionary *png = dic[(id)kCGImagePropertyPNGDictionary];
@@ -626,7 +626,7 @@ static void URLInBlackListAdd(NSURL *url) {
             if (image) {
                 [_lock lock];
                 if (![self isCancelled]) {
-                    _completion(image, _request.URL, YYWebImageFromRemote, YYWebImageStageProgress, nil);
+                    _completion(image, _request.URL, Udesk_YYWebImageFromRemote, Udesk_YYWebImageStageProgress, nil);
                     _lastProgressiveDecodeTimestamp = now;
                 }
                 [_lock unlock];
@@ -645,8 +645,8 @@ static void URLInBlackListAdd(NSURL *url) {
                 __strong typeof(_self) self = _self;
                 if (!self) return;
                 
-                BOOL shouldDecode = (self.options & YYWebImageOptionIgnoreImageDecoding) == 0;
-                BOOL allowAnimation = (self.options & YYWebImageOptionIgnoreAnimatedImage) == 0;
+                BOOL shouldDecode = (self.options & Udesk_YYWebImageOptionIgnoreImageDecoding) == 0;
+                BOOL allowAnimation = (self.options & Udesk_YYWebImageOptionIgnoreAnimatedImage) == 0;
                 UIImage *image;
                 BOOL hasAnimation = NO;
                 if (allowAnimation) {
@@ -665,15 +665,15 @@ static void URLInBlackListAdd(NSURL *url) {
                  If the image is not PNG or JPEG, re-encode the image to PNG or JPEG for
                  better decoding performance.
                  */
-                YYImageType imageType = Udesk_YYImageDetectType((__bridge CFDataRef)self.data);
+                Udesk_YYImageType imageType = Udesk_YYImageDetectType((__bridge CFDataRef)self.data);
                 switch (imageType) {
-                    case YYImageTypeJPEG:
-                    case YYImageTypeGIF:
-                    case YYImageTypePNG:
-                    case YYImageTypeWebP: { // save to disk cache
+                    case Udesk_YYImageTypeJPEG:
+                    case Udesk_YYImageTypeGIF:
+                    case Udesk_YYImageTypePNG:
+                    case Udesk_YYImageTypeWebP: { // save to disk cache
                         if (!hasAnimation) {
-                            if (imageType == YYImageTypeGIF ||
-                                imageType == YYImageTypeWebP) {
+                            if (imageType == Udesk_YYImageTypeGIF ||
+                                imageType == Udesk_YYImageTypeWebP) {
                                 self.data = nil; // clear the data, re-encode for disk cache
                             }
                         }
@@ -695,7 +695,7 @@ static void URLInBlackListAdd(NSURL *url) {
                 
                 [self performSelector:@selector(_didReceiveImageFromWeb:) onThread:[self.class _networkThread] withObject:image waitUntilDone:NO];
             });
-            if (![self.request.URL isFileURL] && (self.options & YYWebImageOptionShowNetworkActivity)) {
+            if (![self.request.URL isFileURL] && (self.options & Udesk_YYWebImageOptionShowNetworkActivity)) {
                 [Udesk_YYWebImageManager decrementNetworkActivityCount];
             }
         }
@@ -708,16 +708,16 @@ static void URLInBlackListAdd(NSURL *url) {
         [_lock lock];
         if (![self isCancelled]) {
             if (_completion) {
-                _completion(nil, _request.URL, YYWebImageFromNone, YYWebImageStageFinished, error);
+                _completion(nil, _request.URL, Udesk_YYWebImageFromNone, Udesk_YYWebImageStageFinished, error);
             }
             _connection = nil;
             _data = nil;
-            if (![_request.URL isFileURL] && (_options & YYWebImageOptionShowNetworkActivity)) {
+            if (![_request.URL isFileURL] && (_options & Udesk_YYWebImageOptionShowNetworkActivity)) {
                 [Udesk_YYWebImageManager decrementNetworkActivityCount];
             }
             [self _finish];
             
-            if (_options & YYWebImageOptionIgnoreFailedURL) {
+            if (_options & Udesk_YYWebImageOptionIgnoreFailedURL) {
                 if (error.code != NSURLErrorNotConnectedToInternet &&
                     error.code != NSURLErrorCancelled &&
                     error.code != NSURLErrorTimedOut &&
@@ -744,12 +744,12 @@ static void URLInBlackListAdd(NSURL *url) {
                 self.finished = YES;
                 if (_completion) {
                     NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:@{NSLocalizedDescriptionKey:@"request in nil"}];
-                    _completion(nil, _request.URL, YYWebImageFromNone, YYWebImageStageFinished, error);
+                    _completion(nil, _request.URL, Udesk_YYWebImageFromNone, Udesk_YYWebImageStageFinished, error);
                 }
             } else {
                 self.executing = YES;
                 [self performSelector:@selector(_startOperation) onThread:[[self class] _networkThread] withObject:nil waitUntilDone:NO modes:@[NSDefaultRunLoopMode]];
-                if ((_options & YYWebImageOptionAllowBackgroundTask) && _YYSharedApplication()) {
+                if ((_options & Udesk_YYWebImageOptionAllowBackgroundTask) && _YYSharedApplication()) {
                     __weak __typeof__ (self) _self = self;
                     if (_taskID == UIBackgroundTaskInvalid) {
                         _taskID = [_YYSharedApplication() beginBackgroundTaskWithExpirationHandler:^{

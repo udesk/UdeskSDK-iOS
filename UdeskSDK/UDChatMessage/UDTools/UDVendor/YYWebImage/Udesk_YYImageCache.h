@@ -16,18 +16,18 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Image cache type
-typedef NS_OPTIONS(NSUInteger, YYImageCacheType) {
+typedef NS_OPTIONS(NSUInteger, Udesk_YYImageCacheType) {
     /// No value.
-    YYImageCacheTypeNone   = 0,
+    Udesk_YYImageCacheTypeNone   = 0,
     
     /// Get/store image with memory cache.
-    YYImageCacheTypeMemory = 1 << 0,
+    Udesk_YYImageCacheTypeMemory = 1 << 0,
     
     /// Get/store image with disk cache.
-    YYImageCacheTypeDisk   = 1 << 1,
+    Udesk_YYImageCacheTypeDisk   = 1 << 1,
     
     /// Get/store image with both memory cache and disk cache.
-    YYImageCacheTypeAll    = YYImageCacheTypeMemory | YYImageCacheTypeDisk,
+    Udesk_YYImageCacheTypeAll    = Udesk_YYImageCacheTypeMemory | Udesk_YYImageCacheTypeDisk,
 };
 
 
@@ -134,7 +134,7 @@ typedef NS_OPTIONS(NSUInteger, YYImageCacheType) {
 - (void)setImage:(nullable UIImage *)image
        imageData:(nullable NSData *)imageData
           forKey:(NSString *)key
-        withType:(YYImageCacheType)type;
+        withType:(Udesk_YYImageCacheType)type;
 
 /**
  Removes the image of the specified key in the cache (both memory and disk).
@@ -151,7 +151,7 @@ typedef NS_OPTIONS(NSUInteger, YYImageCacheType) {
  @param key  The key identifying the image to be removed. If nil, this method has no effect.
  @param type The cache type to remove image.
  */
-- (void)removeImageForKey:(NSString *)key withType:(YYImageCacheType)type;
+- (void)removeImageForKey:(NSString *)key withType:(Udesk_YYImageCacheType)type;
 
 /**
  Returns a Boolean value that indicates whether a given key is in cache.
@@ -172,7 +172,7 @@ typedef NS_OPTIONS(NSUInteger, YYImageCacheType) {
  @param type The cache type.
  @return Whether the image is in cache.
  */
-- (BOOL)containsImageForKey:(NSString *)key withType:(YYImageCacheType)type;
+- (BOOL)containsImageForKey:(NSString *)key withType:(Udesk_YYImageCacheType)type;
 
 /**
  Returns the image associated with a given key.
@@ -192,7 +192,7 @@ typedef NS_OPTIONS(NSUInteger, YYImageCacheType) {
  @param key A string identifying the image. If nil, just return nil.
  @return The image associated with key, or nil if no image is associated with key.
  */
-- (nullable UIImage *)getImageForKey:(NSString *)key withType:(YYImageCacheType)type;
+- (nullable UIImage *)getImageForKey:(NSString *)key withType:(Udesk_YYImageCacheType)type;
 
 /**
  Asynchronously get the image associated with a given key.
@@ -202,8 +202,8 @@ typedef NS_OPTIONS(NSUInteger, YYImageCacheType) {
  @param block A completion block which will be called on main thread.
  */
 - (void)getImageForKey:(NSString *)key
-              withType:(YYImageCacheType)type
-             withBlock:(void(^)(UIImage * _Nullable image, YYImageCacheType type))block;
+              withType:(Udesk_YYImageCacheType)type
+             withBlock:(void(^)(UIImage * _Nullable image, Udesk_YYImageCacheType type))block;
 
 /**
  Returns the image data associated with a given key.

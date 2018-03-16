@@ -101,14 +101,14 @@ static inline dispatch_queue_t YYImageCacheDecodeQueue() {
 }
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key {
-    [self setImage:image imageData:nil forKey:key withType:YYImageCacheTypeAll];
+    [self setImage:image imageData:nil forKey:key withType:Udesk_YYImageCacheTypeAll];
 }
 
-- (void)setImage:(UIImage *)image imageData:(NSData *)imageData forKey:(NSString *)key withType:(YYImageCacheType)type {
+- (void)setImage:(UIImage *)image imageData:(NSData *)imageData forKey:(NSString *)key withType:(Udesk_YYImageCacheType)type {
     if (!key || (image == nil && imageData.length == 0)) return;
     
     __weak typeof(self) _self = self;
-    if (type & YYImageCacheTypeMemory) { // add to memory cache
+    if (type & Udesk_YYImageCacheTypeMemory) { // add to memory cache
         if (image) {
             if (image.yy_isDecodedForDisplay) {
                 [_memoryCache setObject:image forKey:key withCost:[_self imageCost:image]];
@@ -128,7 +128,7 @@ static inline dispatch_queue_t YYImageCacheDecodeQueue() {
             });
         }
     }
-    if (type & YYImageCacheTypeDisk) { // add to disk cache
+    if (type & Udesk_YYImageCacheTypeDisk) { // add to disk cache
         if (imageData) {
             if (image) {
                 [Udesk_YYDiskCache setExtendedData:[NSKeyedArchiver archivedDataWithRootObject:@(image.scale)] toObject:imageData];
@@ -147,42 +147,42 @@ static inline dispatch_queue_t YYImageCacheDecodeQueue() {
 }
 
 - (void)removeImageForKey:(NSString *)key {
-    [self removeImageForKey:key withType:YYImageCacheTypeAll];
+    [self removeImageForKey:key withType:Udesk_YYImageCacheTypeAll];
 }
 
-- (void)removeImageForKey:(NSString *)key withType:(YYImageCacheType)type {
-    if (type & YYImageCacheTypeMemory) [_memoryCache removeObjectForKey:key];
-    if (type & YYImageCacheTypeDisk) [_diskCache removeObjectForKey:key];
+- (void)removeImageForKey:(NSString *)key withType:(Udesk_YYImageCacheType)type {
+    if (type & Udesk_YYImageCacheTypeMemory) [_memoryCache removeObjectForKey:key];
+    if (type & Udesk_YYImageCacheTypeDisk) [_diskCache removeObjectForKey:key];
 }
 
 - (BOOL)containsImageForKey:(NSString *)key {
-    return [self containsImageForKey:key withType:YYImageCacheTypeAll];
+    return [self containsImageForKey:key withType:Udesk_YYImageCacheTypeAll];
 }
 
-- (BOOL)containsImageForKey:(NSString *)key withType:(YYImageCacheType)type {
-    if (type & YYImageCacheTypeMemory) {
+- (BOOL)containsImageForKey:(NSString *)key withType:(Udesk_YYImageCacheType)type {
+    if (type & Udesk_YYImageCacheTypeMemory) {
         if ([_memoryCache containsObjectForKey:key]) return YES;
     }
-    if (type & YYImageCacheTypeDisk) {
+    if (type & Udesk_YYImageCacheTypeDisk) {
         if ([_diskCache containsObjectForKey:key]) return YES;
     }
     return NO;
 }
 
 - (UIImage *)getImageForKey:(NSString *)key {
-    return [self getImageForKey:key withType:YYImageCacheTypeAll];
+    return [self getImageForKey:key withType:Udesk_YYImageCacheTypeAll];
 }
 
-- (UIImage *)getImageForKey:(NSString *)key withType:(YYImageCacheType)type {
+- (UIImage *)getImageForKey:(NSString *)key withType:(Udesk_YYImageCacheType)type {
     if (!key) return nil;
-    if (type & YYImageCacheTypeMemory) {
+    if (type & Udesk_YYImageCacheTypeMemory) {
         UIImage *image = [_memoryCache objectForKey:key];
         if (image) return image;
     }
-    if (type & YYImageCacheTypeDisk) {
+    if (type & Udesk_YYImageCacheTypeDisk) {
         NSData *data = (id)[_diskCache objectForKey:key];
         UIImage *image = [self imageFromData:data];
-        if (image && (type & YYImageCacheTypeMemory)) {
+        if (image && (type & Udesk_YYImageCacheTypeMemory)) {
             [_memoryCache setObject:image forKey:key withCost:[self imageCost:image]];
         }
         return image;
@@ -190,35 +190,35 @@ static inline dispatch_queue_t YYImageCacheDecodeQueue() {
     return nil;
 }
 
-- (void)getImageForKey:(NSString *)key withType:(YYImageCacheType)type withBlock:(void (^)(UIImage *image, YYImageCacheType type))block {
+- (void)getImageForKey:(NSString *)key withType:(Udesk_YYImageCacheType)type withBlock:(void (^)(UIImage *image, Udesk_YYImageCacheType type))block {
     if (!block) return;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         UIImage *image = nil;
         
-        if (type & YYImageCacheTypeMemory) {
+        if (type & Udesk_YYImageCacheTypeMemory) {
             image = [_memoryCache objectForKey:key];
             if (image) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    block(image, YYImageCacheTypeMemory);
+                    block(image, Udesk_YYImageCacheTypeMemory);
                 });
                 return;
             }
         }
         
-        if (type & YYImageCacheTypeDisk) {
+        if (type & Udesk_YYImageCacheTypeDisk) {
             NSData *data = (id)[_diskCache objectForKey:key];
             image = [self imageFromData:data];
             if (image) {
                 [_memoryCache setObject:image forKey:key];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    block(image, YYImageCacheTypeDisk);
+                    block(image, Udesk_YYImageCacheTypeDisk);
                 });
                 return;
             }
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            block(nil, YYImageCacheTypeNone);
+            block(nil, Udesk_YYImageCacheTypeNone);
         });
     });
 }

@@ -43,16 +43,16 @@ NS_ASSUME_NONNULL_BEGIN
  
  See <http://www.sqlite.org/intern-v-extern-blob.html> for more information.
  */
-typedef NS_ENUM(NSUInteger, UdeskYYKVStorageType) {
+typedef NS_ENUM(NSUInteger, Udesk_YYKVStorageType) {
     
     /// The `value` is stored as a file in file system.
-    YYKVStorageTypeFile = 0,
+    Udesk_YYKVStorageTypeFile = 0,
     
     /// The `value` is stored in sqlite with blob type.
-    YYKVStorageTypeSQLite = 1,
+    Udesk_YYKVStorageTypeSQLite = 1,
     
     /// The `value` is stored in file system or sqlite based on your choice.
-    YYKVStorageTypeMixed = 2,
+    Udesk_YYKVStorageTypeMixed = 2,
 };
 
 
@@ -81,7 +81,7 @@ typedef NS_ENUM(NSUInteger, UdeskYYKVStorageType) {
 ///=============================================================================
 
 @property (nonatomic, readonly) NSString *path;        ///< The path of this storage.
-@property (nonatomic, readonly) UdeskYYKVStorageType type;  ///< The type of this storage.
+@property (nonatomic, readonly) Udesk_YYKVStorageType type;  ///< The type of this storage.
 @property (nonatomic) BOOL errorLogsEnabled;           ///< Set `YES` to enable error logs for debug.
 
 #pragma mark - Initializer
@@ -102,7 +102,7 @@ typedef NS_ENUM(NSUInteger, UdeskYYKVStorageType) {
  @return  A new storage object, or nil if an error occurs.
  @warning Multiple instances with the same path will make the storage unstable.
  */
-- (nullable instancetype)initWithPath:(NSString *)path type:(UdeskYYKVStorageType)type NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithPath:(NSString *)path type:(Udesk_YYKVStorageType)type NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark - Save Items

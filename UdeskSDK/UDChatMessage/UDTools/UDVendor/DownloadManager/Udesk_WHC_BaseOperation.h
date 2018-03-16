@@ -31,22 +31,22 @@ extern  NSString * const _Nullable kUdeskWHCUploadCode;
  * WHCHttpRequestStatus  网络请求状态枚举标识
  */
 
-typedef NS_OPTIONS(NSUInteger, WHCHttpRequestStatus) {
-    WHCHttpRequestNone = 1 << 0,
-    WHCHttpRequestExecuting = 1 << 1,
-    WHCHttpRequestCanceled = 1 << 2,
-    WHCHttpRequestFinished = 1 << 3
+typedef NS_OPTIONS(NSUInteger, Udesk_WHCHttpRequestStatus) {
+    Udesk_WHCHttpRequestNone = 1 << 0,
+    Udesk_WHCHttpRequestExecuting = 1 << 1,
+    Udesk_WHCHttpRequestCanceled = 1 << 2,
+    Udesk_WHCHttpRequestFinished = 1 << 3
 };
 
 /**
  * WHCHttpRequestStatus  网络请求类型枚举标识
  */
 
-typedef NS_OPTIONS(NSUInteger, WHCHttpRequestType) {
-    WHCHttpRequestGet = 1 << 4,
-    WHCHttpRequestPost = 1 << 5,
-    WHCHttpRequestFileDownload = 1 << 6,
-    WHCHttpRequestFileUpload = 1 << 7
+typedef NS_OPTIONS(NSUInteger, Udesk_WHCHttpRequestType) {
+    Udesk_WHCHttpRequestGet = 1 << 4,
+    Udesk_WHCHttpRequestPost = 1 << 5,
+    Udesk_WHCHttpRequestFileDownload = 1 << 6,
+    Udesk_WHCHttpRequestFileUpload = 1 << 7
 };
 
 
@@ -54,11 +54,11 @@ typedef NS_OPTIONS(NSUInteger, WHCHttpRequestType) {
  * WHCHttpRequestStatus  网络请求错误枚举标识
  */
 
-typedef NS_OPTIONS(NSUInteger, WHCHttpErrorType) {
-    WHCFreeDiskSpaceLack = 2 << 0,
-    WHCGeneralError = 2 << 1,
-    WHCCancelDownloadError = 2 << 2,
-    WHCNetWorkError = 2 << 3
+typedef NS_OPTIONS(NSUInteger, Udesk_WHCHttpErrorType) {
+    Udesk_WHCFreeDiskSpaceLack = 2 << 0,
+    Udesk_WHCGeneralError = 2 << 1,
+    Udesk_WHCCancelDownloadError = 2 << 2,
+    Udesk_WHCNetWorkError = 2 << 3
 };
 
 @class Udesk_WHC_BaseOperation;
@@ -120,7 +120,7 @@ typedef NS_OPTIONS(NSUInteger, WHCHttpErrorType) {
  * @param isSuccess 下载是否成功
  */
 
-typedef void (^WHCDidFinished) (Udesk_WHC_BaseOperation * _Nullable operation ,NSData * _Nullable data ,  NSError * _Nullable  error , BOOL isSuccess);
+typedef void (^Udesk_WHCDidFinished) (Udesk_WHC_BaseOperation * _Nullable operation ,NSData * _Nullable data ,  NSError * _Nullable  error , BOOL isSuccess);
 
 /**
  * 下载应答回调块
@@ -129,7 +129,7 @@ typedef void (^WHCDidFinished) (Udesk_WHC_BaseOperation * _Nullable operation ,N
  * @param isOK 是否可以下载
  */
 
-typedef void (^WHCResponse)(Udesk_WHC_BaseOperation * _Nullable operation , NSError * _Nullable error ,BOOL isOK);
+typedef void (^Udesk_WHCResponse)(Udesk_WHC_BaseOperation * _Nullable operation , NSError * _Nullable error ,BOOL isOK);
 
 /**
  * 下载过程回调块
@@ -139,7 +139,7 @@ typedef void (^WHCResponse)(Udesk_WHC_BaseOperation * _Nullable operation , NSEr
  * @param speed 下载速度
  */
 
-typedef void (^WHCProgress) (Udesk_WHC_BaseOperation * _Nullable operation ,uint64_t recvLength , uint64_t totalLength , NSString * _Nullable speed);
+typedef void (^Udesk_WHCProgress) (Udesk_WHC_BaseOperation * _Nullable operation ,uint64_t recvLength , uint64_t totalLength , NSString * _Nullable speed);
 
 
 /**
@@ -180,7 +180,7 @@ typedef void (^WHCProgress) (Udesk_WHC_BaseOperation * _Nullable operation ,uint
 /**
  * http网络请求类型
  */
-@property (nonatomic , assign) WHCHttpRequestType requestType;
+@property (nonatomic , assign) Udesk_WHCHttpRequestType requestType;
 
 /**
  * http网络请求对象
@@ -195,7 +195,7 @@ typedef void (^WHCProgress) (Udesk_WHC_BaseOperation * _Nullable operation ,uint
 /**
  * http网络请求状态
  */
-@property (nonatomic , assign)WHCHttpRequestStatus      requestStatus;
+@property (nonatomic , assign)Udesk_WHCHttpRequestStatus      requestStatus;
 
 /**
  * http网络请求应答数据对象
@@ -226,22 +226,22 @@ typedef void (^WHCProgress) (Udesk_WHC_BaseOperation * _Nullable operation ,uint
 /**
  * 下载完成回调块对象
  */
-@property (nonatomic , copy , nullable )WHCDidFinished didFinishedBlock;
+@property (nonatomic , copy , nullable )Udesk_WHCDidFinished didFinishedBlock;
 
 /**
  * 下载过程回调块对象
  */
-@property (nonatomic , copy , nullable)WHCProgress progressBlock;
+@property (nonatomic , copy , nullable)Udesk_WHCProgress progressBlock;
 
 /**
  * 下载应答回调块对象
  */
-@property (nonatomic, copy , nullable)WHCResponse responseBlock;
+@property (nonatomic, copy , nullable)Udesk_WHCResponse responseBlock;
 
 /**
  * 下载操作代理对象
  */
-@property (nonatomic , weak)id<WHC_DownloadDelegate> delegate;
+@property (nonatomic , weak, nullable)id<WHC_DownloadDelegate> delegate;
 
 /**
  * 说明: 清空http 应答数据

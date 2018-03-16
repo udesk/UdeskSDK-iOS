@@ -56,8 +56,7 @@
 #pragma mark - 设置MenuScrollView
 - (void)setAgentMenuScrollView {
     
-    CGRect scrollViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
-    _agentMenuScrollView= [[UIScrollView alloc] initWithFrame:scrollViewRect];
+    _agentMenuScrollView= [[UIScrollView alloc] initWithFrame:self.view.bounds];
     _agentMenuScrollView.ud_height -= [self getSpacing];
     _agentMenuScrollView.delegate = self;
     _agentMenuScrollView.showsHorizontalScrollIndicator = NO;
@@ -115,7 +114,7 @@
         
         //根据最大的级数循环添加tableView
         for (int i = 0; i<tableViewCount;i++) {
-            UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64) style:UITableViewStylePlain];
+            UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-(ud_is_iPhoneX ? 88 :64)) style:UITableViewStylePlain];
             agentMenuTableView.ud_height -= [self getSpacing];
             agentMenuTableView.delegate = self;
             agentMenuTableView.dataSource = self;
@@ -194,6 +193,8 @@
         if (didSelectModel.group_id.length > 0 && didSelectModel.group_id) {
             
             self.sdkConfig.scheduledGroupId = didSelectModel.group_id;
+            //存储
+            [UdeskTools storeGroupId:didSelectModel.group_id];
             UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:self.sdkConfig];
             UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig setting:self.sdkSetting];
             [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];

@@ -10,6 +10,7 @@
 #import "UdeskReachability.h"
 #import <AVFoundation/AVFoundation.h>
 #import "UdeskReachability.h"
+#import "UdeskFoundationMacro.h"
 
 @implementation UdeskTools
 
@@ -201,6 +202,34 @@
         
         // 这里需要缩放后的size
         return imageSize;
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
++ (void)storeGroupId:(NSString *)groupId {
+    @try {
+        //用户传入GroupId
+        if ([UdeskTools isBlankString:groupId]) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUdeskGroupId];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        else {
+            groupId = [NSString stringWithFormat:@"%@",groupId];
+            [[NSUserDefaults standardUserDefaults] setObject:groupId forKey:kUdeskGroupId];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
++ (NSString *)getGroupId {
+    
+    @try {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:kUdeskGroupId];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {

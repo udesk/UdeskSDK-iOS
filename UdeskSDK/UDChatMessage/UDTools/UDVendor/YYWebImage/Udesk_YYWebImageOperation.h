@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, strong, readonly) NSURLResponse     *response; ///< The response for request.
 @property (nullable, nonatomic, strong, readonly) Udesk_YYImageCache      *cache;    ///< The image cache.
 @property (nonatomic, strong, readonly)           NSString          *cacheKey; ///< The image cache key.
-@property (nonatomic, readonly)                   YYWebImageOptions options;   ///< The operation's option.
+@property (nonatomic, readonly)                   Udesk_YYWebImageOptions options;   ///< The operation's option.
 
 /**
  Whether the URL connection should consult the credential storage for authenticating 
@@ -76,12 +76,12 @@ NS_ASSUME_NONNULL_BEGIN
  @return The image request opeartion, or nil if an error occurs.
  */
 - (instancetype)initWithRequest:(NSURLRequest *)request
-                        options:(YYWebImageOptions)options
+                        options:(Udesk_YYWebImageOptions)options
                           cache:(nullable Udesk_YYImageCache *)cache
                        cacheKey:(nullable NSString *)cacheKey
-                       progress:(nullable YYWebImageProgressBlock)progress
-                      transform:(nullable YYWebImageTransformBlock)transform
-                     completion:(nullable YYWebImageCompletionBlock)completion NS_DESIGNATED_INITIALIZER;
+                       progress:(nullable Udesk_YYWebImageProgressBlock)progress
+                      transform:(nullable Udesk_YYWebImageTransformBlock)transform
+                     completion:(nullable Udesk_YYWebImageCompletionBlock)completion NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 + (instancetype)new UNAVAILABLE_ATTRIBUTE;

@@ -107,17 +107,17 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
 #pragma mark - get请求 -
 
 - (nullable Udesk_WHC_HttpOperation *)get:(nonnull NSString *)strUrl
-               didFinished:(nullable WHCDidFinished)finishedBlock {
+               didFinished:(nullable Udesk_WHCDidFinished)finishedBlock {
     return [self get:strUrl process:nil didFinished:finishedBlock];
 }
 
 - (nullable Udesk_WHC_HttpOperation *)get:(nonnull NSString *)strUrl
-                   process:(nullable WHCProgress) processBlock
-               didFinished:(nullable WHCDidFinished)finishedBlock {
+                   process:(nullable Udesk_WHCProgress) processBlock
+               didFinished:(nullable Udesk_WHCDidFinished)finishedBlock {
     Udesk_WHC_HttpOperation * getOperation = nil;
     if (strUrl != nil && ![_failedUrls containsObject:strUrl]) {
         getOperation = [Udesk_WHC_HttpOperation new];
-        getOperation.requestType = WHCHttpRequestGet;
+        getOperation.requestType = Udesk_WHCHttpRequestGet;
         getOperation.progressBlock = processBlock;
         getOperation.strUrl = strUrl;
         __weak typeof(self) weakSelf = self;
@@ -144,18 +144,18 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
 
 - (nullable Udesk_WHC_HttpOperation *)post:(nonnull NSString *)strUrl
                       param:(nullable NSString *)param
-                didFinished:(nullable WHCDidFinished)finishedBlock {
+                didFinished:(nullable Udesk_WHCDidFinished)finishedBlock {
     return [self post:strUrl param:param process:nil didFinished:finishedBlock];
 }
 
 - (nullable Udesk_WHC_HttpOperation *)post:(nonnull NSString *)strUrl
                       param:(nullable NSString *)param
-                    process:(nullable WHCProgress) processBlock
-                didFinished:(nullable WHCDidFinished)finishedBlock {
+                    process:(nullable Udesk_WHCProgress) processBlock
+                didFinished:(nullable Udesk_WHCDidFinished)finishedBlock {
     Udesk_WHC_HttpOperation * postOperation = nil ;
     if (strUrl != nil && ![_failedUrls containsObject:strUrl]) {
         postOperation = [Udesk_WHC_HttpOperation new];
-        postOperation.requestType = WHCHttpRequestPost;
+        postOperation.requestType = Udesk_WHCHttpRequestPost;
         postOperation.progressBlock = processBlock;
         postOperation.postParam = param;
         postOperation.strUrl = strUrl;
@@ -184,7 +184,7 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
 
 - (nullable Udesk_WHC_HttpOperation *)upload:(nonnull NSString *)strUrl
                         param:(nullable NSDictionary *)paramDict
-                  didFinished:(nullable WHCDidFinished)finishedBlock {
+                  didFinished:(nullable Udesk_WHCDidFinished)finishedBlock {
     return [self upload:strUrl
                   param:paramDict
                 process:nil
@@ -198,15 +198,15 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
  */
 - (nullable Udesk_WHC_HttpOperation *)upload:(nonnull NSString *)strUrl
                         param:(nullable NSDictionary *)paramDict
-                      process:(nullable WHCProgress) processBlock
-                  didFinished:(nullable WHCDidFinished)finishedBlock {
+                      process:(nullable Udesk_WHCProgress) processBlock
+                  didFinished:(nullable Udesk_WHCDidFinished)finishedBlock {
     [self setPostParamDict:paramDict];
     [self buildMultipartFormDataPostBody];
     Udesk_WHC_HttpOperation * uploadOperation = nil ;
     if (strUrl != nil && ![_failedUrls containsObject:strUrl]) {
         uploadOperation = [Udesk_WHC_HttpOperation new];
         [self setHttpOperation:uploadOperation];
-        uploadOperation.requestType = WHCHttpRequestFileUpload;
+        uploadOperation.requestType = Udesk_WHCHttpRequestFileUpload;
         uploadOperation.progressBlock = processBlock;
         uploadOperation.strUrl = strUrl;
         uploadOperation.postParam = _uploadPostData;
@@ -269,7 +269,7 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
         }
         if([self createFileSavePath:savePath]) {
             downloadOperation = [Udesk_WHC_DownloadOperation new];
-            downloadOperation.requestType = WHCHttpRequestGet;
+            downloadOperation.requestType = Udesk_WHCHttpRequestGet;
             downloadOperation.saveFileName = fileName;
             downloadOperation.saveFilePath = savePath;
             downloadOperation.delegate = delegate;
@@ -294,9 +294,9 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
  */
 - (nullable Udesk_WHC_DownloadOperation *)download:(nonnull NSString *)strUrl
                            savePath:(nonnull NSString *)savePath
-                            response:(nullable WHCResponse) responseBlock
-                            process:(nullable WHCProgress) processBlock
-                        didFinished:(nullable WHCDidFinished) finishedBlock {
+                            response:(nullable Udesk_WHCResponse) responseBlock
+                            process:(nullable Udesk_WHCProgress) processBlock
+                        didFinished:(nullable Udesk_WHCDidFinished) finishedBlock {
     
     return [self download:strUrl
                  savePath:savePath
@@ -316,9 +316,9 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
 - (nullable Udesk_WHC_DownloadOperation *)download:(nonnull NSString *)strUrl
                                     savePath:(nonnull NSString *)savePath
                                 saveFileName:(nullable NSString *)saveFileName
-                                    response:(nullable WHCResponse) responseBlock
-                                     process:(nullable WHCProgress) processBlock
-                                 didFinished:(nullable WHCDidFinished) finishedBlock {
+                                    response:(nullable Udesk_WHCResponse) responseBlock
+                                     process:(nullable Udesk_WHCProgress) processBlock
+                                 didFinished:(nullable Udesk_WHCDidFinished) finishedBlock {
 
     Udesk_WHC_DownloadOperation  * downloadOperation = nil;
     NSString * fileName = nil;
@@ -362,7 +362,7 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
         
         if([self createFileSavePath:savePath]) {
             downloadOperation = [Udesk_WHC_DownloadOperation new];
-            downloadOperation.requestType = WHCHttpRequestGet;
+            downloadOperation.requestType = Udesk_WHCHttpRequestGet;
             downloadOperation.saveFileName = fileName;
             downloadOperation.saveFilePath = savePath;
             downloadOperation.progressBlock = processBlock;
@@ -536,9 +536,9 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
  */
 
 
-- (Udesk_WHC_DownloadOperation *)replaceCurrentDownloadOperationBlockResponse:(nullable WHCResponse)responseBlock
-                                             process:(nullable WHCProgress)processBlock
-                                         didFinished:(nullable WHCDidFinished)didFinishedBlock
+- (Udesk_WHC_DownloadOperation *)replaceCurrentDownloadOperationBlockResponse:(nullable Udesk_WHCResponse)responseBlock
+                                             process:(nullable Udesk_WHCProgress)processBlock
+                                         didFinished:(nullable Udesk_WHCDidFinished)didFinishedBlock
                                             fileName:(nonnull NSString *)fileName {
     for (Udesk_WHC_DownloadOperation * downloadOperation in _fileDownloadOperationQueue.operations) {
         if([downloadOperation.saveFileName isEqualToString:fileName]){
@@ -567,9 +567,9 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
 }
 
 //替换所有当前下载代理
-- (Udesk_WHC_DownloadOperation *)replaceAllDownloadOperationBlockResponse:(nullable WHCResponse)responseBlock
-                                         process:(nullable WHCProgress)processBlock
-                                     didFinished:(nullable WHCDidFinished)didFinishedBlock {
+- (Udesk_WHC_DownloadOperation *)replaceAllDownloadOperationBlockResponse:(nullable Udesk_WHCResponse)responseBlock
+                                         process:(nullable Udesk_WHCProgress)processBlock
+                                     didFinished:(nullable Udesk_WHCDidFinished)didFinishedBlock {
     if (_fileDownloadOperationQueue.operations.count > 0) {
         for (Udesk_WHC_DownloadOperation * downloadOperation in _fileDownloadOperationQueue.operations) {
             downloadOperation.delegate = nil;
@@ -661,7 +661,7 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
 
 - (__autoreleasing NSError *)error:(nonnull NSString *)message {
     __autoreleasing NSError  * error = [[NSError alloc]initWithDomain:kUdeskWHCDomain
-                                                                 code:WHCGeneralError
+                                                                 code:Udesk_WHCGeneralError
                                                              userInfo:@{NSLocalizedDescriptionKey:
                                                                             message}];
     return error;

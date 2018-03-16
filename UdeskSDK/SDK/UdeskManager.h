@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.9
+//  Version: 3.9.1
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -82,7 +82,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @interface UdeskManager : NSObject
 
 /**
- 创建用户，必须调用此函数，请正确填写参数
+ 初始化Udesk
  @param organization 公司model
  @param customer 客户model
 

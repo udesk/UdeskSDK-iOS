@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param imageURL The image url (remote or local file path).
  @param options  The options to use when request the image.
  */
-- (void)yy_setImageWithURL:(nullable NSURL *)imageURL options:(YYWebImageOptions)options;
+- (void)yy_setImageWithURL:(nullable NSURL *)imageURL options:(Udesk_YYWebImageOptions)options;
 
 /**
  Set the view's `image` with a specified URL.
@@ -58,8 +58,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)yy_setImageWithURL:(nullable NSURL *)imageURL
                placeholder:(nullable UIImage *)placeholder
-                   options:(YYWebImageOptions)options
-                completion:(nullable YYWebImageCompletionBlock)completion;
+                   options:(Udesk_YYWebImageOptions)options
+                completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Set the view's `image` with a specified URL.
@@ -73,10 +73,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)yy_setImageWithURL:(nullable NSURL *)imageURL
                placeholder:(nullable UIImage *)placeholder
-                   options:(YYWebImageOptions)options
-                  progress:(nullable YYWebImageProgressBlock)progress
-                 transform:(nullable YYWebImageTransformBlock)transform
-                completion:(nullable YYWebImageCompletionBlock)completion;
+                   options:(Udesk_YYWebImageOptions)options
+                  progress:(nullable Udesk_YYWebImageProgressBlock)progress
+                 transform:(nullable Udesk_YYWebImageTransformBlock)transform
+                completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Set the view's `image` with a specified URL.
@@ -91,11 +91,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)yy_setImageWithURL:(nullable NSURL *)imageURL
                placeholder:(nullable UIImage *)placeholder
-                   options:(YYWebImageOptions)options
+                   options:(Udesk_YYWebImageOptions)options
                    manager:(nullable Udesk_YYWebImageManager *)manager
-                  progress:(nullable YYWebImageProgressBlock)progress
-                 transform:(nullable YYWebImageTransformBlock)transform
-                completion:(nullable YYWebImageCompletionBlock)completion;
+                  progress:(nullable Udesk_YYWebImageProgressBlock)progress
+                 transform:(nullable Udesk_YYWebImageTransformBlock)transform
+                completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Cancel the current image request.

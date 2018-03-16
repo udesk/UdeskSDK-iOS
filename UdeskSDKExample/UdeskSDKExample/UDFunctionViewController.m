@@ -16,6 +16,8 @@
 #import "UdeskCustomLocationViewController.h"
 #import "UdeskChatViewController.h"
 #import "UDLanguageViewController.h"
+#import "Udesk_YYWebImage.h"
+#import <YYWebImage/YYWebImage.h>
 
 @interface UDFunctionViewController()
 
@@ -40,7 +42,7 @@
 
 - (void)viewDidLoad {
 
-    [super viewDidLoad];    
+    [super viewDidLoad];
     
     double text1 = 237/675.0f;
     CGFloat logoHeight = self.view.ud_height*text1;
@@ -215,7 +217,7 @@
     //后台配置
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:style];
     //开启发送位置功能
-//    chatViewManager.hiddenLocationButton = NO;
+    chatViewManager.hiddenLocationButton = NO;
     
     // 调用后台配置的push方法
     NSDictionary *dict = @{

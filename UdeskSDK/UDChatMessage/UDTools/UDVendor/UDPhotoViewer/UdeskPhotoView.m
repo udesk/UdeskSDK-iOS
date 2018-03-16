@@ -8,7 +8,6 @@
 
 #import "UdeskPhotoView.h"
 #import "UdeskOneScrollView.h"
-#import "UdeskFoundationMacro.h"
 #import "UdeskUtils.h"
 #import "Udesk_YYWebImage.h"
 
@@ -44,18 +43,21 @@
     oneScroll.mydelegate = self;
     //自己是数组中第几个图
     //设置位置并添加
-    oneScroll.frame = CGRectMake(Gap , 0 ,UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT);
+    oneScroll.frame = CGRectMake(Gap , 0 ,[[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     [self addSubview:oneScroll];
     
     [oneScroll setLocalImage:photoImageView withMessageURL:url];
  
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake(UD_SCREEN_WIDTH-45-15, UD_SCREEN_HEIGHT-26-15, 45, 26);
+    button.frame = CGRectMake([[UIScreen mainScreen] bounds].size.width-45-15, [[UIScreen mainScreen] bounds].size.height-26-15, 45, 26);
     [button setTitle:getUDLocalizedString(@"udesk_save") forState:UIControlStateNormal];
     [button setBackgroundColor:[UIColor blackColor]];
     [button addTarget:self action:@selector(saveImageAction:) forControlEvents:UIControlEventTouchUpInside];
     button.titleLabel.font = [UIFont systemFontOfSize:14];
-    UDViewBorderRadius(button, 3, 1, [UIColor grayColor]);
+    [button.layer setCornerRadius:3];
+    [button.layer setMasksToBounds:YES];
+    [button.layer setBorderWidth:1];
+    [button.layer setBorderColor:[[UIColor grayColor] CGColor]];
     [self addSubview:button];
 }
 

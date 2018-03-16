@@ -279,7 +279,7 @@
     }
     
     NSString *agentId = [UdeskSDKConfig sharedConfig].scheduledAgentId;
-    NSString *groupId = [UdeskSDKConfig sharedConfig].scheduledGroupId;
+    NSString *groupId = [self getGroupId];
     
     @udWeakify(self);
     //获取客服信息
@@ -306,6 +306,18 @@
         }];
     }
     
+}
+
+//获取客服组ID
+- (NSString *)getGroupId {
+    
+    NSString *groupId = [UdeskSDKConfig sharedConfig].scheduledGroupId;
+    if ([UdeskTools isBlankString:groupId]) {
+        return [UdeskTools getGroupId];
+    }
+    else {
+        return groupId;
+    }
 }
 
 //获取分配客服
@@ -775,12 +787,14 @@
         if (!message || message == (id)kCFNull) return ;
         if ([UdeskTools isBlankString:message.content]) return;
         
-        NSArray *array = [self chatMessageLayoutWithModel:@[message]];
-        if (array) {
-            [self.messageArray addObjectsFromArray:array];
-        }
-        
-        [self updateContent];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            NSArray *array = [self chatMessageLayoutWithModel:@[message]];
+            if (array) {
+                [self.messageArray addObjectsFromArray:array];
+            }
+            
+            [self updateContent];
+        });
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {

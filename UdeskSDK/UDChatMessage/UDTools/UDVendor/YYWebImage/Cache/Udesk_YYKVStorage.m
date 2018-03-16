@@ -674,15 +674,15 @@ static UIApplication *_YYSharedApplication() {
 
 - (instancetype)init {
     @throw [NSException exceptionWithName:@"YYKVStorage init error" reason:@"Please use the designated initializer and pass the 'path' and 'type'." userInfo:nil];
-    return [self initWithPath:@"" type:YYKVStorageTypeFile];
+    return [self initWithPath:@"" type:Udesk_YYKVStorageTypeFile];
 }
 
-- (instancetype)initWithPath:(NSString *)path type:(UdeskYYKVStorageType)type {
+- (instancetype)initWithPath:(NSString *)path type:(Udesk_YYKVStorageType)type {
     if (path.length == 0 || path.length > kPathLengthMax) {
         NSLog(@"YYKVStorage init error: invalid path: [%@].", path);
         return nil;
     }
-    if (type > YYKVStorageTypeMixed) {
+    if (type > Udesk_YYKVStorageTypeMixed) {
         NSLog(@"YYKVStorage init error: invalid type: %lu.", (unsigned long)type);
         return nil;
     }
@@ -744,7 +744,7 @@ static UIApplication *_YYSharedApplication() {
 
 - (BOOL)saveItemWithKey:(NSString *)key value:(NSData *)value filename:(NSString *)filename extendedData:(NSData *)extendedData {
     if (key.length == 0 || value.length == 0) return NO;
-    if (_type == YYKVStorageTypeFile && filename.length == 0) {
+    if (_type == Udesk_YYKVStorageTypeFile && filename.length == 0) {
         return NO;
     }
     
@@ -758,7 +758,7 @@ static UIApplication *_YYSharedApplication() {
         }
         return YES;
     } else {
-        if (_type != YYKVStorageTypeSQLite) {
+        if (_type != Udesk_YYKVStorageTypeSQLite) {
             NSString *filename = [self _dbGetFilenameWithKey:key];
             if (filename) {
                 [self _fileDeleteWithName:filename];
@@ -771,11 +771,11 @@ static UIApplication *_YYSharedApplication() {
 - (BOOL)removeItemForKey:(NSString *)key {
     if (key.length == 0) return NO;
     switch (_type) {
-        case YYKVStorageTypeSQLite: {
+        case Udesk_YYKVStorageTypeSQLite: {
             return [self _dbDeleteItemWithKey:key];
         } break;
-        case YYKVStorageTypeFile:
-        case YYKVStorageTypeMixed: {
+        case Udesk_YYKVStorageTypeFile:
+        case Udesk_YYKVStorageTypeMixed: {
             NSString *filename = [self _dbGetFilenameWithKey:key];
             if (filename) {
                 [self _fileDeleteWithName:filename];
@@ -789,11 +789,11 @@ static UIApplication *_YYSharedApplication() {
 - (BOOL)removeItemForKeys:(NSArray *)keys {
     if (keys.count == 0) return NO;
     switch (_type) {
-        case YYKVStorageTypeSQLite: {
+        case Udesk_YYKVStorageTypeSQLite: {
             return [self _dbDeleteItemWithKeys:keys];
         } break;
-        case YYKVStorageTypeFile:
-        case YYKVStorageTypeMixed: {
+        case Udesk_YYKVStorageTypeFile:
+        case Udesk_YYKVStorageTypeMixed: {
             NSArray *filenames = [self _dbGetFilenameWithKeys:keys];
             for (NSString *filename in filenames) {
                 [self _fileDeleteWithName:filename];
@@ -809,14 +809,14 @@ static UIApplication *_YYSharedApplication() {
     if (size <= 0) return [self removeAllItems];
     
     switch (_type) {
-        case YYKVStorageTypeSQLite: {
+        case Udesk_YYKVStorageTypeSQLite: {
             if ([self _dbDeleteItemsWithSizeLargerThan:size]) {
                 [self _dbCheckpoint];
                 return YES;
             }
         } break;
-        case YYKVStorageTypeFile:
-        case YYKVStorageTypeMixed: {
+        case Udesk_YYKVStorageTypeFile:
+        case Udesk_YYKVStorageTypeMixed: {
             NSArray *filenames = [self _dbGetFilenamesWithSizeLargerThan:size];
             for (NSString *name in filenames) {
                 [self _fileDeleteWithName:name];
@@ -835,14 +835,14 @@ static UIApplication *_YYSharedApplication() {
     if (time == INT_MAX) return [self removeAllItems];
     
     switch (_type) {
-        case YYKVStorageTypeSQLite: {
+        case Udesk_YYKVStorageTypeSQLite: {
             if ([self _dbDeleteItemsWithTimeEarlierThan:time]) {
                 [self _dbCheckpoint];
                 return YES;
             }
         } break;
-        case YYKVStorageTypeFile:
-        case YYKVStorageTypeMixed: {
+        case Udesk_YYKVStorageTypeFile:
+        case Udesk_YYKVStorageTypeMixed: {
             NSArray *filenames = [self _dbGetFilenamesWithTimeEarlierThan:time];
             for (NSString *name in filenames) {
                 [self _fileDeleteWithName:name];
@@ -982,7 +982,7 @@ static UIApplication *_YYSharedApplication() {
     if (key.length == 0) return nil;
     NSData *value = nil;
     switch (_type) {
-        case YYKVStorageTypeFile: {
+        case Udesk_YYKVStorageTypeFile: {
             NSString *filename = [self _dbGetFilenameWithKey:key];
             if (filename) {
                 value = [self _fileReadWithName:filename];
@@ -992,10 +992,10 @@ static UIApplication *_YYSharedApplication() {
                 }
             }
         } break;
-        case YYKVStorageTypeSQLite: {
+        case Udesk_YYKVStorageTypeSQLite: {
             value = [self _dbGetValueWithKey:key];
         } break;
-        case YYKVStorageTypeMixed: {
+        case Udesk_YYKVStorageTypeMixed: {
             NSString *filename = [self _dbGetFilenameWithKey:key];
             if (filename) {
                 value = [self _fileReadWithName:filename];
@@ -1017,7 +1017,7 @@ static UIApplication *_YYSharedApplication() {
 - (NSArray *)getItemForKeys:(NSArray *)keys {
     if (keys.count == 0) return nil;
     NSMutableArray *items = [self _dbGetItemWithKeys:keys excludeInlineData:NO];
-    if (_type != YYKVStorageTypeSQLite) {
+    if (_type != Udesk_YYKVStorageTypeSQLite) {
         for (NSInteger i = 0, max = items.count; i < max; i++) {
             Udesk_YYKVStorageItem *item = items[i];
             if (item.filename) {

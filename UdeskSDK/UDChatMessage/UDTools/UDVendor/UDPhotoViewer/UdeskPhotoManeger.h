@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "UdeskMessage.h"
 
 @interface UdeskPhotoManeger : NSObject
 /**

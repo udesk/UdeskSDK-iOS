@@ -45,20 +45,20 @@ const NSTimeInterval Udesk_YYWebImageProgressiveFadeTime = 0.4;
 
 - (int32_t)setOperationWithSentinel:(int32_t)sentinel
                                 url:(NSURL *)imageURL
-                            options:(YYWebImageOptions)options
+                            options:(Udesk_YYWebImageOptions)options
                             manager:(Udesk_YYWebImageManager *)manager
-                           progress:(YYWebImageProgressBlock)progress
-                          transform:(YYWebImageTransformBlock)transform
-                         completion:(YYWebImageCompletionBlock)completion {
+                           progress:(Udesk_YYWebImageProgressBlock)progress
+                          transform:(Udesk_YYWebImageTransformBlock)transform
+                         completion:(Udesk_YYWebImageCompletionBlock)completion {
     if (sentinel != _sentinel) {
-        if (completion) completion(nil, imageURL, YYWebImageFromNone, YYWebImageStageCancelled, nil);
+        if (completion) completion(nil, imageURL, Udesk_YYWebImageFromNone, Udesk_YYWebImageStageCancelled, nil);
         return _sentinel;
     }
     
     NSOperation *operation = [manager requestImageWithURL:imageURL options:options progress:progress transform:transform completion:completion];
     if (!operation && completion) {
         NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"YYWebImageOperation create failed." };
-        completion(nil, imageURL, YYWebImageFromNone, YYWebImageStageFinished, [NSError errorWithDomain:@"com.ibireme.webimage" code:-1 userInfo:userInfo]);
+        completion(nil, imageURL, Udesk_YYWebImageFromNone, Udesk_YYWebImageStageFinished, [NSError errorWithDomain:@"com.ibireme.webimage" code:-1 userInfo:userInfo]);
     }
     
     dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER);

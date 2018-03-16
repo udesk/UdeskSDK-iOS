@@ -522,9 +522,11 @@ SDK 咨询对象展示:
 }];
 ```
 
-#### 6.4指定分配客服 
+#### 6.4请求指定分配客服 
 
 在获取当前客户的帐号信息后，调用此接口可主动指定分配客服，获得客服信息和以及排队信息，可参考开源UI
+
+**注意：调用此接口的前提是您使用自己的UI进行开发，如果还使用我们提供的UI则参考4.3**
 
 ```objective-c
 [UdeskManager scheduledAgentId:agentId completion:^(UdeskAgent *agent, NSError *error) {
@@ -535,6 +537,8 @@ SDK 咨询对象展示:
 #### 6.5指定分配客服组
 
 在获取当前客户的帐号信息后，调用此接口可主动指定分配客服组，获得客服信息和以及排队信息，可参考开源UI
+
+**注意：调用此接口的前提是您使用自己的UI进行开发，如果还使用我们提供的UI则参考4.4**
 
 ```objective-c
 [UdeskManager scheduledGroupId:groupId completion:^(UdeskAgent *agent, NSError *error) {
@@ -801,6 +805,18 @@ extension UINavigationController {
 # 八、更新记录
 
 #### 更新记录：
+
+sdk v3.9.1版本更新功能:
+
+1.工单页面、地理位置页面适配iPhone X
+
+2.工单页面、地理位置页面白线问题处理
+
+3.修复导航栏指定分配客服组，客服关闭会话客户再重新建立会话会随机分配客服问题
+
+4.修复引入的第三方框架枚举冲突
+
+------
 
 sdk v3.9版本更新功能:
 

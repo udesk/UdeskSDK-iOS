@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "UdeskOneScrollView.h"
-#import "UdeskMessage.h"
 
 @interface UdeskPhotoView : UIView<UDOneScrollViewDelegate>
 

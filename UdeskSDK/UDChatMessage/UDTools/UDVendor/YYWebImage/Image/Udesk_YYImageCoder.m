@@ -1063,50 +1063,50 @@ CGImageRef Udesk_YYCGImageCreateCopyWithOrientation(CGImageRef imageRef, UIImage
     return Udesk_YYCGImageCreateAffineTransformCopy(imageRef, transform, destSize, destBitmapInfo);
 }
 
-YYImageType Udesk_YYImageDetectType(CFDataRef data) {
-    if (!data) return YYImageTypeUnknown;
+Udesk_YYImageType Udesk_YYImageDetectType(CFDataRef data) {
+    if (!data) return Udesk_YYImageTypeUnknown;
     uint64_t length = CFDataGetLength(data);
-    if (length < 16) return YYImageTypeUnknown;
+    if (length < 16) return Udesk_YYImageTypeUnknown;
     
     const char *bytes = (char *)CFDataGetBytePtr(data);
     
     uint32_t magic4 = *((uint32_t *)bytes);
     switch (magic4) {
         case YY_FOUR_CC(0x4D, 0x4D, 0x00, 0x2A): { // big endian TIFF
-            return YYImageTypeTIFF;
+            return Udesk_YYImageTypeTIFF;
         } break;
             
         case YY_FOUR_CC(0x49, 0x49, 0x2A, 0x00): { // little endian TIFF
-            return YYImageTypeTIFF;
+            return Udesk_YYImageTypeTIFF;
         } break;
             
         case YY_FOUR_CC(0x00, 0x00, 0x01, 0x00): { // ICO
-            return YYImageTypeICO;
+            return Udesk_YYImageTypeICO;
         } break;
             
         case YY_FOUR_CC(0x00, 0x00, 0x02, 0x00): { // CUR
-            return YYImageTypeICO;
+            return Udesk_YYImageTypeICO;
         } break;
             
         case YY_FOUR_CC('i', 'c', 'n', 's'): { // ICNS
-            return YYImageTypeICNS;
+            return Udesk_YYImageTypeICNS;
         } break;
             
         case YY_FOUR_CC('G', 'I', 'F', '8'): { // GIF
-            return YYImageTypeGIF;
+            return Udesk_YYImageTypeGIF;
         } break;
             
         case YY_FOUR_CC(0x89, 'P', 'N', 'G'): {  // PNG
             uint32_t tmp = *((uint32_t *)(bytes + 4));
             if (tmp == YY_FOUR_CC('\r', '\n', 0x1A, '\n')) {
-                return YYImageTypePNG;
+                return Udesk_YYImageTypePNG;
             }
         } break;
             
         case YY_FOUR_CC('R', 'I', 'F', 'F'): { // WebP
             uint32_t tmp = *((uint32_t *)(bytes + 8));
             if (tmp == YY_FOUR_CC('W', 'E', 'B', 'P')) {
-                return YYImageTypeWebP;
+                return Udesk_YYImageTypeWebP;
             }
         } break;
         /*
@@ -1124,74 +1124,74 @@ YYImageType Udesk_YYImageDetectType(CFDataRef data) {
         case YY_TWO_CC('P', 'I'):
         case YY_TWO_CC('C', 'I'):
         case YY_TWO_CC('C', 'P'): { // BMP
-            return YYImageTypeBMP;
+            return Udesk_YYImageTypeBMP;
         }
         case YY_TWO_CC(0xFF, 0x4F): { // JPEG2000
-            return YYImageTypeJPEG2000;
+            return Udesk_YYImageTypeJPEG2000;
         }
     }
     
     // JPG             FF D8 FF
-    if (memcmp(bytes,"\377\330\377",3) == 0) return YYImageTypeJPEG;
+    if (memcmp(bytes,"\377\330\377",3) == 0) return Udesk_YYImageTypeJPEG;
     
     // JP2
-    if (memcmp(bytes + 4, "\152\120\040\040\015", 5) == 0) return YYImageTypeJPEG2000;
+    if (memcmp(bytes + 4, "\152\120\040\040\015", 5) == 0) return Udesk_YYImageTypeJPEG2000;
     
-    return YYImageTypeUnknown;
+    return Udesk_YYImageTypeUnknown;
 }
 
-CFStringRef Udesk_YYImageTypeToUTType(YYImageType type) {
+CFStringRef Udesk_YYImageTypeToUTType(Udesk_YYImageType type) {
     switch (type) {
-        case YYImageTypeJPEG: return kUTTypeJPEG;
-        case YYImageTypeJPEG2000: return kUTTypeJPEG2000;
-        case YYImageTypeTIFF: return kUTTypeTIFF;
-        case YYImageTypeBMP: return kUTTypeBMP;
-        case YYImageTypeICO: return kUTTypeICO;
-        case YYImageTypeICNS: return kUTTypeAppleICNS;
-        case YYImageTypeGIF: return kUTTypeGIF;
-        case YYImageTypePNG: return kUTTypePNG;
+        case Udesk_YYImageTypeJPEG: return kUTTypeJPEG;
+        case Udesk_YYImageTypeJPEG2000: return kUTTypeJPEG2000;
+        case Udesk_YYImageTypeTIFF: return kUTTypeTIFF;
+        case Udesk_YYImageTypeBMP: return kUTTypeBMP;
+        case Udesk_YYImageTypeICO: return kUTTypeICO;
+        case Udesk_YYImageTypeICNS: return kUTTypeAppleICNS;
+        case Udesk_YYImageTypeGIF: return kUTTypeGIF;
+        case Udesk_YYImageTypePNG: return kUTTypePNG;
         default: return NULL;
     }
 }
 
-YYImageType Udesk_YYImageTypeFromUTType(CFStringRef uti) {
+Udesk_YYImageType Udesk_YYImageTypeFromUTType(CFStringRef uti) {
     static NSDictionary *dic;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        dic = @{(id)kUTTypeJPEG : @(YYImageTypeJPEG),
-                (id)kUTTypeJPEG2000 : @(YYImageTypeJPEG2000),
-                (id)kUTTypeTIFF : @(YYImageTypeTIFF),
-                (id)kUTTypeBMP : @(YYImageTypeBMP),
-                (id)kUTTypeICO : @(YYImageTypeICO),
-                (id)kUTTypeAppleICNS : @(YYImageTypeICNS),
-                (id)kUTTypeGIF : @(YYImageTypeGIF),
-                (id)kUTTypePNG : @(YYImageTypePNG)};
+        dic = @{(id)kUTTypeJPEG : @(Udesk_YYImageTypeJPEG),
+                (id)kUTTypeJPEG2000 : @(Udesk_YYImageTypeJPEG2000),
+                (id)kUTTypeTIFF : @(Udesk_YYImageTypeTIFF),
+                (id)kUTTypeBMP : @(Udesk_YYImageTypeBMP),
+                (id)kUTTypeICO : @(Udesk_YYImageTypeICO),
+                (id)kUTTypeAppleICNS : @(Udesk_YYImageTypeICNS),
+                (id)kUTTypeGIF : @(Udesk_YYImageTypeGIF),
+                (id)kUTTypePNG : @(Udesk_YYImageTypePNG)};
     });
-    if (!uti) return YYImageTypeUnknown;
+    if (!uti) return Udesk_YYImageTypeUnknown;
     NSNumber *num = dic[(__bridge __strong id)(uti)];
     return num.unsignedIntegerValue;
 }
 
-NSString *Udesk_YYImageTypeGetExtension(YYImageType type) {
+NSString *Udesk_YYImageTypeGetExtension(Udesk_YYImageType type) {
     switch (type) {
-        case YYImageTypeJPEG: return @"jpg";
-        case YYImageTypeJPEG2000: return @"jp2";
-        case YYImageTypeTIFF: return @"tiff";
-        case YYImageTypeBMP: return @"bmp";
-        case YYImageTypeICO: return @"ico";
-        case YYImageTypeICNS: return @"icns";
-        case YYImageTypeGIF: return @"gif";
-        case YYImageTypePNG: return @"png";
-        case YYImageTypeWebP: return @"webp";
+        case Udesk_YYImageTypeJPEG: return @"jpg";
+        case Udesk_YYImageTypeJPEG2000: return @"jp2";
+        case Udesk_YYImageTypeTIFF: return @"tiff";
+        case Udesk_YYImageTypeBMP: return @"bmp";
+        case Udesk_YYImageTypeICO: return @"ico";
+        case Udesk_YYImageTypeICNS: return @"icns";
+        case Udesk_YYImageTypeGIF: return @"gif";
+        case Udesk_YYImageTypePNG: return @"png";
+        case Udesk_YYImageTypeWebP: return @"webp";
         default: return nil;
     }
 }
 
-CFDataRef Udesk_YYCGImageCreateEncodedData(CGImageRef imageRef, YYImageType type, CGFloat quality) {
+CFDataRef Udesk_YYCGImageCreateEncodedData(CGImageRef imageRef, Udesk_YYImageType type, CGFloat quality) {
     if (!imageRef) return nil;
     quality = quality < 0 ? 0 : quality > 1 ? 1 : quality;
     
-    if (type == YYImageTypeWebP) {
+    if (type == Udesk_YYImageTypeWebP) {
 #if YYIMAGE_WEBP_ENABLED
         if (quality == 1) {
             return Udesk_YYCGImageCreateEncodedWebPData(imageRef, YES, quality, 4, YYImagePresetDefault);
@@ -1442,7 +1442,7 @@ BOOL Udesk_YYImageWebPAvailable() {
     return NO;
 }
 
-CFDataRef Udesk_YYCGImageCreateEncodedWebPData(CGImageRef imageRef, BOOL lossless, CGFloat quality, int compressLevel, YYImagePreset preset) {
+CFDataRef Udesk_YYCGImageCreateEncodedWebPData(CGImageRef imageRef, BOOL lossless, CGFloat quality, int compressLevel, Udesk_YYImagePreset preset) {
     NSLog(@"WebP decoder is disabled");
     return NULL;
 }
@@ -1611,7 +1611,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     _finalized = final;
     _data = data;
     
-    YYImageType type = Udesk_YYImageDetectType((__bridge CFDataRef)data);
+    Udesk_YYImageType type = Udesk_YYImageDetectType((__bridge CFDataRef)data);
     if (_sourceTypeDetected) {
         if (_type != type) {
             return NO;
@@ -1633,7 +1633,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     Udesk_YYImageDecoderFrame *frame = [(Udesk_YYImageDecoderFrame *)_frames[index] copy];
     BOOL decoded = NO;
     BOOL extendToCanvas = NO;
-    if (_type != YYImageTypeICO && decodeForDisplay) { // ICO contains multi-size frame and should not extend to canvas.
+    if (_type != Udesk_YYImageTypeICO && decodeForDisplay) { // ICO contains multi-size frame and should not extend to canvas.
         extendToCanvas = YES;
     }
     
@@ -1674,7 +1674,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
                 CFRelease(unblendedImage);
             }
             imageRef = CGBitmapContextCreateImage(_blendCanvas);
-            if (frame.dispose == YYImageDisposeBackground) {
+            if (frame.dispose == Udesk_YYImageDisposeBackground) {
                 CGContextClearRect(_blendCanvas, CGRectMake(frame.offsetX, frame.offsetY, frame.width, frame.height));
             }
             _blendFrameIndex = index;
@@ -1702,8 +1702,8 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
         frame.height = _height;
         frame.offsetX = 0;
         frame.offsetY = 0;
-        frame.dispose = YYImageDisposeNone;
-        frame.blend = YYImageBlendNone;
+        frame.dispose = Udesk_YYImageDisposeNone;
+        frame.blend = Udesk_YYImageBlendNone;
     }
     return frame;
 }
@@ -1727,11 +1727,11 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
 
 - (void)_updateSource {
     switch (_type) {
-        case YYImageTypeWebP: {
+        case Udesk_YYImageTypeWebP: {
             [self _updateSourceWebP];
         } break;
             
-        case YYImageTypePNG: {
+        case Udesk_YYImageTypePNG: {
             [self _updateSourceAPNG];
         } break;
             
@@ -1900,30 +1900,30 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
         
         switch (fi->frame_control.dispose_op) {
             case YY_PNG_DISPOSE_OP_BACKGROUND: {
-                frame.dispose = YYImageDisposeBackground;
+                frame.dispose = Udesk_YYImageDisposeBackground;
             } break;
             case YY_PNG_DISPOSE_OP_PREVIOUS: {
-                frame.dispose = YYImageDisposePrevious;
+                frame.dispose = Udesk_YYImageDisposePrevious;
             } break;
             default: {
-                frame.dispose = YYImageDisposeNone;
+                frame.dispose = Udesk_YYImageDisposeNone;
             } break;
         }
         switch (fi->frame_control.blend_op) {
             case YY_PNG_BLEND_OP_OVER: {
-                frame.blend = YYImageBlendOver;
+                frame.blend = Udesk_YYImageBlendOver;
             } break;
                 
             default: {
-                frame.blend = YYImageBlendNone;
+                frame.blend = Udesk_YYImageBlendNone;
             } break;
         }
         
-        if (frame.blend == YYImageBlendNone && frame.isFullSize) {
+        if (frame.blend == Udesk_YYImageBlendNone && frame.isFullSize) {
             frame.blendFromIndex  = i;
-            if (frame.dispose != YYImageDisposePrevious) lastBlendIndex = i;
+            if (frame.dispose != Udesk_YYImageDisposePrevious) lastBlendIndex = i;
         } else {
-            if (frame.dispose == YYImageDisposeBackground && frame.isFullSize) {
+            if (frame.dispose == Udesk_YYImageDisposeBackground && frame.isFullSize) {
                 frame.blendFromIndex = lastBlendIndex;
                 lastBlendIndex = i + 1;
             } else {
@@ -1971,10 +1971,10 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     if (!_finalized) { // ignore multi-frame before finalized
         _frameCount = 1;
     } else {
-        if (_type == YYImageTypePNG) { // use custom apng decoder and ignore multi-frame
+        if (_type == Udesk_YYImageTypePNG) { // use custom apng decoder and ignore multi-frame
             _frameCount = 1;
         }
-        if (_type == YYImageTypeGIF) { // get gif loop count
+        if (_type == Udesk_YYImageTypeGIF) { // get gif loop count
             CFDictionaryRef properties = CGImageSourceCopyProperties(_source, NULL);
             if (properties) {
                 CFDictionaryRef gif = CFDictionaryGetValue(properties, kCGImagePropertyGIFDictionary);
@@ -2009,7 +2009,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
             if (value) CFNumberGetValue(value, kCFNumberNSIntegerType, &width);
             value = CFDictionaryGetValue(properties, kCGImagePropertyPixelHeight);
             if (value) CFNumberGetValue(value, kCFNumberNSIntegerType, &height);
-            if (_type == YYImageTypeGIF) {
+            if (_type == Udesk_YYImageTypeGIF) {
                 CFDictionaryRef gif = CFDictionaryGetValue(properties, kCGImagePropertyGIFDictionary);
                 if (gif) {
                     // Use the unclamped frame delay if it exists.
@@ -2213,12 +2213,12 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
 }
 
 - (void)_blendImageWithFrame:(Udesk_YYImageDecoderFrame *)frame {
-    if (frame.dispose == YYImageDisposePrevious) {
+    if (frame.dispose == Udesk_YYImageDisposePrevious) {
         // nothing
-    } else if (frame.dispose == YYImageDisposeBackground) {
+    } else if (frame.dispose == Udesk_YYImageDisposeBackground) {
         CGContextClearRect(_blendCanvas, CGRectMake(frame.offsetX, frame.offsetY, frame.width, frame.height));
     } else { // no dispose
-        if (frame.blend == YYImageBlendOver) {
+        if (frame.blend == Udesk_YYImageBlendOver) {
             CGImageRef unblendImage = [self _newUnblendedImageAtIndex:frame.index extendToCanvas:NO decoded:NULL];
             if (unblendImage) {
                 CGContextDrawImage(_blendCanvas, CGRectMake(frame.offsetX, frame.offsetY, frame.width, frame.height), unblendImage);
@@ -2237,8 +2237,8 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
 
 - (CGImageRef)_newBlendedImageWithFrame:(Udesk_YYImageDecoderFrame *)frame CF_RETURNS_RETAINED{
     CGImageRef imageRef = NULL;
-    if (frame.dispose == YYImageDisposePrevious) {
-        if (frame.blend == YYImageBlendOver) {
+    if (frame.dispose == Udesk_YYImageDisposePrevious) {
+        if (frame.blend == Udesk_YYImageBlendOver) {
             CGImageRef previousImage = CGBitmapContextCreateImage(_blendCanvas);
             CGImageRef unblendImage = [self _newUnblendedImageAtIndex:frame.index extendToCanvas:NO decoded:NULL];
             if (unblendImage) {
@@ -2266,8 +2266,8 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
                 CFRelease(previousImage);
             }
         }
-    } else if (frame.dispose == YYImageDisposeBackground) {
-        if (frame.blend == YYImageBlendOver) {
+    } else if (frame.dispose == Udesk_YYImageDisposeBackground) {
+        if (frame.blend == Udesk_YYImageBlendOver) {
             CGImageRef unblendImage = [self _newUnblendedImageAtIndex:frame.index extendToCanvas:NO decoded:NULL];
             if (unblendImage) {
                 CGContextDrawImage(_blendCanvas, CGRectMake(frame.offsetX, frame.offsetY, frame.width, frame.height), unblendImage);
@@ -2286,7 +2286,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
             CGContextClearRect(_blendCanvas, CGRectMake(frame.offsetX, frame.offsetY, frame.width, frame.height));
         }
     } else { // no dispose
-        if (frame.blend == YYImageBlendOver) {
+        if (frame.blend == Udesk_YYImageBlendOver) {
             CGImageRef unblendImage = [self _newUnblendedImageAtIndex:frame.index extendToCanvas:NO decoded:NULL];
             if (unblendImage) {
                 CGContextDrawImage(_blendCanvas, CGRectMake(frame.offsetX, frame.offsetY, frame.width, frame.height), unblendImage);
@@ -2319,17 +2319,17 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
 
 - (instancetype)init {
     @throw [NSException exceptionWithName:@"YYImageEncoder init error" reason:@"YYImageEncoder must be initialized with a type. Use 'initWithType:' instead." userInfo:nil];
-    return [self initWithType:YYImageTypeUnknown];
+    return [self initWithType:Udesk_YYImageTypeUnknown];
 }
 
-- (instancetype)initWithType:(YYImageType)type {
-    if (type == YYImageTypeUnknown || type >= YYImageTypeOther) {
+- (instancetype)initWithType:(Udesk_YYImageType)type {
+    if (type == Udesk_YYImageTypeUnknown || type >= Udesk_YYImageTypeOther) {
         NSLog(@"[%s: %d] Unsupported image type:%d",__FUNCTION__, __LINE__, (int)type);
         return nil;
     }
     
 #if !YYIMAGE_WEBP_ENABLED
-    if (type == YYImageTypeWebP) {
+    if (type == Udesk_YYImageTypeWebP) {
         NSLog(@"[%s: %d] WebP is not available, check the documentation to see how to install WebP component: https://github.com/ibireme/YYImage#installation", __FUNCTION__, __LINE__);
         return nil;
     }
@@ -2342,20 +2342,20 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     _durations = [NSMutableArray new];
 
     switch (type) {
-        case YYImageTypeJPEG:
-        case YYImageTypeJPEG2000: {
+        case Udesk_YYImageTypeJPEG:
+        case Udesk_YYImageTypeJPEG2000: {
             _quality = 0.9;
         } break;
-        case YYImageTypeTIFF:
-        case YYImageTypeBMP:
-        case YYImageTypeGIF:
-        case YYImageTypeICO:
-        case YYImageTypeICNS:
-        case YYImageTypePNG: {
+        case Udesk_YYImageTypeTIFF:
+        case Udesk_YYImageTypeBMP:
+        case Udesk_YYImageTypeGIF:
+        case Udesk_YYImageTypeICO:
+        case Udesk_YYImageTypeICNS:
+        case Udesk_YYImageTypePNG: {
             _quality = 1;
             _lossless = YES;
         } break;
-        case YYImageTypeWebP: {
+        case Udesk_YYImageTypeWebP: {
             _quality = 0.8;
         } break;
         default:
@@ -2394,19 +2394,19 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
 
 - (BOOL)_imageIOAvaliable {
     switch (_type) {
-        case YYImageTypeJPEG:
-        case YYImageTypeJPEG2000:
-        case YYImageTypeTIFF:
-        case YYImageTypeBMP:
-        case YYImageTypeICO:
-        case YYImageTypeICNS:
-        case YYImageTypeGIF: {
+        case Udesk_YYImageTypeJPEG:
+        case Udesk_YYImageTypeJPEG2000:
+        case Udesk_YYImageTypeTIFF:
+        case Udesk_YYImageTypeBMP:
+        case Udesk_YYImageTypeICO:
+        case Udesk_YYImageTypeICNS:
+        case Udesk_YYImageTypeGIF: {
             return _images.count > 0;
         } break;
-        case YYImageTypePNG: {
+        case Udesk_YYImageTypePNG: {
             return _images.count == 1;
         } break;
-        case YYImageTypeWebP: {
+        case Udesk_YYImageTypeWebP: {
             return NO;
         } break;
         default: return NO;
@@ -2428,7 +2428,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
 }
 
 - (void)_encodeImageWithDestination:(CGImageDestinationRef)destination imageCount:(NSUInteger)count {
-    if (_type == YYImageTypeGIF) {
+    if (_type == Udesk_YYImageTypeGIF) {
         NSDictionary *gifProperty = @{(__bridge id)kCGImagePropertyGIFDictionary:
                                         @{(__bridge id)kCGImagePropertyGIFLoopCount: @(_loopCount)}};
         CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)gifProperty);
@@ -2438,7 +2438,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
         @autoreleasepool {
             id imageSrc = _images[i];
             NSDictionary *frameProperty = NULL;
-            if (_type == YYImageTypeGIF && count > 1) {
+            if (_type == Udesk_YYImageTypeGIF && count > 1) {
                 frameProperty = @{(NSString *)kCGImagePropertyGIFDictionary : @{(NSString *) kCGImagePropertyGIFDelayTime:_durations[i]}};
             } else {
                 frameProperty = @{(id)kCGImageDestinationLossyCompressionQuality : @(_quality)};
@@ -2496,7 +2496,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
 
 - (NSData *)_encodeWithImageIO {
     NSMutableData *data = [NSMutableData new];
-    NSUInteger count = _type == YYImageTypeGIF ? _images.count : 1;
+    NSUInteger count = _type == Udesk_YYImageTypeGIF ? _images.count : 1;
     CGImageDestinationRef destination = [self _newImageDestination:data imageCount:count];
     BOOL suc = NO;
     if (destination) {
@@ -2512,7 +2512,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
 }
 
 - (BOOL)_encodeWithImageIO:(NSString *)path {
-    NSUInteger count = _type == YYImageTypeGIF ? _images.count : 1;
+    NSUInteger count = _type == Udesk_YYImageTypeGIF ? _images.count : 1;
     CGImageDestinationRef destination = [self _newImageDestination:path imageCount:count];
     BOOL suc = NO;
     if (destination) {
@@ -2535,7 +2535,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
         [pngSizes addObject:[NSValue valueWithCGSize:size]];
         if (canvasWidth < size.width) canvasWidth = size.width;
         if (canvasHeight < size.height) canvasHeight = size.height;
-        CFDataRef frameData = Udesk_YYCGImageCreateEncodedData(decoded, YYImageTypePNG, 1);
+        CFDataRef frameData = Udesk_YYCGImageCreateEncodedData(decoded, Udesk_YYImageTypePNG, 1);
         CFRelease(decoded);
         if (!frameData) return nil;
         [pngDatas addObject:(__bridge id)(frameData)];
@@ -2557,7 +2557,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
         CGImageRef extendedImage = CGBitmapContextCreateImage(context);
         CFRelease(context);
         if (!extendedImage) return nil;
-        CFDataRef frameData = Udesk_YYCGImageCreateEncodedData(extendedImage, YYImageTypePNG, 1);
+        CFDataRef frameData = Udesk_YYCGImageCreateEncodedData(extendedImage, Udesk_YYImageTypePNG, 1);
         if (!frameData) {
             CFRelease(extendedImage);
             return nil;
@@ -2733,8 +2733,8 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     if (_images.count == 0) return nil;
     
     if ([self _imageIOAvaliable]) return [self _encodeWithImageIO];
-    if (_type == YYImageTypePNG) return [self _encodeAPNG];
-    if (_type == YYImageTypeWebP) return [self _encodeWebP];
+    if (_type == Udesk_YYImageTypePNG) return [self _encodeAPNG];
+    if (_type == Udesk_YYImageTypeWebP) return [self _encodeWebP];
     return nil;
 }
 
@@ -2747,14 +2747,14 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     return [data writeToFile:path atomically:YES];
 }
 
-+ (NSData *)encodeImage:(UIImage *)image type:(YYImageType)type quality:(CGFloat)quality {
++ (NSData *)encodeImage:(UIImage *)image type:(Udesk_YYImageType)type quality:(CGFloat)quality {
     Udesk_YYImageEncoder *encoder = [[Udesk_YYImageEncoder alloc] initWithType:type];
     encoder.quality = quality;
     [encoder addImage:image duration:0];
     return [encoder encode];
 }
 
-+ (NSData *)encodeImageWithDecoder:(Udesk_YYImageDecoder *)decoder type:(YYImageType)type quality:(CGFloat)quality {
++ (NSData *)encodeImageWithDecoder:(Udesk_YYImageDecoder *)decoder type:(Udesk_YYImageType)type quality:(CGFloat)quality {
     if (!decoder || decoder.frameCount == 0) return nil;
     Udesk_YYImageEncoder *encoder = [[Udesk_YYImageEncoder alloc] initWithType:type];
     encoder.quality = quality;
@@ -2821,8 +2821,8 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
         Udesk_YYImage *image = (id)self;
         if (image.animatedImageData) {
             if (forSystem) { // system only support GIF and PNG
-                if (image.animatedImageType == YYImageTypeGIF ||
-                    image.animatedImageType == YYImageTypePNG) {
+                if (image.animatedImageType == Udesk_YYImageTypeGIF ||
+                    image.animatedImageType == Udesk_YYImageTypePNG) {
                     data = image.animatedImageData;
                 }
             } else {

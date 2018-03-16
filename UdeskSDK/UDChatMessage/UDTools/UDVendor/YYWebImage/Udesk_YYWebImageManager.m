@@ -77,17 +77,17 @@ static UIApplication *_YYSharedApplication() {
 }
 
 - (Udesk_YYWebImageOperation *)requestImageWithURL:(NSURL *)url
-                                     options:(YYWebImageOptions)options
-                                    progress:(YYWebImageProgressBlock)progress
-                                   transform:(YYWebImageTransformBlock)transform
-                                  completion:(YYWebImageCompletionBlock)completion {
+                                     options:(Udesk_YYWebImageOptions)options
+                                    progress:(Udesk_YYWebImageProgressBlock)progress
+                                   transform:(Udesk_YYWebImageTransformBlock)transform
+                                  completion:(Udesk_YYWebImageCompletionBlock)completion {
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.timeoutInterval = _timeout;
-    request.HTTPShouldHandleCookies = (options & YYWebImageOptionHandleCookies) != 0;
+    request.HTTPShouldHandleCookies = (options & Udesk_YYWebImageOptionHandleCookies) != 0;
     request.allHTTPHeaderFields = [self headersForURL:url];
     request.HTTPShouldUsePipelining = YES;
-    request.cachePolicy = (options & YYWebImageOptionUseNSURLCache) ?
+    request.cachePolicy = (options & Udesk_YYWebImageOptionUseNSURLCache) ?
         NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData;
     
     Udesk_YYWebImageOperation *operation = [[Udesk_YYWebImageOperation alloc] initWithRequest:request

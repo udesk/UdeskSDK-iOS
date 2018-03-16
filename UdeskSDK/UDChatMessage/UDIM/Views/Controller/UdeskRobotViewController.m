@@ -78,21 +78,21 @@
                 NSURLRequest *request = [NSURLRequest requestWithURL:self.robotURL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
                 
                 if (ud_isIOS8) {
-                    WKWebView *intelligenceWeb = [[WKWebView alloc] initWithFrame:webViewRect];
-                    intelligenceWeb.ud_height -= spacing;
-                    intelligenceWeb.backgroundColor=[UIColor whiteColor];
-                    [intelligenceWeb loadRequest:request];
+                    WKWebView *robotWkWebView = [[WKWebView alloc] initWithFrame:webViewRect];
+                    robotWkWebView.ud_height -= spacing;
+                    robotWkWebView.backgroundColor = [UIColor whiteColor];
+                    [robotWkWebView loadRequest:request];
                     
-                    [self.view addSubview:intelligenceWeb];
+                    [self.view addSubview:robotWkWebView];
                 }
                 else {
+                
+                    UIWebView *robotWebView = [[UIWebView alloc] initWithFrame:webViewRect];
+                    robotWebView.ud_height -= spacing;
+                    robotWebView.backgroundColor=[UIColor whiteColor];
+                    [robotWebView loadRequest:request];
                     
-                    UIWebView *intelligenceWeb = [[UIWebView alloc] initWithFrame:webViewRect];
-                    intelligenceWeb.ud_height -= spacing;
-                    intelligenceWeb.backgroundColor=[UIColor whiteColor];
-                    [intelligenceWeb loadRequest:request];
-                    
-                    [self.view addSubview:intelligenceWeb];
+                    [self.view addSubview:robotWebView];
                 }
             }
             else {

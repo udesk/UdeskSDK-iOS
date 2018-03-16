@@ -16,18 +16,18 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Image file type.
  */
-typedef NS_ENUM(NSUInteger, YYImageType) {
-    YYImageTypeUnknown = 0, ///< unknown
-    YYImageTypeJPEG,        ///< jpeg, jpg
-    YYImageTypeJPEG2000,    ///< jp2
-    YYImageTypeTIFF,        ///< tiff, tif
-    YYImageTypeBMP,         ///< bmp
-    YYImageTypeICO,         ///< ico
-    YYImageTypeICNS,        ///< icns
-    YYImageTypeGIF,         ///< gif
-    YYImageTypePNG,         ///< png
-    YYImageTypeWebP,        ///< webp
-    YYImageTypeOther,       ///< other image format
+typedef NS_ENUM(NSUInteger, Udesk_YYImageType) {
+    Udesk_YYImageTypeUnknown = 0, ///< unknown
+    Udesk_YYImageTypeJPEG,        ///< jpeg, jpg
+    Udesk_YYImageTypeJPEG2000,    ///< jp2
+    Udesk_YYImageTypeTIFF,        ///< tiff, tif
+    Udesk_YYImageTypeBMP,         ///< bmp
+    Udesk_YYImageTypeICO,         ///< ico
+    Udesk_YYImageTypeICNS,        ///< icns
+    Udesk_YYImageTypeGIF,         ///< gif
+    Udesk_YYImageTypePNG,         ///< png
+    Udesk_YYImageTypeWebP,        ///< webp
+    Udesk_YYImageTypeOther,       ///< other image format
 };
 
 
@@ -35,43 +35,43 @@ typedef NS_ENUM(NSUInteger, YYImageType) {
  Dispose method specifies how the area used by the current frame is to be treated
  before rendering the next frame on the canvas.
  */
-typedef NS_ENUM(NSUInteger, YYImageDisposeMethod) {
+typedef NS_ENUM(NSUInteger, Udesk_YYImageDisposeMethod) {
     
     /**
      No disposal is done on this frame before rendering the next; the contents
      of the canvas are left as is.
      */
-    YYImageDisposeNone = 0,
+    Udesk_YYImageDisposeNone = 0,
     
     /**
      The frame's region of the canvas is to be cleared to fully transparent black
      before rendering the next frame.
      */
-    YYImageDisposeBackground,
+    Udesk_YYImageDisposeBackground,
     
     /**
      The frame's region of the canvas is to be reverted to the previous contents
      before rendering the next frame.
      */
-    YYImageDisposePrevious,
+    Udesk_YYImageDisposePrevious,
 };
 
 /**
  Blend operation specifies how transparent pixels of the current frame are
  blended with those of the previous canvas.
  */
-typedef NS_ENUM(NSUInteger, YYImageBlendOperation) {
+typedef NS_ENUM(NSUInteger, Udesk_YYImageBlendOperation) {
     
     /**
      All color components of the frame, including alpha, overwrite the current
      contents of the frame's canvas region.
      */
-    YYImageBlendNone = 0,
+    Udesk_YYImageBlendNone = 0,
     
     /**
      The frame should be composited onto the output buffer based on its alpha.
      */
-    YYImageBlendOver,
+    Udesk_YYImageBlendOver,
 };
 
 /**
@@ -84,8 +84,8 @@ typedef NS_ENUM(NSUInteger, YYImageBlendOperation) {
 @property (nonatomic) NSUInteger offsetX;  ///< Frame origin.x in canvas (left-bottom based)
 @property (nonatomic) NSUInteger offsetY;  ///< Frame origin.y in canvas (left-bottom based)
 @property (nonatomic) NSTimeInterval duration;          ///< Frame duration in seconds
-@property (nonatomic) YYImageDisposeMethod dispose;     ///< Frame dispose method.
-@property (nonatomic) YYImageBlendOperation blend;      ///< Frame blend operation.
+@property (nonatomic) Udesk_YYImageDisposeMethod dispose;     ///< Frame dispose method.
+@property (nonatomic) Udesk_YYImageBlendOperation blend;      ///< Frame blend operation.
 @property (nullable, nonatomic, strong) UIImage *image; ///< The image.
 + (instancetype)frameWithImage:(UIImage *)image;
 @end
@@ -127,7 +127,7 @@ typedef NS_ENUM(NSUInteger, YYImageBlendOperation) {
 @interface Udesk_YYImageDecoder : NSObject
 
 @property (nullable, nonatomic, readonly) NSData *data;    ///< Image data.
-@property (nonatomic, readonly) YYImageType type;          ///< Image data type.
+@property (nonatomic, readonly) Udesk_YYImageType type;          ///< Image data type.
 @property (nonatomic, readonly) CGFloat scale;             ///< Image scale.
 @property (nonatomic, readonly) NSUInteger frameCount;     ///< Image frame count.
 @property (nonatomic, readonly) NSUInteger loopCount;      ///< Image loop count, 0 means infinite.
@@ -233,7 +233,7 @@ typedef NS_ENUM(NSUInteger, YYImageBlendOperation) {
  */
 @interface Udesk_YYImageEncoder : NSObject
 
-@property (nonatomic, readonly) YYImageType type; ///< Image type.
+@property (nonatomic, readonly) Udesk_YYImageType type; ///< Image type.
 @property (nonatomic) NSUInteger loopCount;       ///< Loop count, 0 means infinit, only available for GIF/APNG/WebP.
 @property (nonatomic) BOOL lossless;              ///< Lossless, only available for WebP.
 @property (nonatomic) CGFloat quality;            ///< Compress quality, 0.0~1.0, only available for JPG/JP2/WebP.
@@ -246,7 +246,7 @@ typedef NS_ENUM(NSUInteger, YYImageBlendOperation) {
  @param type Image type.
  @return A new encoder, or nil if an error occurs.
  */
-- (nullable instancetype)initWithType:(YYImageType)type NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithType:(Udesk_YYImageType)type NS_DESIGNATED_INITIALIZER;
 
 /**
  Add an image to encoder.
@@ -288,7 +288,7 @@ typedef NS_ENUM(NSUInteger, YYImageBlendOperation) {
  @param quality Image quality, 0.0~1.0.
  @return The image data, or nil if an error occurs.
  */
-+ (nullable NSData *)encodeImage:(UIImage *)image type:(YYImageType)type quality:(CGFloat)quality;
++ (nullable NSData *)encodeImage:(UIImage *)image type:(Udesk_YYImageType)type quality:(CGFloat)quality;
 
 /**
  Convenience method to encode image from a decoder.
@@ -297,7 +297,7 @@ typedef NS_ENUM(NSUInteger, YYImageBlendOperation) {
  @param quality Image quality, 0.0~1.0.
  @return The image data, or nil if an error occurs.
  */
-+ (nullable NSData *)encodeImageWithDecoder:(Udesk_YYImageDecoder *)decoder type:(YYImageType)type quality:(CGFloat)quality;
++ (nullable NSData *)encodeImageWithDecoder:(Udesk_YYImageDecoder *)decoder type:(Udesk_YYImageType)type quality:(CGFloat)quality;
 
 @end
 
@@ -353,16 +353,16 @@ typedef NS_ENUM(NSUInteger, YYImageBlendOperation) {
 #pragma mark - Helper
 
 /// Detect a data's image type by reading the data's header 16 bytes (very fast).
-CG_EXTERN YYImageType Udesk_YYImageDetectType(CFDataRef data);
+CG_EXTERN Udesk_YYImageType Udesk_YYImageDetectType(CFDataRef data);
 
 /// Convert YYImageType to UTI (such as kUTTypeJPEG).
-CG_EXTERN CFStringRef _Nullable Udesk_YYImageTypeToUTType(YYImageType type);
+CG_EXTERN CFStringRef _Nullable Udesk_YYImageTypeToUTType(Udesk_YYImageType type);
 
 /// Convert UTI (such as kUTTypeJPEG) to YYImageType.
-CG_EXTERN YYImageType Udesk_YYImageTypeFromUTType(CFStringRef uti);
+CG_EXTERN Udesk_YYImageType Udesk_YYImageTypeFromUTType(CFStringRef uti);
 
 /// Get image type's file extension (such as @"jpg").
-CG_EXTERN NSString *_Nullable Udesk_YYImageTypeGetExtension(YYImageType type);
+CG_EXTERN NSString *_Nullable Udesk_YYImageTypeGetExtension(Udesk_YYImageType type);
 
 
 
@@ -439,7 +439,7 @@ CG_EXTERN CGImageRef _Nullable Udesk_YYCGImageCreateAffineTransformCopy(CGImageR
  @param quality   The quality (0.0~1.0)
  @return A new image data, or nil if an error occurs.
  */
-CG_EXTERN CFDataRef _Nullable Udesk_YYCGImageCreateEncodedData(CGImageRef imageRef, YYImageType type, CGFloat quality);
+CG_EXTERN CFDataRef _Nullable Udesk_YYCGImageCreateEncodedData(CGImageRef imageRef, Udesk_YYImageType type, CGFloat quality);
 
 
 /**
@@ -475,13 +475,13 @@ CG_EXTERN CGImageRef _Nullable Udesk_YYCGImageCreateWithWebPData(CFDataRef webpD
                                                            BOOL bypassFiltering,
                                                            BOOL noFancyUpsampling);
 
-typedef NS_ENUM(NSUInteger, YYImagePreset) {
-    YYImagePresetDefault = 0,  ///< default preset.
-    YYImagePresetPicture,      ///< digital picture, like portrait, inner shot
-    YYImagePresetPhoto,        ///< outdoor photograph, with natural lighting
-    YYImagePresetDrawing,      ///< hand or line drawing, with high-contrast details
-    YYImagePresetIcon,         ///< small-sized colorful images
-    YYImagePresetText          ///< text-like
+typedef NS_ENUM(NSUInteger, Udesk_YYImagePreset) {
+    Udesk_YYImagePresetDefault = 0,  ///< default preset.
+    Udesk_YYImagePresetPicture,      ///< digital picture, like portrait, inner shot
+    Udesk_YYImagePresetPhoto,        ///< outdoor photograph, with natural lighting
+    Udesk_YYImagePresetDrawing,      ///< hand or line drawing, with high-contrast details
+    Udesk_YYImagePresetIcon,         ///< small-sized colorful images
+    Udesk_YYImagePresetText          ///< text-like
 };
 
 /**
@@ -499,6 +499,6 @@ CG_EXTERN CFDataRef _Nullable Udesk_YYCGImageCreateEncodedWebPData(CGImageRef im
                                                              BOOL lossless,
                                                              CGFloat quality,
                                                              int compressLevel,
-                                                             YYImagePreset preset);
+                                                             Udesk_YYImagePreset preset);
 
 NS_ASSUME_NONNULL_END
