@@ -1760,6 +1760,7 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(PROJECT_DIR)/UdeskSDKExample/Vendor",
 					"\"$(SRCROOT)/../UdeskCall/Framework\"",
 				);
 				GCC_PREFIX_HEADER = "";
@@ -1841,6 +1842,7 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(PROJECT_DIR)/UdeskSDKExample/Vendor",
 					"\"$(SRCROOT)/../UdeskCall/Framework\"",
 				);
 				GCC_PREFIX_HEADER = "";

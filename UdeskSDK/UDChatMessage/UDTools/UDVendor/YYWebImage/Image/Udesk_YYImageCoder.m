@@ -125,7 +125,7 @@ static inline uint32_t yy_swap_endian_uint32(uint32_t value) {
  frame data        (x) frame data for this frame (same as 'IDAT')
  
  ===============================================================================
- `dispose_op` specifies how the output buffer should be changed at the end of the delay 
+ `dispose_op` specifies how the output buffer should be changed at the end of the delay
  (before rendering the next frame).
  
  * NONE: no disposal is done on this frame before rendering the next; the contents
@@ -139,7 +139,7 @@ static inline uint32_t yy_swap_endian_uint32(uint32_t value) {
  content, or whether it should completely replace its region in the output buffer.
  
  * SOURCE: all color components of the frame, including alpha, overwrite the current contents
-    of the frame's output buffer region. 
+    of the frame's output buffer region.
  * OVER: the frame should be composited onto the output buffer based on its alpha,
     using a simple OVER operation as described in the "Alpha Channel Processing" section
     of the PNG specification
@@ -684,7 +684,7 @@ static void YYCGDataProviderReleaseDataCallback(void *info, const void *data, si
  
  @param srcImage   Source image.
  @param dest       Destination buffer. It should be zero before call this method.
-                   If decode succeed, you should release the dest->data using free().
+        If decode succeed, you should release the dest->data using free().
  @param destFormat Destination bitmap format.
  
  @return Whether succeed.
@@ -746,7 +746,7 @@ fail:
  
  @param srcImage   Source image.
  @param dest       Destination buffer. It should be zero before call this method.
-                   If decode succeed, you should release the dest->data using free().
+ If decode succeed, you should release the dest->data using free().
  @param bitmapInfo Destination bitmap format.
  
  @return Whether succeed.
@@ -886,7 +886,7 @@ CGImageRef Udesk_YYCGImageCreateDecodedCopy(CGImageRef imageRef, BOOL decodeForD
         bitmapInfo |= hasAlpha ? kCGImageAlphaPremultipliedFirst : kCGImageAlphaNoneSkipFirst;
         CGContextRef context = CGBitmapContextCreate(NULL, width, height, 8, 0, Udesk_YYCGColorSpaceGetDeviceRGB(), bitmapInfo);
         if (!context) return NULL;
-//        CGContextClearRect(context, CGRectMake(0, 0, width, height));
+        //        CGContextClearRect(context, CGRectMake(0, 0, width, height));
         CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef); // decode
         CGImageRef newImage = CGBitmapContextCreateImage(context);
         CFRelease(context);
@@ -1109,11 +1109,11 @@ Udesk_YYImageType Udesk_YYImageDetectType(CFDataRef data) {
                 return Udesk_YYImageTypeWebP;
             }
         } break;
-        /*
-        case YY_FOUR_CC('B', 'P', 'G', 0xFB): { // BPG
-            return YYImageTypeBPG;
-        } break;
-        */
+            /*
+             case YY_FOUR_CC('B', 'P', 'G', 0xFB): { // BPG
+             return YYImageTypeBPG;
+             } break;
+             */
     }
     
     uint16_t magic2 = *((uint16_t *)bytes);
@@ -1194,9 +1194,9 @@ CFDataRef Udesk_YYCGImageCreateEncodedData(CGImageRef imageRef, Udesk_YYImageTyp
     if (type == Udesk_YYImageTypeWebP) {
 #if YYIMAGE_WEBP_ENABLED
         if (quality == 1) {
-            return Udesk_YYCGImageCreateEncodedWebPData(imageRef, YES, quality, 4, YYImagePresetDefault);
+            return Udesk_YYCGImageCreateEncodedWebPData(imageRef, YES, quality, 4, Udesk_YYImagePresetDefault);
         } else {
-            return Udesk_YYCGImageCreateEncodedWebPData(imageRef, NO, quality, 4, YYImagePresetDefault);
+            return Udesk_YYCGImageCreateEncodedWebPData(imageRef, NO, quality, 4, Udesk_YYImagePresetDefault);
         }
 #else
         return NULL;
@@ -1235,7 +1235,7 @@ BOOL Udesk_YYImageWebPAvailable() {
     return YES;
 }
 
-CFDataRef Udesk_YYCGImageCreateEncodedWebPData(CGImageRef imageRef, BOOL lossless, CGFloat quality, int compressLevel, YYImagePreset preset) {
+CFDataRef Udesk_YYCGImageCreateEncodedWebPData(CGImageRef imageRef, BOOL lossless, CGFloat quality, int compressLevel, Udesk_YYImagePreset preset) {
     if (!imageRef) return nil;
     size_t width = CGImageGetWidth(imageRef);
     size_t height = CGImageGetHeight(imageRef);
@@ -1252,7 +1252,7 @@ CFDataRef Udesk_YYCGImageCreateEncodedWebPData(CGImageRef imageRef, BOOL lossles
     BOOL pictureNeedFree = NO;
     
     quality = quality < 0 ? 0 : quality > 1 ? 1 : quality;
-    preset = preset > YYImagePresetText ? YYImagePresetDefault : preset;
+    preset = preset > Udesk_YYImagePresetText ? Udesk_YYImagePresetDefault : preset;
     compressLevel = compressLevel < 0 ? 0 : compressLevel > 6 ? 6 : compressLevel;
     if (!WebPConfigPreset(&config, (WebPPreset)preset, quality)) goto fail;
     
@@ -1313,10 +1313,10 @@ NSUInteger Udesk_YYImageGetWebPFrameCount(CFDataRef webpData) {
 }
 
 CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
-                                       BOOL decodeForDisplay,
-                                       BOOL useThreads,
-                                       BOOL bypassFiltering,
-                                       BOOL noFancyUpsampling) {
+                                             BOOL decodeForDisplay,
+                                             BOOL useThreads,
+                                             BOOL bypassFiltering,
+                                             BOOL noFancyUpsampling) {
     /*
      Call WebPDecode() on a multi-frame webp data will get an error (VP8_STATUS_UNSUPPORTED_FEATURE).
      Use WebPDemuxer to unpack it first.
@@ -1453,10 +1453,10 @@ NSUInteger Udesk_YYImageGetWebPFrameCount(CFDataRef webpData) {
 }
 
 CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
-                                       BOOL decodeForDisplay,
-                                       BOOL useThreads,
-                                       BOOL bypassFiltering,
-                                       BOOL noFancyUpsampling) {
+                                             BOOL decodeForDisplay,
+                                             BOOL useThreads,
+                                             BOOL bypassFiltering,
+                                             BOOL noFancyUpsampling) {
     NSLog(@"WebP decoder is disabled");
     return NULL;
 }
@@ -1754,7 +1754,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     
     /*
      https://developers.google.com/speed/webp/docs/api
-     The documentation said we can use WebPIDecoder to decode webp progressively, 
+     The documentation said we can use WebPIDecoder to decode webp progressively,
      but currently it can only returns an empty image (not same as progressive jpegs),
      so we don't use progressive decoding.
      
@@ -1787,10 +1787,10 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
             Udesk_YYImageDecoderFrame *frame = [Udesk_YYImageDecoderFrame new];
             [frames addObject:frame];
             if (iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND) {
-                frame.dispose = YYImageDisposeBackground;
+                frame.dispose = Udesk_YYImageDisposeBackground;
             }
             if (iter.blend_method == WEBP_MUX_BLEND) {
-                frame.blend = YYImageBlendOver;
+                frame.blend = Udesk_YYImageBlendOver;
             }
             
             int canvasWidth = WebPDemuxGetI(demuxer, WEBP_FF_CANVAS_WIDTH);
@@ -1986,7 +1986,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
             }
         }
     }
-
+    
     /*
      ICO, GIF, APNG may contains multi-frame.
      */
@@ -2340,7 +2340,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     _type = type;
     _images = [NSMutableArray new];
     _durations = [NSMutableArray new];
-
+    
     switch (type) {
         case Udesk_YYImageTypeJPEG:
         case Udesk_YYImageTypeJPEG2000: {
@@ -2430,7 +2430,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
 - (void)_encodeImageWithDestination:(CGImageDestinationRef)destination imageCount:(NSUInteger)count {
     if (_type == Udesk_YYImageTypeGIF) {
         NSDictionary *gifProperty = @{(__bridge id)kCGImagePropertyGIFDictionary:
-                                        @{(__bridge id)kCGImagePropertyGIFLoopCount: @(_loopCount)}};
+                                          @{(__bridge id)kCGImagePropertyGIFLoopCount: @(_loopCount)}};
         CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)gifProperty);
     }
     
@@ -2681,7 +2681,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     for (NSUInteger i = 0; i < _images.count; i++) {
         CGImageRef image = [self _newCGImageFromIndex:i decoded:NO];
         if (!image) return nil;
-        CFDataRef frameData = Udesk_YYCGImageCreateEncodedWebPData(image, _lossless, _quality, 4, YYImagePresetDefault);
+        CFDataRef frameData = Udesk_YYCGImageCreateEncodedWebPData(image, _lossless, _quality, 4, Udesk_YYImagePresetDefault);
         CFRelease(image);
         if (!frameData) return nil;
         [webpDatas addObject:(__bridge id)frameData];
