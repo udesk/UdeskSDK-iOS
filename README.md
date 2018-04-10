@@ -806,6 +806,12 @@ extension UINavigationController {
 
 #### 更新记录：
 
+sdk v3.9.2版本更新功能:
+
+1.修复了接收富文本消息有几率崩溃问题
+
+------
+
 sdk v3.9.1版本更新功能:
 
 1.工单页面、地理位置页面适配iPhone X

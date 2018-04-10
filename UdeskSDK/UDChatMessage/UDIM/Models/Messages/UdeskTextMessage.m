@@ -89,23 +89,33 @@ const CGFloat kUDTextMendSpacing = 2.0;
             self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
         }
         else if (self.message.messageType == UDMessageContentTypeRich) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                CGSize richTextSize = [self setRichAttributedCellText:self.message.content messageFrom:self.message.messageFrom];
-                //接收文字气泡frame
-                self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, richTextSize.width+(kUDBubbleToTextHorizontalSpacing*3), richTextSize.height+(kUDBubbleToTextVerticalSpacing*2));
-                //接收文字frame
-                self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing, richTextSize.width, richTextSize.height);
-                
-                //cell高度
-                self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
-            });
+            
+            if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.3) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self setupRichText];
+                });
+            }
+            else {
+                [self setupRichText];
+            }
         }
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
     }
+}
+
+- (void)setupRichText {
+    
+    CGSize richTextSize = [self setRichAttributedCellText:self.message.content messageFrom:self.message.messageFrom];
+    //接收文字气泡frame
+    self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, richTextSize.width+(kUDBubbleToTextHorizontalSpacing*3), richTextSize.height+(kUDBubbleToTextVerticalSpacing*2));
+    //接收文字frame
+    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing, richTextSize.width, richTextSize.height);
+    
+    //cell高度
+    self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
 }
 
 - (void)linkText:(NSString *)content {

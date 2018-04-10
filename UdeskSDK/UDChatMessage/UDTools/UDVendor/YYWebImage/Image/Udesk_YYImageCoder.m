@@ -129,20 +129,20 @@ static inline uint32_t yy_swap_endian_uint32(uint32_t value) {
  (before rendering the next frame).
  
  * NONE: no disposal is done on this frame before rendering the next; the contents
-    of the output buffer are left as is.
+ of the output buffer are left as is.
  * BACKGROUND: the frame's region of the output buffer is to be cleared to fully
-    transparent black before rendering the next frame.
+ transparent black before rendering the next frame.
  * PREVIOUS: the frame's region of the output buffer is to be reverted to the previous
-    contents before rendering the next frame.
-
+ contents before rendering the next frame.
+ 
  `blend_op` specifies whether the frame is to be alpha blended into the current output buffer
  content, or whether it should completely replace its region in the output buffer.
  
  * SOURCE: all color components of the frame, including alpha, overwrite the current contents
-    of the frame's output buffer region.
+ of the frame's output buffer region.
  * OVER: the frame should be composited onto the output buffer based on its alpha,
-    using a simple OVER operation as described in the "Alpha Channel Processing" section
-    of the PNG specification
+ using a simple OVER operation as described in the "Alpha Channel Processing" section
+ of the PNG specification
  */
 
 typedef enum {
@@ -684,7 +684,7 @@ static void YYCGDataProviderReleaseDataCallback(void *info, const void *data, si
  
  @param srcImage   Source image.
  @param dest       Destination buffer. It should be zero before call this method.
-        If decode succeed, you should release the dest->data using free().
+ If decode succeed, you should release the dest->data using free().
  @param destFormat Destination bitmap format.
  
  @return Whether succeed.

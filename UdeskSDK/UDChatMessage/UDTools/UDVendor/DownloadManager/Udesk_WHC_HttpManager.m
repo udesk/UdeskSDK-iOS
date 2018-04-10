@@ -61,16 +61,16 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
 #pragma mark - 网络状态监听 -
 - (void)registerNetworkStatusMoniterEvent {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reachabilityChanged:)
+                                             selector:@selector(dowonloadReachabilityChanged:)
                                                  name:kUdeskReachabilityChangedNotification
                                                object:nil];
     
     _internetReachability = [UdeskReachability reachabilityForInternetConnection];
     [_internetReachability startNotifier];
-    [self updateInterfaceWithReachability:_internetReachability];
+    [self dowonloadUpdateInterfaceWithReachability:_internetReachability];
 }
 
-- (void)updateInterfaceWithReachability:(UdeskReachability*)internetReachability{
+- (void)dowonloadUpdateInterfaceWithReachability:(UdeskReachability*)internetReachability{
     UDNetworkStatus netStatus = [internetReachability currentReachabilityStatus];
     self.networkStatus = netStatus;
     switch (netStatus) {
@@ -98,10 +98,10 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
     }
 }
 
-- (void)reachabilityChanged:(NSNotification *)notifiy{
+- (void)dowonloadReachabilityChanged:(NSNotification *)notifiy{
     UdeskReachability* curReach = [notifiy object];
     NSParameterAssert([curReach isKindOfClass:[UdeskReachability class]]);
-    [self updateInterfaceWithReachability:curReach];
+    [self dowonloadUpdateInterfaceWithReachability:curReach];
 }
 
 #pragma mark - get请求 -

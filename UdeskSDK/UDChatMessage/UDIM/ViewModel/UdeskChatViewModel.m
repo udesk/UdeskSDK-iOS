@@ -101,7 +101,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udeskCallApplicationBecomeActive) name:UIApplicationWillEnterForegroundNotification object:nil];
 #endif
         //网络监测
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kUdeskReachabilityChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udIMReachabilityChanged:) name:kUdeskReachabilityChangedNotification object:nil];
         self.reachability  = [UdeskReachability reachabilityWithHostName:@"www.baidu.com"];
         [self.reachability startNotifier];
     }
@@ -170,7 +170,7 @@
     
 #if __has_include(<UdeskCall/UdeskCall.h>)
     @try {
-       
+        
         //没有开启视频功能
         if (!self.sdkSetting.vCall.boolValue || !self.sdkSetting.sdkVCall.boolValue) {
             [[UdeskCallSessionManager sharedManager] disConnect];
@@ -216,7 +216,7 @@
 }
 
 //网络状态检测
-- (void)reachabilityChanged:(NSNotification *)note
+- (void)udIMReachabilityChanged:(NSNotification *)note
 {
     
     UdeskReachability *curReach = [note object];
@@ -264,7 +264,7 @@
 
 //进入前台
 - (void)udeskCallApplicationBecomeActive {
-
+    
 #if __has_include(<UdeskCall/UdeskCall.h>)
     [[UdeskCallSessionManager sharedManager] connect];
 #endif
@@ -322,7 +322,7 @@
 
 //获取分配客服
 - (void)distributionAgent:(UdeskAgent *)agentModel {
-
+    
     //初始化视频
     [self setUdeskVideoCallWithCustomer:self.customerModel withAgent:agentModel];
     //获取会话记录
@@ -549,7 +549,7 @@
                     
                     //检查咨询对象是否已经存在
                     if (![self.messageArray.firstObject isKindOfClass:[UdeskProductMessage class]]) {
-                     
+                        
                         UdeskMessage *productMsg = [[UdeskMessage alloc] initWithProductMessage:[UdeskSDKConfig sharedConfig].productDictionary];
                         UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithMessage:productMsg displayTimestamp:YES];
                         if (productMessage) {
@@ -1092,7 +1092,7 @@
         [self addMessageToChatMessageArray:@[videoMessage]];
         
         [UdeskManager sendMessage:videoMessage progress:^(NSString *key, float percent) {
-          
+        
             if (progress) {
                 progress(videoMessage.messageId,percent);
             }
@@ -1124,7 +1124,7 @@
 //发送地理位置
 - (void)sendLocationMessage:(UdeskLocationModel *)model
                  completion:(void(^)(UdeskMessage *message))completion {
-
+    
     if (_agentModel.code != UDAgentStatusResultOnline) {
         [self showAlertViewWithAgent];
         return;
