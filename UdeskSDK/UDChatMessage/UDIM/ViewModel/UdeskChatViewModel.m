@@ -1207,23 +1207,27 @@
 }
 
 #pragma mark - 视频
-#if __has_include(<UdeskCall/UdeskCall.h>)
 //进入后台
 - (void)udeskCallApplicationEnterBackground {
     
+#if __has_include(<UdeskCall/UdeskCall.h>)
     [[UdeskCallSessionManager sharedManager] disConnect];
+#endif
 }
 
 //进入前台
 - (void)udeskCallApplicationBecomeActive {
     
+#if __has_include(<UdeskCall/UdeskCall.h>)
     [[UdeskCallSessionManager sharedManager] connect];
+#endif
 }
 
 //初始化视频manager
 - (void)setupUdeskVideoCallWithCustomer:(UdeskCustomer *)customer
                                   agent:(UdeskAgent *)agent {
     
+#if __has_include(<UdeskCall/UdeskCall.h>)
     @try {
         
         //没有开启视频功能
@@ -1251,9 +1255,11 @@
         NSLog(@"%@",exception);
     } @finally {
     }
+#endif
 }
 
 #pragma mark - @protocol UdeskSocketDelegate
+#if __has_include(<UdeskCall/UdeskCall.h>)
 //未登录
 - (void)remoteUserDidNotLogedIn:(NSString *)userId {
     
@@ -1263,24 +1269,29 @@
 //挂断
 - (void)remoteUserDidHangup:(NSString *)userId {
     
+#if __has_include(<UdeskCall/UdeskCall.h>)
     [self setVideoCallMessage:userId content:[NSString stringWithFormat:@"%@ %@",getUDLocalizedString(@"udesk_video_call_duration"),[UdeskAgoraRtcEngineManager shared].durationLabel.text]];
     //停止播放
     [self stopPlayVideoCallRing];
+#endif
 }
 //邀请
 - (void)remoteUserDidInvite:(NSString *)userId {
     
+#if __has_include(<UdeskCall/UdeskCall.h>)
     if (self.delegate && [self.delegate respondsToSelector:@selector(didReceiveInviteWithAgentModel:)]) {
         [self.delegate didReceiveInviteWithAgentModel:self.agentModel];
     }
     
     //开始播放
     [self startPlayRing:getUDBundlePath(@"udeskCall.mp3")];
+#endif
 }
 
 //拒绝
 - (void)remoteUserDidDecline:(NSString *)userId {
     
+#if __has_include(<UdeskCall/UdeskCall.h>)
     NSString *content = getUDLocalizedString(@"udesk_video_call_agent_decline");
     if ([userId isEqualToString:self.currentUserId]) {
         content = getUDLocalizedString(@"udesk_video_call_customer_decline");
@@ -1289,11 +1300,13 @@
     [self setNotAnsweredAndDeclineVideoCallMessage:userId content:content];
     //停止播放
     [self stopPlayVideoCallRing];
+#endif
 }
 
 //取消
 - (void)remoteUserDidCancel:(NSString *)userId {
     
+#if __has_include(<UdeskCall/UdeskCall.h>)
     NSString *content = getUDLocalizedString(@"udesk_video_call_agent_cancel");
     if (![userId isEqualToString:self.currentUserId]) {
         content = getUDLocalizedString(@"udesk_video_call_customer_cancel");
@@ -1302,6 +1315,7 @@
     
     //停止播放
     [self stopPlayVideoCallRing];
+#endif
 }
 
 //忙线
@@ -1316,6 +1330,7 @@
 //无应答
 - (void)remoteUserDidNotAnswered:(NSString *)userId {
     
+#if __has_include(<UdeskCall/UdeskCall.h>)
     NSString *content = getUDLocalizedString(@"udesk_video_call_agent_not_answered");
     if ([userId isEqualToString:self.currentUserId]) {
         content = getUDLocalizedString(@"udesk_video_call_customer_cancel");
@@ -1324,6 +1339,7 @@
     [self setNotAnsweredAndDeclineVideoCallMessage:userId content:content];
     //停止播放
     [self stopPlayVideoCallRing];
+#endif
 }
 
 //加入
@@ -1335,6 +1351,7 @@
 
 - (void)setNotAnsweredAndDeclineVideoCallMessage:(NSString *)userId content:(NSString *)content {
     
+#if __has_include(<UdeskCall/UdeskCall.h>)
     UdeskMessage *message = [[UdeskMessage alloc] initWithVideoCall:content];
     message.agentJid = self.agentModel.jid;
     message.imSubSessionId = [NSString stringWithFormat:@"%ld",self.agentModel.imSubSessionId];
@@ -1344,11 +1361,13 @@
     
     [self addMessageToChatMessageArray:@[message]];
     [UdeskManager sendMessage:message progress:nil completion:nil];
+#endif
 }
 
 //设置视频消息
 - (void)setVideoCallMessage:(NSString *)userId content:(NSString *)content {
     
+#if __has_include(<UdeskCall/UdeskCall.h>)
     UdeskMessage *message = [[UdeskMessage alloc] initWithVideoCall:content];
     message.agentJid = self.agentModel.jid;
     message.imSubSessionId = [NSString stringWithFormat:@"%ld",self.agentModel.imSubSessionId];
@@ -1358,9 +1377,11 @@
     
     [self addMessageToChatMessageArray:@[message]];
     [UdeskManager sendMessage:message progress:nil completion:nil];
+#endif
 }
 
 - (void)startPlayRing:(NSString *)ringPath {
+#if __has_include(<UdeskCall/UdeskCall.h>)
     if (ringPath) {
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         //默认情况按静音或者锁屏键会静音
@@ -1381,9 +1402,11 @@
             [self.audioPlayer play];
         }
     }
+#endif
 }
 
 - (void)stopPlayVideoCallRing {
+#if __has_include(<UdeskCall/UdeskCall.h>)
     if (self.audioPlayer) {
         [self.audioPlayer stop];
         self.audioPlayer = nil;
@@ -1391,6 +1414,7 @@
         [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation
                                              error:nil];
     }
+#endif
 }
 #endif
 
