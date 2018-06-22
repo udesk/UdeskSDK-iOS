@@ -8,52 +8,40 @@
 
 #import "UdeskBaseMessage.h"
 
-/** 视频宽度 */
-extern const CGFloat kUDVideoMessageWidth;
-/** 视频高度 */
-extern const CGFloat kUDVideoMessageHeight;
-/** 视频名称水平距离 */
-extern const CGFloat kUDVideoNameToHorizontalEdgeSpacing;
-/** 视频名称垂直距离 */
-extern const CGFloat kUDVideoNameToVerticalEdgeSpacing;
-/** 视频名称宽度 */
-extern const CGFloat kUDVideoNameWith;
-/** 视频名称高度 */
-extern const CGFloat kUDVideoNameHeight;
-/** 视频进度条水平距离 */
-extern const CGFloat kUDVideoProgressToHorizontalEdgeSpacing;
-/** 视频进度条宽度 */
-extern const CGFloat kUDVideoProgressWith;
-/** 视频进度条高度 */
-extern const CGFloat kUDVideoProgressHeight;
-/** 视频大小水平距离 */
-extern const CGFloat kUDVideoSizeToHorizontalEdgeSpacing;
-/** 视频大小垂直距离 */
-extern const CGFloat kUDVideoSizeToVerticalEdgeSpacing;
-/** 视频大小宽度 */
-extern const CGFloat kUDVideoSizeWith;
-/** 视频大小高度 */
-extern const CGFloat kUDVideoSizeHeight;
-/** 视频百分比水平距离 */
-extern const CGFloat kUDVideoProgressPercentToHorizontalEdgeSpacing;
-/** 视频百分比垂直距离 */
-extern const CGFloat kUDVideoProgressPercentToVerticalEdgeSpacing;
-/** 视频百分比宽度 */
-extern const CGFloat kUDVideoProgressPercentWith;
-/** 视频百分比高度 */
-extern const CGFloat kUDVideoProgressPercentHeight;
+/** 播放按钮宽度 */
+extern const CGFloat kUDVideoPlayButtonWidth;
+/** 播放按钮高度 */
+extern const CGFloat kUDVideoPlayButtonHeight;
+/** 下载按钮宽度 */
+extern const CGFloat kUDVideoDownloadButtonWidth;
+/** 下载按钮高度 */
+extern const CGFloat kUDVideoDownloadButtonHeight;
+
+/** 视频时间宽度 */
+extern const CGFloat kUDVideoDurationWidth;
+/** 视频时间高度 */
+extern const CGFloat kUDVideoDurationHeight;
+
+/** 视频时间水平边缘间隙 */
+extern const CGFloat kUDVideoDurationHorizontalEdgeSpacing;
+/** 视频时间垂直边缘间隙 */
+extern const CGFloat kUDVideoDurationVerticalEdgeSpacing;
+
+/** 下载进度宽度 */
+extern const CGFloat kUDVideoUploadProgressWidth;
+/** 下载进度高度 */
+extern const CGFloat kUDVideoUploadProgressHeight;
 
 @interface UdeskVideoMessage : UdeskBaseMessage
 
-/** 视频文件frame */
-@property (nonatomic, assign, readonly) CGRect videoFrame;
-/** 视频文件名称frame */
-@property (nonatomic, assign, readonly) CGRect videoNameFrame;
-/** 视频文件大小frame */
-@property (nonatomic, assign, readonly) CGRect videoSizeLaeblFrame;
-/** 视频文件进度条frame */
-@property (nonatomic, assign, readonly) CGRect videoProgressFrame;
-/** 视频文件百分比frame */
-@property (nonatomic, assign, readonly) CGRect videoProgressPercentFrame;
+@property (nonatomic, assign, readonly) CGRect previewFrame;
+@property (nonatomic, assign, readonly) CGRect playFrame;
+@property (nonatomic, assign, readonly) CGRect downloadFrame;
+@property (nonatomic, assign, readonly) CGRect videoDurationFrame;
+
+@property (nonatomic, assign, readonly) CGRect uploadProgressFrame;
+
+@property (nonatomic, strong, readonly) UIImage *previewImage;
+@property (nonatomic, copy  , readonly) NSString *videoDuration;
 
 @end

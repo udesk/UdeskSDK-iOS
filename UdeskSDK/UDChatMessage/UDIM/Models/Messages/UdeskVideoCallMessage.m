@@ -8,7 +8,7 @@
 
 #import "UdeskVideoCallMessage.h"
 #import "UdeskVideoCallCell.h"
-#import "UdeskTools.h"
+#import "UdeskSDKUtil.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskStringSizeUtil.h"
 #import "UdeskSDKConfig.h"
@@ -47,17 +47,17 @@ const CGFloat kUDCallTextMendSpacing = 2.0;
     @try {
         
         if (!self.message.content || [NSNull isEqual:self.message.content]) return;
-        if ([UdeskTools isBlankString:self.message.content]) return;
+        if ([UdeskSDKUtil isBlankString:self.message.content]) return;
         
         
-        UIColor *color = [UdeskSDKConfig sharedConfig].sdkStyle.agentTextColor;
+        UIColor *color = [UdeskSDKConfig customConfig].sdkStyle.agentTextColor;
         if (self.message.messageFrom == UDMessageTypeSending) {
-            color = [UdeskSDKConfig sharedConfig].sdkStyle.customerTextColor;
+            color = [UdeskSDKConfig customConfig].sdkStyle.customerTextColor;
         }
         
         //设置字体颜色
         NSDictionary *dictAttr1 = @{NSForegroundColorAttributeName:color,
-                                    NSFontAttributeName:[UdeskSDKConfig sharedConfig].sdkStyle.messageContentFont
+                                    NSFontAttributeName:[UdeskSDKConfig customConfig].sdkStyle.messageContentFont
                                     };
         NSAttributedString *attr1 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"  %@",self.message.content] attributes:dictAttr1];
         
@@ -67,7 +67,7 @@ const CGFloat kUDCallTextMendSpacing = 2.0;
         //NSTextAttachment可以将要插入的图片作为特殊字符处理
         NSTextAttachment *attch = [[NSTextAttachment alloc] init];
         //定义图片内容及位置和大小
-        attch.image = [UIImage ud_defaultVideoCallImage];
+        attch.image = self.message.messageFrom == UDMessageTypeSending ? [UIImage udDefaultVideoCallImage] : [UIImage udDefaultVideoCallReceiveImage];
         attch.bounds = CGRectMake(0, 0, 20, 13);
         //创建带有图片的富文本
         NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:attch];
@@ -91,7 +91,8 @@ const CGFloat kUDCallTextMendSpacing = 2.0;
             case UDMessageTypeReceiving:{
                 
                 //接收文字气泡frame
-                self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, textSize.width+(kUDBubbleToCallTextHorizontalSpacing*3), textSize.height+(kUDBubbleToCallTextVerticalSpacing*2));
+                CGFloat bubbleY = [UdeskSDKUtil isBlankString:self.message.nickName] ? CGRectGetMinY(self.avatarFrame) : CGRectGetMaxY(self.nicknameFrame)+kUDCellBubbleToIndicatorSpacing;
+                self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, bubbleY, textSize.width+(kUDBubbleToCallTextHorizontalSpacing*3), textSize.height+(kUDBubbleToCallTextVerticalSpacing*2));
                 //接收文字frame
                 self.textFrame = CGRectMake(kUDBubbleToCallTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToCallTextVerticalSpacing+kUDCallTextMendSpacing, textSize.width, textSize.height);
                 

@@ -63,6 +63,8 @@ typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
 @property (nonatomic, copy  ) NSString             *nickName;
 /** 语音时长 */
 @property (nonatomic, assign) CGFloat              voiceDuration;
+/** 视频时长 */
+@property (nonatomic, assign) CGFloat              videoDuration;
 /** 图片宽度 */
 @property (nonatomic, assign) CGFloat              width;
 /** 图片高度 */

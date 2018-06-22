@@ -8,12 +8,12 @@
 
 #import "UdeskStructMessage.h"
 #import "UdeskStringSizeUtil.h"
-#import "UdeskFoundationMacro.h"
-#import "UdeskTools.h"
+#import "UdeskSDKMacro.h"
+#import "UdeskSDKUtil.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskManager.h"
 #import "UdeskImageUtil.h"
-#import "UdeskViewExt.h"
+#import "UIView+UdeskSDK.h"
 #import "UdeskStructCell.h"
 #import "Udesk_YYWebImage.h"
 
@@ -37,14 +37,14 @@
 
         @try {
             
-            if ([UdeskTools isBlankString:message.messageId]) {
+            if ([UdeskSDKUtil isBlankString:message.messageId]) {
                 return nil;
             }
-            if ([UdeskTools isBlankString:message.content]) {
+            if ([UdeskSDKUtil isBlankString:message.content]) {
                 return nil;
             }
             
-            NSDictionary *structMsg = [UdeskTools dictionaryWithJSON:message.content];
+            NSDictionary *structMsg = [UdeskSDKUtil dictionaryWithJSON:message.content];
             if (!structMsg) {
                 return nil;
             }
@@ -84,7 +84,7 @@
                     imageWidth = ceil(contentImageSize.width / contentImageSize.height * imageHeight);
                 }
                 
-                self.structImage = [UdeskImageUtil compressImage:image toMaxFileSize:CGSizeMake(imageWidth, imageHeight)];
+                self.structImage = [UdeskImageUtil imageResize:image toSize:CGSizeMake(imageWidth, imageHeight)];
                 
                 //这种获取高度的方法不是很友好，之后需要优化
                 NSMutableArray *actionArray = [NSMutableArray array];
@@ -100,7 +100,7 @@
                     self.structContentView.layer.borderWidth = 1;
                     self.structContentView.layer.borderColor = [UIColor colorWithWhite:0.90 alpha:1].CGColor;
                     
-                    self.cellHeight = self.structContentView.ud_height+CGRectGetHeight(self.dateFrame)+(kUDStructPadding*3);
+                    self.cellHeight = self.structContentView.udHeight+CGRectGetHeight(self.dateFrame)+(kUDStructPadding*3);
                 });
             }
         } @catch (NSException *exception) {

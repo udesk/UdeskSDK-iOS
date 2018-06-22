@@ -7,8 +7,8 @@
 //
 
 #import "UdeskContentController.h"
-#import "UdeskFoundationMacro.h"
-#import "UdeskUtils.h"
+#import "UdeskSDKMacro.h"
+#import "UdeskBundleUtils.h"
 #import "UdeskStringSizeUtil.h"
 #import "UdeskManager.h"
 #import "UdeskSDKConfig.h"
@@ -41,7 +41,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.tableViewBackGroundColor;
+    self.view.backgroundColor = [UdeskSDKConfig customConfig].sdkStyle.tableViewBackGroundColor;
     
     if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
         self.automaticallyAdjustsScrollViewInsets = NO;
@@ -51,8 +51,8 @@
         self.navigationController.navigationBar.translucent = NO;
     }
     
-    if ([UdeskSDKConfig sharedConfig].articleTitle) {
-        self.title = [UdeskSDKConfig sharedConfig].articleTitle;
+    if ([UdeskSDKConfig customConfig].articleTitle) {
+        self.title = [UdeskSDKConfig customConfig].articleTitle;
     }
     else {
         self.title = getUDLocalizedString(@"udesk_faq_details_title");
@@ -103,11 +103,11 @@
 //点击返回
 - (void)dismissChatViewController {
     
-    if ([UdeskSDKConfig sharedConfig].presentingAnimation == UDTransiteAnimationTypePush) {
+    if ([UdeskSDKConfig customConfig].presentingAnimation == UDTransiteAnimationTypePush) {
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
             [self dismissViewControllerAnimated:YES completion:nil];
         } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:[UdeskSDKConfig sharedConfig].presentingAnimation] forKey:nil];
+            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:[UdeskSDKConfig customConfig].presentingAnimation] forKey:nil];
             [self dismissViewControllerAnimated:NO completion:nil];
         }
     } else {

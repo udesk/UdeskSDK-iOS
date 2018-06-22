@@ -16,45 +16,28 @@
 
 @protocol UdeskChatViewModelDelegate <NSObject>
 
-/**
- *  通知viewController更新tableView；
- */
+/** 通知viewController更新tableView； */
 - (void)reloadChatTableView;
-/**
- *  更新tableView某个cell
- *
- *  @param indexPath cell位置
- */
+/** 更新tableView某个cell */
 - (void)didUpdateCellModelWithIndexPath:(NSIndexPath *)indexPath;
-/**
- *  接收到客服model
- *
- *  @param agent 客服
- */
-- (void)didFetchAgentModel:(UdeskAgent *)agent;
-/**
- *  点击了发送表单
- */
-- (void)didSelectSendTicket;
-/**
- *  点击了黑名单提示框确定
- */
-- (void)didSelectBlacklistedAlertViewOkButton;
-/**
- *  接受客服状态
- *
- *  @param agent 客服model
- */
-- (void)didReceiveAgentPresence:(UdeskAgent *)agent;
-/**
- *  评价成功
- */
-- (void)didSurveyCompletion:(NSString *)message;
-/**
- 收到邀请视频
 
- @param agent 客服
- */
+/** 接收到客服 */
+- (void)didFetchAgentModel:(UdeskAgent *)agent;
+/** 接受客服状态 */
+- (void)didReceiveAgentPresence:(UdeskAgent *)agent;
+/** 收到邀请评价 */
+- (void)didReceiveSurveyWithAgentId:(NSString *)agentId;
+
+/** 展示无消息会话 */
+- (void)showPreSessionWithTitle:(NSString *)title;
+
+/** 点击了发送表单 */
+- (void)didSelectSendTicket;
+/** 点击了黑名单提示框确定 */
+- (void)didSelectBlacklistedAlertViewOkButton;
+
+//Udesk Call
+/** 收到邀请视频 */
 - (void)didReceiveInviteWithAgentModel:(UdeskAgent *)agent;
 
 @end
@@ -62,123 +45,53 @@
 @interface UdeskChatViewModel : NSObject
 
 /** 是否需要显示下拉加载 */
-@property (nonatomic, assign         ) BOOL                       isShowRefresh;
+@property (nonatomic, assign) BOOL isShowRefresh;
 /** 不显示alertview */
-@property (nonatomic, assign         ) BOOL                       isNotShowAlert;
-/** 消息数据 */
-@property (nonatomic, strong,readonly) NSMutableArray             *messageArray;
+@property (nonatomic, assign) BOOL isNotShowAlert;
 /** ViewModel代理 */
-@property (nonatomic, weak           ) id <UdeskChatViewModelDelegate> delegate;
+@property (nonatomic, weak  ) id <UdeskChatViewModelDelegate> delegate;
 /** 更新输入框 */
-@property (nonatomic, copy           ) void(^updateInputBarBlock)(void);
+@property (nonatomic, copy  ) void(^updateInputBarBlock)(void);
 
-//创建用户
-- (void)initCustomerWithSDKSetting:(UdeskSetting *)setting;
+/** 消息数据 */
+@property (nonatomic, strong, readonly) NSArray *messagesArray;
+/** 无消息会话ID */
+@property (nonatomic, strong, readonly) NSNumber *preSessionId;
 
-//创建用户
-- (void)createCustomerWithSDKSetting:(UdeskSetting *)setting;
+- (instancetype)initWithSDKSetting:(UdeskSetting *)sdkSetting;
 
-/**
- *  加载更多DB消息
- */
-- (void)pullMoreDateBaseMessage;
-/**
- *  重发失败的消息
- *
- *  @param completion 发送回调
- */
-- (void)resendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress
-                             completion:(void(^)(UdeskMessage *failedMessage))completion;
-/**
- *  获取消息数量
- */
-- (NSInteger)numberOfItems;
-/**
- *  获取消息model
- *
- *  @param row 下标
- */
-- (id)objectAtIndexPath:(NSInteger)row;
-/**
- *  点击底部功能栏坐相应操作
- */
+/** 加载更多DB消息 */
+- (void)fetchNextPageDatebaseMessage;
+/** 点击底部功能栏坐相应操作 */
 - (void)clickInputViewShowAlertView;
-/**
- *  发送文本消息
- *
- *  @param text       文本
- *  @param completion 发送状态&发送消息体
- */
+
+//结束无消息对话过滤
+- (void)endPreSessionMessage:(void(^)(void))completion delay:(CGFloat)delay;
+
+/** 发送文本消息 */
 - (void)sendTextMessage:(NSString *)text
              completion:(void(^)(UdeskMessage *message))completion;
-
-/**
- *  发送图片消息
- *
- *  @param image      图片
- *  @param completion 发送状态&发送消息体
- */
-- (void)sendImageMessage:(UIImage *)image
-              completion:(void(^)(UdeskMessage *message))completion;
-
-/**
- *  发送gif图片消息
- *
- *  @param gifData    gif图片
- *  @param completion 发送状态&发送消息体
- */
-- (void)sendGIFImageMessage:(NSData *)gifData
-                 completion:(void(^)(UdeskMessage *message))completion;
-
-/**
- *  发送视频消息
- *
- *  @param videoData    视频信息
- *  @param completion 发送状态&发送消息体
- */
-- (void)sendVideoMessage:(NSData *)videoData
-               videoName:(NSString *)videoName
-                progress:(void(^)(NSString *key,float percent))progress
-              completion:(void(^)(UdeskMessage *message))completion ;
-
-/**
- *  发送语音消息
- *
- *  @param voicePath     语音文件地址
- *  @param audioDuration 语音时长
- *  @param comletion     发送状态&发送消息体
- */
-- (void)sendAudioMessage:(NSString *)voicePath
-           audioDuration:(NSString *)audioDuration
-              completion:(void(^)(UdeskMessage *message))comletion;
-
-/**
- *  发送地理位置消息
- *
- *  @param model   地理位置
- *  @param completion 发送状态&发送消息体
- */
-- (void)sendLocationMessage:(UdeskLocationModel *)model
-                 completion:(void(^)(UdeskMessage *message))completion;
-
-/**
- *  添加需要重新发送消息
- *
- *  @param message 发送失败的消息
- */
+/** 发送图片消息 */
+- (void)sendImageMessage:(UIImage *)image progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *message))completion;
+/** 发送gif图片消息 */
+- (void)sendGIFImageMessage:(NSData *)gifData progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *message))completion;
+/** 发送视频消息 */
+- (void)sendVideoMessage:(NSData *)videoData progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *message))completion ;
+/** 发送语音消息 */
+- (void)sendVoiceMessage:(NSString *)voicePath voiceDuration:(NSString *)voiceDuration completion:(void (^)(UdeskMessage *message))completion;
+/** 发送地理位置消息 */
+- (void)sendLocationMessage:(UdeskLocationModel *)model completion:(void(^)(UdeskMessage *message))completion;
+/** 添加需要重新发送消息 */
 - (void)addResendMessageToArray:(UdeskMessage *)message;
-/**
- *  移除发送失败的消息
- *
- *  @param message 发送失败的消息
- */
+/** 移除发送失败的消息 */
 - (void)removeResendMessageInArray:(UdeskMessage *)message;
+/** 重发失败的消息 */
+- (void)resendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion;
 
 //根据客服code展示alertview
-- (void)showAlertViewWithAgent;
+- (void)showAgentStatusAlert;
 
-//获取LocationModel
-- (UdeskLocationModel *)getLocationModel:(UdeskMessage *)message;
+//Udesk Call
 
 //关闭视频铃声
 - (void)stopPlayVideoCallRing;

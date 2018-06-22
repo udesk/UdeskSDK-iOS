@@ -11,7 +11,9 @@
 @interface UdeskLocationMessage : UdeskBaseMessage
 
 /** 地理位置frame */
-@property (nonatomic, assign, readonly) CGRect locatioFrame;
+@property (nonatomic, assign, readonly) CGRect locationFrame;
+/** 地理位置街道frame */
+@property (nonatomic, assign, readonly) CGRect locationThoroughfareFrame;
 /** 地理位置名称frame */
 @property (nonatomic, assign, readonly) CGRect locationNameFrame;
 /** 地理位置快照frame */

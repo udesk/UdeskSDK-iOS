@@ -10,6 +10,9 @@
 
 @interface UdeskImageCell : UdeskBaseCell
 
-@property (nonatomic, strong) UIImageView *chatImageView;
+@property (nonatomic, strong) UILabel *progressLabel;
+
+- (void)uploadImageSuccess;
+- (void)imageUploading;
 
 @end

@@ -10,7 +10,4 @@
 
 @interface UdeskEventCell : UdeskBaseCell
 
-/**  提示信息Label */
-@property (nonatomic, strong) UILabel *eventLabel;
-
 @end

@@ -23,6 +23,7 @@
 "udesk_network_interrupt" = "Network interrupt";
 "udesk_chat_end" = "Chat end";
 "udesk_top_view_thanks_evaluation" = "Thanks for comment.";
+"udesk_top_view_failure" = "Failed!";
 "udesk_has_survey" = "Thank you, you have already done! ";
 "udesk_no_send_empty" = "No empty message";
 "udesk_resend_msg" = "Resend message";
@@ -68,9 +69,45 @@
 "udesk_video_download" = "download";
 "udesk_has_uncomplete_tip" = "Download first, then click";
 "udesk_download_failure" = "Download failed. Please re Download";
+"udesk_wwan_tips" = "Data alert";
+"udesk_video_send_tips" = "Non-Wi-Fi environments, sending files will consume phone data. Continue?";
+"udesk_video_big_tips" = "File is too large to send";
 "udesk_customer_leave_msg" = "Customer Leave Message";
+"udesk_leave_message_offline_reply" = "Leave message offline reply";
 "udesk_rollback" = "has recalled a message";
 "udesk_location" = "Location";
+"udesk_phone_number_tip" = "may be a phone number, you can";
+"udesk_file_not_exist" = "The file does not exist, link error";
+"udesk_download_failed" = "Download failed";
+"udesk_search" = "Search";
+"udesk_video_export_failed" = "Video export failed";
+"udesk_agent_transfer_tip" = "Agent transferred successfully, @ is at your service";
+
+"udesk_preview" = "Preview";
+"udesk_full_image" = "Full Image";
+"udesk_photo" = "Photos";
+"udesk_max_count_photo" = "You can only choose up to @ photos";
+"udesk_small_video_tips" = "Tap to take phone and hold to record video";
+"udesk_second" = "Second";
+"udesk_album" = "Album";
+"udesk_shooting" = "Shooting";
+"udesk_survey" = "Survey";
+"udesk_location" = "Location";
+"udesk_video_call" = "Video call";
+"udesk_hold_to_talk" = "Hold to Talk";
+"udesk_release_to_send" = "Release to Send";
+"udesk_release_to_cancel" = "Release to Cancel";
+"udesk_slide_up_to_cancel" = "Slide up to cancel";
+"udesk_release_up_to_cancel" = "Release to cancel";
+"udesk_message_too_short" = "Message too short";
+"udesk_service_survey" = "Satisfaction Rating";
+"udesk_submit_survey" = "Submit Feedback";
+"udesk_survey_satisfied" = "Satisfied";
+"udesk_survey_general" = "Neutral";
+"udesk_survey_unsatisfactory" = "Unsatisfied";
+"udesk_survey_tips" = "Thanks for your feedback！！";
+"udesk_survey_remark_required" = "Remarks are required";
+"udesk_admin" = "Admin";
 
 "udesk_video_call_duration" = "Talk time：";
 

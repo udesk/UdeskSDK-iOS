@@ -7,9 +7,10 @@
 //
 
 #import "UdeskVoiceMessage.h"
-#import "UdeskUtils.h"
+#import "UdeskBundleUtils.h"
 #import "UdeskVoiceCell.h"
-#import "UdeskCaheHelper.h"
+#import "UdeskCacheUtil.h"
+#import "UdeskSDKUtil.h"
 
 /** 语音时长 height */
 const CGFloat kUDVoiceDurationLabelHeight = 15.0;
@@ -44,7 +45,7 @@ const CGFloat kUDCellBubbleVoiceMaxContentWidth = 150.0;
         
         if (message.voiceData && message.messageId) {
             //语音缓存
-            [[UdeskCaheHelper sharedManager] setObject:message.voiceData forKey:message.messageId];
+            [[UdeskCacheUtil sharedManager] setObject:message.voiceData forKey:message.messageId];
         }
         
         [self getAnimationVoiceImages];
@@ -82,7 +83,8 @@ const CGFloat kUDCellBubbleVoiceMaxContentWidth = 150.0;
         case UDMessageTypeReceiving:{
             
             //接收的语音气泡frame
-            self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, voiceSize.width+kUDBubbleToAnimationVoiceImageHorizontalSpacing, voiceSize.height);
+            CGFloat bubbleY = [UdeskSDKUtil isBlankString:self.message.nickName] ? CGRectGetMinY(self.avatarFrame) : CGRectGetMaxY(self.nicknameFrame)+kUDCellBubbleToIndicatorSpacing;
+            self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, bubbleY, voiceSize.width+kUDBubbleToAnimationVoiceImageHorizontalSpacing, voiceSize.height);
             //接收的语音时长frame
             self.voiceDurationFrame = CGRectMake(self.bubbleFrame.origin.x+kUDAvatarToBubbleSpacing+self.bubbleFrame.size.width, self.bubbleFrame.origin.y+kUDBubbleToAnimationVoiceImageVerticalSpacing, voiceSize.width, kUDVoiceDurationLabelHeight);
             //发送的语音播放动画图片

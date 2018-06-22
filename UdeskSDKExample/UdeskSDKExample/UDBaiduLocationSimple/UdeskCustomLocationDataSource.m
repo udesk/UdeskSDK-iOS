@@ -30,7 +30,7 @@
     cell.textLabel.text = model.name;
     cell.detailTextLabel.text = model.thoroughfare;
     if (model.isSelect) {
-        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage ud_defaultMarkImage]];
+        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage udDefaultMarkImage]];
     }
     else {
         cell.accessoryView = nil;

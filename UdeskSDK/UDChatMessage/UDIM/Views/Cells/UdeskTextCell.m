@@ -7,14 +7,15 @@
 //
 
 #import "UdeskTextCell.h"
-#import "UdeskConfigurationHelper.h"
-#import "UdeskTools.h"
+#import "UdeskSDKUtil.h"
 #import "UdeskTextMessage.h"
-#import "UdeskUtils.h"
-#import "UdeskManager.h"
+#import "UdeskBundleUtils.h"
 #import "UdeskSDKConfig.h"
+#import "UDTTTAttributedLabel.h"
 
 @interface UdeskTextCell()<UDTTTAttributedLabelDelegate,UIAlertViewDelegate,UIActionSheetDelegate>
+
+@property (nonatomic, strong) UDTTTAttributedLabel *textContentLabel;
 
 @end
 
@@ -39,11 +40,8 @@
     _textContentLabel.userInteractionEnabled = true;
     _textContentLabel.backgroundColor = [UIColor clearColor];
     
-    //设置超链接颜色
-//    NSMutableDictionary *linkAttributes = [NSMutableDictionary dictionary];
-//    [linkAttributes setValue:[NSNumber numberWithInteger:NSUnderlineStyleSingle] forKey:(NSString *)NSUnderlineStyleAttributeName];
-//    [linkAttributes setValue:[UIColor redColor] forKey:(NSString *)kCTForegroundColorAttributeName];
-//    _textContentLabel.linkAttributes = linkAttributes;
+    _textContentLabel.activeLinkAttributes = @{(id)kCTForegroundColorAttributeName:[UdeskSDKConfig customConfig].sdkStyle.activeLinkColor};
+    _textContentLabel.linkAttributes = @{(id)kCTForegroundColorAttributeName:[UdeskSDKConfig customConfig].sdkStyle.linkColor};
     
     [self.bubbleImageView addSubview:_textContentLabel];
     
@@ -59,41 +57,28 @@
         
         if (longPressGestureRecognizer.state != UIGestureRecognizerStateBegan || ![self becomeFirstResponder])
             return;
-        
-        NSArray *popMenuTitles = [[UdeskConfigurationHelper appearance] popMenuTitles];
+
         NSMutableArray *menuItems = [[NSMutableArray alloc] init];
-        for (int i = 0; i < popMenuTitles.count; i ++) {
-            NSString *title = popMenuTitles[i];
-            SEL action = nil;
-            switch (i) {
-                case 0: {
-                    if (self.baseMessage.message.messageType == UDMessageContentTypeText ||
-                        self.baseMessage.message.messageType == UDMessageContentTypeLeaveMsg ||
-                        self.baseMessage.message.messageType == UDMessageContentTypeRich) {
-                        action = @selector(copyed:);
-                    }
-                    break;
-                }
-                    
-                default:
-                    break;
+        
+        if (self.baseMessage.message.messageType == UDMessageContentTypeText ||
+            self.baseMessage.message.messageType == UDMessageContentTypeLeaveMsg ||
+            self.baseMessage.message.messageType == UDMessageContentTypeRich) {
+            
+            UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:getUDLocalizedString(@"udesk_copy") action:@selector(copyed:)];
+            if (item) {
+                [menuItems addObject:item];
             }
-            if (action) {
-                UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:title action:action];
-                if (item) {
-                    [menuItems addObject:item];
-                }
-            }
+            
+            UIMenuController *menu = [UIMenuController sharedMenuController];
+            [menu setMenuItems:menuItems];
+            
+            CGRect targetRect = [self convertRect:self.baseMessage.bubbleFrame
+                                         fromView:self];
+            
+            [menu setTargetRect:CGRectInset(targetRect, 0.0f, 4.0f) inView:self];
+            [menu setMenuVisible:YES animated:YES];
         }
         
-        UIMenuController *menu = [UIMenuController sharedMenuController];
-        [menu setMenuItems:menuItems];
-        
-        CGRect targetRect = [self convertRect:self.baseMessage.bubbleFrame
-                                     fromView:self];
-        
-        [menu setTargetRect:CGRectInset(targetRect, 0.0f, 4.0f) inView:self];
-        [menu setMenuVisible:YES animated:YES];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -126,7 +111,7 @@
     UdeskTextMessage *textMessage = (UdeskTextMessage *)baseMessage;
     if (!textMessage || ![textMessage isKindOfClass:[UdeskTextMessage class]]) return;
     
-    if ([UdeskTools isBlankString:textMessage.message.content]) {
+    if ([UdeskSDKUtil isBlankString:textMessage.message.content]) {
         self.textContentLabel.text = @"";
     }
     else {
@@ -175,9 +160,9 @@
 
 - (void)attributedLabel:(UDTTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
     
-    //如果用户实现了自定义留言界面
-    if ([UdeskSDKConfig sharedConfig].clickLinkCallBack) {
-        [UdeskSDKConfig sharedConfig].clickLinkCallBack([UdeskTools currentViewController],url);
+    //用户设置了点击链接回调
+    if ([UdeskSDKConfig customConfig].actionConfig.linkClickBlock) {
+        [UdeskSDKConfig customConfig].actionConfig.linkClickBlock([UdeskSDKUtil currentViewController],url);
         return;
     }
     
@@ -189,7 +174,7 @@
 }
 
 - (void)attributedLabel:(UDTTTAttributedLabel *)label didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"%@\n可能是一个电话号码，你可以",phoneNumber] delegate:self cancelButtonTitle:getUDLocalizedString(@"udesk_cancel") destructiveButtonTitle:nil otherButtonTitles:getUDLocalizedString(@"udesk_call"), getUDLocalizedString(@"udesk_copy"), nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"%@\n%@",phoneNumber,getUDLocalizedString(@"udesk_phone_number_tip")] delegate:self cancelButtonTitle:getUDLocalizedString(@"udesk_cancel") destructiveButtonTitle:nil otherButtonTitles:getUDLocalizedString(@"udesk_call"), getUDLocalizedString(@"udesk_copy"), nil];
     [sheet showInView:[UIApplication sharedApplication].keyWindow];
 }
 

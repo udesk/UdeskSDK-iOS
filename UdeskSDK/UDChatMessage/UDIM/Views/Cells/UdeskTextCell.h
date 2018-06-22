@@ -7,10 +7,7 @@
 //
 
 #import "UdeskBaseCell.h"
-#import "UDTTTAttributedLabel.h"
 
 @interface UdeskTextCell : UdeskBaseCell
-
-@property (nonatomic, strong) UDTTTAttributedLabel *textContentLabel;
 
 @end

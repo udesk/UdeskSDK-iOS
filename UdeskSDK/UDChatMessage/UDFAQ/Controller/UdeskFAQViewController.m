@@ -7,8 +7,8 @@
 //
 
 #import "UdeskFAQViewController.h"
-#import "UdeskFoundationMacro.h"
-#import "UdeskUtils.h"
+#import "UdeskSDKMacro.h"
+#import "UdeskBundleUtils.h"
 #import "UdeskProblemModel.h"
 #import "UdeskContentController.h"
 #import "UdeskManager.h"
@@ -45,7 +45,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.tableViewBackGroundColor;
+    self.view.backgroundColor = [UdeskSDKConfig customConfig].sdkStyle.tableViewBackGroundColor;
     
     //添加TableView&Search
     [self faqTableViewAndSearch];
@@ -85,11 +85,11 @@
 //点击返回
 - (void)dismissChatViewController {
     
-    if ([UdeskSDKConfig sharedConfig].presentingAnimation == UDTransiteAnimationTypePush) {
+    if ([UdeskSDKConfig customConfig].presentingAnimation == UDTransiteAnimationTypePush) {
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
             [self dismissViewControllerAnimated:YES completion:nil];
         } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:[UdeskSDKConfig sharedConfig].presentingAnimation] forKey:nil];
+            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:[UdeskSDKConfig customConfig].presentingAnimation] forKey:nil];
             [self dismissViewControllerAnimated:NO completion:nil];
         }
     } else {
@@ -113,7 +113,7 @@
     [_faqTableView setTableFooterView:footerView];
     
     UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.f, 0.f,UD_SCREEN_WIDTH, 44)];
-    searchBar.tintColor = UDRGBCOLOR(33, 40, 42);
+    searchBar.tintColor = [UIColor colorWithRed:33/255.0f green:40/255.0f blue:42/255.0f alpha:1];
     
     _faqTableView.tableHeaderView = searchBar;
     

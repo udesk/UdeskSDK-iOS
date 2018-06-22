@@ -11,17 +11,18 @@
 
 @protocol UdeskCellDelegate <NSObject>
 
-- (void)didSelectImageCell;
-
-- (void)didSelectLocationCell:(UdeskMessage *)message;
-
-- (void)sendProductURL:(NSString *)url;
-
-- (void)didSelectStructButton;
-
-- (void)resendMessageInCell:(UITableViewCell *)cell resendMessage:(UdeskMessage *)resendMessage;
-
-- (void)callAgain;
+/** 点击了聊天的图片 */
+- (void)didTapChatImageView;
+/** 点击结构化消息按钮 */
+- (void)didTapStructMessageButton;
+/** 点击了地理位置消息 */
+- (void)didTapLocationMessage:(UdeskMessage *)message;
+/** 发送咨询对象连接 */
+- (void)didSendProductURL:(NSString *)url;
+/** 点击视频通话消息 */
+- (void)didTapUdeskVideoCallMessage:(UdeskMessage *)message;
+/** 重新发送消息 */
+- (void)didResendMessage:(UdeskMessage *)resendMessage;
 
 @end
 
@@ -30,20 +31,23 @@
 @property (nonatomic, weak) id<UdeskCellDelegate> delegate;
 
 /** 客户头像 */
-@property (nonatomic, strong) UIImageView *avatarImageView;
+@property (nonatomic, strong, readonly) UIImageView *avatarImageView;
 /** 气泡 */
-@property (nonatomic, strong) UIImageView *bubbleImageView;
+@property (nonatomic, strong, readonly) UIImageView *bubbleImageView;
+/** 客服昵称 */
+@property (nonatomic, strong, readonly) UILabel     *nicknameLabel;
 /** 时间 */
-@property (nonatomic, strong) UILabel     *dateLabel;
+@property (nonatomic, strong, readonly) UILabel     *dateLabel;
 /** 重发 */
-@property (nonatomic, strong) UIButton    *resetButton;
+@property (nonatomic, strong, readonly) UIButton    *resetButton;
 /** 菊花 */
-@property (nonatomic, strong) UIActivityIndicatorView *sendingIndicator;
+@property (nonatomic, strong, readonly) UIActivityIndicatorView *sendingIndicator;
 /** 布局 */
 @property (nonatomic, strong) UdeskBaseMessage  *baseMessage;
 
 - (void)updateCellWithMessage:(UdeskBaseMessage *)baseMessage;
 
-- (void)setActivityIndicatorViewFrameWithSendStatus:(UDMessageSendStatus)sendStatus;
+//更新消息状态
+- (void)updateMessageSendStatus:(UDMessageSendStatus)sendStatus;
 
 @end

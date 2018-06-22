@@ -59,10 +59,6 @@
     return self;
 }
 
-- (void)dealloc{
-    NSLog(@"----%s---WBFloatWindow::::delloc------", __func__);
-}
-
 - (void)showView:(UIView *)view delegate:(id<WBFloatWindowProtcol>)delegate {
     self.showView = view;
     self.delegate = delegate;

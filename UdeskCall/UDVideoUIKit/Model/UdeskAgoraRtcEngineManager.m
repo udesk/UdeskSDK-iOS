@@ -7,13 +7,9 @@
 //
 
 #import "UdeskAgoraRtcEngineManager.h"
-
-#if __has_include(<UdeskCall/UdeskCall.h>)
 #import <UdeskCall/UdeskCall.h>
+
 @interface UdeskAgoraRtcEngineManager()<UdeskCallSessionManagerDelegate,AgoraRtcEngineDelegate>
-#else
-@interface UdeskAgoraRtcEngineManager()<AgoraRtcEngineDelegate>
-#endif
 
 @property (nonatomic, assign) BOOL isCalling;
 
@@ -36,12 +32,11 @@
     self = [super init];
     if (self) {
         
-#if __has_include(<UdeskCall/UdeskCall.h>)
         [[UdeskCallSessionManager sharedManager] addDelegate:self];
+        
         _agoraKit = [AgoraRtcEngineKit sharedEngineWithAppId:[UdeskCallSessionManager sharedManager].videoCallAppId delegate:self];
         [_agoraKit enableVideo];
         [_agoraKit setVideoProfile:AgoraRtc_VideoProfile_360P_4 swapWidthAndHeight:NO];
-#endif
     }
     return self;
 }
@@ -60,7 +55,6 @@
 //挂断
 - (void)hangup {
     
-#if __has_include(<UdeskCall/UdeskCall.h>)
     if (self.isCalling) {
         [_agoraKit leaveChannel:^(AgoraRtcStats *stat) {
             self.isCalling = NO;
@@ -74,14 +68,12 @@
     else {
         [[UdeskCallSessionManager sharedManager] hangup];
     }
-#endif
 }
 
 #pragma mark - @protocol UdeskVideoCallDelegate
 //收到挂断(离开频道)
 - (void)remoteUserDidHangup:(NSString *)userId {
     
-#if __has_include(<UdeskCall/UdeskCall.h>)
     NSString *currentUserId = [UdeskCallSessionManager sharedManager].userProfile.userId;
     if (![currentUserId isEqualToString:userId]) {
         
@@ -91,7 +83,6 @@
             [[UdeskCallSessionManager sharedManager] leaveChannelSuccess];
         }];
     }
-#endif
     
     //离开
     if (self.delegate && [self.delegate respondsToSelector:@selector(rtcEngine:didOfflineOfUid:)]) {
@@ -160,12 +151,10 @@
         self.isCalling = YES;
         [_agoraKit setEnableSpeakerphone:YES];
         //加入频道成功
-#if __has_include(<UdeskCall/UdeskCall.h>)
         [[UdeskCallSessionManager sharedManager] joinChannelSuccess];
-#endif
         //屏幕常亮
         [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-        NSLog(@"用户%ld加入channel成功",uid);
+        NSLog(@"UdeskCall：用户%ld加入channel成功",uid);
     }];
 }
 
@@ -182,21 +171,6 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(rtcEngine:firstRemoteVideoDecodedOfUid:)]) {
         [self.delegate rtcEngine:engine firstRemoteVideoDecodedOfUid:uid];
     }
-}
-
-- (void)rtcEngine:(AgoraRtcEngineKit * _Nonnull)engine didOccurWarning:(AgoraRtcWarningCode)warningCode {
-    
-    NSLog(@"warningCode:%ld",(long)warningCode);
-}
-- (void)rtcEngine:(AgoraRtcEngineKit * _Nonnull)engine didOccurError:(AgoraRtcErrorCode)errorCode {
-    
-    NSLog(@"errorCode:%ld",(long)errorCode);
-    //出现错误直接挂断
-}
-
-- (void)rtcEngine:(AgoraRtcEngineKit *)engine didOfflineOfUid:(NSUInteger)uid reason:(AgoraRtcUserOfflineReason)reason {
-//    self.remoteVideo.hidden = YES;
-    NSLog(@"用户%ld已离线，离线原因：%lu",uid,(unsigned long)(unsigned long)reason);
 }
 
 - (void)rtcEngine:(AgoraRtcEngineKit *)engine didVideoMuted:(BOOL)muted byUid:(NSUInteger)uid {

@@ -10,10 +10,7 @@
 
 @interface UdeskVideoCell : UdeskBaseCell
 
-@property (nonatomic, strong) UIView *videoFileView;
-@property (nonatomic, strong) UILabel *videoNameLabel;
-@property (nonatomic, strong) UIProgressView *videoProgressView;
-@property (nonatomic, strong) UILabel *videoSizeLabel;
-@property (nonatomic, strong) UIButton *videoPercentButton;
+@property (nonatomic, strong) UIButton *playButton;
+@property (nonatomic, strong) UILabel  *uploadProgressLabel;
 
 @end

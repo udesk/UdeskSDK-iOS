@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name         = 'UdeskSDK'
-  s.version      = '3.9.2'
+  s.version      = '4.0.0'
   s.license      = 'MIT'
   s.summary      = 'Udesk SDK for iOS'
   s.homepage     = 'https://github.com/udesk/UdeskSDK-iOS'
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.subspec 'SDK' do |ss|
-    ss.frameworks = 'AVFoundation', 'CoreTelephony', 'SystemConfiguration', 'MobileCoreServices', 'WebKit', 'MapKit','AssetsLibrary','ImageIO','Accelerate','MediaPlayer'
+    ss.frameworks = 'AVFoundation', 'CoreTelephony', 'SystemConfiguration', 'MobileCoreServices', 'WebKit', 'MapKit','AssetsLibrary','ImageIO','Accelerate','MediaPlayer','Photos','CoreText'
     ss.source_files = 'UdeskSDK/SDK/*.{h}'
     ss.vendored_libraries = 'UdeskSDK/SDK/libUdesk.a'
     ss.libraries    = 'z', 'xml2', 'resolv', 'sqlite3'

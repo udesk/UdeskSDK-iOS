@@ -10,10 +10,9 @@
 #import "UdeskProblemModel.h"
 #import "UdeskContentController.h"
 #import "UdeskChatViewController.h"
-#import "UdeskUtils.h"
-#import "UdeskFoundationMacro.h"
+#import "UdeskBundleUtils.h"
+#import "UdeskSDKMacro.h"
 #import "UdeskManager.h"
-#import "UdeskViewExt.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskSDKShow.h"
 
@@ -39,11 +38,11 @@
             
             [searchBar setPlaceholder:getUDLocalizedString(@"udesk_faq_search")];
             
-            searchBar.tintColor = [UdeskSDKConfig sharedConfig].sdkStyle.searchCancleButtonColor;
+            searchBar.tintColor = [UdeskSDKConfig customConfig].sdkStyle.searchCancleButtonColor;
             
             UIButton *contactUs = [UIButton buttonWithType:UIButtonTypeCustom];
             contactUs.frame = CGRectMake((UD_SCREEN_WIDTH-250)/2, 50, 250, 40);
-            [contactUs setTitleColor:[UdeskSDKConfig sharedConfig].sdkStyle.searchContactUsColor forState:0];
+            [contactUs setTitleColor:[UdeskSDKConfig customConfig].sdkStyle.searchContactUsColor forState:0];
             [contactUs setTitle:getUDLocalizedString(@"udesk_faq_Contactus") forState:0];
             [contactUs addTarget:self action:@selector(contactUsButton) forControlEvents:UIControlEventTouchUpInside];
             
@@ -51,13 +50,13 @@
             [contactUs.layer setCornerRadius:5.0]; //设置矩圆角半径
             [contactUs.layer setBorderWidth:1.5];   //边框宽度
             contactUs.titleLabel.font = [UIFont systemFontOfSize:19];
-            [contactUs.layer setBorderColor:([UdeskSDKConfig sharedConfig].sdkStyle.contactUsBorderColor).CGColor];//边框颜色
+            [contactUs.layer setBorderColor:([UdeskSDKConfig customConfig].sdkStyle.contactUsBorderColor).CGColor];//边框颜色
             
             
             UILabel *notFound = [[UILabel alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-230)/2, 0, 230, contactUs.frame.origin.y)];
             notFound.textAlignment = NSTextAlignmentCenter;
             notFound.font = [UIFont systemFontOfSize:17];
-            notFound.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.promptTextColor;
+            notFound.textColor = [UdeskSDKConfig customConfig].sdkStyle.promptTextColor;
             notFound.text = getUDLocalizedString(@"udesk_faq_tips");
             
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-69)];
@@ -73,7 +72,7 @@
             _searchDisplayController.searchResultsTableView.tableFooterView = view;
             _searchDisplayController.searchBar.delegate = self;
             
-            viewController.navigationController.view.backgroundColor = UDRGBCOLOR(201, 201, 206);
+            viewController.navigationController.view.backgroundColor = [UIColor colorWithRed:201/255.0f green:201/255.0f blue:206/255.0f alpha:1];
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
         } @finally {
@@ -86,11 +85,11 @@
 - (void)contactUsButton {
     
 #warning 如果你设置了UI 记得在这里也设置下
-    UdeskSDKConfig *config = [UdeskSDKConfig sharedConfig];
+    UdeskSDKConfig *config = [UdeskSDKConfig customConfig];
     config.sdkStyle = [UdeskSDKStyle defaultStyle];
     UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:config setting:nil];
     
-    UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:[UdeskSDKConfig sharedConfig]];
+    UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:[UdeskSDKConfig customConfig]];
     [show presentOnViewController:self.searchContentsController.navigationController udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 }
 

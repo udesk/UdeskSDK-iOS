@@ -7,8 +7,8 @@
 //
 
 #import "UdeskBaseMessage.h"
-#import "UdeskDateFormatter.h"
-#import "UdeskFoundationMacro.h"
+#import "UdeskDateUtil.h"
+#import "UdeskSDKMacro.h"
 #import "UdeskSDKConfig.h"
 
 /** 头像距离屏幕水平边沿距离 */
@@ -33,6 +33,8 @@ const CGFloat kUDChatMessageDateLabelY   = 10.0f;
 const CGFloat kUDArrowMarginWidth        = 10.5f;
 /** 底部留白 */
 const CGFloat kUDCellBottomMargin = 10.0;
+/** 客服昵称高度 */
+const CGFloat kUDAgentNicknameHeight = 15.0;
 
 @interface UdeskBaseMessage()
 
@@ -75,7 +77,7 @@ const CGFloat kUDCellBottomMargin = 10.0;
     [self layoutAvatar];
     
     //重发按钮图片
-    self.failureImage = [UIImage ud_defaultRefreshImage];
+    self.failureImage = [UIImage udDefaultRefreshImage];
     
     _cellHeight += _dateHeight;
     _cellHeight += kUDCellBottomMargin;
@@ -85,7 +87,7 @@ const CGFloat kUDCellBottomMargin = 10.0;
 - (void)layoutDate {
     
     _dateHeight = 0;
-    NSString *time = [[UdeskDateFormatter sharedFormatter] ud_styleDateForDate:self.message.timestamp];
+    NSString *time = [[UdeskDateUtil sharedFormatter] udStyleDateForDate:self.message.timestamp];
     if (time.length == 0) return;
     
     if (_displayTimestamp) {
@@ -102,15 +104,16 @@ const CGFloat kUDCellBottomMargin = 10.0;
     if (self.message.messageFrom == UDMessageTypeReceiving) {
         //用户头像frame
         self.avatarFrame = CGRectMake(kUDAvatarToHorizontalEdgeSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
-        self.avatarImage = [UIImage ud_defaultAgentImage];
+        self.nicknameFrame = CGRectMake(CGRectGetMaxX(self.avatarFrame)+kUDAvatarToBubbleSpacing, CGRectGetMinY(self.avatarFrame), UD_SCREEN_WIDTH>320?235:180, kUDAgentNicknameHeight);
+        self.avatarImage = [UIImage udDefaultAgentImage];
         self.avatarURL = self.message.avatar;
     }
     else if (self.message.messageFrom == UDMessageTypeSending) {
     
         self.avatarFrame = CGRectMake(UD_SCREEN_WIDTH-kUDAvatarToHorizontalEdgeSpacing-kUDAvatarDiameter, self.dateFrame.origin.y+self.dateFrame.size.height+ kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
         //数据
-        self.avatarImage = [UdeskSDKConfig sharedConfig].customerImage;
-        self.avatarURL = [UdeskSDKConfig sharedConfig].customerImageURL;
+        self.avatarImage = [UdeskSDKConfig customConfig].sdkStyle.customerImage;
+        self.avatarURL = [UdeskSDKConfig customConfig].sdkStyle.customerImageURL;
     }
 }
 

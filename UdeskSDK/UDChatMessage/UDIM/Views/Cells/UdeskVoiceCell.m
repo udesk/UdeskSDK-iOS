@@ -9,15 +9,18 @@
 #import "UdeskVoiceCell.h"
 #import "UdeskVoiceMessage.h"
 #import "UdeskSDKConfig.h"
-#import "UdeskCaheHelper.h"
-#import "UdeskAudioPlayerHelper.h"
-#import <AVFoundation/AVFoundation.h>
+#import "UdeskCacheUtil.h"
+#import "UdeskAudioPlayer.h"
 
 #define VoicePlayHasInterrupt @"VoicePlayHasInterrupt"
 
 @interface UdeskVoiceCell()<UDAudioPlayerHelperDelegate> {
 
-    BOOL contentVoiceIsPlaying;
+    BOOL _contentVoiceIsPlaying;
+    /** 语音时长 */
+    UILabel *_voiceDurationTextLabel;
+    /** 语音动画图片 */
+    UIImageView *_voiceAnimationImageView;
 }
 
 @end
@@ -44,7 +47,7 @@
     [self.bubbleImageView addGestureRecognizer:tapPressBubbleGesture];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AVAudioPlayerDidFinishPlay) name:VoicePlayHasInterrupt object:nil];
-    contentVoiceIsPlaying = NO;
+    _contentVoiceIsPlaying = NO;
 }
 
 - (void)tapVoicePlay:(UITapGestureRecognizer *)tap {
@@ -52,13 +55,13 @@
     //获取语音文件
     [self getVoiceData];
     
-    UdeskAudioPlayerHelper *playerHelper = [UdeskAudioPlayerHelper shareInstance];
+    UdeskAudioPlayer *playerHelper = [UdeskAudioPlayer shared];
     
-    if (!contentVoiceIsPlaying) {
+    if (!_contentVoiceIsPlaying) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:VoicePlayHasInterrupt object:nil];
-        contentVoiceIsPlaying = YES;
-        [self.voiceAnimationImageView startAnimating];
+        _contentVoiceIsPlaying = YES;
+        [_voiceAnimationImageView startAnimating];
         playerHelper.delegate = self;
         [playerHelper playAudioWithVoiceData:self.baseMessage.message.voiceData];
     }
@@ -71,15 +74,15 @@
 - (void)AVAudioPlayerDidFinishPlay {
     
     [[UIDevice currentDevice] setProximityMonitoringEnabled:NO];
-    [self.voiceAnimationImageView stopAnimating];
-    contentVoiceIsPlaying = NO;
-    [[UdeskAudioPlayerHelper shareInstance] stopAudio];
+    [_voiceAnimationImageView stopAnimating];
+    _contentVoiceIsPlaying = NO;
+    [[UdeskAudioPlayer shared] stopAudio];
 }
 
 - (void)didAudioPlayerStopPlay:(AVAudioPlayer *)audioPlayer {
     
-    [self.voiceAnimationImageView stopAnimating];
-    contentVoiceIsPlaying = NO;
+    [_voiceAnimationImageView stopAnimating];
+    _contentVoiceIsPlaying = NO;
 }
 
 - (void)initVoiceAnimationImageView {
@@ -115,32 +118,32 @@
         AVAudioPlayer *play = [[AVAudioPlayer alloc] initWithData:voiceMessage.message.voiceData error:nil];
         //语音时长
         NSString *voiceDuration = [NSString stringWithFormat:@"%.f",play.duration];
-        self.voiceDurationTextLabel.text = [NSString stringWithFormat:@"%.f\'\'", voiceDuration.floatValue];
+        _voiceDurationTextLabel.text = [NSString stringWithFormat:@"%.f\'\'", voiceDuration.floatValue];
     }
     else {
-        self.voiceDurationTextLabel.text = [NSString stringWithFormat:@"%.f\'\'", voiceMessage.message.voiceDuration];
+        _voiceDurationTextLabel.text = [NSString stringWithFormat:@"%.f\'\'", voiceMessage.message.voiceDuration];
     }
     
     //语音播放动画
-    self.voiceAnimationImageView.hidden = NO;
-    self.voiceAnimationImageView.image = voiceMessage.animationVoiceImage;
-    self.voiceAnimationImageView.animationImages = voiceMessage.animationVoiceImages;
+    _voiceAnimationImageView.hidden = NO;
+    _voiceAnimationImageView.image = voiceMessage.animationVoiceImage;
+    _voiceAnimationImageView.animationImages = voiceMessage.animationVoiceImages;
     
     //语音播放图片
-    self.voiceAnimationImageView.frame = voiceMessage.voiceAnimationFrame;
-    self.voiceDurationTextLabel.frame = voiceMessage.voiceDurationFrame;
+    _voiceAnimationImageView.frame = voiceMessage.voiceAnimationFrame;
+    _voiceDurationTextLabel.frame = voiceMessage.voiceDurationFrame;
     
     //昵称
     if (voiceMessage.message.messageFrom == UDMessageTypeReceiving) {
         
-        self.voiceDurationTextLabel.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.agentVoiceDurationColor;
-        self.voiceDurationTextLabel.textAlignment = NSTextAlignmentLeft;
+        _voiceDurationTextLabel.textColor = [UdeskSDKConfig customConfig].sdkStyle.agentVoiceDurationColor;
+        _voiceDurationTextLabel.textAlignment = NSTextAlignmentLeft;
         
     }
     else {
         
-        self.voiceDurationTextLabel.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.customerVoiceDurationColor;
-        self.voiceDurationTextLabel.textAlignment = NSTextAlignmentRight;
+        _voiceDurationTextLabel.textColor = [UdeskSDKConfig customConfig].sdkStyle.customerVoiceDurationColor;
+        _voiceDurationTextLabel.textAlignment = NSTextAlignmentRight;
     }
 }
 
@@ -152,16 +155,16 @@
         if (!voiceMessage || ![voiceMessage isKindOfClass:[UdeskVoiceMessage class]]) return;
         
         if (!voiceMessage.message.voiceData) {
-            if (![[UdeskCaheHelper sharedManager] containsObjectForKey:voiceMessage.message.messageId]) {
+            if (![[UdeskCacheUtil sharedManager] containsObjectForKey:voiceMessage.message.messageId]) {
                 NSString *content = [voiceMessage.message.content stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                 NSURL *url = [[NSURL alloc]initWithString:content];
                 NSData *audioData = [NSData dataWithContentsOfURL:url];
                 voiceMessage.message.voiceData = audioData;
                 
-                [[UdeskCaheHelper sharedManager] setObject:audioData forKey:voiceMessage.message.messageId];
+                [[UdeskCacheUtil sharedManager] setObject:audioData forKey:voiceMessage.message.messageId];
             }
             else {
-                voiceMessage.message.voiceData = (NSData *)[[UdeskCaheHelper sharedManager] objectForKey:voiceMessage.message.messageId];
+                voiceMessage.message.voiceData = (NSData *)[[UdeskCacheUtil sharedManager] objectForKey:voiceMessage.message.messageId];
             }
         }
     } @catch (NSException *exception) {

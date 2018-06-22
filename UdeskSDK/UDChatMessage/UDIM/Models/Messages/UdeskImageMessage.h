@@ -10,10 +10,13 @@
 
 /** 聊天气泡和其中的图片水平间距 */
 extern const CGFloat kUDBubbleToImageHorizontalSpacing;
+extern const CGFloat kUDImageUploadProgressHeight;
 
 @interface UdeskImageMessage : UdeskBaseMessage
 
-//图片frame(包括下方留白)
 @property (nonatomic, assign, readonly) CGRect  imageFrame;
+@property (nonatomic, assign, readonly) CGRect  shadowFrame;
+@property (nonatomic, assign, readonly) CGRect  imageLoadingFrame;
+@property (nonatomic, assign, readonly) CGRect  imageProgressFrame;
 
 @end

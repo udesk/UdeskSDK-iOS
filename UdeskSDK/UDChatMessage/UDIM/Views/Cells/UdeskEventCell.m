@@ -8,14 +8,14 @@
 
 #import "UdeskEventCell.h"
 #import "UdeskEventMessage.h"
-#import "UdeskTools.h"
-#import "UdeskDateFormatter.h"
-#import "UdeskSDKConfig.h"
+#import "UdeskSDKUtil.h"
 
 @interface UdeskEventCell()
 
 /**  提示信息 */
 @property (nonatomic, strong) UdeskEventMessage *eventMessage;
+/**  提示信息Label */
+@property (nonatomic, strong) UILabel *eventLabel;
 
 @end
 
@@ -38,7 +38,7 @@
     UdeskEventMessage *eventMessage = (UdeskEventMessage *)baseMessage;
     if (!eventMessage || ![eventMessage isKindOfClass:[UdeskEventMessage class]]) return;
     
-    if ([UdeskTools isBlankString:eventMessage.message.content]) {
+    if ([UdeskSDKUtil isBlankString:eventMessage.message.content]) {
         return;
     }
     if (!eventMessage.message.timestamp) {

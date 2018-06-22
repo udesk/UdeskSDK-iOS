@@ -47,6 +47,7 @@
 
 - (void)setupUI {
     
+    self.remotoVideoView.frame = [[UIScreen mainScreen] bounds];
     self.waitAcceptLabel.hidden = self.hiddenWaitAcceptLabel;
     self.durationLabel.hidden = YES;
     self.durationLabel.text = @"00:00:00";
@@ -233,7 +234,7 @@
 }
 
 - (void)networkConnectionDidLost {
-    NSLog(@"网络断开");
+    NSLog(@"UdeskCall：网络断开");
     _disconnectTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(disconnectTimeAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_disconnectTimer forMode:NSRunLoopCommonModes];
 }

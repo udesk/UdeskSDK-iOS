@@ -7,9 +7,8 @@
 //
 
 #import "UdeskVideoCallCell.h"
-#import "UdeskConfigurationHelper.h"
 #import "UdeskVideoCallMessage.h"
-#import "UdeskTools.h"
+#import "UdeskSDKUtil.h"
 #import "UdeskSDKConfig.h"
 
 @interface UdeskVideoCallCell()
@@ -37,7 +36,7 @@
     _videoCallLabel.textAlignment = NSTextAlignmentLeft;
     _videoCallLabel.userInteractionEnabled = true;
     _videoCallLabel.backgroundColor = [UIColor clearColor];
-    _videoCallLabel.font = [UdeskSDKConfig sharedConfig].sdkStyle.messageContentFont;
+    _videoCallLabel.font = [UdeskSDKConfig customConfig].sdkStyle.messageContentFont;
     
     [self.bubbleImageView addSubview:_videoCallLabel];
     
@@ -48,8 +47,8 @@
 //点击重播
 - (void)tapBubbleImageViewAction:(UIGestureRecognizer *)tap {
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(callAgain)]) {
-        [self.delegate callAgain];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didTapUdeskVideoCallMessage:)]) {
+        [self.delegate didTapUdeskVideoCallMessage:self.baseMessage.message];
     }
 }
 
@@ -60,7 +59,7 @@
     UdeskVideoCallMessage *callMessage = (UdeskVideoCallMessage *)baseMessage;
     if (!callMessage || ![callMessage isKindOfClass:[UdeskVideoCallMessage class]]) return;
     
-    if ([UdeskTools isBlankString:callMessage.message.content]) {
+    if ([UdeskSDKUtil isBlankString:callMessage.message.content]) {
         self.videoCallLabel.text = @"";
     }
     else {

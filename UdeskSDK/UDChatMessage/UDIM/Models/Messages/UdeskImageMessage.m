@@ -10,14 +10,19 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskImageCell.h"
 #import "Udesk_YYWebImage.h"
+#import "UdeskSDKUtil.h"
 
 /** 聊天气泡和其中的图片水平间距 */
 const CGFloat kUDBubbleToImageHorizontalSpacing = 5.0;
+const CGFloat kUDImageUploadProgressHeight = 15.0;
 
 @interface UdeskImageMessage()
 
 //图片frame(包括下方留白)
 @property (nonatomic, assign, readwrite) CGRect  imageFrame;
+@property (nonatomic, assign, readwrite) CGRect  shadowFrame;
+@property (nonatomic, assign, readwrite) CGRect  imageLoadingFrame;
+@property (nonatomic, assign, readwrite) CGRect  imageProgressFrame;
 
 @end
 
@@ -52,7 +57,13 @@ const CGFloat kUDBubbleToImageHorizontalSpacing = 5.0;
             //图片气泡位置
             self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x-kUDArrowMarginWidth-kUDBubbleToImageHorizontalSpacing*2-kUDAvatarToBubbleSpacing-imageSize.width, self.avatarFrame.origin.y, imageSize.width+(kUDBubbleToImageHorizontalSpacing*4), imageSize.height+(kUDBubbleToImageHorizontalSpacing*2));
             //图片位置
-            self.imageFrame = CGRectMake(0, 0, CGRectGetWidth(self.bubbleFrame), CGRectGetHeight(self.bubbleFrame));
+            self.imageFrame = CGRectMake(-0.5, 0, CGRectGetWidth(self.bubbleFrame)+1, CGRectGetHeight(self.bubbleFrame));
+            //阴影
+            self.shadowFrame = self.imageFrame;
+            //loading
+            self.imageLoadingFrame = CGRectMake((CGRectGetWidth(self.imageFrame)-kUDSendStatusDiameter)/2, (CGRectGetHeight(self.imageFrame)-kUDSendStatusDiameter)/2-kUDImageUploadProgressHeight, kUDSendStatusDiameter, kUDSendStatusDiameter);
+            //进度
+            self.imageProgressFrame = CGRectMake(0, CGRectGetMaxY(self.imageLoadingFrame)+kUDBubbleToImageHorizontalSpacing, CGRectGetWidth(self.imageFrame), kUDImageUploadProgressHeight);
             //发送中frame
             self.loadingFrame = CGRectMake(self.bubbleFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.bubbleFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
             //发送失败frame
@@ -63,7 +74,8 @@ const CGFloat kUDBubbleToImageHorizontalSpacing = 5.0;
         case UDMessageTypeReceiving: {
         
             //图片气泡frame
-            self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, imageSize.width+(kUDBubbleToImageHorizontalSpacing*4), imageSize.height+(kUDBubbleToImageHorizontalSpacing*2));
+            CGFloat bubbleY = [UdeskSDKUtil isBlankString:self.message.nickName] ? CGRectGetMinY(self.avatarFrame) : CGRectGetMaxY(self.nicknameFrame)+kUDCellBubbleToIndicatorSpacing;
+            self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, bubbleY, imageSize.width+(kUDBubbleToImageHorizontalSpacing*4), imageSize.height+(kUDBubbleToImageHorizontalSpacing*2));
             //图片frame
             self.imageFrame = CGRectMake(0, 0, CGRectGetWidth(self.bubbleFrame), CGRectGetHeight(self.bubbleFrame));
             

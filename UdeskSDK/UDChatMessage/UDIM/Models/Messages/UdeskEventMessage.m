@@ -9,9 +9,9 @@
 #import "UdeskEventMessage.h"
 #import "UdeskMessage.h"
 #import "UdeskStringSizeUtil.h"
-#import "UdeskFoundationMacro.h"
+#import "UdeskSDKMacro.h"
 #import "UdeskEventCell.h"
-#import "UdeskTools.h"
+#import "UdeskSDKUtil.h"
 
 /** Event垂直距离 */
 static CGFloat const kUDEventToVerticalEdgeSpacing = 10;

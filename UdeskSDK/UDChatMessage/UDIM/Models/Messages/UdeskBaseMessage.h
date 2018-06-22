@@ -32,6 +32,8 @@ extern const CGFloat kUDChatMessageDateLabelY;
 extern const CGFloat kUDArrowMarginWidth;
 /** 底部留白 */
 extern const CGFloat kUDCellBottomMargin;
+/** 客服昵称高度 */
+extern const CGFloat kUDAgentNicknameHeight;
 
 @interface UdeskBaseMessage : NSObject
 
@@ -39,6 +41,8 @@ extern const CGFloat kUDCellBottomMargin;
 @property (nonatomic, assign) CGRect     bubbleFrame;
 /** 头像frame */
 @property (nonatomic, assign) CGRect     avatarFrame;
+/** 客服昵称frame */
+@property (nonatomic, assign) CGRect     nicknameFrame;
 /** 发送失败图片frame */
 @property (nonatomic, assign) CGRect     failureFrame;
 /** 发送中frame */

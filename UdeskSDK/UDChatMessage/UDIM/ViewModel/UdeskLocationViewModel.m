@@ -7,10 +7,11 @@
 //
 
 #import "UdeskLocationViewModel.h"
-#import "UdeskFoundationMacro.h"
-#import "NSArray+UdeskSDK.h"
+#import "UdeskSDKMacro.h"
 #import "UdeskLocationModel.h"
-#import "UdeskTools.h"
+#import "UdeskSDKUtil.h"
+
+static CGFloat kUdeskNearbySpan = 50;
 
 @interface UdeskLocationViewModel()
 
@@ -19,6 +20,7 @@
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) CLGeocoder *geocoder;
 @property (nonatomic, copy  ) NSString *locationName;
+@property (nonatomic, copy  ) NSString *thoroughfare; //街道相关信息，例如门牌等
 
 @end
 
@@ -40,7 +42,7 @@
 //获取附近地点
 - (void)getAroundInfoMationWithCoordinate:(CLLocationCoordinate2D)coordinate completion:(void(^)(void))completionHandler {
     
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coordinate, UdeskNearbySpan, UdeskNearbySpan);
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coordinate, kUdeskNearbySpan, kUdeskNearbySpan);
     MKLocalSearchRequest *request = [[MKLocalSearchRequest alloc]init];
     request.region = region;
     request.naturalLanguageQuery = @"landmark";
@@ -72,6 +74,7 @@
         UdeskNearbyModel *firstModel = (UdeskNearbyModel *)self.nearbyArray.firstObject;
         firstModel.isSelect = YES;
         self.locationName = firstModel.name;
+        self.thoroughfare = firstModel.thoroughfare;
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -95,7 +98,7 @@
                     }
                 }];
             }else{
-                NSLog(@"error:%@",error.localizedDescription);
+                NSLog(@"UdeskSDK：%@",error.localizedDescription);
                 if (completionHandler) {
                     completionHandler(error);
                 }
@@ -124,6 +127,7 @@
         UdeskNearbyModel *firstModel = (UdeskNearbyModel *)self.nearbyArray.firstObject;
         firstModel.isSelect = YES;
         self.locationName = firstModel.name;
+        self.thoroughfare = firstModel.thoroughfare;
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -144,7 +148,7 @@
             }
             
         }else{
-            NSLog(@"error:%@",error.localizedDescription);
+            NSLog(@"UdeskSDK：%@",error.localizedDescription);
             if (completionHandler) {
                 completionHandler(nil,error);
             }
@@ -158,10 +162,11 @@
     @try {
      
         UdeskLocationModel *model = [[UdeskLocationModel alloc] init];
-        if ([UdeskTools isBlankString:self.locationName]) {
+        if ([UdeskSDKUtil isBlankString:self.locationName]) {
             self.locationName = @"";
         }
         model.name = self.locationName;
+        model.thoroughfare = self.thoroughfare;
         model.image = image;
         model.longitude = coordinate.longitude;
         model.latitude = coordinate.latitude;
@@ -196,7 +201,7 @@
                 }
             }
         }else {
-            NSLog(@"%@", error.localizedDescription);
+            NSLog(@"UdeskSDK：%@", error.localizedDescription);
         }
     }];
 }
@@ -214,9 +219,14 @@
             model.isSelect = NO;
         }
         
-        UdeskNearbyModel *model = [self.nearbyArray objectAtIndexCheck:row];
+        if (row >= self.nearbyArray.count) {
+            return @"";
+        }
+        
+        UdeskNearbyModel *model = self.nearbyArray[row];
         model.isSelect = YES;
         self.locationName = model.name;
+        self.thoroughfare = model.thoroughfare;
         
         return model.name;
         

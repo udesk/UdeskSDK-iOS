@@ -8,10 +8,9 @@
 
 #import "UdeskProductCell.h"
 #import "UdeskProductMessage.h"
-#import "UIColor+UdeskSDK.h"
-#import "UdeskFoundationMacro.h"
+#import "UdeskSDKMacro.h"
 #import "UdeskSDKConfig.h"
-#import "UdeskTools.h"
+#import "UdeskSDKUtil.h"
 #import "Udesk_YYWebImage.h"
 
 @interface UdeskProductCell()
@@ -44,18 +43,18 @@
         UdeskProductMessage *productMessage = (UdeskProductMessage *)message;
         _productMessage = productMessage;
         
-        if (![UdeskTools isBlankString:productMessage.productTitle]) {
+        if (![UdeskSDKUtil isBlankString:productMessage.productTitle]) {
             self.productTitleLabel.text = productMessage.productTitle;
         }
         
-        if (![UdeskTools isBlankString:productMessage.productDetail]) {
+        if (![UdeskSDKUtil isBlankString:productMessage.productDetail]) {
             self.productDetailLabel.text = productMessage.productDetail;
         }
         if (productMessage.productImage) {
             [self.productImageView yy_setImageWithURL:[NSURL URLWithString:productMessage.productImageURL] placeholder:productMessage.productImage];
         }
         
-        if (![UdeskTools isBlankString:productMessage.productSendText]) {
+        if (![UdeskSDKUtil isBlankString:productMessage.productSendText]) {
             [self.productSendButton setTitle:productMessage.productSendText forState:UIControlStateNormal];
         }
         
@@ -80,7 +79,7 @@
 
     if (!_productBackGroundView) {
         _productBackGroundView = [[UIView alloc] initWithFrame:CGRectZero];
-        _productBackGroundView.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.productBackGroundColor;
+        _productBackGroundView.backgroundColor = [UdeskSDKConfig customConfig].sdkStyle.productBackGroundColor;
         [self.contentView addSubview:_productBackGroundView];
     }
     return _productBackGroundView;
@@ -102,7 +101,7 @@
     if (!_productTitleLabel) {
         _productTitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _productTitleLabel.backgroundColor = [UIColor clearColor];
-        _productTitleLabel.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.productTitleColor;
+        _productTitleLabel.textColor = [UdeskSDKConfig customConfig].sdkStyle.productTitleColor;
         _productTitleLabel.font = [UIFont systemFontOfSize:15];
         _productTitleLabel.numberOfLines = 0;
         [self.productBackGroundView addSubview:_productTitleLabel];
@@ -116,7 +115,7 @@
     if (!_productDetailLabel) {
         _productDetailLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _productDetailLabel.backgroundColor = [UIColor clearColor];
-        _productDetailLabel.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.productDetailColor;
+        _productDetailLabel.textColor = [UdeskSDKConfig customConfig].sdkStyle.productDetailColor;
         _productDetailLabel.font = [UIFont systemFontOfSize:15];
         _productDetailLabel.numberOfLines = 0;
         [_productDetailLabel sizeToFit];
@@ -132,8 +131,8 @@
         _productSendButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _productSendButton.frame = CGRectZero;
         _productSendButton.titleLabel.font = [UIFont systemFontOfSize:14];
-        [_productSendButton setTitleColor:[UdeskSDKConfig sharedConfig].sdkStyle.productSendTitleColor forState:UIControlStateNormal];
-        _productSendButton.backgroundColor = [UdeskSDKConfig sharedConfig].sdkStyle.productSendBackGroundColor;
+        [_productSendButton setTitleColor:[UdeskSDKConfig customConfig].sdkStyle.productSendTitleColor forState:UIControlStateNormal];
+        _productSendButton.backgroundColor = [UdeskSDKConfig customConfig].sdkStyle.productSendBackGroundColor;
         [_productSendButton addTarget:self action:@selector(sendProductUrlAction:) forControlEvents:UIControlEventTouchUpInside];
         UDViewRadius(_productSendButton, 2);
         [self.productBackGroundView addSubview:_productSendButton];
@@ -144,10 +143,8 @@
 
 - (void)sendProductUrlAction:(UIButton *)button {
 
-    if (self.delegate) {
-        if ([self.delegate respondsToSelector:@selector(sendProductURL:)]) {
-            [self.delegate sendProductURL:self.productMessage.productURL];
-        }
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSendProductURL:)]) {
+        [self.delegate didSendProductURL:self.productMessage.productURL];
     }
 }
 

@@ -165,7 +165,7 @@
     
     if (!_locationPinImgView) {
         _locationPinImgView = [[UIImageView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2, 100, 18, 38)];
-        _locationPinImgView.image = [UIImage ud_defaultLocationPinImage];
+        _locationPinImgView.image = [UIImage udDefaultLocationPinImage];
         _locationPinImgView.center = _mapView.center;
         [self.view addSubview:_locationPinImgView];
     }
@@ -208,7 +208,7 @@
             cell.accessoryView = nil;
         }
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage ud_defaultMarkImage]];
+        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage udDefaultMarkImage]];
         
         [self.viewModel updateNearby:indexPath.row];
         return;

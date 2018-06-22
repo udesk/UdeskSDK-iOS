@@ -22,6 +22,7 @@
 "udesk_network_interrupt" = "网络断开链接了";
 "udesk_chat_end" = "会话已结束";
 "udesk_top_view_thanks_evaluation" = "感谢评价！";
+"udesk_top_view_failure" = "评价失败了！";
 "udesk_has_survey" = "谢谢，您已对本次服务做出过评价了！";
 "udesk_no_send_empty" = "不能发送空白消息";
 "udesk_resend_msg" = "重发该消息？";
@@ -71,8 +72,41 @@
 "udesk_video_send_tips" = "当前在非Wi-Fi环境，发送文件将消耗一定流量，是否继续？";
 "udesk_video_big_tips" = "文件过大无法发送";
 "udesk_customer_leave_msg" = "客户留言";
+"udesk_leave_message_offline_reply" = "留言工单离线回复";
 "udesk_rollback" = "撤回了一条消息";
 "udesk_location" = "位置";
+"udesk_phone_number_tip" = "可能是一个电话号码，你可以";
+"udesk_file_not_exist" = "该文件不存在,链接错误";
+"udesk_download_failed" = "下载失败";
+"udesk_search" = "搜索";
+"udesk_video_export_failed" = "视频导出失败";
+"udesk_agent_transfer_tip" = "客服转接成功，@为您服务";
+
+"udesk_preview" = "预览";
+"udesk_full_image" = "原图";
+"udesk_photo" = "照片";
+"udesk_max_count_photo" = "你最多只能选择@张照片";
+"udesk_small_video_tips" = "轻触拍照，按住摄像";
+"udesk_second" = "秒";
+"udesk_album" = "相册";
+"udesk_shooting" = "拍摄";
+"udesk_survey" = "评价";
+"udesk_location" = "地理位置";
+"udesk_video_call" = "视频通话";
+"udesk_hold_to_talk" = "按住 说话";
+"udesk_release_to_send" = "松开 结束";
+"udesk_release_to_cancel" = "松开 取消";
+"udesk_slide_up_to_cancel" = "手指上滑，取消发送";
+"udesk_release_up_to_cancel" = "松开手指，取消发送";
+"udesk_message_too_short" = "说话时间太短";
+"udesk_service_survey" = "服务评价";
+"udesk_submit_survey" = "提交评价";
+"udesk_survey_satisfied" = "满意";
+"udesk_survey_general" = "一般";
+"udesk_survey_unsatisfactory" = "不满意";
+"udesk_survey_tips" = "请您对当前服务做个评价，谢谢！";
+"udesk_survey_remark_required" = "评价备注为必填项";
+"udesk_admin" = "管理员";
 
 "udesk_video_call_duration" = "通话时长：";
 
@@ -86,4 +120,3 @@
 //customer
 "udesk_video_call_customer_cancel" = "对方已取消";
 "udesk_video_call_customer_decline" = "已拒绝";
-

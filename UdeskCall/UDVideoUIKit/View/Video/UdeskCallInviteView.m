@@ -9,14 +9,10 @@
 #import "UdeskCallInviteView.h"
 #import "UdeskVideoBundleHelper.h"
 #import "UdeskCallingView.h"
-
-#if __has_include(<UdeskCall/UdeskCall.h>)
 #import <UdeskCall/UdeskCall.h>
-@interface UdeskCallInviteView()<UdeskCallSessionManagerDelegate>
-#else
-@interface UdeskCallInviteView()
-#endif
-{
+
+@interface UdeskCallInviteView()<UdeskCallSessionManagerDelegate> {
+    
     NSTimer *_disconnectTimer;
     NSInteger _disconnectTime;
 }
@@ -32,9 +28,7 @@
     
     [self setupUI];
     
-#if __has_include(<UdeskCall/UdeskCall.h>)
     [[UdeskCallSessionManager sharedManager] addDelegate:self];
-#endif
 }
 
 - (void)setupUI {
@@ -76,9 +70,7 @@
 
 - (IBAction)declineAction:(id)sender {
     
-#if __has_include(<UdeskCall/UdeskCall.h>)
     [[UdeskCallSessionManager sharedManager] rejeptCall];
-#endif
     [self hiddenInviteView];
 }
 
@@ -97,9 +89,7 @@
             CGRect newframe = self.callingView.frame;
             newframe.origin.y = 0;
             self.callingView.frame = newframe;
-#if __has_include(<UdeskCall/UdeskCall.h>)
             [[UdeskCallSessionManager sharedManager] acceptCall];
-#endif
         }];
     }];
 }
@@ -191,9 +181,7 @@
     
     //屏幕常亮
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
-#if __has_include(<UdeskCall/UdeskCall.h>)
     [[UdeskCallSessionManager sharedManager] removeDelegate:self];
-#endif
 }
 
 @end

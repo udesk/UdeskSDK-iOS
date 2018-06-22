@@ -8,11 +8,27 @@
 
 #import "UdeskBaseCell.h"
 #import "UdeskSDKConfig.h"
-#import "UdeskDateFormatter.h"
-#import "UdeskViewExt.h"
+#import "UdeskDateUtil.h"
 #import "UIImage+UdeskSDK.h"
 #import "Udesk_YYWebImage.h"
-#import "UdeskTools.h"
+#import "UdeskSDKUtil.h"
+
+@interface UdeskBaseCell ()
+
+/** 客户头像 */
+@property (nonatomic, strong, readwrite) UIImageView *avatarImageView;
+/** 气泡 */
+@property (nonatomic, strong, readwrite) UIImageView *bubbleImageView;
+/** 客服昵称 */
+@property (nonatomic, strong, readwrite) UILabel     *nicknameLabel;
+/** 时间 */
+@property (nonatomic, strong, readwrite) UILabel     *dateLabel;
+/** 重发 */
+@property (nonatomic, strong, readwrite) UIButton    *resetButton;
+/** 菊花 */
+@property (nonatomic, strong, readwrite) UIActivityIndicatorView *sendingIndicator;
+
+@end
 
 @implementation UdeskBaseCell
 
@@ -53,6 +69,16 @@
     return _bubbleImageView;
 }
 
+- (UILabel *)nicknameLabel {
+    if (!_nicknameLabel) {
+        _nicknameLabel = [[UILabel alloc] init];
+        _nicknameLabel.textColor = [UdeskSDKConfig customConfig].sdkStyle.agentNicknameColor;
+        _nicknameLabel.font = [UdeskSDKConfig customConfig].sdkStyle.agentNicknameFont;
+        [self.contentView addSubview:_nicknameLabel];
+    }
+    return _nicknameLabel;
+}
+
 - (UILabel *)dateLabel {
     
     if (!_dateLabel) {
@@ -60,8 +86,8 @@
         _dateLabel = [[UILabel alloc] init];
         _dateLabel.textAlignment = NSTextAlignmentCenter;
         _dateLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin;
-        _dateLabel.textColor = [UdeskSDKConfig sharedConfig].sdkStyle.chatTimeColor;
-        _dateLabel.font = [UdeskSDKConfig sharedConfig].sdkStyle.messageTimeFont;
+        _dateLabel.textColor = [UdeskSDKConfig customConfig].sdkStyle.chatTimeColor;
+        _dateLabel.font = [UdeskSDKConfig customConfig].sdkStyle.messageTimeFont;
         _dateLabel.textAlignment = NSTextAlignmentCenter;
         _dateLabel.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:_dateLabel];
@@ -73,7 +99,7 @@
     
     if (!_resetButton) {
         _resetButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_resetButton setImage:[UIImage ud_defaultResetButtonImage] forState:UIControlStateNormal];
+        [_resetButton setImage:[UIImage udDefaultResetButtonImage] forState:UIControlStateNormal];
         [_resetButton addTarget:self action:@selector(tapResetButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_resetButton];
     }
@@ -99,20 +125,20 @@
         baseMessage.message.messageType == UDMessageContentTypeRollback ||
         baseMessage.message.messageType == UDMessageContentTypeRedirect) {
         
-        NSDateFormatter *formatter = [UdeskDateFormatter sharedFormatter].dateFormatter;
+        NSDateFormatter *formatter = [UdeskDateUtil sharedFormatter].dateFormatter;
         [formatter setDateFormat:@"yyyy/MM/dd HH:mm:ss"];
         NSString *date = [formatter stringFromDate:baseMessage.message.timestamp];
         self.dateLabel.text = [NSString stringWithFormat:@"——— %@ ———",date];
     }
     else {
-        self.dateLabel.text = [[UdeskDateFormatter sharedFormatter] ud_styleDateForDate:baseMessage.message.timestamp];
+        self.dateLabel.text = [[UdeskDateUtil sharedFormatter] udStyleDateForDate:baseMessage.message.timestamp];
     }
     
     //头像位置
     self.avatarImageView.frame = baseMessage.avatarFrame;
     
     //头像图片
-    if (![UdeskTools isBlankString:baseMessage.avatarURL]) {
+    if (![UdeskSDKUtil isBlankString:baseMessage.avatarURL]) {
         [self.avatarImageView yy_setImageWithURL:[NSURL URLWithString:baseMessage.avatarURL] placeholder:baseMessage.avatarImage];
     }
     else {
@@ -128,24 +154,31 @@
         case UDMessageTypeReceiving:{
             
             //气泡
-            UIImage *bubbleImage = [UdeskSDKConfig sharedConfig].sdkStyle.agentBubbleImage;
+            UIImage *bubbleImage = [UdeskSDKConfig customConfig].sdkStyle.agentBubbleImage;
             
-            if ([UdeskSDKConfig sharedConfig].sdkStyle.agentBubbleColor) {
-                bubbleImage = [bubbleImage convertImageColor:[UdeskSDKConfig sharedConfig].sdkStyle.agentBubbleColor];
+            if ([UdeskSDKConfig customConfig].sdkStyle.agentBubbleColor) {
+                bubbleImage = [bubbleImage udConvertImageColor:[UdeskSDKConfig customConfig].sdkStyle.agentBubbleColor];
             }
             
             self.bubbleImageView.image = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width*0.5f topCapHeight:bubbleImage.size.height*0.8f];
+            
+            //客服昵称
+            self.nicknameLabel.frame = baseMessage.nicknameFrame;
+            self.nicknameLabel.text = [UdeskSDKUtil isBlankString:baseMessage.message.nickName]?@"":baseMessage.message.nickName;
             
             break;
         }
         case UDMessageTypeSending:{
          
             //气泡
-            UIImage *bubbleImage = [UdeskSDKConfig sharedConfig].sdkStyle.customerBubbleImage;
-            if ([UdeskSDKConfig sharedConfig].sdkStyle.customerBubbleColor) {
-                bubbleImage = [bubbleImage convertImageColor:[UdeskSDKConfig sharedConfig].sdkStyle.customerBubbleColor];
+            UIImage *bubbleImage = [UdeskSDKConfig customConfig].sdkStyle.customerBubbleImage;
+            if ([UdeskSDKConfig customConfig].sdkStyle.customerBubbleColor) {
+                bubbleImage = [bubbleImage udConvertImageColor:[UdeskSDKConfig customConfig].sdkStyle.customerBubbleColor];
             }
             self.bubbleImageView.image = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width*0.5f topCapHeight:bubbleImage.size.height*0.8f];
+            
+            self.nicknameLabel.frame = CGRectZero;
+            self.nicknameLabel.text = nil;
             
             break;
         }
@@ -156,15 +189,19 @@
     
     if (baseMessage.message.messageType == UDMessageContentTypeText ||
         baseMessage.message.messageType == UDMessageContentTypeLeaveMsg ||
-        baseMessage.message.messageType == UDMessageContentTypeImage ||
         baseMessage.message.messageType == UDMessageContentTypeVoice ||
         baseMessage.message.messageType == UDMessageContentTypeVideo) {
     
-        [self setActivityIndicatorViewFrameWithSendStatus:baseMessage.message.messageStatus];
+        [self updateMessageSendStatus:baseMessage.message.messageStatus];
+    }
+    else {
+        self.sendingIndicator.hidden = YES;
+        [self.sendingIndicator stopAnimating];
+        self.resetButton.hidden = YES;
     }
 }
 
-- (void)setActivityIndicatorViewFrameWithSendStatus:(UDMessageSendStatus)sendStatus {
+- (void)updateMessageSendStatus:(UDMessageSendStatus)sendStatus {
     
     //菊花和重发
     switch (sendStatus) {
@@ -197,8 +234,8 @@
     self.sendingIndicator.hidden = NO;
     [self.sendingIndicator startAnimating];
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(resendMessageInCell:resendMessage:)]) {
-        [self.delegate resendMessageInCell:self resendMessage:self.baseMessage.message];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didResendMessage:)]) {
+        [self.delegate didResendMessage:self.baseMessage.message];
     }
 }
 

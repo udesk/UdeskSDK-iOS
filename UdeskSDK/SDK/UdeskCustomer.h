@@ -34,7 +34,7 @@
 
 /** 客户ID（不需要传这个参数) */
 @property (nonatomic, copy  ) NSString *customerId;
-/** 客户JID（不需要传这个参数)  */
+/** 客户JID（不需要传这个参数) */
 @property (nonatomic, copy  ) NSString *customerJID;
 
 @end
