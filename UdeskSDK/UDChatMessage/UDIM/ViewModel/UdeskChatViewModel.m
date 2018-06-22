@@ -66,10 +66,9 @@
 /** 无消息对话过滤发送消息状态回调 */
 @property (nonatomic, copy  ) void(^preSessionMessageSendStatusBlock)(UdeskMessage *message);
 
+#if __has_include(<UdeskCall/UdeskCall.h>)
 /** 用户ID */
 @property (nonatomic, copy            ) NSString                 *currentUserId;
-
-#if __has_include(<UdeskCall/UdeskCall.h>)
 /** 铃声播放 */
 @property (nonatomic, strong          ) AVAudioPlayer            *audioPlayer;
 #endif
@@ -1170,23 +1169,6 @@
     return _preSessionMessages;
 }
 
-#pragma mark - NSNotificationCenterAction
-//进入后台
-- (void)udeskCallApplicationEnterBackground {
-    
-#if __has_include(<UdeskCall/UdeskCall.h>)
-    [[UdeskCallSessionManager sharedManager] disConnect];
-#endif
-}
-
-//进入前台
-- (void)udeskCallApplicationBecomeActive {
-    
-#if __has_include(<UdeskCall/UdeskCall.h>)
-    [[UdeskCallSessionManager sharedManager] connect];
-#endif
-}
-
 //网络状态检测
 - (void)udIMReachabilityChanged:(NSNotification *)note {
     
@@ -1225,6 +1207,19 @@
 }
 
 #pragma mark - 视频
+#if __has_include(<UdeskCall/UdeskCall.h>)
+//进入后台
+- (void)udeskCallApplicationEnterBackground {
+    
+    [[UdeskCallSessionManager sharedManager] disConnect];
+}
+
+//进入前台
+- (void)udeskCallApplicationBecomeActive {
+    
+    [[UdeskCallSessionManager sharedManager] connect];
+}
+
 //初始化视频manager
 - (void)setupUdeskVideoCallWithCustomer:(UdeskCustomer *)customer
                                   agent:(UdeskAgent *)agent {
@@ -1397,6 +1392,7 @@
                                              error:nil];
     }
 }
+#endif
 
 - (void)dealloc
 {

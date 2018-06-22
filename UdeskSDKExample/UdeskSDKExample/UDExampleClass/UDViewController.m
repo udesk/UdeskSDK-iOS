@@ -76,71 +76,10 @@
     _appIdTextField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"appId"];
     _appIdTextField.placeholder = @"APP ID";
     _appIdTextField.textColor = [UIColor whiteColor];
-
-//    _domainTextField.text = @"brazil0326.udesk.cn";
-//    _appKeyTextField.text = @"fd1656154e010248434234d7b59aeee9";
-//    _appIdTextField.text = @"38f5b2b0c68ac679";
-    
-//    _domainTextField.text = @"rd-dota0326.udesk.cn";
-//    _appKeyTextField.text = @"3521453cdb70eabb125fd406a136b1cf";
-//    _appIdTextField.text = @"04ad2dd06c5f5614";
-    
-//    _domainTextField.text = @"reocar.udeskdog.com";
-//    _appKeyTextField.text = @"bdb76d84753f4afa70d4158a8798bbd4";
-//    _appIdTextField.text = @"1727f609ae08f73a";
-    
-//    _domainTextField.text = @"reocar.udeskmonkey.com";
-//    _appKeyTextField.text = @"f855bf60be6605fddb9d1236aeb532f2";
-//    _appIdTextField.text = @"5fc1b2cc2d6fffb9";
-    
-//    _appKeyTextField.text = @"be591e8a8602d6de3a42802615a24bae";
-//    _appIdTextField.text = @"428953553ae5ec0e";
-//    _domainTextField.text = @"icarbonx.udesk.cn";
     
     _domainTextField.text = @"udesksdk.udesk.cn";
     _appKeyTextField.text = @"6c37f775019907785d85c027e29dae4e";
     _appIdTextField.text = @"cdc6da4fa97efc2c";
-    
-//    _domainTextField.text = @"udesksdk.udesk.cn";
-//    _appKeyTextField.text = @"08919a2194e9844795c8f589854ad559";
-//    _appIdTextField.text = @"6a424855941db2d1";
-    
-//    _domainTextField.text = @"brazil0326.udesk.cn";
-//    _appKeyTextField.text = @"69b41d0ac1e71765a7cc0329fd739a72";
-//    _appIdTextField.text = @"18eeecb7e45260ea";
-
-//    _domainTextField.text = @"bdkj.udesk.cn";
-//    _appKeyTextField.text = @"6ab28a0c2dc9695dcf8a199d5088f590";
-//    _appIdTextField.text = @"5bebc87d68a7e425";
-    
-//    _domainTextField.text = @"reocar.udeskb1.com";
-//    _appKeyTextField.text = @"61a9c9f960fc7262ec19ad49f5059dec";
-//    _appIdTextField.text = @"dc3c5b073962fe29";
-    
-//    _domainTextField.text = @"reocar.tryudesk.com";
-//    _appKeyTextField.text = @"0e7a8f4b856d062962620167c957548e";
-//    _appIdTextField.text = @"87e0474c9aadabe1";
-    
-//    _domainTextField.text = @"reocar.udeskt3.com";
-//    _appKeyTextField.text = @"a24ab9d44ecce6d028dc2f04759c129a";
-//    _appIdTextField.text = @"2cdab9b756805a0b";
-
-
-//    _domainTextField.text = @"reocar.udeskb3.com";
-//    _appKeyTextField.text = @"a4033168606fb67b0afc749e10b56631";
-//    _appIdTextField.text = @"3e045475e1f74112";
-    
-//    _domainTextField.text = @"rd-dota.udesk.cn";
-//    _appKeyTextField.text = @"3521453cdb70eabb125fd406a136b1cf";
-//    _appIdTextField.text = @"04ad2dd06c5f5614";
-    
-//    _domainTextField.text = @"reocar.udeskt1.com";
-//    _appKeyTextField.text = @"9937cd5b63e98ecc34b984c658af60f2";
-//    _appIdTextField.text = @"1966f16ac072ea71";
-    
-//    _domainTextField.text = @"udeskdemo8732.udesk.cn";
-//    _appKeyTextField.text = @"5bef76d133a6c69c6d95287a26ccbc7f";
-//    _appIdTextField.text = @"07c7cb9df80efc81";
 
     [appIdTextFieldBackGroundView addSubview:_appIdTextField];
     

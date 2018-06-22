@@ -93,7 +93,9 @@
 
 //Udesk Call
 
+#if __has_include(<UdeskCall/UdeskCall.h>)
 //关闭视频铃声
 - (void)stopPlayVideoCallRing;
+#endif
 
 @end
