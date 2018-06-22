@@ -14,7 +14,6 @@
 #import "UdeskCustomNavigation.h"
 #import "UIView+UdeskSDK.h"
 #import <WebKit/WebKit.h>
-#import "UdeskNoInputAccessoryView.h"
 
 @interface UdeskTicketViewController ()<UIWebViewDelegate,WKUIDelegate,WKNavigationDelegate>
 
@@ -86,8 +85,6 @@
                 ticketWebView.backgroundColor = [UIColor whiteColor];
                 [ticketWebView loadRequest:[NSURLRequest requestWithURL:ticketURL]];
                 [self.view addSubview:ticketWebView];
-                UdeskNoInputAccessoryView *noInput = [UdeskNoInputAccessoryView new];
-                [noInput removeInputAccessoryViewFromWKWebView:ticketWebView];
             }
             else {
             
