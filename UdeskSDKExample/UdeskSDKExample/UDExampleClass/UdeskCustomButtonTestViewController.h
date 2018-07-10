@@ -12,6 +12,6 @@
 
 @interface UdeskCustomButtonTestViewController : UITableViewController
 
-+ (void)sendOrderWithType:(UdeskOrderSendType)sendType viewController:(UdeskChatViewController *)viewController;
++ (void)sendOrderWithType:(UdeskOrderSendType)sendType viewController:(UdeskChatViewController *)viewController goodsModel:(UdeskGoodsModel *)goodsModel;
 
 @end

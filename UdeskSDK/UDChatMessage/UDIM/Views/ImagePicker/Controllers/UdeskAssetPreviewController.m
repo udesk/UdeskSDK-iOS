@@ -72,6 +72,9 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
     if (self.currentIndex < self.assetArray.count) {
         _toolBar.currentAsset = self.assetArray[self.currentIndex];
     }
+    if (_toolBar.selectedAssets.count == 1) {
+        _toolBar.toolBarCollectionView.hidden = YES;
+    }
     [self.view addSubview:_toolBar];
     
     _navBar = [[UdeskPreviewNavBar alloc] initWithFrame:CGRectZero];
@@ -99,7 +102,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
 }
 
 - (void)toolBarDidSelectPreviewItemAtAssetModel:(UdeskAssetModel *)asset {
-
+    
     if ([self.dataSource containsObject:asset]) {
         _currentIndex = [self.dataSource indexOfObject:asset];
         [_previewCollectionView setContentOffset:CGPointMake((CGRectGetWidth(self.view.frame) + 20) * _currentIndex, 0) animated:NO];
@@ -118,7 +121,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
 }
 
 - (void)previewNavBarDidSelectAsset:(UdeskPreviewNavBar *)navBar {
-
+    
     UdeskImagePickerController *udImagePicker = (UdeskImagePickerController *)self.navigationController;
     if (_currentIndex >= self.dataSource.count) return;
     
@@ -132,7 +135,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
     }
     
     @try {
-     
+        
         UdeskAssetModel *model = self.dataSource[_currentIndex];
         if (navBar.selectButton.selected) {
             [udImagePicker.selectedModels addObject:model];
@@ -173,7 +176,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-
+    
     _navBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.frame), [UdeskSDKUtil udIsIPhoneX]?88:64);
     
     _previewFlowLayout.itemSize = CGSizeMake(CGRectGetWidth(self.view.frame) + 20, CGRectGetHeight(self.view.frame));
@@ -181,7 +184,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
     _previewFlowLayout.minimumLineSpacing = 0;
     _previewCollectionView.frame = CGRectMake(-10, 0, CGRectGetWidth(self.view.frame) + 20, CGRectGetHeight(self.view.frame));
     [_previewCollectionView setCollectionViewLayout:_previewFlowLayout];
-
+    
     CGFloat toolBarHeight = ([UdeskSDKUtil udIsIPhoneX] ? 50 + (83 - 49) : 50) + (_dataSource.count > 1 ? 80 : 0);
     CGFloat toolBarTop = CGRectGetHeight(self.view.frame) - toolBarHeight;
     _toolBar.frame = CGRectMake(0, toolBarTop, CGRectGetWidth(self.view.frame), toolBarHeight);
@@ -191,7 +194,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
     @try {
-     
+        
         CGFloat offSetWidth = scrollView.contentOffset.x;
         offSetWidth = offSetWidth +  ((CGRectGetWidth(self.view.frame) + 20) * 0.5);
         
@@ -265,7 +268,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
     if (_currentIndex >= _dataSource.count) return ;
     
     @try {
-     
+        
         UdeskImagePickerController *udImagePicker = (UdeskImagePickerController *)self.navigationController;
         
         UdeskAssetModel *model = _dataSource[_currentIndex];

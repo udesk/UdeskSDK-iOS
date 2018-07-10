@@ -39,8 +39,13 @@
     config.showTopCustomButtonSurvey = YES;
     config.customButtons = self.customButtons;
     
+    UdeskSDKActionConfig *action = [UdeskSDKActionConfig new];
+    action.goodsMessageClickBlock = ^(UdeskChatViewController *viewController, NSString *goodsURL, NSString *goodsId) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:goodsURL]];
+    };
+    
     //初始化sdk
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:config];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:config sdkActionConfig:action];
     [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 
@@ -52,8 +57,8 @@
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:orders];
         [viewController presentViewController:nav animated:YES completion:nil];
         
-        orders.didSendOrderBlock = ^(UdeskOrderSendType sendType) {
-            [UdeskCustomButtonTestViewController sendOrderWithType:sendType viewController:viewController];
+        orders.didSendOrderBlock = ^(UdeskOrderSendType sendType,UdeskGoodsModel *goodsModel) {
+            [UdeskCustomButtonTestViewController sendOrderWithType:sendType viewController:viewController goodsModel:goodsModel];
         };
     }];
     [self.customButtons insertObject:buttonConfig atIndex:0];
@@ -82,7 +87,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-+ (void)sendOrderWithType:(UdeskOrderSendType)sendType viewController:(UdeskChatViewController *)viewController {
++ (void)sendOrderWithType:(UdeskOrderSendType)sendType viewController:(UdeskChatViewController *)viewController goodsModel:(UdeskGoodsModel *)goodsModel {
     
     //以下数据都是伪造的，实际开发已真实为例
     switch (sendType) {
@@ -116,6 +121,38 @@
             model.longitude = 116.356796;
             model.latitude = 39.939559;
             [viewController sendLoactionMessageWithModel:model];
+            break;
+        }
+        case UdeskOrderSendTypeGoods:{
+            
+//            UdeskGoodsModel *goodsModel1 = [[UdeskGoodsModel alloc] init];
+//            goodsModel1.name = @"Apple iPhone X (A1903) 64GB 深空灰色 移动联通4G手机";
+//            goodsModel1.url = @"https://item.jd.com/6748052.html";
+//            goodsModel1.imgUrl = @"http://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg";
+//
+//            UdeskGoodsParamModel *paramModel1 = [UdeskGoodsParamModel new];
+//            paramModel1.text = @"￥6999.00";
+//            paramModel1.color = @"#FF0000";
+//            paramModel1.fold = @(1);
+//            paramModel1.udBreak = @(1);
+//            paramModel1.size = @(14);
+//
+//            UdeskGoodsParamModel *paramModel2 = [UdeskGoodsParamModel new];
+//            paramModel2.text = @"满1999元另加30元";
+//            paramModel2.color = @"#c2fcc3";
+//            paramModel2.fold = @(1);
+//            paramModel2.size = @(12);
+//
+//            UdeskGoodsParamModel *paramModel3 = [UdeskGoodsParamModel new];
+//            paramModel3.text = @"但是我会先提价100";
+//            paramModel3.color = @"#ffffff";
+//            paramModel3.fold = @(1);
+//            paramModel3.size = @(20);
+//
+//            goodsModel1.params = @[paramModel1,paramModel2,paramModel3];
+//
+//            [viewController sendGoodsMessageWithModel:goodsModel1];
+            [viewController sendGoodsMessageWithModel:goodsModel];
             break;
         }
         default:

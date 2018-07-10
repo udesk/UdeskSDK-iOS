@@ -56,6 +56,44 @@ static NSString *kUdeskGroupId = @"kUdeskGroupId";
     return dic;
 }
 
+//字典转字符串
++ (NSString *)JSONWithDictionary:(NSDictionary *)dictionary {
+    if (!dictionary || dictionary == (id)kCFNull) return @"";
+    if (![dictionary isKindOfClass:[NSDictionary class]]) return @"";
+    
+    @try {
+        
+        NSError *error;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dictionary options:NSJSONWritingPrettyPrinted error:&error];
+        
+        NSString *jsonString;
+        
+        if (!jsonData) {
+            NSLog(@"UdeskSDK：%@",error);
+        } else{
+            jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
+        }
+        
+        NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
+        
+        NSRange range = {0,jsonString.length};
+        
+        //去掉字符串中的空格
+        [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+        
+        NSRange range2 = {0,mutStr.length};
+        
+        //去掉字符串中的换行符
+        [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
+        
+        return mutStr;
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
 //同步获取网络状态
 + (NSString *)internetStatus {
     
@@ -218,7 +256,8 @@ static NSString *kUdeskGroupId = @"kUdeskGroupId";
 
 + (NSArray *)linkRegexs {
     
-    return @[@"((http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|([a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)"];
+    return @[@"((http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|([a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)",
+             @"^[hH][tT][tT][pP]([sS]?):\\/\\/(\\S+\\.)+\\S{2,}$"];
 }
 
 + (NSRange)linkRegexsMatch:(NSString *)content {

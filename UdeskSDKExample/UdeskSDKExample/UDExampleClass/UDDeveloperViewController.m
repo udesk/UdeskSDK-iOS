@@ -15,6 +15,7 @@
 #import "UdeskRobotCustomInfoViewController.h"
 #import "UdeskButtonConfigViewController.h"
 #import "UdeskPreMessageViewController.h"
+#import "UdeskCustomCustomerTableViewController.h"
 
 static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
 
@@ -45,6 +46,7 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
                        @"获取未读消息",
                        @"获取未读消息数量",
                        @"清空未读消息",
+                       @"更新客户信息",
                        @"自定义客户信息",
                        @"更换UI模版",
                        @"添加咨询对象",
@@ -107,58 +109,62 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
             [self markUnreadMsg];
             break;
         case 5:
+            //更新客户信息
+            [self updateCustomerInfo];
+            break;
+        case 6:
             //自定义客户信息
             [self customCustomerInfo];
             break;
-        case 6:
+        case 7:
             //更换sdk风格
             [self replaceSDKStyle];
             break;
-        case 7:
+        case 8:
             //咨询对象
             [self sdkProduct];
             break;
-        case 8:
+        case 9:
             //更换
             [self replaceLanguage];
             break;
-        case 9:
+        case 10:
             //web客服
             [self webAgent];
             break;
-        case 10:
+        case 11:
             //配置自定义按钮
             [self configCustomButton];
             break;
-        case 11:
+        case 12:
             //配置小视频
             [self configSmartVideo];
             break;
-        case 12:
+        case 13:
             //配置转向
             [self configSDKOrientation];
             break;
-        case 13:
+        case 14:
             //配置机器人key
             [self configRobotModelKey];
             break;
-        case 14:
+        case 15:
             //自定义表情
             [self customEmoji];
             break;
-        case 15:
+        case 16:
             //自定义机器人客户信息
             [self configRobotCustomerInfo];
             break;
-        case 16:
+        case 17:
             //配置其他功能
             [self sdkConfigOtherFeatures];
             break;
-        case 17:
+        case 18:
             //放弃排队方式
             [self configQuitQueueType];
             break;
-        case 18:
+        case 19:
             //配置预发
             [self configPreMessage];
             break;
@@ -259,10 +265,17 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
     [alertView show];
 }
 
+//更新客户信息
+- (void)updateCustomerInfo {
+    
+    UDCustomClientInfoViewController *update = [[UDCustomClientInfoViewController alloc] init];
+    [self.navigationController pushViewController:update animated:YES];
+}
+
 //自定义客户信息
 - (void)customCustomerInfo {
     
-    UDCustomClientInfoViewController *custom = [[UDCustomClientInfoViewController alloc] init];
+    UdeskCustomCustomerTableViewController *custom = [[UdeskCustomCustomerTableViewController alloc] init];
     [self.navigationController pushViewController:custom animated:YES];
 }
 

@@ -13,6 +13,7 @@
 @class UdeskAgent;
 @class UdeskSetting;
 @class UdeskLocationModel;
+@class UdeskGoodsModel;
 
 @protocol UdeskChatViewModelDelegate <NSObject>
 
@@ -81,6 +82,8 @@
 - (void)sendVoiceMessage:(NSString *)voicePath voiceDuration:(NSString *)voiceDuration completion:(void (^)(UdeskMessage *message))completion;
 /** 发送地理位置消息 */
 - (void)sendLocationMessage:(UdeskLocationModel *)model completion:(void(^)(UdeskMessage *message))completion;
+/** 发送商品消息 */
+- (void)sendGoodsMessage:(UdeskGoodsModel *)model completion:(void(^)(UdeskMessage *message))completion;
 /** 添加需要重新发送消息 */
 - (void)addResendMessageToArray:(UdeskMessage *)message;
 /** 移除发送失败的消息 */

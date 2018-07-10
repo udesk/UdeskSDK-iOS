@@ -12,6 +12,7 @@
 #import "UdeskBundleUtils.h"
 #import "UdeskStringSizeUtil.h"
 #import "UIView+UdeskSDK.h"
+#import "UdeskSDKUtil.h"
 
 @implementation UdeskChatTitleView
 
@@ -37,7 +38,7 @@
 
 - (void)updateTitle:(UdeskAgent *)agent {
 
-    NSString *titleText;
+    NSString *titleText = @"";
     if (agent.code == UDAgentStatusResultOnline) {
         titleText = agent.nick;
     }
@@ -46,6 +47,11 @@
     }
     else {
         titleText = agent.message;
+    }
+    
+    //容错处理
+    if ([UdeskSDKUtil isBlankString:titleText]) {
+        titleText = getUDLocalizedString(@"udesk_agent");
     }
     
     UIImage *titleImage;

@@ -25,6 +25,8 @@
 + (BOOL)stringContainsEmoji:(NSString *)string;
 //字符串转字典
 + (id)dictionaryWithJSON:(NSString *)json;
+//字典转字符串
++ (NSString *)JSONWithDictionary:(NSDictionary *)dictionary;
 //当前控制器
 + (UIViewController *)currentViewController;
 //存组ID

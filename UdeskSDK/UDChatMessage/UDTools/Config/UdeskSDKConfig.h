@@ -70,6 +70,12 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 /** 点击文本链接回调 */
 @property (nonatomic, copy) void(^linkClickBlock)(UIViewController *viewController,NSURL *URL);
 
+/** 商品消息回调 */
+@property (nonatomic, copy) void(^goodsMessageClickBlock)(UdeskChatViewController *viewController,NSString *goodsURL,NSString *goodsId);
+
+/** 咨询对象发送按钮回调 */
+@property (nonatomic, copy) void(^productMessageSendLinkClickBlock)(UdeskChatViewController *viewController,NSDictionary *productMessage);
+
 @end
 
 @interface UdeskSDKConfig : NSObject

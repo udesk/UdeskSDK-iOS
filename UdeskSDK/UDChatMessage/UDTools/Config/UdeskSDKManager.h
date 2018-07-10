@@ -10,6 +10,7 @@
 #import "UdeskSDKConfig.h"
 #import "UdeskChatViewController.h"
 #import "UdeskLocationModel.h"
+#import "UdeskGoodsModel.h"
 #import "UdeskMessage+UdeskSDK.h"
 
 typedef enum : NSUInteger {

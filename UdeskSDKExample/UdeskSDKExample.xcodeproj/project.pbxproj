@@ -17,8 +17,6 @@
 		4420BA8D20D8FC06005E1D18 /* UdeskProductOrdersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BA7520D8FC06005E1D18 /* UdeskProductOrdersViewController.m */; };
 		4420BA8E20D8FC06005E1D18 /* UdeskRobotCustomInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BA7620D8FC06005E1D18 /* UdeskRobotCustomInfoViewController.m */; };
 		4420BA8F20D8FC06005E1D18 /* UDCustomClientInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BA7820D8FC06005E1D18 /* UDCustomClientInfoViewController.m */; };
-		4420BA9020D8FC06005E1D18 /* UdeskNoInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BA7A20D8FC06005E1D18 /* UdeskNoInputAccessoryView.m */; };
-		4420BA9120D8FC06005E1D18 /* NSURLRequest+SSL.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BA7C20D8FC06005E1D18 /* NSURLRequest+SSL.m */; };
 		4420BA9220D8FC06005E1D18 /* UdeskButtonConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BA7D20D8FC06005E1D18 /* UdeskButtonConfigViewController.m */; };
 		4420BA9320D8FC06005E1D18 /* UdeskSmallViewTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BA7E20D8FC06005E1D18 /* UdeskSmallViewTestViewController.m */; };
 		4420BA9420D8FC06005E1D18 /* UdeskRobotCustomInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4420BA7F20D8FC06005E1D18 /* UdeskRobotCustomInfoViewController.xib */; };
@@ -180,17 +178,6 @@
 		4420BCAF20D8FE0B005E1D18 /* UdeskSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BC1520D8FE0B005E1D18 /* UdeskSearchController.m */; };
 		4420BCB020D8FE0B005E1D18 /* UdeskContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BC1620D8FE0B005E1D18 /* UdeskContentController.m */; };
 		4420BCB220D8FF91005E1D18 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4420BCB120D8FF90005E1D18 /* libicucore.tbd */; };
-		4420BD0320DCB33B005E1D18 /* UdeskVideoBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4420BCEB20DCB33A005E1D18 /* UdeskVideoBundle.bundle */; };
-		4420BD0420DCB33B005E1D18 /* UdeskAgoraRtcEngineManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BCED20DCB33A005E1D18 /* UdeskAgoraRtcEngineManager.m */; };
-		4420BD0520DCB33B005E1D18 /* UdeskCallingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4420BCF220DCB33A005E1D18 /* UdeskCallingView.xib */; };
-		4420BD0620DCB33B005E1D18 /* UdeskCallInviteView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BCF320DCB33A005E1D18 /* UdeskCallInviteView.m */; };
-		4420BD0720DCB33B005E1D18 /* UdeskCallInviteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4420BCF420DCB33A005E1D18 /* UdeskCallInviteView.xib */; };
-		4420BD0820DCB33B005E1D18 /* UdeskCallingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BCF520DCB33A005E1D18 /* UdeskCallingView.m */; };
-		4420BD0920DCB33B005E1D18 /* UdeskDraggalbeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BCFA20DCB33A005E1D18 /* UdeskDraggalbeView.m */; };
-		4420BD0A20DCB33B005E1D18 /* UdeskFloatWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BCFB20DCB33A005E1D18 /* UdeskFloatWindow.m */; };
-		4420BD0B20DCB33B005E1D18 /* UdeskVideoBundleHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BCFE20DCB33A005E1D18 /* UdeskVideoBundleHelper.m */; };
-		4420BD0C20DCB33B005E1D18 /* UdeskVideoLanguageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4420BCFF20DCB33A005E1D18 /* UdeskVideoLanguageHelper.m */; };
-		4420BD0D20DCB33B005E1D18 /* UdeskCall.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4420BD0220DCB33A005E1D18 /* UdeskCall.framework */; };
 		44210B0A1D7D6CAA003386F5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44210A3B1D7D6CA9003386F5 /* Images.xcassets */; };
 		44210B0B1D7D6CAA003386F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44210A3C1D7D6CA9003386F5 /* LaunchScreen.storyboard */; };
 		44210B0C1D7D6CAA003386F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44210A3D1D7D6CA9003386F5 /* Main.storyboard */; };
@@ -204,6 +191,22 @@
 		4479FC261E8B8DAD000D8DBF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4479FC251E8B8DAD000D8DBF /* UIKit.framework */; };
 		4479FC281E8B8DB4000D8DBF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4479FC271E8B8DB4000D8DBF /* Security.framework */; };
 		448CD8921C979EE40049DE3F /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 448CD8911C979EE40049DE3F /* libxml2.tbd */; };
+		44B1A2E020F485100031913A /* UdeskGoodsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A2DF20F485100031913A /* UdeskGoodsModel.m */; };
+		44B1A2E320F4881B0031913A /* UdeskGoodsMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A2E120F4881A0031913A /* UdeskGoodsMessage.m */; };
+		44B1A2E620F4882F0031913A /* UdeskGoodsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A2E520F4882F0031913A /* UdeskGoodsCell.m */; };
+		44B1A2E920F488B80031913A /* UdeskCustomCustomerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A2E820F488B70031913A /* UdeskCustomCustomerTableViewController.m */; };
+		44B1A2EC20F488C30031913A /* UdeskGoodsMessageTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A2EA20F488C20031913A /* UdeskGoodsMessageTestViewController.m */; };
+		44B1A30820F48D0A0031913A /* UdeskVideoBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 44B1A2F020F48D090031913A /* UdeskVideoBundle.bundle */; };
+		44B1A30920F48D0A0031913A /* UdeskAgoraRtcEngineManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A2F220F48D090031913A /* UdeskAgoraRtcEngineManager.m */; };
+		44B1A30A20F48D0A0031913A /* UdeskCallingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 44B1A2F720F48D0A0031913A /* UdeskCallingView.xib */; };
+		44B1A30B20F48D0A0031913A /* UdeskCallInviteView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A2F820F48D0A0031913A /* UdeskCallInviteView.m */; };
+		44B1A30C20F48D0A0031913A /* UdeskCallInviteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 44B1A2F920F48D0A0031913A /* UdeskCallInviteView.xib */; };
+		44B1A30D20F48D0A0031913A /* UdeskCallingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A2FA20F48D0A0031913A /* UdeskCallingView.m */; };
+		44B1A30E20F48D0A0031913A /* UdeskDraggalbeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A2FF20F48D0A0031913A /* UdeskDraggalbeView.m */; };
+		44B1A30F20F48D0A0031913A /* UdeskFloatWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A30020F48D0A0031913A /* UdeskFloatWindow.m */; };
+		44B1A31020F48D0A0031913A /* UdeskVideoBundleHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A30320F48D0A0031913A /* UdeskVideoBundleHelper.m */; };
+		44B1A31120F48D0A0031913A /* UdeskVideoLanguageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B1A30420F48D0A0031913A /* UdeskVideoLanguageHelper.m */; };
+		44B1A31220F48D0A0031913A /* UdeskCall.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44B1A30720F48D0A0031913A /* UdeskCall.framework */; };
 		44C3A0611C93ADCE004BDB2B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 44C3A0601C93ADCE004BDB2B /* main.m */; };
 		44C3A0641C93ADCE004BDB2B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 44C3A0631C93ADCE004BDB2B /* AppDelegate.m */; };
 		44C3A0771C93ADFF004BDB2B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C3A0761C93ADFF004BDB2B /* libsqlite3.tbd */; };
@@ -224,9 +227,7 @@
 		4420BA6920D8FC06005E1D18 /* UDDeveloperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDDeveloperViewController.m; sourceTree = "<group>"; };
 		4420BA6A20D8FC06005E1D18 /* UdeskRobotCustomInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskRobotCustomInfoViewController.h; sourceTree = "<group>"; };
 		4420BA6B20D8FC06005E1D18 /* UdeskButtonConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskButtonConfigViewController.h; sourceTree = "<group>"; };
-		4420BA6C20D8FC06005E1D18 /* NSURLRequest+SSL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+SSL.h"; sourceTree = "<group>"; };
 		4420BA6D20D8FC06005E1D18 /* UDAgentWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDAgentWebViewController.m; sourceTree = "<group>"; };
-		4420BA6E20D8FC06005E1D18 /* UdeskNoInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskNoInputAccessoryView.h; sourceTree = "<group>"; };
 		4420BA6F20D8FC06005E1D18 /* UDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDViewController.m; sourceTree = "<group>"; };
 		4420BA7020D8FC06005E1D18 /* UdeskPreMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskPreMessageViewController.m; sourceTree = "<group>"; };
 		4420BA7120D8FC06005E1D18 /* UDFunctionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDFunctionViewController.m; sourceTree = "<group>"; };
@@ -238,9 +239,7 @@
 		4420BA7720D8FC06005E1D18 /* UDDeveloperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDDeveloperViewController.h; sourceTree = "<group>"; };
 		4420BA7820D8FC06005E1D18 /* UDCustomClientInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDCustomClientInfoViewController.m; sourceTree = "<group>"; };
 		4420BA7920D8FC06005E1D18 /* UDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDViewController.h; sourceTree = "<group>"; };
-		4420BA7A20D8FC06005E1D18 /* UdeskNoInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskNoInputAccessoryView.m; sourceTree = "<group>"; };
 		4420BA7B20D8FC06005E1D18 /* UDAgentWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDAgentWebViewController.h; sourceTree = "<group>"; };
-		4420BA7C20D8FC06005E1D18 /* NSURLRequest+SSL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLRequest+SSL.m"; sourceTree = "<group>"; };
 		4420BA7D20D8FC06005E1D18 /* UdeskButtonConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskButtonConfigViewController.m; sourceTree = "<group>"; };
 		4420BA7E20D8FC06005E1D18 /* UdeskSmallViewTestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskSmallViewTestViewController.m; sourceTree = "<group>"; };
 		4420BA7F20D8FC06005E1D18 /* UdeskRobotCustomInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UdeskRobotCustomInfoViewController.xib; sourceTree = "<group>"; };
@@ -563,24 +562,6 @@
 		4420BC1520D8FE0B005E1D18 /* UdeskSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskSearchController.m; sourceTree = "<group>"; };
 		4420BC1620D8FE0B005E1D18 /* UdeskContentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskContentController.m; sourceTree = "<group>"; };
 		4420BCB120D8FF90005E1D18 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
-		4420BCEB20DCB33A005E1D18 /* UdeskVideoBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UdeskVideoBundle.bundle; sourceTree = "<group>"; };
-		4420BCED20DCB33A005E1D18 /* UdeskAgoraRtcEngineManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgoraRtcEngineManager.m; sourceTree = "<group>"; };
-		4420BCEE20DCB33A005E1D18 /* UdeskAgoraRtcEngineManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgoraRtcEngineManager.h; sourceTree = "<group>"; };
-		4420BCF120DCB33A005E1D18 /* UdeskCallingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskCallingView.h; sourceTree = "<group>"; };
-		4420BCF220DCB33A005E1D18 /* UdeskCallingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UdeskCallingView.xib; sourceTree = "<group>"; };
-		4420BCF320DCB33A005E1D18 /* UdeskCallInviteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCallInviteView.m; sourceTree = "<group>"; };
-		4420BCF420DCB33A005E1D18 /* UdeskCallInviteView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UdeskCallInviteView.xib; sourceTree = "<group>"; };
-		4420BCF520DCB33A005E1D18 /* UdeskCallingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCallingView.m; sourceTree = "<group>"; };
-		4420BCF620DCB33A005E1D18 /* UdeskCallInviteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskCallInviteView.h; sourceTree = "<group>"; };
-		4420BCF820DCB33A005E1D18 /* UdeskDraggalbeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskDraggalbeView.h; sourceTree = "<group>"; };
-		4420BCF920DCB33A005E1D18 /* UdeskFloatWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskFloatWindow.h; sourceTree = "<group>"; };
-		4420BCFA20DCB33A005E1D18 /* UdeskDraggalbeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskDraggalbeView.m; sourceTree = "<group>"; };
-		4420BCFB20DCB33A005E1D18 /* UdeskFloatWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskFloatWindow.m; sourceTree = "<group>"; };
-		4420BCFD20DCB33A005E1D18 /* UdeskVideoLanguageHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskVideoLanguageHelper.h; sourceTree = "<group>"; };
-		4420BCFE20DCB33A005E1D18 /* UdeskVideoBundleHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskVideoBundleHelper.m; sourceTree = "<group>"; };
-		4420BCFF20DCB33A005E1D18 /* UdeskVideoLanguageHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskVideoLanguageHelper.m; sourceTree = "<group>"; };
-		4420BD0020DCB33A005E1D18 /* UdeskVideoBundleHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskVideoBundleHelper.h; sourceTree = "<group>"; };
-		4420BD0220DCB33A005E1D18 /* UdeskCall.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UdeskCall.framework; sourceTree = "<group>"; };
 		44210A3B1D7D6CA9003386F5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		44210A3C1D7D6CA9003386F5 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		44210A3D1D7D6CA9003386F5 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -602,6 +583,34 @@
 		4479FC251E8B8DAD000D8DBF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4479FC271E8B8DB4000D8DBF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		448CD8911C979EE40049DE3F /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
+		44B1A2DE20F485100031913A /* UdeskGoodsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskGoodsModel.h; sourceTree = "<group>"; };
+		44B1A2DF20F485100031913A /* UdeskGoodsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskGoodsModel.m; sourceTree = "<group>"; };
+		44B1A2E120F4881A0031913A /* UdeskGoodsMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskGoodsMessage.m; sourceTree = "<group>"; };
+		44B1A2E220F4881B0031913A /* UdeskGoodsMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskGoodsMessage.h; sourceTree = "<group>"; };
+		44B1A2E420F4882E0031913A /* UdeskGoodsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskGoodsCell.h; sourceTree = "<group>"; };
+		44B1A2E520F4882F0031913A /* UdeskGoodsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskGoodsCell.m; sourceTree = "<group>"; };
+		44B1A2E720F488B70031913A /* UdeskCustomCustomerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskCustomCustomerTableViewController.h; sourceTree = "<group>"; };
+		44B1A2E820F488B70031913A /* UdeskCustomCustomerTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCustomCustomerTableViewController.m; sourceTree = "<group>"; };
+		44B1A2EA20F488C20031913A /* UdeskGoodsMessageTestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskGoodsMessageTestViewController.m; sourceTree = "<group>"; };
+		44B1A2EB20F488C20031913A /* UdeskGoodsMessageTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskGoodsMessageTestViewController.h; sourceTree = "<group>"; };
+		44B1A2F020F48D090031913A /* UdeskVideoBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UdeskVideoBundle.bundle; sourceTree = "<group>"; };
+		44B1A2F220F48D090031913A /* UdeskAgoraRtcEngineManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgoraRtcEngineManager.m; sourceTree = "<group>"; };
+		44B1A2F320F48D0A0031913A /* UdeskAgoraRtcEngineManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgoraRtcEngineManager.h; sourceTree = "<group>"; };
+		44B1A2F620F48D0A0031913A /* UdeskCallingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskCallingView.h; sourceTree = "<group>"; };
+		44B1A2F720F48D0A0031913A /* UdeskCallingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UdeskCallingView.xib; sourceTree = "<group>"; };
+		44B1A2F820F48D0A0031913A /* UdeskCallInviteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCallInviteView.m; sourceTree = "<group>"; };
+		44B1A2F920F48D0A0031913A /* UdeskCallInviteView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UdeskCallInviteView.xib; sourceTree = "<group>"; };
+		44B1A2FA20F48D0A0031913A /* UdeskCallingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCallingView.m; sourceTree = "<group>"; };
+		44B1A2FB20F48D0A0031913A /* UdeskCallInviteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskCallInviteView.h; sourceTree = "<group>"; };
+		44B1A2FD20F48D0A0031913A /* UdeskDraggalbeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskDraggalbeView.h; sourceTree = "<group>"; };
+		44B1A2FE20F48D0A0031913A /* UdeskFloatWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskFloatWindow.h; sourceTree = "<group>"; };
+		44B1A2FF20F48D0A0031913A /* UdeskDraggalbeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskDraggalbeView.m; sourceTree = "<group>"; };
+		44B1A30020F48D0A0031913A /* UdeskFloatWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskFloatWindow.m; sourceTree = "<group>"; };
+		44B1A30220F48D0A0031913A /* UdeskVideoLanguageHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskVideoLanguageHelper.h; sourceTree = "<group>"; };
+		44B1A30320F48D0A0031913A /* UdeskVideoBundleHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskVideoBundleHelper.m; sourceTree = "<group>"; };
+		44B1A30420F48D0A0031913A /* UdeskVideoLanguageHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskVideoLanguageHelper.m; sourceTree = "<group>"; };
+		44B1A30520F48D0A0031913A /* UdeskVideoBundleHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskVideoBundleHelper.h; sourceTree = "<group>"; };
+		44B1A30720F48D0A0031913A /* UdeskCall.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UdeskCall.framework; sourceTree = "<group>"; };
 		44C3A05C1C93ADCE004BDB2B /* UdeskSDKExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UdeskSDKExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44C3A0601C93ADCE004BDB2B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		44C3A0621C93ADCE004BDB2B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -627,7 +636,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4479FC281E8B8DB4000D8DBF /* Security.framework in Frameworks */,
-				4420BD0D20DCB33B005E1D18 /* UdeskCall.framework in Frameworks */,
+				44B1A31220F48D0A0031913A /* UdeskCall.framework in Frameworks */,
 				4420BCB220D8FF91005E1D18 /* libicucore.tbd in Frameworks */,
 				44D3A3F01F66372B001145EA /* MapKit.framework in Frameworks */,
 				44E6F4181F34BBF400FEDCBB /* WebKit.framework in Frameworks */,
@@ -662,8 +671,6 @@
 		4420BA6720D8FC06005E1D18 /* UDExampleClass */ = {
 			isa = PBXGroup;
 			children = (
-				4420BA6C20D8FC06005E1D18 /* NSURLRequest+SSL.h */,
-				4420BA7C20D8FC06005E1D18 /* NSURLRequest+SSL.m */,
 				4420BA7920D8FC06005E1D18 /* UDViewController.h */,
 				4420BA6F20D8FC06005E1D18 /* UDViewController.m */,
 				4420BA8020D8FC06005E1D18 /* UDFunctionViewController.h */,
@@ -684,14 +691,16 @@
 				4420BA7220D8FC06005E1D18 /* UdeskSmallViewTestViewController.h */,
 				4420BA7E20D8FC06005E1D18 /* UdeskSmallViewTestViewController.m */,
 				4420BA7320D8FC06005E1D18 /* UdeskSmallViewTestViewController.xib */,
-				4420BA6E20D8FC06005E1D18 /* UdeskNoInputAccessoryView.h */,
-				4420BA7A20D8FC06005E1D18 /* UdeskNoInputAccessoryView.m */,
 				4420BA8220D8FC06005E1D18 /* UdeskCustomButtonTestViewController.h */,
 				4420BA7420D8FC06005E1D18 /* UdeskCustomButtonTestViewController.m */,
 				4420BA8320D8FC06005E1D18 /* UdeskProductOrdersViewController.h */,
 				4420BA7520D8FC06005E1D18 /* UdeskProductOrdersViewController.m */,
 				4420BA7B20D8FC06005E1D18 /* UDAgentWebViewController.h */,
 				4420BA6D20D8FC06005E1D18 /* UDAgentWebViewController.m */,
+				44B1A2E720F488B70031913A /* UdeskCustomCustomerTableViewController.h */,
+				44B1A2E820F488B70031913A /* UdeskCustomCustomerTableViewController.m */,
+				44B1A2EB20F488C20031913A /* UdeskGoodsMessageTestViewController.h */,
+				44B1A2EA20F488C20031913A /* UdeskGoodsMessageTestViewController.m */,
 			);
 			path = UDExampleClass;
 			sourceTree = "<group>";
@@ -976,36 +985,36 @@
 		4420BB0320D8FE0A005E1D18 /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				4420BB0420D8FE0A005E1D18 /* UdeskVoiceRecord.m */,
-				4420BB0520D8FE0A005E1D18 /* UdeskCacheUtil.m */,
-				4420BB0620D8FE0A005E1D18 /* UdeskThrottleUtil.h */,
-				4420BB0720D8FE0A005E1D18 /* UdeskMessageUtil.h */,
-				4420BB0820D8FE0A005E1D18 /* UdeskBundleUtils.h */,
-				4420BB0920D8FE0A005E1D18 /* UdeskSDKAlert.m */,
-				4420BB0A20D8FE0A005E1D18 /* UdeskPrivacyUtil.h */,
-				4420BB0B20D8FE0A005E1D18 /* UdeskSDKUtil.m */,
-				4420BB0C20D8FE0A005E1D18 /* UdeskAudioPlayer.m */,
 				4420BB0D20D8FE0A005E1D18 /* UdeskAgentUtil.h */,
-				4420BB0E20D8FE0A005E1D18 /* UdeskImageUtil.h */,
-				4420BB0F20D8FE0A005E1D18 /* UdeskImagePicker.h */,
-				4420BB1020D8FE0A005E1D18 /* UdeskDateUtil.m */,
-				4420BB1120D8FE0A005E1D18 /* UdeskVideoUtil.m */,
-				4420BB1220D8FE0A005E1D18 /* UdeskStringSizeUtil.m */,
-				4420BB1320D8FE0A005E1D18 /* UdeskCacheUtil.h */,
-				4420BB1420D8FE0A005E1D18 /* UdeskVoiceRecord.h */,
-				4420BB1520D8FE0A005E1D18 /* UdeskSDKUtil.h */,
-				4420BB1620D8FE0A005E1D18 /* UdeskPrivacyUtil.m */,
-				4420BB1720D8FE0A005E1D18 /* UdeskSDKAlert.h */,
-				4420BB1820D8FE0A005E1D18 /* UdeskBundleUtils.m */,
-				4420BB1920D8FE0A005E1D18 /* UdeskMessageUtil.m */,
-				4420BB1A20D8FE0A005E1D18 /* UdeskThrottleUtil.m */,
-				4420BB1B20D8FE0A005E1D18 /* UdeskDateUtil.h */,
-				4420BB1C20D8FE0A005E1D18 /* UdeskImagePicker.m */,
-				4420BB1D20D8FE0A005E1D18 /* UdeskImageUtil.m */,
 				4420BB1E20D8FE0A005E1D18 /* UdeskAgentUtil.m */,
 				4420BB1F20D8FE0A005E1D18 /* UdeskAudioPlayer.h */,
+				4420BB0C20D8FE0A005E1D18 /* UdeskAudioPlayer.m */,
+				4420BB0820D8FE0A005E1D18 /* UdeskBundleUtils.h */,
+				4420BB1820D8FE0A005E1D18 /* UdeskBundleUtils.m */,
+				4420BB1320D8FE0A005E1D18 /* UdeskCacheUtil.h */,
+				4420BB0520D8FE0A005E1D18 /* UdeskCacheUtil.m */,
+				4420BB1B20D8FE0A005E1D18 /* UdeskDateUtil.h */,
+				4420BB1020D8FE0A005E1D18 /* UdeskDateUtil.m */,
+				4420BB0F20D8FE0A005E1D18 /* UdeskImagePicker.h */,
+				4420BB1C20D8FE0A005E1D18 /* UdeskImagePicker.m */,
+				4420BB0E20D8FE0A005E1D18 /* UdeskImageUtil.h */,
+				4420BB1D20D8FE0A005E1D18 /* UdeskImageUtil.m */,
+				4420BB0720D8FE0A005E1D18 /* UdeskMessageUtil.h */,
+				4420BB1920D8FE0A005E1D18 /* UdeskMessageUtil.m */,
+				4420BB0A20D8FE0A005E1D18 /* UdeskPrivacyUtil.h */,
+				4420BB1620D8FE0A005E1D18 /* UdeskPrivacyUtil.m */,
+				4420BB1720D8FE0A005E1D18 /* UdeskSDKAlert.h */,
+				4420BB0920D8FE0A005E1D18 /* UdeskSDKAlert.m */,
+				4420BB1520D8FE0A005E1D18 /* UdeskSDKUtil.h */,
+				4420BB0B20D8FE0A005E1D18 /* UdeskSDKUtil.m */,
 				4420BB2020D8FE0A005E1D18 /* UdeskStringSizeUtil.h */,
+				4420BB1220D8FE0A005E1D18 /* UdeskStringSizeUtil.m */,
+				4420BB0620D8FE0A005E1D18 /* UdeskThrottleUtil.h */,
+				4420BB1A20D8FE0A005E1D18 /* UdeskThrottleUtil.m */,
 				4420BB2120D8FE0A005E1D18 /* UdeskVideoUtil.h */,
+				4420BB1120D8FE0A005E1D18 /* UdeskVideoUtil.m */,
+				4420BB1420D8FE0A005E1D18 /* UdeskVoiceRecord.h */,
+				4420BB0420D8FE0A005E1D18 /* UdeskVoiceRecord.m */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -1014,16 +1023,18 @@
 			isa = PBXGroup;
 			children = (
 				4420BB2320D8FE0A005E1D18 /* UdeskCustomButtonConfig.h */,
-				4420BB2420D8FE0A005E1D18 /* UdeskSDKConfig.m */,
-				4420BB2520D8FE0A005E1D18 /* UdeskSDKManager.m */,
-				4420BB2620D8FE0A005E1D18 /* UdeskLanguageConfig.m */,
-				4420BB2720D8FE0A005E1D18 /* UdeskSDKStyleBlue.h */,
-				4420BB2820D8FE0A005E1D18 /* UdeskSDKStyle.h */,
 				4420BB2920D8FE0A005E1D18 /* UdeskCustomButtonConfig.m */,
-				4420BB2A20D8FE0A005E1D18 /* UdeskSDKManager.h */,
-				4420BB2B20D8FE0A005E1D18 /* UdeskSDKConfig.h */,
+				44B1A2DE20F485100031913A /* UdeskGoodsModel.h */,
+				44B1A2DF20F485100031913A /* UdeskGoodsModel.m */,
 				4420BB2C20D8FE0A005E1D18 /* UdeskLanguageConfig.h */,
+				4420BB2620D8FE0A005E1D18 /* UdeskLanguageConfig.m */,
+				4420BB2B20D8FE0A005E1D18 /* UdeskSDKConfig.h */,
+				4420BB2420D8FE0A005E1D18 /* UdeskSDKConfig.m */,
+				4420BB2A20D8FE0A005E1D18 /* UdeskSDKManager.h */,
+				4420BB2520D8FE0A005E1D18 /* UdeskSDKManager.m */,
+				4420BB2820D8FE0A005E1D18 /* UdeskSDKStyle.h */,
 				4420BB2D20D8FE0A005E1D18 /* UdeskSDKStyle.m */,
+				4420BB2720D8FE0A005E1D18 /* UdeskSDKStyleBlue.h */,
 				4420BB2E20D8FE0A005E1D18 /* UdeskSDKStyleBlue.m */,
 			);
 			path = Config;
@@ -1145,6 +1156,8 @@
 				4420BB5F20D8FE0B005E1D18 /* UdeskVideoMessage.m */,
 				4420BB5620D8FE0B005E1D18 /* UdeskVoiceMessage.h */,
 				4420BB6320D8FE0B005E1D18 /* UdeskVoiceMessage.m */,
+				44B1A2E220F4881B0031913A /* UdeskGoodsMessage.h */,
+				44B1A2E120F4881A0031913A /* UdeskGoodsMessage.m */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -1334,6 +1347,8 @@
 				4420BBAF20D8FE0B005E1D18 /* UdeskVideoCell.m */,
 				4420BBAA20D8FE0B005E1D18 /* UdeskVoiceCell.h */,
 				4420BBB220D8FE0B005E1D18 /* UdeskVoiceCell.m */,
+				44B1A2E420F4882E0031913A /* UdeskGoodsCell.h */,
+				44B1A2E520F4882F0031913A /* UdeskGoodsCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1574,96 +1589,6 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
-		4420BCE820DCB33A005E1D18 /* UdeskCall */ = {
-			isa = PBXGroup;
-			children = (
-				4420BCE920DCB33A005E1D18 /* UDVideoUIKit */,
-				4420BD0120DCB33A005E1D18 /* Framework */,
-			);
-			name = UdeskCall;
-			path = ../UdeskCall;
-			sourceTree = "<group>";
-		};
-		4420BCE920DCB33A005E1D18 /* UDVideoUIKit */ = {
-			isa = PBXGroup;
-			children = (
-				4420BCEA20DCB33A005E1D18 /* Res */,
-				4420BCEC20DCB33A005E1D18 /* Model */,
-				4420BCEF20DCB33A005E1D18 /* View */,
-				4420BCFC20DCB33A005E1D18 /* Helper */,
-			);
-			path = UDVideoUIKit;
-			sourceTree = "<group>";
-		};
-		4420BCEA20DCB33A005E1D18 /* Res */ = {
-			isa = PBXGroup;
-			children = (
-				4420BCEB20DCB33A005E1D18 /* UdeskVideoBundle.bundle */,
-			);
-			path = Res;
-			sourceTree = "<group>";
-		};
-		4420BCEC20DCB33A005E1D18 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				4420BCED20DCB33A005E1D18 /* UdeskAgoraRtcEngineManager.m */,
-				4420BCEE20DCB33A005E1D18 /* UdeskAgoraRtcEngineManager.h */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		4420BCEF20DCB33A005E1D18 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				4420BCF020DCB33A005E1D18 /* Video */,
-				4420BCF720DCB33A005E1D18 /* FloatWindow */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		4420BCF020DCB33A005E1D18 /* Video */ = {
-			isa = PBXGroup;
-			children = (
-				4420BCF120DCB33A005E1D18 /* UdeskCallingView.h */,
-				4420BCF220DCB33A005E1D18 /* UdeskCallingView.xib */,
-				4420BCF320DCB33A005E1D18 /* UdeskCallInviteView.m */,
-				4420BCF420DCB33A005E1D18 /* UdeskCallInviteView.xib */,
-				4420BCF520DCB33A005E1D18 /* UdeskCallingView.m */,
-				4420BCF620DCB33A005E1D18 /* UdeskCallInviteView.h */,
-			);
-			path = Video;
-			sourceTree = "<group>";
-		};
-		4420BCF720DCB33A005E1D18 /* FloatWindow */ = {
-			isa = PBXGroup;
-			children = (
-				4420BCF820DCB33A005E1D18 /* UdeskDraggalbeView.h */,
-				4420BCF920DCB33A005E1D18 /* UdeskFloatWindow.h */,
-				4420BCFA20DCB33A005E1D18 /* UdeskDraggalbeView.m */,
-				4420BCFB20DCB33A005E1D18 /* UdeskFloatWindow.m */,
-			);
-			path = FloatWindow;
-			sourceTree = "<group>";
-		};
-		4420BCFC20DCB33A005E1D18 /* Helper */ = {
-			isa = PBXGroup;
-			children = (
-				4420BCFD20DCB33A005E1D18 /* UdeskVideoLanguageHelper.h */,
-				4420BCFE20DCB33A005E1D18 /* UdeskVideoBundleHelper.m */,
-				4420BCFF20DCB33A005E1D18 /* UdeskVideoLanguageHelper.m */,
-				4420BD0020DCB33A005E1D18 /* UdeskVideoBundleHelper.h */,
-			);
-			path = Helper;
-			sourceTree = "<group>";
-		};
-		4420BD0120DCB33A005E1D18 /* Framework */ = {
-			isa = PBXGroup;
-			children = (
-				4420BD0220DCB33A005E1D18 /* UdeskCall.framework */,
-			);
-			path = Framework;
-			sourceTree = "<group>";
-		};
 		4479FC181E8B8D84000D8DBF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1698,6 +1623,96 @@
 			path = SDK;
 			sourceTree = "<group>";
 		};
+		44B1A2ED20F48D090031913A /* UdeskCall */ = {
+			isa = PBXGroup;
+			children = (
+				44B1A2EE20F48D090031913A /* UDVideoUIKit */,
+				44B1A30620F48D0A0031913A /* Framework */,
+			);
+			name = UdeskCall;
+			path = ../UdeskCall;
+			sourceTree = "<group>";
+		};
+		44B1A2EE20F48D090031913A /* UDVideoUIKit */ = {
+			isa = PBXGroup;
+			children = (
+				44B1A2EF20F48D090031913A /* Res */,
+				44B1A2F120F48D090031913A /* Model */,
+				44B1A2F420F48D0A0031913A /* View */,
+				44B1A30120F48D0A0031913A /* Helper */,
+			);
+			path = UDVideoUIKit;
+			sourceTree = "<group>";
+		};
+		44B1A2EF20F48D090031913A /* Res */ = {
+			isa = PBXGroup;
+			children = (
+				44B1A2F020F48D090031913A /* UdeskVideoBundle.bundle */,
+			);
+			path = Res;
+			sourceTree = "<group>";
+		};
+		44B1A2F120F48D090031913A /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				44B1A2F220F48D090031913A /* UdeskAgoraRtcEngineManager.m */,
+				44B1A2F320F48D0A0031913A /* UdeskAgoraRtcEngineManager.h */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		44B1A2F420F48D0A0031913A /* View */ = {
+			isa = PBXGroup;
+			children = (
+				44B1A2F520F48D0A0031913A /* Video */,
+				44B1A2FC20F48D0A0031913A /* FloatWindow */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		44B1A2F520F48D0A0031913A /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				44B1A2F620F48D0A0031913A /* UdeskCallingView.h */,
+				44B1A2F720F48D0A0031913A /* UdeskCallingView.xib */,
+				44B1A2F820F48D0A0031913A /* UdeskCallInviteView.m */,
+				44B1A2F920F48D0A0031913A /* UdeskCallInviteView.xib */,
+				44B1A2FA20F48D0A0031913A /* UdeskCallingView.m */,
+				44B1A2FB20F48D0A0031913A /* UdeskCallInviteView.h */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
+		44B1A2FC20F48D0A0031913A /* FloatWindow */ = {
+			isa = PBXGroup;
+			children = (
+				44B1A2FD20F48D0A0031913A /* UdeskDraggalbeView.h */,
+				44B1A2FE20F48D0A0031913A /* UdeskFloatWindow.h */,
+				44B1A2FF20F48D0A0031913A /* UdeskDraggalbeView.m */,
+				44B1A30020F48D0A0031913A /* UdeskFloatWindow.m */,
+			);
+			path = FloatWindow;
+			sourceTree = "<group>";
+		};
+		44B1A30120F48D0A0031913A /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				44B1A30220F48D0A0031913A /* UdeskVideoLanguageHelper.h */,
+				44B1A30320F48D0A0031913A /* UdeskVideoBundleHelper.m */,
+				44B1A30420F48D0A0031913A /* UdeskVideoLanguageHelper.m */,
+				44B1A30520F48D0A0031913A /* UdeskVideoBundleHelper.h */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		44B1A30620F48D0A0031913A /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+				44B1A30720F48D0A0031913A /* UdeskCall.framework */,
+			);
+			path = Framework;
+			sourceTree = "<group>";
+		};
 		44C3A0531C93ADCE004BDB2B = {
 			isa = PBXGroup;
 			children = (
@@ -1705,7 +1720,7 @@
 				448CD8911C979EE40049DE3F /* libxml2.tbd */,
 				44C3A0781C93AE05004BDB2B /* libresolv.tbd */,
 				44C3A0761C93ADFF004BDB2B /* libsqlite3.tbd */,
-				4420BCE820DCB33A005E1D18 /* UdeskCall */,
+				44B1A2ED20F48D090031913A /* UdeskCall */,
 				44C3A1BB1C93AF51004BDB2B /* UdeskSDK */,
 				44C3A05E1C93ADCE004BDB2B /* UdeskSDKExample */,
 				44C3A05D1C93ADCE004BDB2B /* Products */,
@@ -1843,13 +1858,13 @@
 			files = (
 				4420BC5D20D8FE0B005E1D18 /* UdeskBundle.bundle in Resources */,
 				44210B0B1D7D6CAA003386F5 /* LaunchScreen.storyboard in Resources */,
-				4420BD0720DCB33B005E1D18 /* UdeskCallInviteView.xib in Resources */,
+				44B1A30C20F48D0A0031913A /* UdeskCallInviteView.xib in Resources */,
 				4420BA9520D8FC06005E1D18 /* UdeskPreMessageViewController.xib in Resources */,
 				44210B0A1D7D6CAA003386F5 /* Images.xcassets in Resources */,
 				4420BA9620D8FC06005E1D18 /* UdeskButtonConfigViewController.xib in Resources */,
 				4420BA8B20D8FC06005E1D18 /* UdeskSmallViewTestViewController.xib in Resources */,
-				4420BD0320DCB33B005E1D18 /* UdeskVideoBundle.bundle in Resources */,
-				4420BD0520DCB33B005E1D18 /* UdeskCallingView.xib in Resources */,
+				44B1A30820F48D0A0031913A /* UdeskVideoBundle.bundle in Resources */,
+				44B1A30A20F48D0A0031913A /* UdeskCallingView.xib in Resources */,
 				4420BA9420D8FC06005E1D18 /* UdeskRobotCustomInfoViewController.xib in Resources */,
 				44210B0C1D7D6CAA003386F5 /* Main.storyboard in Resources */,
 				4420BA9820D8FC3A005E1D18 /* Sticker.bundle in Resources */,
@@ -1929,13 +1944,11 @@
 				4420BC8120D8FE0B005E1D18 /* UdeskChatTitleView.m in Sources */,
 				4420BC7520D8FE0B005E1D18 /* UdeskEmojiCollectionViewCell.m in Sources */,
 				4420BC1820D8FE0B005E1D18 /* Udesk_HCSStarRatingView.m in Sources */,
-				4420BD0420DCB33B005E1D18 /* UdeskAgoraRtcEngineManager.m in Sources */,
 				4420BCAF20D8FE0B005E1D18 /* UdeskSearchController.m in Sources */,
 				4420BC9A20D8FE0B005E1D18 /* UdeskPreviewNavBar.m in Sources */,
 				4420BC1D20D8FE0B005E1D18 /* Udesk_WHC_HttpOperation.m in Sources */,
 				4420BC4720D8FE0B005E1D18 /* UdeskStringSizeUtil.m in Sources */,
 				4420BC3020D8FE0B005E1D18 /* Udesk_YYImageCoder.m in Sources */,
-				4420BA9020D8FC06005E1D18 /* UdeskNoInputAccessoryView.m in Sources */,
 				4420BC8B20D8FE0B005E1D18 /* UdeskProductCell.m in Sources */,
 				4420BA8C20D8FC06005E1D18 /* UdeskCustomButtonTestViewController.m in Sources */,
 				4420BC1A20D8FE0B005E1D18 /* UdeskHPGrowingTextView.m in Sources */,
@@ -1944,18 +1957,17 @@
 				4420BC6320D8FE0B005E1D18 /* UdeskProductMessage.m in Sources */,
 				4420BC9B20D8FE0B005E1D18 /* UdeskCustomNavigation.m in Sources */,
 				4420BC2820D8FE0B005E1D18 /* Udesk_YYKVStorage.m in Sources */,
-				4420BD0820DCB33B005E1D18 /* UdeskCallingView.m in Sources */,
 				4420BC2220D8FE0B005E1D18 /* UdeskPhotoManeger.m in Sources */,
 				4420BC4E20D8FE0B005E1D18 /* UdeskAgentUtil.m in Sources */,
 				4420BCAC20D8FE0B005E1D18 /* UdeskSurveyTitleView.m in Sources */,
 				4420BCA820D8FE0B005E1D18 /* UdeskSurveyView.m in Sources */,
 				4420BC4320D8FE0B005E1D18 /* UdeskSDKUtil.m in Sources */,
+				44B1A30F20F48D0A0031913A /* UdeskFloatWindow.m in Sources */,
 				4420BA8F20D8FC06005E1D18 /* UDCustomClientInfoViewController.m in Sources */,
 				4420BA8D20D8FC06005E1D18 /* UdeskProductOrdersViewController.m in Sources */,
 				4420BC4A20D8FE0B005E1D18 /* UdeskMessageUtil.m in Sources */,
 				4420BC8C20D8FE0B005E1D18 /* UdeskStructCell.m in Sources */,
 				4420BC1C20D8FE0B005E1D18 /* Udesk_WHC_DownloadObject.m in Sources */,
-				4420BD0920DCB33B005E1D18 /* UdeskDraggalbeView.m in Sources */,
 				4420BC5020D8FE0B005E1D18 /* UdeskSDKManager.m in Sources */,
 				4420BC6D20D8FE0B005E1D18 /* UdeskBaseModel.m in Sources */,
 				4420BC4020D8FE0B005E1D18 /* UdeskVoiceRecord.m in Sources */,
@@ -1971,6 +1983,8 @@
 				4420BC7D20D8FE0B005E1D18 /* UdeskVoiceRecordView.m in Sources */,
 				4420BC9720D8FE0B005E1D18 /* UdeskAssetCell.m in Sources */,
 				4420BC1E20D8FE0B005E1D18 /* Udesk_WHC_BaseOperation.m in Sources */,
+				44B1A30E20F48D0A0031913A /* UdeskDraggalbeView.m in Sources */,
+				44B1A31120F48D0A0031913A /* UdeskVideoLanguageHelper.m in Sources */,
 				4420BC6A20D8FE0B005E1D18 /* UdeskNearbyModel.m in Sources */,
 				4420BA8E20D8FC06005E1D18 /* UdeskRobotCustomInfoViewController.m in Sources */,
 				4420BC8920D8FE0B005E1D18 /* UdeskVideoCell.m in Sources */,
@@ -1978,10 +1992,10 @@
 				4420BC2C20D8FE0B005E1D18 /* Udesk_YYWebImageOperation.m in Sources */,
 				4420BC5620D8FE0B005E1D18 /* UdeskTransitioningAnimation.m in Sources */,
 				4420BCA020D8FE0B005E1D18 /* UdeskSmallVideoPreviewViewController.m in Sources */,
+				44B1A2E320F4881B0031913A /* UdeskGoodsMessage.m in Sources */,
 				4420BC6820D8FE0B005E1D18 /* UdeskLocationMessage.m in Sources */,
 				4420BC4F20D8FE0B005E1D18 /* UdeskSDKConfig.m in Sources */,
 				4420BC4820D8FE0B005E1D18 /* UdeskPrivacyUtil.m in Sources */,
-				4420BD0A20DCB33B005E1D18 /* UdeskFloatWindow.m in Sources */,
 				4420BC2720D8FE0B005E1D18 /* Udesk_YYImageCache.m in Sources */,
 				4420BC7420D8FE0B005E1D18 /* UdeskChatViewController.m in Sources */,
 				4420BA9220D8FC06005E1D18 /* UdeskButtonConfigViewController.m in Sources */,
@@ -1989,6 +2003,7 @@
 				4420BC1720D8FE0B005E1D18 /* UdeskLocationResultDataSource.m in Sources */,
 				4420BC8020D8FE0B005E1D18 /* UdeskChatToolBarMoreView.m in Sources */,
 				4420BC7820D8FE0B005E1D18 /* UdeskEmojiPanelModel.m in Sources */,
+				44B1A30920F48D0A0031913A /* UdeskAgoraRtcEngineManager.m in Sources */,
 				4420BC8F20D8FE0B005E1D18 /* UdeskAlbumsViewManager.m in Sources */,
 				4420BC6620D8FE0B005E1D18 /* UdeskBaseMessage.m in Sources */,
 				4420BC5520D8FE0B005E1D18 /* UdeskToast.m in Sources */,
@@ -2005,7 +2020,6 @@
 				4420BC3D20D8FE0B005E1D18 /* UIViewController+UdeskSDK.m in Sources */,
 				4420BC5820D8FE0B005E1D18 /* UdeskAnimatorPush.m in Sources */,
 				44D3A3DB1F66307E001145EA /* UdeskCustomLocationDataSource.m in Sources */,
-				4420BD0620DCB33B005E1D18 /* UdeskCallInviteView.m in Sources */,
 				4420BC3820D8FE0B005E1D18 /* UIImageView+Udesk_YYWebImage.m in Sources */,
 				44D3A3DD1F66307E001145EA /* UdeskCustomLocationViewModel.m in Sources */,
 				4420BC5B20D8FE0B005E1D18 /* UdeskTopAlertView.m in Sources */,
@@ -2017,7 +2031,7 @@
 				4420BC7F20D8FE0B005E1D18 /* UdeskCustomToolBar.m in Sources */,
 				4420BC8D20D8FE0B005E1D18 /* UdeskAlbumModel.m in Sources */,
 				4420BC5420D8FE0B005E1D18 /* UdeskSDKStyleBlue.m in Sources */,
-				4420BD0B20DCB33B005E1D18 /* UdeskVideoBundleHelper.m in Sources */,
+				44B1A30D20F48D0A0031913A /* UdeskCallingView.m in Sources */,
 				4420BC6420D8FE0B005E1D18 /* UdeskTextMessage.m in Sources */,
 				44D3A3DC1F66307E001145EA /* UdeskCustomLocationViewController.m in Sources */,
 				4420BC5120D8FE0B005E1D18 /* UdeskLanguageConfig.m in Sources */,
@@ -2027,6 +2041,7 @@
 				4420BCB020D8FE0B005E1D18 /* UdeskContentController.m in Sources */,
 				4420BC2120D8FE0B005E1D18 /* UdeskPhotoView.m in Sources */,
 				4420BC2B20D8FE0B005E1D18 /* Udesk_YYDiskCache.m in Sources */,
+				44B1A2E620F4882F0031913A /* UdeskGoodsCell.m in Sources */,
 				4420BC9D20D8FE0B005E1D18 /* UdeskSmallVideoWriter.m in Sources */,
 				4420BC7220D8FE0B005E1D18 /* UdeskBaseNavigationViewController.m in Sources */,
 				4420BC6920D8FE0B005E1D18 /* UdeskVoiceMessage.m in Sources */,
@@ -2035,7 +2050,6 @@
 				4420BC7320D8FE0B005E1D18 /* UdeskBaseViewController.m in Sources */,
 				4420BC8520D8FE0B005E1D18 /* UdeskLocationCell.m in Sources */,
 				4420BC4520D8FE0B005E1D18 /* UdeskDateUtil.m in Sources */,
-				4420BA9120D8FC06005E1D18 /* NSURLRequest+SSL.m in Sources */,
 				44C3A0641C93ADCE004BDB2B /* AppDelegate.m in Sources */,
 				4420BC2E20D8FE0B005E1D18 /* Udesk_YYAnimatedImageView.m in Sources */,
 				4420BCA520D8FE0B005E1D18 /* UdeskSurveyManager.m in Sources */,
@@ -2054,7 +2068,6 @@
 				4420BC4420D8FE0B005E1D18 /* UdeskAudioPlayer.m in Sources */,
 				4420BC7920D8FE0B005E1D18 /* UdeskEmojiPackagePanel.m in Sources */,
 				4420BC2620D8FE0B005E1D18 /* UDTTTAttributedLabel.m in Sources */,
-				4420BD0C20DCB33B005E1D18 /* UdeskVideoLanguageHelper.m in Sources */,
 				4420BC9C20D8FE0B005E1D18 /* UdeskSmallVideoManager.m in Sources */,
 				4420BC8220D8FE0B005E1D18 /* UdeskStructView.m in Sources */,
 				4420BCA320D8FE0B005E1D18 /* UdeskSmallVideoRecordView.m in Sources */,
@@ -2062,18 +2075,22 @@
 				4420BCAA20D8FE0B005E1D18 /* UdeskExpressionSurveyView.m in Sources */,
 				4420BC3920D8FE0B005E1D18 /* UIImage+UdeskSDK.m in Sources */,
 				4420BC9820D8FE0B005E1D18 /* UdeskPhotoToolBar.m in Sources */,
+				44B1A30B20F48D0A0031913A /* UdeskCallInviteView.m in Sources */,
 				4420BC8620D8FE0B005E1D18 /* UdeskVideoCallCell.m in Sources */,
 				4420BC5920D8FE0B005E1D18 /* UdeskShareTransitioningDelegateImpl.m in Sources */,
 				4420BC3420D8FE0B005E1D18 /* Udesk_YYWebImageSetter.m in Sources */,
 				4420BC4120D8FE0B005E1D18 /* UdeskCacheUtil.m in Sources */,
 				4420BC3220D8FE0B005E1D18 /* Udesk_YYWebImageManager.m in Sources */,
+				44B1A2EC20F488C30031913A /* UdeskGoodsMessageTestViewController.m in Sources */,
 				4420BC4620D8FE0B005E1D18 /* UdeskVideoUtil.m in Sources */,
 				44C3A0611C93ADCE004BDB2B /* main.m in Sources */,
+				44B1A2E920F488B80031913A /* UdeskCustomCustomerTableViewController.m in Sources */,
 				4420BC7020D8FE0B005E1D18 /* UdeskAgentMenuViewController.m in Sources */,
 				4420BC3F20D8FE0B005E1D18 /* NSTimer+UdeskSDK.m in Sources */,
 				4420BC6520D8FE0B005E1D18 /* UdeskVideoMessage.m in Sources */,
 				4420BC6720D8FE0B005E1D18 /* UdeskVideoCallMessage.m in Sources */,
 				4420BC5720D8FE0B005E1D18 /* UdeskSDKShow.m in Sources */,
+				44B1A31020F48D0A0031913A /* UdeskVideoBundleHelper.m in Sources */,
 				4420BC7620D8FE0B005E1D18 /* UdeskEmojiCollectionViewFlowLayout.m in Sources */,
 				4420BC8E20D8FE0B005E1D18 /* UdeskAssetModel.m in Sources */,
 				4420BC9620D8FE0B005E1D18 /* UdeskAssetPreviewCell.m in Sources */,
@@ -2082,6 +2099,7 @@
 				4420BC2A20D8FE0B005E1D18 /* Udesk_YYCache.m in Sources */,
 				4420BC2020D8FE0B005E1D18 /* UdeskOneScrollView.m in Sources */,
 				4420BC4220D8FE0B005E1D18 /* UdeskSDKAlert.m in Sources */,
+				44B1A2E020F485100031913A /* UdeskGoodsModel.m in Sources */,
 				4420BC4D20D8FE0B005E1D18 /* UdeskImageUtil.m in Sources */,
 				4420BC7E20D8FE0B005E1D18 /* UdeskChatInputToolBar.m in Sources */,
 				4420BC3A20D8FE0B005E1D18 /* UIColor+UdeskSDK.m in Sources */,

@@ -17,7 +17,7 @@
     
     // String should be 6 or 8 characters
     if ([cString length] < 6) {
-        return [UIColor clearColor];
+        return [UIColor whiteColor];
     }
     
     // strip 0X if it appears

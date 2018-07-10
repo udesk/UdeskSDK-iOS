@@ -178,7 +178,7 @@
             self.bubbleImageView.image = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width*0.5f topCapHeight:bubbleImage.size.height*0.8f];
             
             self.nicknameLabel.frame = CGRectZero;
-            self.nicknameLabel.text = nil;
+            self.nicknameLabel.text = @"";
             
             break;
         }
@@ -190,7 +190,8 @@
     if (baseMessage.message.messageType == UDMessageContentTypeText ||
         baseMessage.message.messageType == UDMessageContentTypeLeaveMsg ||
         baseMessage.message.messageType == UDMessageContentTypeVoice ||
-        baseMessage.message.messageType == UDMessageContentTypeVideo) {
+        baseMessage.message.messageType == UDMessageContentTypeVideo ||
+        baseMessage.message.messageType == UDMessageContentTypeGoods) {
     
         [self updateMessageSendStatus:baseMessage.message.messageStatus];
     }

@@ -93,7 +93,6 @@ const CGFloat kUDTextMendSpacing = 2.0;
         }
         else if (self.message.messageType == UDMessageContentTypeRich) {
             
-            self.message.nickName = getUDLocalizedString(@"udesk_admin");
             if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.3) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self setupRichText];

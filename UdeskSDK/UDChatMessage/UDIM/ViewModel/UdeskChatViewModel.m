@@ -17,6 +17,7 @@
 #import "Udesk_YYWebImage.h"
 #import "UdeskCacheUtil.h"
 #import "UdeskLocationModel.h"
+#import "UdeskGoodsModel.h"
 #import "UdeskSDKAlert.h"
 #import "UdeskAgentUtil.h"
 #import "UdeskMessageUtil.h"
@@ -561,15 +562,25 @@
     
     @try {
         
+        //客服上线
+        NSString *statusType = [NSString stringWithFormat:@"%@",[presence objectForKey:@"type"]];
+        if ([UdeskSDKUtil isBlankString:self.agentModel.jid] && [statusType isEqualToString:@"available"]) {
+            [self requestAgentData:nil];
+            return;
+        }
+        
         //直接留言 不切换客服的状态
         if (self.agentModel.code == UDAgentStatusResultLeaveMessage) {
             return;
         }
         
-        NSString *statusType = [NSString stringWithFormat:@"%@",[presence objectForKey:@"type"]];
         UDAgentStatusType agentCode = UDAgentStatusResultOffline;
         NSString *agentMessage = @"unavailable";
-        NSString *agentNick = [UdeskSDKUtil isBlankString:self.agentModel.nick]?self.agentModel.message:self.agentModel.nick;
+        NSString *agentNick = self.agentModel.nick;
+        //容错处理
+        if ([UdeskSDKUtil isBlankString:agentNick]) {
+            agentNick = @"";
+        }
         
         if([statusType isEqualToString:@"over"]) {
             
@@ -595,10 +606,8 @@
             self.agentModel.code = agentCode;
             self.agentModel.message = agentMessage;
             
-            if (self.delegate) {
-                if ([self.delegate respondsToSelector:@selector(didReceiveAgentPresence:)]) {
-                    [self.delegate didReceiveAgentPresence:self.agentModel];
-                }
+            if (self.delegate && [self.delegate respondsToSelector:@selector(didReceiveAgentPresence:)]) {
+                [self.delegate didReceiveAgentPresence:self.agentModel];
             }
         }
     } @catch (NSException *exception) {
@@ -940,6 +949,32 @@
         [[Udesk_YYWebImageManager sharedManager].cache setImage:model.image forKey:locationMsg.messageId];
         [self addMessageToChatMessageArray:@[locationMsg]];
         [UdeskManager sendMessage:locationMsg progress:nil completion:completion];
+    }
+}
+
+#pragma mark - 发送商品消息
+- (void)sendGoodsMessage:(UdeskGoodsModel *)model completion:(void(^)(UdeskMessage *message))completion {
+    
+    //无消息过滤
+    if (self.preSessionId) {
+        [self endPreSessionMessage:^{
+            [self sendGoodsMessage:model completion:completion];
+        } delay:0.8f];
+        return;
+    }
+    
+    if (_agentModel.code != UDAgentStatusResultOnline) {
+        [self showAgentStatusAlert];
+        return;
+    }
+    
+    if (!model || model == (id)kCFNull) return ;
+    if (![model isKindOfClass:[UdeskGoodsModel class]]) return ;
+    
+    UdeskMessage *goodsMsg = [[UdeskMessage alloc] initWithGoods:model];
+    if (goodsMsg) {
+        [self addMessageToChatMessageArray:@[goodsMsg]];
+        [UdeskManager sendMessage:goodsMsg progress:nil completion:completion];
     }
 }
 

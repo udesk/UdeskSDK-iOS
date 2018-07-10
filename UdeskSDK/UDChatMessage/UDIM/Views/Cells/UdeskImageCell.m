@@ -64,10 +64,8 @@
 //点击图片
 - (void)tapContentImageViewAction:(UIGestureRecognizer *)tap {
     
-    if (self.delegate) {
-        if ([self.delegate respondsToSelector:@selector(didTapChatImageView)]) {
-            [self.delegate didTapChatImageView];
-        }
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didTapChatImageView)]) {
+        [self.delegate didTapChatImageView];
     }
     
     UdeskPhotoManeger *photoManeger = [UdeskPhotoManeger maneger];

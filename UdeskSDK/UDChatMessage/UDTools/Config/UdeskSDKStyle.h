@@ -136,6 +136,11 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 /** 客服昵称颜色 */
 @property (nonatomic, strong) UIColor *agentNicknameColor;
 
+/** 商品消息名称字体 */
+@property (nonatomic, strong) UIFont *goodsNameFont;
+/** 商品消息名称颜色 */
+@property (nonatomic, strong) UIColor *goodsNameTextColor;
+
 + (instancetype)defaultStyle;
 + (instancetype)blueStyle;
 + (instancetype)customStyle;

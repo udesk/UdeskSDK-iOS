@@ -10,6 +10,7 @@
 #import "UdeskDateUtil.h"
 #import "UdeskSDKMacro.h"
 #import "UdeskSDKConfig.h"
+#import "UdeskSDKUtil.h"
 
 /** 头像距离屏幕水平边沿距离 */
 const CGFloat kUDAvatarToHorizontalEdgeSpacing = 15.0;
@@ -104,7 +105,9 @@ const CGFloat kUDAgentNicknameHeight = 15.0;
     if (self.message.messageFrom == UDMessageTypeReceiving) {
         //用户头像frame
         self.avatarFrame = CGRectMake(kUDAvatarToHorizontalEdgeSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
-        self.nicknameFrame = CGRectMake(CGRectGetMaxX(self.avatarFrame)+kUDAvatarToBubbleSpacing, CGRectGetMinY(self.avatarFrame), UD_SCREEN_WIDTH>320?235:180, kUDAgentNicknameHeight);
+        if (![UdeskSDKUtil isBlankString:self.message.nickName]) {
+            self.nicknameFrame = CGRectMake(CGRectGetMaxX(self.avatarFrame)+kUDAvatarToBubbleSpacing, CGRectGetMinY(self.avatarFrame), UD_SCREEN_WIDTH>320?235:180, kUDAgentNicknameHeight);
+        }
         self.avatarImage = [UIImage udDefaultAgentImage];
         self.avatarURL = self.message.avatar;
     }

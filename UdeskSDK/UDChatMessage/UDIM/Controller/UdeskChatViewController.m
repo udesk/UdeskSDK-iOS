@@ -503,6 +503,11 @@
 
 //发送咨询对象URL
 - (void)didSendProductURL:(NSString *)url {
+    if (self.sdkConfig.actionConfig.productMessageSendLinkClickBlock) {
+        self.sdkConfig.actionConfig.productMessageSendLinkClickBlock(self,self.sdkConfig.productDictionary);
+        return;
+    }
+    
     [self sendTextMessageWithContent:url];
 }
 
@@ -516,6 +521,16 @@
 
     if (self.sdkConfig.actionConfig.structMessageClickBlock) {
         self.sdkConfig.actionConfig.structMessageClickBlock();
+    }
+}
+
+//点击商品消息
+- (void)didTapGoodsMessageWithURL:(NSString *)goodsURL goodsId:(NSString *)goodsId {
+    if (!goodsURL || goodsURL == (id)kCFNull) return ;
+    if (![goodsURL isKindOfClass:[NSString class]]) return ;
+    
+    if (self.sdkConfig.actionConfig.goodsMessageClickBlock) {
+        self.sdkConfig.actionConfig.goodsMessageClickBlock(self,goodsURL,goodsId);
     }
 }
 
@@ -978,6 +993,16 @@
     if (!locationModel || locationModel == (id)kCFNull) return ;
     
     [self.chatViewModel sendLocationMessage:locationModel completion:^(UdeskMessage *message) {
+        //处理发送结果UI
+        [self updateMessageStatus:message];
+    }];
+}
+
+#pragma mark - 发送商品信息
+- (void)sendGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel {
+    if (!goodsModel || goodsModel == (id)kCFNull) return ;
+    
+    [self.chatViewModel sendGoodsMessage:goodsModel completion:^(UdeskMessage *message) {
         //处理发送结果UI
         [self updateMessageStatus:message];
     }];

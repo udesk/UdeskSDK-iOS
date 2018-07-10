@@ -8,6 +8,7 @@
 
 #import "UdeskMessage.h"
 @class UdeskLocationModel;
+@class UdeskGoodsModel;
 
 @interface UdeskMessage (UdeskSDK)
 
@@ -23,5 +24,6 @@
 - (instancetype)initWithRollback:(NSString *)text;
 - (instancetype)initWithLocation:(UdeskLocationModel *)model;
 - (instancetype)initWithVideoCall:(NSString *)text;
+- (instancetype)initWithGoods:(UdeskGoodsModel *)model;
 
 @end

@@ -25,6 +25,8 @@
 - (void)sendVoiceMessageWithVoicePath:(NSString *)voicePath voiceDuration:(NSString *)voiceDuration;
 //发送位置
 - (void)sendLoactionMessageWithModel:(UdeskLocationModel *)locationModel;
+//发送商品
+- (void)sendGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel;
 
 //更新发送消息的状态
 - (void)updateMessageStatus:(UdeskMessage *)message;

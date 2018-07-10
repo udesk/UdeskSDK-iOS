@@ -8,6 +8,7 @@
 
 #import "UdeskTopAlertView.h"
 #import "UdeskSDKMacro.h"
+#import "UdeskSDKUtil.h"
 
 #define UD_TEXTSIZE(text, font) [text length] > 0 ? [text \
 sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
@@ -83,10 +84,10 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
     }
 }
 
-+ (void)showWithCode:(NSInteger)code
-                        withMessage:(NSString *)message
-                         parentView:(UIView*)parentView {
-
++ (void)showWithCode:(NSInteger)code withMessage:(NSString *)message parentView:(UIView*)parentView {
+    if (!message || message == (id)kCFNull) return ;
+    if (![message isKindOfClass:[NSString class]]) return ;
+    
     UDAlertType type;
     
     if (code == 2000) {
@@ -126,6 +127,10 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
 
 - (void)setTypeWithAlertType:(UDAlertType)type
                  withMessage:(NSString *)message {
+    
+    if ([UdeskSDKUtil isBlankString:message]) {
+        message = @"";
+    }
     
     _autoHide = YES;
     _duration = 1.8;
