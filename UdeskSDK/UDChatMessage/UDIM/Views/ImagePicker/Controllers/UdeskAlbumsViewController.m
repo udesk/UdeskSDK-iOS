@@ -36,9 +36,7 @@ static NSString *kUdeskAlbumCellIdentifier = @"kUdeskAlbumCellIdentifier";
 - (void)setupUI {
     
     self.title = getUDLocalizedString(@"udesk_photo");
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:getUDLocalizedString(@"udesk_cancel") style:UIBarButtonItemStylePlain target:self action:@selector(cancelSelectImageAction)];
-    self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     
     _albumsTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _albumsTableView.delegate = self;

@@ -926,6 +926,18 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v4.0.2版本更新功能:
+
+1.连接优化
+
+2.修复无法直接留言问题
+
+3.修复直接留言文案显示又消失问题
+
+4.修复无消息对话过滤无法收到自动消息问题
+
+------
+
 sdk v4.0.1版本更新功能:
 
 1.支持商品消息

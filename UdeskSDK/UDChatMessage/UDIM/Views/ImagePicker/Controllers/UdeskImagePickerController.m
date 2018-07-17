@@ -34,8 +34,10 @@
 
 - (void)setup {
 
-    self.navigationBar.barStyle = UIBarStyleBlack;
-    self.navigationBar.translucent = YES;
+    NSDictionary *attr = @{NSForegroundColorAttributeName : [UIColor whiteColor]};
+    self.navigationBar.titleTextAttributes = attr;
+    self.navigationBar.barTintColor = [UIColor colorWithRed:0.141f  green:0.145f  blue:0.149f alpha:0.5];
+    self.navigationBar.tintColor = [UIColor whiteColor];
     
     self.quality = [UdeskSDKConfig customConfig].quality;
     self.maxImagesCount = [UdeskSDKConfig customConfig].maxImagesCount;

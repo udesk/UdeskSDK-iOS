@@ -27,7 +27,7 @@ NSString *kUdeskReachabilityChangedNotification = @"kUdeskReachabilityChangedNot
 
 #define kShouldPrintReachabilityFlags 1
 
-static void PrintReachabilityFlags(SCNetworkReachabilityFlags flags, const char* comment)
+static void UdeskPrintReachabilityFlags(SCNetworkReachabilityFlags flags, const char* comment)
 {
 //#if kShouldPrintReachabilityFlags
 //
@@ -47,7 +47,7 @@ static void PrintReachabilityFlags(SCNetworkReachabilityFlags flags, const char*
 }
 
 
-static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void* info)
+static void UdeskReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void* info)
 {
     if (info == NULL) {
         return;
@@ -87,7 +87,6 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 	}
 	return returnValue;
 }
-
 
 + (instancetype)reachabilityWithAddress:(const struct sockaddr *)hostAddress
 {
@@ -133,7 +132,7 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 	BOOL returnValue = NO;
 	SCNetworkReachabilityContext context = {0, (__bridge void *)(self), NULL, NULL, NULL};
 
-	if (SCNetworkReachabilitySetCallback(_reachabilityRef, ReachabilityCallback, &context))
+	if (SCNetworkReachabilitySetCallback(_reachabilityRef, UdeskReachabilityCallback, &context))
 	{
 		if (SCNetworkReachabilityScheduleWithRunLoop(_reachabilityRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode))
 		{
@@ -163,12 +162,11 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 	}
 }
 
-
 #pragma mark - Network Flag Handling
 
 - (UDNetworkStatus)networkStatusForFlags:(SCNetworkReachabilityFlags)flags
 {
-	PrintReachabilityFlags(flags, "networkStatusForFlags");
+	UdeskPrintReachabilityFlags(flags, "networkStatusForFlags");
 	if ((flags & kSCNetworkReachabilityFlagsReachable) == 0)
 	{
 		// The target host is not reachable.
@@ -240,6 +238,5 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
     
 	return returnValue;
 }
-
 
 @end

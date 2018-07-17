@@ -54,8 +54,6 @@
 @property (nonatomic, assign) BOOL                     leaveMsgFlag;
 /** 最后一条离线消息时间 */
 @property (nonatomic, copy  ) NSString                 *lastLeaveMsgDate;
-/** 是否关闭会话 */
-@property (nonatomic, assign) BOOL                     isOverConversion;
 /** 无消息会话ID */
 @property (nonatomic, strong, readwrite) NSNumber      *preSessionId;
 /** 直接留言引导语 */
@@ -169,7 +167,6 @@
             return ;
         }
         
-        self.isOverConversion = NO;
         self.customerModel = customer;
         if (self.delegate && [self.delegate respondsToSelector:@selector(showPreSessionWithTitle:)]) {
             [self.delegate showPreSessionWithTitle:preSessionTitle];
@@ -206,11 +203,6 @@
 
 #pragma mark - 请求客服数据
 - (void)requestAgentData:(void(^)(UdeskAgent *agentModel))completion {
-    
-    //会话已关闭
-    if (self.isOverConversion) {
-        return;
-    }
     
     NSString *agentId = [self udAgentId];
     NSString *groupId = [self udGroupId];
@@ -295,22 +287,12 @@
     
     //直接留言引导文案
     if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
+        
+        //直接留言
+        [self sendLeaveMsg];
         if (!self.leaveMsgGuideSendFlag) {
-            if (![UdeskSDKUtil isBlankString:self.sdkSetting.leaveMessageGuide]) {
-                UdeskMessage *guideMsg = [[UdeskMessage alloc] initWithRich:self.sdkSetting.leaveMessageGuide];
-                [self addMessageToChatMessageArray:@[guideMsg]];
-                self.leaveMsgGuideSendFlag = YES;
-            }
-        }
-        
-        self.agentModel.code = UDAgentStatusResultLeaveMessage;
-        self.agentModel.message = getUDLocalizedString(@"udesk_leave_msg");
-        //回调客服信息到vc显示
-        [self callbackAgentModel:self.agentModel];
-        
-        //更新输入框
-        if (self.updateInputBarBlock) {
-            self.updateInputBarBlock();
+            [self appendLeaveMessageGuide];
+            self.leaveMsgGuideSendFlag = YES;
         }
         //隐藏弹窗
         [UdeskSDKAlert hide];
@@ -455,6 +437,8 @@
                 self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:messagesArray agentNick:self.agentModel.nick lastMessage:nil];
             }
             
+            //添加留言文案
+            [self appendLeaveMessageGuide];
             //添加咨询对象
             [self appendProductMsg];
             //更新UI
@@ -476,6 +460,26 @@
                 [self addMessageToChatMessageArray:@[productMsg]];
             }
         }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
+//添加直接留言文案
+- (void)appendLeaveMessageGuide {
+    
+    @try {
+     
+        if (self.agentModel.code == UDAgentStatusResultLeaveMessage &&
+            [self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
+            
+            if (![UdeskSDKUtil isBlankString:self.sdkSetting.leaveMessageGuide]) {
+                UdeskMessage *guideMsg = [[UdeskMessage alloc] initWithRich:self.sdkSetting.leaveMessageGuide];
+                [self addMessageToChatMessageArray:@[guideMsg]];
+            }
+        }
+        
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -586,7 +590,6 @@
             
             agentCode = UDAgentConversationOver;
             agentMessage = getUDLocalizedString(@"udesk_chat_end");
-            self.isOverConversion = YES;
         }
         else if ([statusType isEqualToString:@"available"]) {
             
@@ -1044,7 +1047,6 @@
     
     if (self.agentModel.code == UDAgentConversationOver) {
         //新会话
-        self.isOverConversion = NO;
         [self showAgentStatusAlert];
         [self createServerCustomer];
         return;
@@ -1127,6 +1129,11 @@
         if ([self.sdkSetting.leaveMessageType isEqualToString:@"form"]) {
             [self sendForm];
         }
+        //直接留言
+        else if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
+            
+            [self sendLeaveMsg];
+        }
         
         //放弃排队
         [self quitQueue];
@@ -1152,6 +1159,19 @@
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectSendTicket)]) {
         [self.delegate didSelectSendTicket];
+    }
+}
+
+//直接留言
+- (void)sendLeaveMsg {
+    
+    self.agentModel.code = UDAgentStatusResultLeaveMessage;
+    self.agentModel.message = getUDLocalizedString(@"udesk_leave_msg");
+    //回调客服信息到vc显示
+    [self callbackAgentModel:self.agentModel];
+    //更新输入框
+    if (self.updateInputBarBlock) {
+        self.updateInputBarBlock();
     }
 }
 
