@@ -23,7 +23,6 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
 @interface Udesk_WHC_HttpManager () {
     NSOperationQueue     * _httpOperationQueue;
     NSOperationQueue     * _fileDownloadOperationQueue;
-    UdeskReachability    * _internetReachability;
     
     NSMutableArray       * _fileDataArr;
     NSMutableArray       * _uploadParamArr;
@@ -55,53 +54,6 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
         _contentType = @"application/x-www-form-urlencoded";
     }
     return self;
-}
-
-
-
-#pragma mark - 网络状态监听 -
-- (void)registerNetworkStatusMoniterEvent {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(dowonloadReachabilityChanged:)
-                                                 name:kUdeskReachabilityChangedNotification
-                                               object:nil];
-    
-    _internetReachability = [UdeskReachability reachabilityForInternetConnection];
-    [_internetReachability startNotifier];
-    [self dowonloadUpdateInterfaceWithReachability:_internetReachability];
-}
-
-- (void)dowonloadUpdateInterfaceWithReachability:(UdeskReachability*)internetReachability{
-    UDNetworkStatus netStatus = [internetReachability currentReachabilityStatus];
-    self.networkStatus = netStatus;
-    switch (netStatus) {
-        case UDNotReachable:{
-            for (Udesk_WHC_DownloadOperation * downloadOperation in _fileDownloadOperationQueue.operations) {
-                [downloadOperation cancelDownloadTaskAndDeleteFile:NO];
-            }
-            for (Udesk_WHC_BaseOperation * httpOperation in _httpOperationQueue.operations) {
-                [httpOperation cancelledRequest];
-            }
-            [[[UIAlertView alloc]initWithTitle:nil
-                                       message:getUDLocalizedString(@"udesk_has_bad_net")
-                                      delegate:nil
-                             cancelButtonTitle:getUDLocalizedString(@"udesk_sure")
-                             otherButtonTitles:nil, nil] show];
-        }
-            break;
-        case UDReachableViaWiFi:
-            
-            break;
-        case UDReachableViaWWAN:
-            
-            break;
-    }
-}
-
-- (void)dowonloadReachabilityChanged:(NSNotification *)notifiy{
-    UdeskReachability* curReach = [notifiy object];
-    NSParameterAssert([curReach isKindOfClass:[UdeskReachability class]]);
-    [self dowonloadUpdateInterfaceWithReachability:curReach];
 }
 
 #pragma mark - get请求 -

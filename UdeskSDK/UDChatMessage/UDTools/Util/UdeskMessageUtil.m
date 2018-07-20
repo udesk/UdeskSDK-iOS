@@ -16,7 +16,6 @@
 #import "UdeskLocationMessage.h"
 #import "UdeskVideoCallMessage.h"
 #import "UdeskProductMessage.h"
-#import "UdeskGoodsMessage.h"
 #import "UdeskSDKUtil.h"
 #import "UdeskBundleUtils.h"
 #import "NSTimer+UdeskSDK.h"
@@ -162,12 +161,6 @@
                     
                     UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithMessage:message displayTimestamp:YES];
                     [msgLayout addObject:productMessage];
-                    break;
-                }
-                case UDMessageContentTypeGoods: {
-                    
-                    UdeskGoodsMessage *goodsMessage = [[UdeskGoodsMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
-                    [msgLayout addObject:goodsMessage];
                     break;
                 }
                     

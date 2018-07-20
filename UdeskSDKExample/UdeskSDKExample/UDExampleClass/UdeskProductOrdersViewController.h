@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-@class UdeskGoodsModel;
 
 typedef NS_ENUM(NSUInteger, UdeskOrderSendType) {
     UdeskOrderSendTypeText,
@@ -16,11 +15,10 @@ typedef NS_ENUM(NSUInteger, UdeskOrderSendType) {
     UdeskOrderSendTypeVoice,
     UdeskOrderSendTypeVideo,
     UdeskOrderSendTypeLocation,
-    UdeskOrderSendTypeGoods,
 };
 
 @interface UdeskProductOrdersViewController : UITableViewController
 
-@property (nonatomic, copy) void(^didSendOrderBlock)(UdeskOrderSendType sendType,UdeskGoodsModel *goodsModel);
+@property (nonatomic, copy) void(^didSendOrderBlock)(UdeskOrderSendType sendType);
 
 @end

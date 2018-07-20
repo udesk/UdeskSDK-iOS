@@ -17,8 +17,6 @@
 - (void)didTapStructMessageButton;
 /** 点击了地理位置消息 */
 - (void)didTapLocationMessage:(UdeskMessage *)message;
-/** 商品消息 */
-- (void)didTapGoodsMessageWithURL:(NSString *)goodsURL goodsId:(NSString *)goodsId;
 /** 发送咨询对象连接 */
 - (void)didSendProductURL:(NSString *)url;
 /** 点击视频通话消息 */

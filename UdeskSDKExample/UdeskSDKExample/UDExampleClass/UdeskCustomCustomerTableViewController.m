@@ -117,8 +117,8 @@
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:orders];
         [viewController presentViewController:nav animated:YES completion:nil];
         
-        orders.didSendOrderBlock = ^(UdeskOrderSendType sendType,UdeskGoodsModel *goodsModel) {
-            [UdeskCustomButtonTestViewController sendOrderWithType:sendType viewController:viewController goodsModel:goodsModel];
+        orders.didSendOrderBlock = ^(UdeskOrderSendType sendType) {
+            [UdeskCustomButtonTestViewController sendOrderWithType:sendType viewController:viewController];
         };
     }];
     

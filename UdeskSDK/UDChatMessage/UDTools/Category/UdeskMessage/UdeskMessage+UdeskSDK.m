@@ -9,8 +9,6 @@
 #import "UdeskMessage+UdeskSDK.h"
 #import "UdeskImageUtil.h"
 #import "UdeskLocationModel.h"
-#import "UdeskGoodsModel.h"
-#import "UdeskSDKUtil.h"
 
 @implementation UdeskMessage (UdeskSDK)
 
@@ -208,68 +206,6 @@
         self.messageStatus = UDMessageSendStatusSuccess;
         self.timestamp = [NSDate date];
         self.content = text;
-    }
-    
-    return self;
-}
-
-- (instancetype)initWithGoods:(UdeskGoodsModel *)model {
-    
-    self = [super init];
-    if (self) {
-        
-        @try {
-         
-            self.messageId = [[NSUUID UUID] UUIDString];
-            self.messageType = UDMessageContentTypeGoods;
-            self.messageFrom = UDMessageTypeSending;
-            self.messageStatus = UDMessageSendStatusSending;
-            self.timestamp = [NSDate date];
-            
-            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-            if (![UdeskSDKUtil isBlankString:model.name]) {
-                [dict setObject:model.name forKey:@"name"];
-            }
-            if (![UdeskSDKUtil isBlankString:model.url]) {
-                [dict setObject:model.url forKey:@"url"];
-            }
-            if (![UdeskSDKUtil isBlankString:model.imgUrl]) {
-                [dict setObject:model.imgUrl forKey:@"imgUrl"];
-            }
-            if ([model.goodsId isKindOfClass:[NSString class]] && [UdeskSDKUtil isBlankString:model.goodsId]) {
-                [dict setObject:model.goodsId forKey:@"id"];
-            }
-            
-            NSMutableArray *array = [NSMutableArray array];
-            for (UdeskGoodsParamModel *paramModel in model.params) {
-                NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-                if (![UdeskSDKUtil isBlankString:paramModel.text]) {
-                    [dict setObject:paramModel.text forKey:@"text"];
-                }
-                if (![UdeskSDKUtil isBlankString:paramModel.color]) {
-                    [dict setObject:paramModel.color forKey:@"color"];
-                }
-                if (paramModel.fold) {
-                    [dict setObject:paramModel.fold forKey:@"fold"];
-                }
-                if (paramModel.udBreak) {
-                    [dict setObject:paramModel.udBreak forKey:@"break"];
-                }
-                if (paramModel.size) {
-                    [dict setObject:paramModel.size forKey:@"size"];
-                }
-                [array addObject:dict];
-            }
-            if (array.count) {
-                [dict setObject:array forKey:@"params"];
-            }
-            
-            self.content = [UdeskSDKUtil JSONWithDictionary:dict];
-            
-        } @catch (NSException *exception) {
-            NSLog(@"%@",exception);
-        } @finally {
-        }
     }
     
     return self;

@@ -9,7 +9,6 @@
 #import "UdeskChatViewModel.h"
 #import "UdeskSDKUtil.h"
 #import "UdeskSDKMacro.h"
-#import "UdeskReachability.h"
 #import "UdeskMessage+UdeskSDK.h"
 #import "UdeskProductMessage.h"
 #import "UdeskSDKConfig.h"
@@ -17,7 +16,6 @@
 #import "Udesk_YYWebImage.h"
 #import "UdeskCacheUtil.h"
 #import "UdeskLocationModel.h"
-#import "UdeskGoodsModel.h"
 #import "UdeskSDKAlert.h"
 #import "UdeskAgentUtil.h"
 #import "UdeskMessageUtil.h"
@@ -44,10 +42,6 @@
 @property (nonatomic, strong) UdeskAgent               *agentModel;
 /** 客户Model */
 @property (nonatomic, strong) UdeskCustomer            *customerModel;
-/** 网络状态检测 */
-@property (nonatomic        ) UdeskReachability        *reachability;
-/** 网络切换 */
-@property (nonatomic, assign) BOOL                     netWorkChange;
 /** 黑名单提示语 */
 @property (nonatomic, copy  ) NSString                 *blackedMessage;
 /** 是否显示客户留言事件 */
@@ -89,8 +83,6 @@
         [self fetchDatabaseMessage];
         //注册通知
         [self registrationNotice];
-        //检测网络
-        [self startDetectNetwork];
         //检测sdk配置
         [self checkSDKSetting];
     }
@@ -104,14 +96,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udeskCallApplicationEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udeskCallApplicationBecomeActive) name:UIApplicationWillEnterForegroundNotification object:nil];
 #endif
-}
-
-#pragma mark - 网络监测
-- (void)startDetectNetwork {
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udIMReachabilityChanged:) name:kUdeskReachabilityChangedNotification object:nil];
-    self.reachability = [UdeskReachability reachabilityWithHostName:@"www.baidu.com"];
-    [self.reachability startNotifier];
 }
 
 #pragma mark - 检查SDK配置
@@ -866,17 +850,6 @@
         return;
     }
     
-    if (![[UdeskSDKUtil internetStatus] isEqualToString:@"wifi"]) {
-        
-        dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8f/*延迟执行时间*/ * NSEC_PER_SEC));
-        dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-            [UdeskSDKAlert showWithTitle:getUDLocalizedString(@"udesk_wwan_tips") message:getUDLocalizedString(@"udesk_video_send_tips") handler:^{
-                [self readySendVideoMessage:videoData progress:progress completion:completion];
-            }];
-        });
-        return;
-    }
-    
     [self readySendVideoMessage:videoData progress:progress completion:completion];
 }
 
@@ -952,32 +925,6 @@
         [[Udesk_YYWebImageManager sharedManager].cache setImage:model.image forKey:locationMsg.messageId];
         [self addMessageToChatMessageArray:@[locationMsg]];
         [UdeskManager sendMessage:locationMsg progress:nil completion:completion];
-    }
-}
-
-#pragma mark - 发送商品消息
-- (void)sendGoodsMessage:(UdeskGoodsModel *)model completion:(void(^)(UdeskMessage *message))completion {
-    
-    //无消息过滤
-    if (self.preSessionId) {
-        [self endPreSessionMessage:^{
-            [self sendGoodsMessage:model completion:completion];
-        } delay:0.8f];
-        return;
-    }
-    
-    if (_agentModel.code != UDAgentStatusResultOnline) {
-        [self showAgentStatusAlert];
-        return;
-    }
-    
-    if (!model || model == (id)kCFNull) return ;
-    if (![model isKindOfClass:[UdeskGoodsModel class]]) return ;
-    
-    UdeskMessage *goodsMsg = [[UdeskMessage alloc] initWithGoods:model];
-    if (goodsMsg) {
-        [self addMessageToChatMessageArray:@[goodsMsg]];
-        [UdeskManager sendMessage:goodsMsg progress:nil completion:completion];
     }
 }
 
@@ -1224,43 +1171,6 @@
     return _preSessionMessages;
 }
 
-//网络状态检测
-- (void)udIMReachabilityChanged:(NSNotification *)note {
-    
-    UdeskReachability *curReach = [note object];
-    UDNetworkStatus internetStatus = [curReach currentReachabilityStatus];
-    
-    @udWeakify(self)
-    switch (internetStatus) {
-        case UDReachableViaWiFi:
-        case UDReachableViaWWAN:{
-            
-            @udStrongify(self);
-            if (self.netWorkChange) {
-                self.netWorkChange = NO;
-                //请求客服数据
-                [self requestAgentData:nil];
-            }
-            break;
-        }
-            
-        case UDNotReachable:{
-            
-            @udStrongify(self);
-            self.netWorkChange = YES;
-            self.agentModel.message = getUDLocalizedString(@"udesk_network_interrupt");
-            self.agentModel.code = UDAgentStatusResultNotNetWork;
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self callbackAgentModel:self.agentModel];
-            });
-        }
-            
-        default:
-            break;
-    }
-}
-
 #pragma mark - 视频
 //进入后台
 - (void)udeskCallApplicationEnterBackground {
@@ -1481,7 +1391,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
 #endif
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUdeskReachabilityChangedNotification object:nil];
 }
 
 @end

@@ -61,8 +61,6 @@
         self.activeLinkColor = [UIColor redColor];
         self.agentNicknameFont = [UIFont systemFontOfSize:12];
         self.agentNicknameColor = [UIColor udColorWithHexString:@"#8E8E93"];
-        self.goodsNameFont = [UIFont boldSystemFontOfSize:14];
-        self.goodsNameTextColor = [UIColor whiteColor];
         
         //nav
         self.navBackButtonColor = [UIColor udColorWithHexString:@"#007AFF"];

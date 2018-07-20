@@ -7,7 +7,6 @@
 //
 
 #import "UdeskSDKUtil.h"
-#import "UdeskReachability.h"
 #import <sys/utsname.h>
 
 static NSString *kUdeskGroupId = @"kUdeskGroupId";
@@ -54,70 +53,6 @@ static NSString *kUdeskGroupId = @"kUdeskGroupId";
         return nil;
     }
     return dic;
-}
-
-//字典转字符串
-+ (NSString *)JSONWithDictionary:(NSDictionary *)dictionary {
-    if (!dictionary || dictionary == (id)kCFNull) return @"";
-    if (![dictionary isKindOfClass:[NSDictionary class]]) return @"";
-    
-    @try {
-        
-        NSError *error;
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dictionary options:NSJSONWritingPrettyPrinted error:&error];
-        
-        NSString *jsonString;
-        
-        if (!jsonData) {
-            NSLog(@"UdeskSDK：%@",error);
-        } else{
-            jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
-        }
-        
-        NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
-        
-        NSRange range = {0,jsonString.length};
-        
-        //去掉字符串中的空格
-        [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
-        
-        NSRange range2 = {0,mutStr.length};
-        
-        //去掉字符串中的换行符
-        [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
-        
-        return mutStr;
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
-}
-
-//同步获取网络状态
-+ (NSString *)internetStatus {
-    
-    UdeskReachability *reachability   = [UdeskReachability reachabilityWithHostName:@"www.apple.com"];
-    UDNetworkStatus internetStatus = [reachability currentReachabilityStatus];
-    
-    NSString *net = nil;
-    switch (internetStatus) {
-        case UDReachableViaWiFi:
-            net = @"wifi";
-            break;
-            
-        case UDReachableViaWWAN:
-            net = @"WWAN";
-            break;
-            
-        case UDNotReachable:
-            net = @"notReachable";
-            
-        default:
-            break;
-    }
-    
-    return net;
 }
 
 + (UIViewController *)currentViewController

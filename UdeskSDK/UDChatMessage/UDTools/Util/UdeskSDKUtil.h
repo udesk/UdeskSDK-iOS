@@ -19,14 +19,10 @@
 + (BOOL)isBlankString:(NSString *)string;
 //随机生成唯一字符串
 + (NSString *)soleString;
-//网络状态
-+ (NSString *)internetStatus;
 //判断是否有系统表情
 + (BOOL)stringContainsEmoji:(NSString *)string;
 //字符串转字典
 + (id)dictionaryWithJSON:(NSString *)json;
-//字典转字符串
-+ (NSString *)JSONWithDictionary:(NSDictionary *)dictionary;
 //当前控制器
 + (UIViewController *)currentViewController;
 //存组ID
