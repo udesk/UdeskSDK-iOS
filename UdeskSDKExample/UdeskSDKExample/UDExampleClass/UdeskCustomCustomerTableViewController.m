@@ -111,7 +111,7 @@
     [UdeskManager initWithOrganization:organization customer:self.customerModel];
     
 
-    UdeskCustomButtonConfig *buttonConfig = [[UdeskCustomButtonConfig alloc] initWithTitle:@"自定义按钮" image:nil type:UdeskCustomButtonConfigTypeInInputTop clickBlock:^(UdeskCustomButtonConfig *customButton, UdeskChatViewController *viewController) {
+    UdeskCustomButtonConfig *buttonConfig1 = [[UdeskCustomButtonConfig alloc] initWithTitle:@"自定义按钮" image:nil type:UdeskCustomButtonConfigTypeInInputTop clickBlock:^(UdeskCustomButtonConfig *customButton, UdeskChatViewController *viewController) {
         
         UdeskProductOrdersViewController *orders = [[UdeskProductOrdersViewController alloc] init];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:orders];
@@ -122,8 +122,18 @@
         };
     }];
     
+    UdeskCustomButtonConfig *buttonConfig2 = [[UdeskCustomButtonConfig alloc] initWithTitle:@"断开Socket" image:nil type:UdeskCustomButtonConfigTypeInInputTop clickBlock:^(UdeskCustomButtonConfig *customButton, UdeskChatViewController *viewController) {
+        
+        [UdeskManager setupCustomerOffline];
+    }];
+    
+    UdeskCustomButtonConfig *buttonConfig3 = [[UdeskCustomButtonConfig alloc] initWithTitle:@"连接Socket" image:nil type:UdeskCustomButtonConfigTypeInInputTop clickBlock:^(UdeskCustomButtonConfig *customButton, UdeskChatViewController *viewController) {
+        
+        [UdeskManager setupCustomerOnline];
+    }];
+    
     UdeskSDKConfig *config = [UdeskSDKConfig customConfig];
-    config.customButtons = @[buttonConfig];
+    config.customButtons = @[buttonConfig1,buttonConfig2,buttonConfig3];
     config.showCustomButtons = YES;
     
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:config];

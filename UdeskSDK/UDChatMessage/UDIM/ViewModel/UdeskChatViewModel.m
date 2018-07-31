@@ -267,7 +267,13 @@
     if (agentModel.code != UDAgentStatusResultOnline) {
         if (self.isNotShowAlert) return;
         
-        [self agentOffline];
+        //排队
+        if (agentModel.code == UDAgentStatusResultQueue) {
+            [self showAgentStatusAlert];
+        }
+        else {
+            [self agentOffline];
+        }
         return;
     }
     
@@ -285,17 +291,9 @@
 //客服离线
 - (void)agentOffline {
     
-    //直接留言引导文案
-    if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
-        
-        //直接留言
+    //开启留言
+    if (self.sdkSetting.enableWebImFeedback.boolValue && [self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
         [self sendLeaveMsg];
-        if (!self.leaveMsgGuideSendFlag) {
-            [self appendLeaveMessageGuide];
-            self.leaveMsgGuideSendFlag = YES;
-        }
-        //隐藏弹窗
-        [UdeskSDKAlert hide];
         return;
     }
     
@@ -1083,17 +1081,12 @@
         //开启留言
         if (self.sdkSetting.enableWebImFeedback.boolValue) {
             if (self.agentModel.code == UDAgentStatusResultOffline) {
-                //直接留言
-                if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
-                    no_reply_hint = getUDLocalizedString(@"udesk_alert_view_direct_msg");
+                //表单留言文案
+                if ([UdeskSDKUtil isBlankString:self.sdkSetting.leaveMessageGuide]) {
+                    no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
                 }
                 else {
-                    if ([UdeskSDKUtil isBlankString:self.sdkSetting.leaveMessageGuide]) {
-                        no_reply_hint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
-                    }
-                    else {
-                        no_reply_hint = self.sdkSetting.leaveMessageGuide;
-                    }
+                    no_reply_hint = self.sdkSetting.leaveMessageGuide;
                 }
             }
             
@@ -1131,7 +1124,6 @@
         }
         //直接留言
         else if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
-            
             [self sendLeaveMsg];
         }
         
@@ -1173,10 +1165,20 @@
     if (self.updateInputBarBlock) {
         self.updateInputBarBlock();
     }
+    
+    if (!self.leaveMsgGuideSendFlag) {
+        [self appendLeaveMessageGuide];
+        self.leaveMsgGuideSendFlag = YES;
+    }
+    //隐藏弹窗
+    [UdeskSDKAlert hide];
 }
 
 #pragma mark - 更新消息内容
 - (void)updateContent {
+    
+    //数据去重
+    [self filterDuplicateMessages];
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(reloadChatTableView)]) {
         [self.delegate reloadChatTableView];
@@ -1205,6 +1207,35 @@
     if ([self.resendArray containsObject:message]) {
         [self.resendArray removeObject:message];
     }
+}
+
+//去重
+- (void)filterDuplicateMessages {
+    
+    @try {
+        
+        NSMutableArray *empty = [NSMutableArray array];
+        for (UdeskBaseMessage *message in self.messagesArray) {
+            if (message && ![self checkMessage:message existInList:empty]) {
+                [empty addObject:message];
+            }
+        }
+        
+        self.messagesArray = [empty copy];
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
+- (BOOL)checkMessage:(UdeskBaseMessage *)msg existInList:(NSArray *)array {
+    for (UdeskBaseMessage *tmp in array) {
+        if ([tmp.message.messageId isEqualToString:msg.message.messageId]) {
+            return YES;
+        }
+    }
+    return  NO;
 }
 
 #pragma mark - lazy

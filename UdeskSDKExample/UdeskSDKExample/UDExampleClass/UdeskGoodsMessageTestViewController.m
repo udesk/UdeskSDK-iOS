@@ -133,10 +133,10 @@
                 self.model.name = textField.text;
             }
             else if (indexPath.row == 2) {
-                self.model.url = @"http://c.hiphotos.baidu.com/image/pic/item/cefc1e178a82b901e004bbc17f8da9773812ef93.jpg";
+                self.model.url = textField.text;
             }
             else if (indexPath.row == 3) {
-                self.model.imgUrl = @"http://c.hiphotos.baidu.com/image/pic/item/cefc1e178a82b901e004bbc17f8da9773812ef93.jpg";
+                self.model.imgUrl = textField.text;
             }
         }
         else {

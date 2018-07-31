@@ -25,49 +25,44 @@ NSString *kUdeskReachabilityChangedNotification = @"kUdeskReachabilityChangedNot
 
 #pragma mark - Supporting functions
 
-#define kShouldPrintReachabilityFlags 1
+#define kShouldPrintReachabilityFlags 0
 
 static void UdeskPrintReachabilityFlags(SCNetworkReachabilityFlags flags, const char* comment)
 {
-//#if kShouldPrintReachabilityFlags
-//
-//    NSLog(@"UdeskReachability Flag Status: %c%c %c%c%c%c%c%c%c %s\n",
-//          (flags & kSCNetworkReachabilityFlagsIsWWAN)				? 'W' : '-',
-//          (flags & kSCNetworkReachabilityFlagsReachable)            ? 'R' : '-',
-//
-//          (flags & kSCNetworkReachabilityFlagsTransientConnection)  ? 't' : '-',
-//          (flags & kSCNetworkReachabilityFlagsConnectionRequired)   ? 'c' : '-',
-//          (flags & kSCNetworkReachabilityFlagsConnectionOnTraffic)  ? 'C' : '-',
-//          (flags & kSCNetworkReachabilityFlagsInterventionRequired) ? 'i' : '-',
-//          (flags & kSCNetworkReachabilityFlagsConnectionOnDemand)   ? 'D' : '-',
-//          (flags & kSCNetworkReachabilityFlagsIsLocalAddress)       ? 'l' : '-',
-//          (flags & kSCNetworkReachabilityFlagsIsDirect)             ? 'd' : '-',
-//          comment
-//          );
+#if kShouldPrintReachabilityFlags
+    
+    NSLog(@"UdeskReachability Flag Status: %c%c %c%c%c%c%c%c%c %s\n",
+          (flags & kSCNetworkReachabilityFlagsIsWWAN)                ? 'W' : '-',
+          (flags & kSCNetworkReachabilityFlagsReachable)            ? 'R' : '-',
+          
+          (flags & kSCNetworkReachabilityFlagsTransientConnection)  ? 't' : '-',
+          (flags & kSCNetworkReachabilityFlagsConnectionRequired)   ? 'c' : '-',
+          (flags & kSCNetworkReachabilityFlagsConnectionOnTraffic)  ? 'C' : '-',
+          (flags & kSCNetworkReachabilityFlagsInterventionRequired) ? 'i' : '-',
+          (flags & kSCNetworkReachabilityFlagsConnectionOnDemand)   ? 'D' : '-',
+          (flags & kSCNetworkReachabilityFlagsIsLocalAddress)       ? 'l' : '-',
+          (flags & kSCNetworkReachabilityFlagsIsDirect)             ? 'd' : '-',
+          comment
+          );
+#endif
 }
-
 
 static void UdeskReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void* info)
 {
-    if (info == NULL) {
-        return;
-    }
+#pragma unused (target, flags)
+    NSCAssert(info != NULL, @"info was NULL in ReachabilityCallback");
+    NSCAssert([(__bridge NSObject*) info isKindOfClass: [UdeskReachability class]], @"info was wrong class in ReachabilityCallback");
     
-    if (![(__bridge NSObject*) info isKindOfClass: [UdeskReachability class]]) {
-        return;
-    }
-
     UdeskReachability* noteObject = (__bridge UdeskReachability *)info;
     // Post a notification to notify the client that the network reachability changed.
     [[NSNotificationCenter defaultCenter] postNotificationName: kUdeskReachabilityChangedNotification object: noteObject];
 }
 
-
 #pragma mark - Reachability implementation
 
 @implementation UdeskReachability
 {
-	SCNetworkReachabilityRef _reachabilityRef;
+	SCNetworkReachabilityRef _udeskReachabilityRef;
 }
 
 + (instancetype)reachabilityWithHostName:(NSString *)hostName
@@ -79,7 +74,7 @@ static void UdeskReachabilityCallback(SCNetworkReachabilityRef target, SCNetwork
 		returnValue= [[self alloc] init];
 		if (returnValue != NULL)
 		{
-			returnValue->_reachabilityRef = reachability;
+			returnValue->_udeskReachabilityRef = reachability;
 		}
         else {
             CFRelease(reachability);
@@ -99,7 +94,7 @@ static void UdeskReachabilityCallback(SCNetworkReachabilityRef target, SCNetwork
 		returnValue = [[self alloc] init];
 		if (returnValue != NULL)
 		{
-			returnValue->_reachabilityRef = reachability;
+			returnValue->_udeskReachabilityRef = reachability;
 		}
         else {
             CFRelease(reachability);
@@ -132,9 +127,9 @@ static void UdeskReachabilityCallback(SCNetworkReachabilityRef target, SCNetwork
 	BOOL returnValue = NO;
 	SCNetworkReachabilityContext context = {0, (__bridge void *)(self), NULL, NULL, NULL};
 
-	if (SCNetworkReachabilitySetCallback(_reachabilityRef, UdeskReachabilityCallback, &context))
+	if (SCNetworkReachabilitySetCallback(_udeskReachabilityRef, UdeskReachabilityCallback, &context))
 	{
-		if (SCNetworkReachabilityScheduleWithRunLoop(_reachabilityRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode))
+		if (SCNetworkReachabilityScheduleWithRunLoop(_udeskReachabilityRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode))
 		{
 			returnValue = YES;
 		}
@@ -146,9 +141,9 @@ static void UdeskReachabilityCallback(SCNetworkReachabilityRef target, SCNetwork
 
 - (void)stopNotifier
 {
-	if (_reachabilityRef != NULL)
+	if (_udeskReachabilityRef != NULL)
 	{
-		SCNetworkReachabilityUnscheduleFromRunLoop(_reachabilityRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+		SCNetworkReachabilityUnscheduleFromRunLoop(_udeskReachabilityRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
 	}
 }
 
@@ -156,9 +151,10 @@ static void UdeskReachabilityCallback(SCNetworkReachabilityRef target, SCNetwork
 - (void)dealloc
 {
 	[self stopNotifier];
-	if (_reachabilityRef != NULL)
+	if (_udeskReachabilityRef != NULL)
 	{
-		CFRelease(_reachabilityRef);
+		CFRelease(_udeskReachabilityRef);
+        _udeskReachabilityRef = NULL;
 	}
 }
 
@@ -213,10 +209,10 @@ static void UdeskReachabilityCallback(SCNetworkReachabilityRef target, SCNetwork
 
 - (BOOL)connectionRequired
 {
-	NSAssert(_reachabilityRef != NULL, @"connectionRequired called with NULL reachabilityRef");
+	NSAssert(_udeskReachabilityRef != NULL, @"connectionRequired called with NULL reachabilityRef");
 	SCNetworkReachabilityFlags flags;
 
-	if (SCNetworkReachabilityGetFlags(_reachabilityRef, &flags))
+	if (SCNetworkReachabilityGetFlags(_udeskReachabilityRef, &flags))
 	{
 		return (flags & kSCNetworkReachabilityFlagsConnectionRequired);
 	}
@@ -227,11 +223,11 @@ static void UdeskReachabilityCallback(SCNetworkReachabilityRef target, SCNetwork
 
 - (UDNetworkStatus)currentReachabilityStatus
 {
-	NSAssert(_reachabilityRef != NULL, @"currentNetworkStatus called with NULL SCNetworkReachabilityRef");
+	NSAssert(_udeskReachabilityRef != NULL, @"currentNetworkStatus called with NULL SCNetworkReachabilityRef");
 	UDNetworkStatus returnValue = UDNotReachable;
 	SCNetworkReachabilityFlags flags;
     
-	if (SCNetworkReachabilityGetFlags(_reachabilityRef, &flags))
+	if (SCNetworkReachabilityGetFlags(_udeskReachabilityRef, &flags))
 	{
         returnValue = [self networkStatusForFlags:flags];
 	}

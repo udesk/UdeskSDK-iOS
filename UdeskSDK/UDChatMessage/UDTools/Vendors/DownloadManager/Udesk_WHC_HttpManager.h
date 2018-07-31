@@ -15,7 +15,6 @@
 #import <Foundation/Foundation.h>
 #import "Udesk_WHC_HttpOperation.h"
 #import "Udesk_WHC_DownloadOperation.h"
-#import "UdeskReachability.h"
 
 /**
  * 默认下载并发数量 在里面修改
@@ -93,18 +92,6 @@ extern const NSInteger kUdeskWHCDefaultDownloadNumber;
  */
 
 - (nullable NSString *)handleFileName:(nonnull NSString *)saveFileName url:(nonnull NSString *)strUrl;
-
-/**
- * 当前网络状态
- */
-
-@property (nonatomic , assign)UDNetworkStatus        networkStatus;
-
-
-/**
- * 注册监听设备网络状态
- */
-- (void)registerNetworkStatusMoniterEvent;
 
 /**
  * GET 请求操作
