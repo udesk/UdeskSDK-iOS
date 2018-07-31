@@ -824,7 +824,6 @@
 				4420BAA720D8FE0A005E1D18 /* DownloadManager */,
 				4420BAB220D8FE0A005E1D18 /* PhotoViewer */,
 				4420BAB920D8FE0A005E1D18 /* MTOverlayPresentation */,
-				4420BABE20D8FE0A005E1D18 /* Reachability */,
 				4420BAC120D8FE0A005E1D18 /* TTTAttributedLabel */,
 				4420BAC420D8FE0A005E1D18 /* YYWebImage */,
 			);
@@ -890,13 +889,6 @@
 				4420BABD20D8FE0A005E1D18 /* UdeskBouncyViewControllerAnimator.m */,
 			);
 			path = MTOverlayPresentation;
-			sourceTree = "<group>";
-		};
-		4420BABE20D8FE0A005E1D18 /* Reachability */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Reachability;
 			sourceTree = "<group>";
 		};
 		4420BAC120D8FE0A005E1D18 /* TTTAttributedLabel */ = {
@@ -2259,7 +2251,7 @@
 					"-weak_framework",
 					"\"UserNotifications\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.400bugfix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2341,7 +2333,7 @@
 					"-weak_framework",
 					"\"UserNotifications\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.400bugfix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

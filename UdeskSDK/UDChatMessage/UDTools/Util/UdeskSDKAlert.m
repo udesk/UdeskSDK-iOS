@@ -136,7 +136,7 @@
     
     NSString *title = getUDLocalizedString(@"udesk_leave_msg");
     
-    UdeskAlertController *queueAlert = [UdeskAlertController alertControllerWithTitle:title attributedMessage:[[NSAttributedString alloc] initWithString:message] preferredStyle:UDAlertControllerStyleAlert];
+    UdeskAlertController *queueAlert = [UdeskAlertController alertControllerWithTitle:@"" attributedMessage:[[NSAttributedString alloc] initWithString:message] preferredStyle:UDAlertControllerStyleAlert];
     
     [queueAlert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UDAlertActionStyleDefault handler:nil]];
     
