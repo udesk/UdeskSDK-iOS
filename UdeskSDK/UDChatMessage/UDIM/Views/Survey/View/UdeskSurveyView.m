@@ -242,12 +242,10 @@
         }
         
         UdeskSurveyOption *option = [self selectedOption];
-        if (option) {
-            if (option.remarkOptionType == UdeskRemarkOptionTypeRequired) {
-                if (!self.surveyContentView.remarkTextView.text.length) {
-                    [UdeskToast showToast:getUDLocalizedString(@"udesk_survey_remark_required") duration:0.5f window:self];
-                    return;
-                }
+        if (self.surveyModel.remarkEnabled.boolValue && option && option.remarkOptionType == UdeskRemarkOptionTypeRequired) {
+            if (!self.surveyContentView.remarkTextView.text.length) {
+                [UdeskToast showToast:getUDLocalizedString(@"udesk_survey_remark_required") duration:0.5f window:self];
+                return;
             }
         }
         
