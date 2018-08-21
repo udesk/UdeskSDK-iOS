@@ -67,8 +67,9 @@ const CGFloat kUDTextSurveyButtonHeight = 22;
     NSInteger index = button.tag - 9898;
     if (self.textSurvey.options.count > index) {
         
+        NSArray *enabledTextSurvey = [self.textSurvey.options filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"enabled>0"]];
         if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectExpressionSurveyWithOption:)]) {
-            [self.delegate didSelectExpressionSurveyWithOption:self.textSurvey.options[index]];
+            [self.delegate didSelectExpressionSurveyWithOption:enabledTextSurvey[index]];
         }
     }
 }

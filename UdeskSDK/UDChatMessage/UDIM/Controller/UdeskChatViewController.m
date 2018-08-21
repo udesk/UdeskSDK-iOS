@@ -47,7 +47,7 @@
 #import "UdeskCallingView.h"
 #endif
 
-@interface UdeskChatViewController ()<UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskCellDelegate,UdeskImagePickerControllerDelegate,UdeskSmallVideoViewControllerDelegate,UdeskChatInputToolBarDelegate,UdeskChatToolBarMoreViewDelegate,UdeskEmojiKeyboardControlDelegate>
+@interface UdeskChatViewController ()<UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskCellDelegate,UdeskImagePickerControllerDelegate,UdeskSmallVideoViewControllerDelegate,UdeskChatInputToolBarDelegate,UdeskChatToolBarMoreViewDelegate,UdeskEmojiKeyboardControlDelegate,UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UdeskMessageTableView     *messageTableView;//用于显示消息的TableView
 @property (nonatomic, strong) UdeskEmojiKeyboardControl *emojiKeyboard;
@@ -287,6 +287,7 @@
     //添加单击手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapChatTableView:)];
     tap.cancelsTouchesInView = false;
+    tap.delegate = self;
     [_messageTableView addGestureRecognizer:tap];
     
     // 设置Message TableView 的bottom
@@ -517,10 +518,10 @@
 }
 
 //结构化消息
-- (void)didTapStructMessageButton {
+- (void)didTapStructMessageButtonWithValue:(NSString *)value callbackName:(NSString *)callbackName {
 
     if (self.sdkConfig.actionConfig.structMessageClickBlock) {
-        self.sdkConfig.actionConfig.structMessageClickBlock();
+        self.sdkConfig.actionConfig.structMessageClickBlock(value,callbackName);
     }
 }
 
@@ -577,10 +578,20 @@
 
 #pragma mark - UDChatTableViewDelegate
 //点击空白处隐藏键盘
-- (void)didTapChatTableView:(UITableView *)tableView {
+- (void)didTapChatTableView:(UIGestureRecognizer *)recognizer {
     
-    [self layoutOtherMenuViewHiden:YES];
-    [self.chatInputToolBar resetAllButtonSelectedStatus];
+    if ([self.chatInputToolBar.chatTextView resignFirstResponder]) {
+        [self layoutOtherMenuViewHiden:YES];
+        [self.chatInputToolBar resetAllButtonSelectedStatus];
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([touch.view isKindOfClass:[UILabel class]]){
+        return NO;
+    }
+    
+    return YES;
 }
 
 #pragma mark - 下拉加载更多数据

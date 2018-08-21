@@ -50,7 +50,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, copy) void(^leaveMessageClickBlock)(UIViewController *viewController);
 
 /** 结构化消息回调 */
-@property (nonatomic, copy) void(^structMessageClickBlock)(void);
+@property (nonatomic, copy) void(^structMessageClickBlock)(NSString *value, NSString *callbackName);
 
 /** 离开聊天页面回调 */
 @property (nonatomic, copy) void(^leaveChatViewControllerBlock)(void);
@@ -169,6 +169,8 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, copy) NSString *agentMenuTitle;
 /** 返回按钮文字 */
 @property (nonatomic, copy) NSString *backText;
+/** 咨询对象按钮文字 */
+@property (nonatomic, copy) NSString *productSendText;
 
 /** SDK事件 */
 @property (nonatomic, strong) UdeskSDKActionConfig *actionConfig;

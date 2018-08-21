@@ -86,7 +86,7 @@
         //UdeskSDK代理
         [UdeskManager receiveUdeskDelegate:self];
         //获取db消息
-        [self fetchDatabaseMessage];
+        [self fetchDatabaseMessage:nil];
         //注册通知
         [self registrationNotice];
         //检测网络
@@ -422,7 +422,7 @@
 }
 
 #pragma mark - 本地消息数据
-- (void)fetchDatabaseMessage {
+- (void)fetchDatabaseMessage:(NSArray *)serverMsgList {
     
     [UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:[NSDate date] messagesNumber:20 result:^(NSArray *messagesArray) {
         
@@ -434,6 +434,35 @@
             if (messagesArray.count) {
                 self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:messagesArray agentNick:self.agentModel.nick lastMessage:nil];
             }
+            
+            //极端情况下，读取数据库失败，把服务器上拉取的记录做一次处理
+            if (serverMsgList.count > 0) {
+                NSMutableArray *tmpArray = [NSMutableArray arrayWithArray:self.messagesArray];
+                NSArray *msgList = [UdeskMessageUtil chatMessageWithMsgModel:serverMsgList agentNick:self.agentModel.nick lastMessage:nil];
+                //加一个标志，只有在异常的情况下才重新排序
+                BOOL somethingWrong = NO;
+                for (UdeskBaseMessage *msg in msgList) {
+                    if (![self checkMessage:msg existInList:tmpArray]) {
+                        [tmpArray addObject:msg];
+                        //有数据不一致
+                        if (!somethingWrong) {
+                            somethingWrong = YES;
+                        }
+                    }
+                }
+                //重新排序
+                if (tmpArray.count > 0 && somethingWrong) {
+                    self.messagesArray = [tmpArray sortedArrayUsingComparator:^NSComparisonResult(UdeskBaseMessage * obj1, UdeskBaseMessage * obj2) {
+                        if (obj2.message.timestamp && obj1.message.timestamp) {
+                            return [obj1.message.timestamp compare:obj2.message.timestamp];
+                        }
+                        return NSOrderedSame;
+                    }];
+                }
+                
+            }
+            
+            
             
             //添加留言文案
             [self appendLeaveMessageGuide];
@@ -669,11 +698,11 @@
 - (void)fetchSessionMessages:(NSString *)sessionId {
     
     @udWeakify(self);
-    [UdeskManager fetchServersMessageWithSessionId:sessionId completion:^(NSError *error){
+    [UdeskManager fetchServersMessageWithSessionId:sessionId completion:^(NSError *error, NSArray *msgList){
         @udStrongify(self);
         if (!error) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.89 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self fetchDatabaseMessage];
+                [self fetchDatabaseMessage:msgList];
             });
         }
     }];

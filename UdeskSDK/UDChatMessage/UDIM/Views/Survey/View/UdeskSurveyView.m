@@ -231,12 +231,11 @@
     
     [self.surveyContentView.remarkTextView resignFirstResponder];
     if (!self.agentId || self.agentId == (id)kCFNull) return ;
-    if (!survey.selectedOptionId || survey.selectedOptionId == (id)kCFNull) return ;
     if (!self.imSubSessionId || self.imSubSessionId == (id)kCFNull) return ;
     
     @try {
         
-        if (!survey.selectedOptionId.integerValue) {
+        if (!survey.selectedOptionId || survey.selectedOptionId == (id)kCFNull) {
             [UdeskToast showToast:getUDLocalizedString(@"udesk_survey_tips") duration:0.5f window:self];
             return;
         }

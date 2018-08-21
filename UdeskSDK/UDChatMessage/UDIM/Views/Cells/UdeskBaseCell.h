@@ -14,7 +14,7 @@
 /** 点击了聊天的图片 */
 - (void)didTapChatImageView;
 /** 点击结构化消息按钮 */
-- (void)didTapStructMessageButton;
+- (void)didTapStructMessageButtonWithValue:(NSString *)value callbackName:(NSString *)callbackName;
 /** 点击了地理位置消息 */
 - (void)didTapLocationMessage:(UdeskMessage *)message;
 /** 商品消息 */

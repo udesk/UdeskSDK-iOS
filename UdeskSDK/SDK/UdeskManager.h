@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 4.0.3
+//  Version: 4.0.4
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -388,7 +388,7 @@ typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
  @param completion 完成回调
  */
 + (void)fetchServersMessageWithSessionId:(NSString *)sessionId
-                              completion:(void(^)(NSError *error))completion;
+                              completion:(void(^)(NSError *error, NSArray *msgList))completion;
 
 /**
  无消息会话
