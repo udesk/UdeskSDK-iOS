@@ -335,6 +335,8 @@ static NSString *kUDSurveyTagsCollectionViewCellReuseIdentifier = @"kUDSurveyTag
 }
 
 - (void)setDefaultOptionId:(NSNumber *)defaultOptionId options:(NSArray *)options {
+    if (!defaultOptionId || defaultOptionId == (id)kCFNull) return ;
+    if (!options || options == (id)kCFNull) return ;
     
     for (UdeskSurveyOption *option in options) {
         if ([option.optionId isEqualToNumber:defaultOptionId] && option.enabled.boolValue != NO) {
