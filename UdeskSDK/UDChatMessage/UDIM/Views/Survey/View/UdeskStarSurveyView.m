@@ -67,12 +67,12 @@ static CGFloat kUDSurveyTipLabelHeight = 18;
 - (void)didChangeValue:(Udesk_HCSStarRatingView *)sender {
     
     int index = fabs(sender.value - 5);
-    if (self.starSurvey.options.count > index) {
+    if (index >=0 && self.starSurvey.options.count > index) {
         UdeskSurveyOption *option = self.starSurvey.options[index];
         _tipLabel.text = option.text;
     }
     
-    if (self.starSurvey.options.count > index) {
+    if (index >=0 && self.starSurvey.options.count > index) {
         
         if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectExpressionSurveyWithOption:)]) {
             [self.delegate didSelectExpressionSurveyWithOption:self.starSurvey.options[index]];

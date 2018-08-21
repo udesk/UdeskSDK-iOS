@@ -58,19 +58,25 @@ const CGFloat kUDTextSurveyButtonHeight = 22;
 
 - (void)selectTextSurveyOptionAction:(UdeskButton *)button {
  
-    for (UdeskButton *button in self.subviews) {
-        button.selected = NO;
-    }
-    
-    button.selected = !button.selected;
-    
-    NSInteger index = button.tag - 9898;
-    if (self.textSurvey.options.count > index) {
+    @try {
+        
+        for (UdeskButton *button in self.subviews) {
+            button.selected = NO;
+        }
+        button.selected = !button.selected;
         
         NSArray *enabledTextSurvey = [self.textSurvey.options filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"enabled>0"]];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectExpressionSurveyWithOption:)]) {
-            [self.delegate didSelectExpressionSurveyWithOption:enabledTextSurvey[index]];
+        NSInteger index = button.tag - 9898;
+        
+        if (index >= 0 && enabledTextSurvey.count > index) {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectExpressionSurveyWithOption:)]) {
+                [self.delegate didSelectExpressionSurveyWithOption:enabledTextSurvey[index]];
+            }
         }
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
     }
 }
 
