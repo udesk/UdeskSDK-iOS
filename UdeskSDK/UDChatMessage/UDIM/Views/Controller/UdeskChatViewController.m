@@ -464,10 +464,10 @@
 }
 
 //结构化消息
-- (void)didSelectStructButton {
+- (void)didSelectStructButtonWithValue:(NSString *)value callbackName:(NSString *)callbackName {
 
     if (self.sdkConfig.structMessageCallBack) {
-        self.sdkConfig.structMessageCallBack();
+        self.sdkConfig.structMessageCallBack(value,callbackName);
     }
 }
 

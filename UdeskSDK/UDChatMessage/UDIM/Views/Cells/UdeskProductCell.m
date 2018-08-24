@@ -52,7 +52,7 @@
             self.productDetailLabel.text = productMessage.productDetail;
         }
         if (productMessage.productImage) {
-            [self.productImageView yy_setImageWithURL:[NSURL URLWithString:productMessage.productImageURL] placeholder:productMessage.productImage];
+            [self.productImageView yy_setImageWithURL:[NSURL URLWithString:[productMessage.productImageURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:productMessage.productImage];
         }
         
         if (![UdeskTools isBlankString:productMessage.productSendText]) {

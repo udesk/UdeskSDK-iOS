@@ -362,7 +362,7 @@
  
  @param completion 事件完成回调
  */
-- (void)structMessageButtonCallBack:(void(^)(void))completion {
+- (void)structMessageButtonCallBack:(void(^)(NSString *value, NSString *callbackName))completion {
     
     _sdkConfig.structMessageCallBack = completion;
 }

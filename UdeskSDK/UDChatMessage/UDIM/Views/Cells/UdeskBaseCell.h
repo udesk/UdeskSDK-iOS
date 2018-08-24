@@ -17,7 +17,7 @@
 
 - (void)sendProductURL:(NSString *)url;
 
-- (void)didSelectStructButton;
+- (void)didSelectStructButtonWithValue:(NSString *)value callbackName:(NSString *)callbackName;
 
 - (void)resendMessageInCell:(UITableViewCell *)cell resendMessage:(UdeskMessage *)resendMessage;
 

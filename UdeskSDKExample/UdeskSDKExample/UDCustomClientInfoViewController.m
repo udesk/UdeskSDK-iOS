@@ -91,7 +91,7 @@
         
     }
     
-    [UdeskManager updateCustomer:customer];
+    [UdeskManager updateCustomer:customer completion:nil];
     
     [self dismissChatViewController];
 

@@ -188,7 +188,7 @@ typedef enum : NSUInteger {
  
  @param completion 事件完成回调
  */
-- (void)structMessageButtonCallBack:(void(^)(void))completion;
+- (void)structMessageButtonCallBack:(void(^)(NSString *value, NSString *callbackName))completion;
 
 /**
  离开聊天页面回调

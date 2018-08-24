@@ -221,7 +221,7 @@
     
     // 调用后台配置的push方法
     NSDictionary *dict = @{
-                           @"productImageUrl":@"http://img.club.pchome.net/kdsarticle/2013/11small/21/fd548da909d64a988da20fa0ec124ef3_1000x750.jpg",
+                           @"productImageUrl":@"http://qn-im.udesk.cn/1:pic:123_1535021614_898.jpg",
                            @"productTitle":@"测试测试测试测你测试测试测你测试测试测你测试测试测你测试测",
                            @"productDetail":@"¥88888.088888.088888.0",
                            @"productURL":@"http://www.baidu.com"

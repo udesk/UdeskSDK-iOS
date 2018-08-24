@@ -69,7 +69,7 @@
         self.chatImageView.image = [[Udesk_YYWebImageManager sharedManager].cache getImageForKey:imageMessage.message.messageId];
     }
     else {
-        [self.chatImageView yy_setImageWithURL:[NSURL URLWithString:imageUrl] placeholder:imageMessage.message.image];
+        [self.chatImageView yy_setImageWithURL:[NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:imageMessage.message.image];
     }
     
     self.chatImageView.frame = imageMessage.imageFrame;

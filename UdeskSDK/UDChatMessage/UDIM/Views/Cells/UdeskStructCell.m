@@ -88,8 +88,8 @@
         //点击自定义回调
         if ([button.type isEqualToString:@"sdk_callback"]) {
             
-            if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectStructButton)]) {
-                [self.delegate didSelectStructButton];
+            if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectStructButtonWithValue:callbackName:)]) {
+                [self.delegate didSelectStructButtonWithValue:button.value callbackName:button.callback_name];
             }
             return;
         }

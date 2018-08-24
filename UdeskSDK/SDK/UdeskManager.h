@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 3.9.2
+//  Version: 3.9.3
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -92,10 +92,11 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 
 /**
  更新客户信息
-
- @param customer 客户model
+ 
+ *  @param customer 客户model
+ *  @param completion 回调信息
  */
-+ (void)updateCustomer:(UdeskCustomer *)customer;
++ (void)updateCustomer:(UdeskCustomer *)customer completion:(void(^)(NSError *error))completion;
 
 /**
  *  获取后台分配的客服信息
