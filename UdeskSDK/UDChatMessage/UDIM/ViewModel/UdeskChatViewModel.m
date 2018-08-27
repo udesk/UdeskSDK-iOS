@@ -1287,11 +1287,12 @@
 //网络状态检测
 - (void)udIMReachabilityChanged:(NSNotification *)note {
     
-    UdeskReachability *curReach = [note object];
-    UDNetworkStatus internetStatus = [curReach currentReachabilityStatus];
+    NSDictionary *userInfo = note.userInfo;
+    NSNumber *status = userInfo[kUdeskReachabilityNotificationStatusItem];
+    if (!status || status == (id)kCFNull) return ;
     
     @udWeakify(self)
-    switch (internetStatus) {
+    switch (status.integerValue) {
         case UDReachableViaWiFi:
         case UDReachableViaWWAN:{
             

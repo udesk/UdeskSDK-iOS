@@ -148,7 +148,7 @@
         remarkHeight = MAX(remarkPlaceholderHeight, kUDSurveyRemarkTextViewHeight);
     }
     
-    CGFloat contentHeight = kUDSurveyTitleHeight + kUDTextSurveyButtonToVerticalEdgeSpacing + surveyOptionHeight + surveyButtonSpacing + tagsCollectionHeight + tagsCollectionViewSpacing + tagsCollectionViewSpacing + remarkHeight + kUDSurveySubmitButtonSpacing + kUDSurveySubmitButtonHeight + kUDSurveySubmitButtonSpacing;
+    CGFloat contentHeight = kUDSurveyTitleHeight + kUDTextSurveyButtonToVerticalEdgeSpacing + surveyOptionHeight + surveyButtonSpacing + tagsCollectionHeight + tagsCollectionViewSpacing + remarkHeight + kUDSurveySubmitButtonSpacing + kUDSurveySubmitButtonHeight + kUDSurveySubmitButtonSpacing;
     
     if (!self.surveyModel.remarkEnabled.boolValue) {
         contentHeight -= (remarkHeight+kUDSurveySubmitButtonSpacing);
@@ -165,6 +165,8 @@
             contentHeight -= (remarkHeight+kUDSurveySubmitButtonSpacing);
         }
     }
+    
+    contentHeight = ud_is_iPhoneX ? contentHeight+34 : contentHeight;
     
     CGFloat contentY = UD_SCREEN_HEIGHT > contentHeight ? UD_SCREEN_HEIGHT-contentHeight : 0;
     self.contentView.frame = CGRectMake(0, contentY, self.udWidth, contentHeight);

@@ -22,6 +22,7 @@ typedef enum : NSInteger {
 
 
 extern NSString *kUdeskReachabilityChangedNotification;
+extern NSString *kUdeskReachabilityNotificationStatusItem;
 
 
 @interface UdeskReachability : NSObject
