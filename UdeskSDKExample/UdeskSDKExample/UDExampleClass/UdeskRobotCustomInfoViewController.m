@@ -97,7 +97,7 @@
     //初始化sdk
     [UdeskManager initWithOrganization:organization customer:customer];
     
-    [UdeskManager updateCustomer:customer];
+    [UdeskManager updateCustomer:customer completion:nil];
     
     UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
     sdkConfig.robotCustomerInfo = robotCustomerInfo;

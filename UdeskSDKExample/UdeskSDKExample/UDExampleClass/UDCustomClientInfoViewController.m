@@ -98,7 +98,7 @@
     customer.sdkToken = @"iossdktestv386";
     //初始化sdk
     [UdeskManager initWithOrganization:organization customer:customer];
-    [UdeskManager updateCustomer:customer];
+    [UdeskManager updateCustomer:customer completion:nil];
 
     [self dismissChatViewController];
 }
