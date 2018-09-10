@@ -926,6 +926,22 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v4.0.6版本更新功能:
+
+1.适配iOS12 
+
+------
+
+sdk v4.0.5版本更新功能:
+
+1.更新客户信息支持回调 
+
+2.满意度调查UI适配iPhone X 
+
+3.网络检查组件“UdeskReachability” crash修复
+
+------
+
 sdk v4.0.4版本更新功能:
 
 1.消息优化
