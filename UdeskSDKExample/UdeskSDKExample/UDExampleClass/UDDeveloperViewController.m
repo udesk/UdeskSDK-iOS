@@ -310,9 +310,9 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
 - (void)sdkProduct {
     
     NSDictionary *dict = @{
-                           @"productImageUrl":@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528871600586&di=18c857085f6802867472d0e775d9e5c3&imgtype=0&src=http%3A%2F%2Fsi1.go2yd.com%2Fget-image%2F0Iy8A6XCq8G",
-                           @"productTitle":@"测试测试测试测你测试测试测你测试测试测你测试测试测你测试测试测你测试测试测你！",
-                           @"productDetail":@"¥88888.088888.088888.0",
+                           @"productImageUrl":@"https://qn-im.udesk.cn/QQ20180927-104742_1538016472_663.png",
+                           @"productTitle":@"iPhoneXs Max",
+                           @"productDetail":@"¥1",
                            @"productURL":@"http://www.baidu.com"
                            };
     UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];

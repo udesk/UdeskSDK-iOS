@@ -15,6 +15,7 @@ https://github.com/udesk/UdeskSDK-iOS
 - [五、Udesk SDK API说明](#%E4%BA%94udesk-sdk-api%E8%AF%B4%E6%98%8E)
 - [六、常见问题](#%E5%85%AD%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 - [七、更新记录](#%E4%B8%83%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95)
+- [八、功能截图](#%E5%85%AB%E5%8A%9F%E8%83%BD%E6%88%AA%E5%9B%BE)
 
 
 
@@ -1253,4 +1254,25 @@ sdk v3.3.3版本更新功能：
 3.文字过多时计算bug修复
 
 4.支持https
+
+# 八、功能截图
+
+以下是SDK部分功能截图
+
+### 商品消息
+![udesk](https://qn-im.udesk.cn/QQ20180927-105917_1538017915_503.png)
+
+### 咨询对象
+![udesk](https://qn-im.udesk.cn/QQ20180927-105034_1538017914_750.png)
+
+### 自定义表情
+![udesk](https://qn-im.udesk.cn/QQ20180927-104429_1538017914_710.png)
+
+### 自定义按钮
+![udesk](https://qn-im.udesk.cn/QQ20180927-104341_1538029819_848.png)
+
+### 地理位置和视频消息
+![udesk](https://qn-im.udesk.cn/2221538017487_.pic_hd_1538027283_385.png)
+
+
 
