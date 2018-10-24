@@ -117,7 +117,7 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGFloat spacing = (ud_is_iPhoneX ? 34 : 0);
+    CGFloat spacing = (udIsIPhoneXSeries ? 34 : 0);
     self.bottomView.frame = CGRectMake(0, CGRectGetHeight(self.frame)-UdeskEmojiPackagePanelHeight-spacing, CGRectGetWidth(self.frame), UdeskEmojiPackagePanelHeight+spacing);
     self.sendButton.frame = CGRectMake(CGRectGetWidth(self.bottomView.frame)-70, 0, 70, UdeskEmojiPackagePanelHeight);
     self.packagePanel.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame)-CGRectGetWidth(self.sendButton.frame), UdeskEmojiPackagePanelHeight);

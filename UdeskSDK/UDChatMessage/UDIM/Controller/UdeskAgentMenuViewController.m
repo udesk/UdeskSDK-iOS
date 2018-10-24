@@ -71,7 +71,7 @@
 - (CGFloat)getSpacing {
     
     CGFloat spacing = 0;
-    if (ud_is_iPhoneX) {
+    if (udIsIPhoneXSeries) {
         spacing = 34;
     }
     
@@ -107,7 +107,7 @@
         //根据最大的级数循环添加tableView
         for (int i = 0; i<tableViewCount;i++) {
             
-            UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-(ud_is_iPhoneX ? 88 :64)) style:UITableViewStylePlain];
+            UITableView *agentMenuTableView = [[UITableView alloc] initWithFrame:CGRectMake(i*UD_SCREEN_WIDTH, 0, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-(udIsIPhoneXSeries ? 88 :64)) style:UITableViewStylePlain];
             agentMenuTableView.udHeight -= [self getSpacing];
             agentMenuTableView.delegate = self;
             agentMenuTableView.dataSource = self;

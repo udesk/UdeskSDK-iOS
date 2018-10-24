@@ -293,7 +293,7 @@
     // 设置Message TableView 的bottom
     CGFloat inputViewHeight = 52.0f;
     // 输入工具条
-    _chatInputToolBar = [[UdeskChatInputToolBar alloc] initWithFrame:CGRectMake(0.0f,self.view.udHeight - inputViewHeight - (ud_is_iPhoneX?34:0),self.view.udWidth,inputViewHeight+(ud_is_iPhoneX?34:0)) tableView:_messageTableView];
+    _chatInputToolBar = [[UdeskChatInputToolBar alloc] initWithFrame:CGRectMake(0.0f,self.view.udHeight - inputViewHeight - (udIsIPhoneXSeries?34:0),self.view.udWidth,inputViewHeight+(udIsIPhoneXSeries?34:0)) tableView:_messageTableView];
     _chatInputToolBar.delegate = self;
     [self.view addSubview:_chatInputToolBar];
     
@@ -304,7 +304,7 @@
     }
     else {
         
-        _messageTableView.udHeight -= ud_is_iPhoneX?34:0;
+        _messageTableView.udHeight -= udIsIPhoneXSeries?34:0;
         [_messageTableView setTableViewInsetsWithBottomValue:self.view.udHeight - _chatInputToolBar.udY];
     }
     
@@ -561,7 +561,7 @@
     else {
         
         //重发
-        [UdeskManager sendMessage:resendMessage progress:^(NSString *key, float percent) {
+        [UdeskManager sendMessage:resendMessage progress:^(float percent) {
             
             //更新进度
             @udStrongify(self);
@@ -590,7 +590,7 @@
     if ([touch.view isKindOfClass:[UILabel class]]){
         return NO;
     }
-    
+
     return YES;
 }
 
@@ -743,7 +743,7 @@
         __block CGRect otherMenuViewFrame = CGRectMake(0, 0, 0, 0);
         
         CGFloat spacing = 0;
-        if (ud_is_iPhoneX) {
+        if (udIsIPhoneXSeries) {
             spacing = 34;
         }
         
@@ -901,12 +901,12 @@
     
     @try {
         
-        NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
-        UdeskImageCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
-        
-        if ([cell isKindOfClass:[UdeskImageCell class]]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
+            UdeskImageCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
+            
+            if ([cell isKindOfClass:[UdeskImageCell class]]) {
                 
                 if (progress == 1.0f || sendStatus == UDMessageSendStatusSuccess) {
                     [cell uploadImageSuccess];
@@ -915,8 +915,8 @@
                     [cell imageUploading];
                     cell.progressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
                 }
-            });
-        }
+            }
+        });
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -962,13 +962,13 @@
 
     @try {
         
-        NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
-        UdeskVideoCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
-        [cell updateMessageSendStatus:UDMessageSendStatusSending];
-        
-        if ([cell isKindOfClass:[UdeskVideoCell class]]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
+            UdeskVideoCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
+            [cell updateMessageSendStatus:UDMessageSendStatusSending];
+            
+            if ([cell isKindOfClass:[UdeskVideoCell class]]) {
                 
                 if (progress == 1.0f || sendStatus == UDMessageSendStatusSuccess) {
                     cell.uploadProgressLabel.hidden = YES;
@@ -978,8 +978,8 @@
                 else {
                     cell.uploadProgressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
                 }
-            });
-        }
+            }
+        });
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -1003,8 +1003,10 @@
 - (void)sendLoactionMessageWithModel:(UdeskLocationModel *)locationModel {
     if (!locationModel || locationModel == (id)kCFNull) return ;
     
+    @udWeakify(self);
     [self.chatViewModel sendLocationMessage:locationModel completion:^(UdeskMessage *message) {
         //处理发送结果UI
+        @udStrongify(self);
         [self updateMessageStatus:message];
     }];
 }
@@ -1013,8 +1015,10 @@
 - (void)sendGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel {
     if (!goodsModel || goodsModel == (id)kCFNull) return ;
     
+    @udWeakify(self);
     [self.chatViewModel sendGoodsMessage:goodsModel completion:^(UdeskMessage *message) {
         //处理发送结果UI
+        @udStrongify(self);
         [self updateMessageStatus:message];
     }];
 }
@@ -1467,7 +1471,7 @@
                 CGFloat keyboardY = [self.view convertRect:keyboardRect fromView:nil].origin.y;
                 CGRect inputViewFrame = self.chatInputToolBar.frame;
                 //底部功能栏需要的Y
-                CGFloat inputViewFrameY = keyboardY - inputViewFrame.size.height + (ud_is_iPhoneX?34:0);
+                CGFloat inputViewFrameY = keyboardY - inputViewFrame.size.height + (udIsIPhoneXSeries?34:0);
                 //tableview的bottom
                 CGFloat messageViewFrameBottom = self.view.frame.size.height - inputViewFrame.size.height;
                 if (inputViewFrameY > messageViewFrameBottom)
@@ -1504,7 +1508,7 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
-    CGFloat spacing = ud_is_iPhoneX?34:0;
+    CGFloat spacing = udIsIPhoneXSeries?34:0;
     
     CGFloat moreViewY = CGRectGetHeight(self.view.bounds);
     if (self.chatInputToolBar.chatInputType == UdeskChatInputTypeMore) {

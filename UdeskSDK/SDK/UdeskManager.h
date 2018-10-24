@@ -15,8 +15,6 @@
 #import "UdeskCustomer.h"
 #import "UdeskOrganization.h"
 
-typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
-
 /**
  *  Udesk客服系统当前有新消息，开发者可注册该通知接受未读消息，显示小红点未读标识
  */
@@ -186,7 +184,7 @@ typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
  *  @param completion 发送回调
  */
 + (void)sendMessage:(UdeskMessage *)message
-           progress:(UDUploadProgressHandler)progress
+           progress:(void(^)(float percent))progress
          completion:(void (^)(UdeskMessage *message))completion;
 
 /**

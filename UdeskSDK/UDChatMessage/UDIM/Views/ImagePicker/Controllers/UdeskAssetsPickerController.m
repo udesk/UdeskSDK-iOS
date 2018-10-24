@@ -339,7 +339,7 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     
     CGFloat top = 0;
     CGFloat toolBarTop = 0;
-    CGFloat toolBarHeight = [UdeskSDKUtil udIsIPhoneX] ? (50 + 34) : 50;
+    CGFloat toolBarHeight = udIsIPhoneXSeries ? (50 + 34) : 50;
     CGFloat collectionViewHeight = CGRectGetHeight(self.view.frame) - toolBarHeight;;
     
     _assetCollectionView.frame = CGRectMake(0, top, CGRectGetWidth(self.view.frame), collectionViewHeight);

@@ -798,11 +798,13 @@
         //缓存图片
         [[Udesk_YYWebImageManager sharedManager].cache setImage:imageMessage.image forKey:imageMessage.messageId];
         [self addMessageToChatMessageArray:@[imageMessage]];
-        [UdeskManager sendMessage:imageMessage progress:^(NSString *key, float percent) {
+        [UdeskManager sendMessage:imageMessage progress:^(float percent) {
             
-            if (progress) {
-                progress(imageMessage.messageId,percent);
-            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (progress) {
+                    progress(imageMessage.messageId,percent);
+                }
+            });
             
         } completion:^(UdeskMessage *message) {
             //先移除缓存图片
@@ -853,11 +855,13 @@
         [[Udesk_YYWebImageManager sharedManager].cache setImage:image forKey:gifMessage.messageId];
         
         [self addMessageToChatMessageArray:@[gifMessage]];
-        [UdeskManager sendMessage:gifMessage progress:^(NSString *key, float percent) {
-            
-            if (progress) {
-                progress(gifMessage.messageId,percent);
-            }
+        [UdeskManager sendMessage:gifMessage progress:^(float percent) {
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (progress) {
+                    progress(gifMessage.messageId,percent);
+                }
+            });
             
         } completion:completion];
     }
@@ -915,11 +919,13 @@
     [[UdeskCacheUtil sharedManager] storeVideo:videoData videoId:videoMessage.messageId];
     [self addMessageToChatMessageArray:@[videoMessage]];
     
-    [UdeskManager sendMessage:videoMessage progress:^(NSString *key, float percent) {
-        
-        if (progress) {
-            progress(videoMessage.messageId,percent);
-        }
+    [UdeskManager sendMessage:videoMessage progress:^(float percent) {
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (progress) {
+                progress(videoMessage.messageId,percent);
+            }
+        });
         
     } completion:completion];
 }

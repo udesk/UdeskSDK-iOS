@@ -128,7 +128,7 @@
             if (!error) {
                 
                 CGFloat spacing = 0;
-                if (ud_is_iPhoneX) {
+                if (udIsIPhoneXSeries) {
                     spacing = 34;
                 }
                 
@@ -315,9 +315,9 @@
         
         if (_robotWkWebView) {
             if (keyboardF.origin.y > self.view.udHeight) {
-                _robotWkWebView.udTop = self.view.udHeight - _robotWkWebView.udHeight - (ud_is_iPhoneX?34:0);
+                _robotWkWebView.udTop = self.view.udHeight - _robotWkWebView.udHeight - (udIsIPhoneXSeries?34:0);
             } else {
-                _robotWkWebView.udTop = keyboardF.origin.y - _robotWkWebView.udHeight - (ud_is_iPhoneX?34:0);
+                _robotWkWebView.udTop = keyboardF.origin.y - _robotWkWebView.udHeight - (udIsIPhoneXSeries?34:0);
             }
         }
     }
@@ -325,9 +325,9 @@
         
         if (_robotWebView) {
             if (keyboardF.origin.y > self.view.udHeight) {
-                _robotWebView.udTop = self.view.udHeight - _robotWebView.udHeight - (ud_is_iPhoneX?34:0);
+                _robotWebView.udTop = self.view.udHeight - _robotWebView.udHeight - (udIsIPhoneXSeries?34:0);
             } else {
-                _robotWebView.udTop = keyboardF.origin.y - _robotWebView.udHeight - (ud_is_iPhoneX?34:0);
+                _robotWebView.udTop = keyboardF.origin.y - _robotWebView.udHeight - (udIsIPhoneXSeries?34:0);
             }
         }
     }

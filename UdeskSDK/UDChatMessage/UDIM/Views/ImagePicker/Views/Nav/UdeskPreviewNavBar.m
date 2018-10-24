@@ -9,6 +9,7 @@
 #import "UdeskPreviewNavBar.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskSDKUtil.h"
+#import "UdeskSDKMacro.h"
 
 @implementation UdeskPreviewNavBar
 
@@ -73,8 +74,8 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    _backButton.frame = CGRectMake(10, 20 + ([UdeskSDKUtil udIsIPhoneX]?24:0), 22, 22);
-    _selectButton.frame = CGRectMake(CGRectGetWidth(self.frame) - 22 - 16, 20 + ([UdeskSDKUtil udIsIPhoneX]?24:0), 22, 22);
+    _backButton.frame = CGRectMake(10, 20 + (udIsIPhoneXSeries?24:0), 22, 22);
+    _selectButton.frame = CGRectMake(CGRectGetWidth(self.frame) - 22 - 16, 20 + (udIsIPhoneXSeries?24:0), 22, 22);
 }
 
 @end

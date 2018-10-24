@@ -264,7 +264,7 @@
                             
                         } else {
                             
-                            [UdeskManager sendMessage:resendMessage progress:^(NSString *key, float percent) {
+                            [UdeskManager sendMessage:resendMessage progress:^(float percent) {
                                 
                                 if ([resendMessageArray containsObject:resendMessage]) {
                                     [resendMessageArray removeObject:resendMessage];
