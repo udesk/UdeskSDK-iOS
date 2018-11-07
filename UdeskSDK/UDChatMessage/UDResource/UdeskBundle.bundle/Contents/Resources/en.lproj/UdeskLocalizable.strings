@@ -108,6 +108,7 @@
 "udesk_survey_tips" = "Thanks for your feedback！！";
 "udesk_survey_remark_required" = "Remarks are required";
 "udesk_admin" = "Admin";
+"udesk_queue" = "In the queue";
 
 "udesk_video_call_duration" = "Talk time：";
 

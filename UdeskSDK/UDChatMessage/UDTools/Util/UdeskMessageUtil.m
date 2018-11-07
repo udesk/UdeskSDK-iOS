@@ -25,6 +25,7 @@
 #import "UdeskBaseMessage.h"
 #import "Udesk_YYWebImage.h"
 #import "UdeskCacheUtil.h"
+#import "UdeskQueueMessage.h"
 
 @implementation UdeskMessageUtil
 
@@ -168,6 +169,12 @@
                     
                     UdeskGoodsMessage *goodsMessage = [[UdeskGoodsMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:goodsMessage];
+                    break;
+                }
+                case UDMessageContentTypeQueueEvent: {
+                    
+                    UdeskQueueMessage *queueMessage = [[UdeskQueueMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:queueMessage];
                     break;
                 }
                     

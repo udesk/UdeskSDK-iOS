@@ -37,7 +37,9 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
-
+    
+    //更新机器人名称
+    [self updateRobotName];
     //更新转人工
     [self updateTransferButton];
     //添加其他参数
@@ -95,6 +97,21 @@
     }
 }
 
+//更新机器人名称
+- (void)updateRobotName {
+    
+    @try {
+     
+        if (self.sdkSetting && self.sdkSetting.robotName && ![UdeskSDKUtil isBlankString:self.sdkSetting.robotName]) {
+            self.navigationItem.title = self.sdkSetting.robotName;
+        }
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
 //更新转人工按钮
 - (void)updateTransferButton {
     
@@ -128,7 +145,7 @@
             if (!error) {
                 
                 CGFloat spacing = 0;
-                if (ud_is_iPhoneX) {
+                if (udIsIPhoneXSeries) {
                     spacing = 34;
                 }
                 
@@ -186,6 +203,10 @@
             [self didSelectNavigationRightButton];
             return NO;
         }
+        else if ([request.URL.absoluteString rangeOfString:@"udesk_notice_type=auto_transfer"].location != NSNotFound) {
+            [self didSelectNavigationRightButton];
+            return NO;
+        }
     }
     return YES;
 }
@@ -203,9 +224,13 @@
         else if ([navigationAction.request.URL.absoluteString rangeOfString:@"udesk_notice_type=go_chat"].location != NSNotFound) {
             [self didSelectNavigationRightButton];
         }
+        else if ([navigationAction.request.URL.absoluteString rangeOfString:@"udesk_notice_type=auto_transfer"].location != NSNotFound) {
+            [self didSelectNavigationRightButton];
+        }
     }
     
     if ([navigationAction.request.URL.absoluteString rangeOfString:@"udesk_notice_type=go_chat"].location != NSNotFound ||
+        [navigationAction.request.URL.absoluteString rangeOfString:@"udesk_notice_type=auto_transfer"].location != NSNotFound ||
         navigationAction.navigationType == WKNavigationTypeLinkActivated) {
         decisionHandler(WKNavigationActionPolicyCancel);
     }
@@ -315,9 +340,9 @@
         
         if (_robotWkWebView) {
             if (keyboardF.origin.y > self.view.udHeight) {
-                _robotWkWebView.udTop = self.view.udHeight - _robotWkWebView.udHeight - (ud_is_iPhoneX?34:0);
+                _robotWkWebView.udTop = self.view.udHeight - _robotWkWebView.udHeight - (udIsIPhoneXSeries?34:0);
             } else {
-                _robotWkWebView.udTop = keyboardF.origin.y - _robotWkWebView.udHeight - (ud_is_iPhoneX?34:0);
+                _robotWkWebView.udTop = keyboardF.origin.y - _robotWkWebView.udHeight - (udIsIPhoneXSeries?34:0);
             }
         }
     }
@@ -325,9 +350,9 @@
         
         if (_robotWebView) {
             if (keyboardF.origin.y > self.view.udHeight) {
-                _robotWebView.udTop = self.view.udHeight - _robotWebView.udHeight - (ud_is_iPhoneX?34:0);
+                _robotWebView.udTop = self.view.udHeight - _robotWebView.udHeight - (udIsIPhoneXSeries?34:0);
             } else {
-                _robotWebView.udTop = keyboardF.origin.y - _robotWebView.udHeight - (ud_is_iPhoneX?34:0);
+                _robotWebView.udTop = keyboardF.origin.y - _robotWebView.udHeight - (udIsIPhoneXSeries?34:0);
             }
         }
     }

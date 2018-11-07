@@ -11,13 +11,11 @@
 
 @interface UdeskAlbumsViewManager()
 
-@property (nonatomic, strong, readwrite) NSArray<UdeskAlbumModel *> *albumArray;
-
 @end
 
 @implementation UdeskAlbumsViewManager
 
-- (void)allAlbumsWithAllowPickingVideo:(BOOL)allowPickingVideo completion:(void (^)(NSArray<UdeskAlbumModel *> *albumArray))completion {
++ (void)allAlbumsWithAllowPickingVideo:(BOOL)allowPickingVideo completion:(void (^)(NSArray<UdeskAlbumModel *> *albumArray))completion {
     
     if (([UIDevice currentDevice].systemVersion.floatValue < 8.0f)) {
         return;
@@ -60,14 +58,12 @@
         }
     }
     
-    self.albumArray = albumArray;
-    
     if (completion && albumArray.count > 0) {
         completion(albumArray);
     }
 }
 
-- (BOOL)isCameraRollAlbum:(PHAssetCollection *)metadata {
++ (BOOL)isCameraRollAlbum:(PHAssetCollection *)metadata {
     
     if (!metadata || metadata == (id)kCFNull) return NO;
     
@@ -87,7 +83,7 @@
     }
 }
 
-- (UdeskAlbumModel *)modelWithResult:(PHFetchResult *)result name:(NSString *)name isCameraRoll:(BOOL)isCameraRoll {
++ (UdeskAlbumModel *)modelWithResult:(PHFetchResult *)result name:(NSString *)name isCameraRoll:(BOOL)isCameraRoll {
     
     if (!result || result == (id)kCFNull) return nil;
     if (![result isKindOfClass:[PHFetchResult class]]) return nil;

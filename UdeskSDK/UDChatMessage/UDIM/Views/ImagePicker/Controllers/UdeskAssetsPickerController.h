@@ -7,10 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-@class UdeskAlbumModel;
 
 @interface UdeskAssetsPickerController : UIViewController
 
-@property (nonatomic, strong) UdeskAlbumModel *alumModel;
+@property (nonatomic, assign) NSInteger albumIndex;
 
 @end

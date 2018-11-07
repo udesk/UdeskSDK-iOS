@@ -234,25 +234,6 @@
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udSurveyStarFilled.png")];
 }
 
-//改变图片颜色
-- (UIImage *)udConvertImageColor:(UIColor *)toColor {
-    if (self != nil) {
-        CGRect rect = CGRectMake(0, 0, self.size.width, self.size.height);
-        UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        CGContextTranslateCTM(context, 0, self.size.height);
-        CGContextScaleCTM(context, 1.0, -1.0);
-        CGContextClipToMask(context, rect, self.CGImage);
-        CGContextSetFillColorWithColor(context, [toColor CGColor]);
-        CGContextFillRect(context, rect);
-        UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        return img;
-    } else {
-        return nil;
-    }
-}
-
 + (UIImage *)udDefaultAgentOnlineImage {
 	return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udAgentStatusOnline.png")];
 }
@@ -275,7 +256,7 @@
 
 + (UIImage *)udDefaultResetButtonImage {
 
-    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udrefreshButton.png")];
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udRefreshButton.png")];
 }
 
 + (UIImage *)udDefaultLocationPinImage {

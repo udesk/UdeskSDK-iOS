@@ -30,6 +30,7 @@ typedef NS_ENUM(NSInteger, UDMessageContentType) {
     UDMessageContentTypeLeaveMsg   = 11,//离线留言消息
     UDMessageContentTypeVideoCall  = 12,//视频聊天
     UDMessageContentTypeGoods      = 13,//商品消息
+    UDMessageContentTypeQueueEvent = 14,//排队事件消息
 };
 
 typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
@@ -86,5 +87,7 @@ typedef NS_ENUM(NSInteger,UDMessageSendStatus) {
 @property (nonatomic, copy  ) NSString             *imSubSessionId;
 /** 会话序号 */
 @property (nonatomic, assign) NSInteger            seqNum;
+/** 显示l留言按钮 */
+@property (nonatomic, assign) BOOL                 showLeaveMsgBtn;
 
 @end

@@ -141,7 +141,7 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
         }
     }
     
-    _defaultToolBar.frame = CGRectMake(0, customToolBarHeight, self.udWidth, self.udHeight - customToolBarHeight - (ud_is_iPhoneX?34:0));
+    _defaultToolBar.frame = CGRectMake(0, customToolBarHeight, self.udWidth, self.udHeight - customToolBarHeight - (udIsIPhoneXSeries?34:0));
     
     //计算textview的width
     CGFloat textViewWidth = self.udWidth - (kInputToolBarIconToHorizontalEdgeSpacing*2);
@@ -440,6 +440,10 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     
     //无消息对话过滤
     if (self.isPreSessionMessage) {
+        return YES;
+    }
+    
+    if (self.agent.code == UDAgentStatusResultQueue) {
         return YES;
     }
     

@@ -25,5 +25,6 @@
 - (instancetype)initWithLocation:(UdeskLocationModel *)model;
 - (instancetype)initWithVideoCall:(NSString *)text;
 - (instancetype)initWithGoods:(UdeskGoodsModel *)model;
+- (instancetype)initWithQueue:(NSString *)content showLeaveMsgBtn:(BOOL)showLeaveMsgBtn;
 
 @end

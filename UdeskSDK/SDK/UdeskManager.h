@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 4.0.6
+//  Version: 4.1.0
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -94,29 +94,35 @@ typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
  *  获取后台分配的客服信息
  *
  *  @param preSessionId 无消息会话Id
+ *  @param preSessionMessage 无消息会话消息
  *  @param completion 回调客服信息
  */
 + (void)requestRandomAgentWithPreSessionId:(NSNumber *)preSessionId
+                         preSessionMessage:(UdeskMessage *)preSessionMessage
                                 completion:(void(^)(UdeskAgent *agentModel,NSError *error))completion;
 /**
  *  指定分配客服
  *
  *  @param agentId    客服id
  *  @param preSessionId 无消息会话Id
+ *  @param preSessionMessage 无消息会话消息
  *  @param completion 完成之后回调
  */
 + (void)scheduledAgentId:(NSString *)agentId
             preSessionId:(NSNumber *)preSessionId
+       preSessionMessage:(UdeskMessage *)preSessionMessage
               completion:(void (^) (UdeskAgent *agent, NSError *error))completion;
 /**
  *  指定分配客服组
  *
  *  @param groupId    客服组id
  *  @param preSessionId 无消息会话Id
+ *  @param preSessionMessage 无消息会话消息
  *  @param completion 完成之后回调
  */
 + (void)scheduledGroupId:(NSString *)groupId
             preSessionId:(NSNumber *)preSessionId
+       preSessionMessage:(UdeskMessage *)preSessionMessage
               completion:(void (^) (UdeskAgent *agent, NSError *error))completion;
 /**
  * 根据时间从本地数据库获取历史消息
@@ -399,5 +405,16 @@ typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
 + (void)createPreSessionWithAgentId:(NSString *)agentId
                             groupId:(NSString *)groupId
                          completion:(void(^)(NSNumber *preSessionId,NSError *error))completion;
+
+/**
+ 排队发送消息
+
+ @param message 消息
+ @param progress 进度
+ @param completion 完成回调
+ */
++ (void)sendQueueMessage:(UdeskMessage *)message
+                progress:(UDUploadProgressHandler)progress
+              completion:(void (^)(UdeskMessage *message,NSString *resultMsg))completion;
 
 @end

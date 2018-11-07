@@ -45,6 +45,9 @@
     else if (agent.code == UDAgentStatusResultOffline) {
         titleText = agent.nick?agent.nick:getUDLocalizedString(@"udesk_agent_offline");
     }
+    else if (agent.code == UDAgentStatusResultQueue) {
+        titleText = getUDLocalizedString(@"udesk_queue");
+    }
     else {
         titleText = agent.message;
     }

@@ -166,7 +166,7 @@
         }
     }
     
-    contentHeight = ud_is_iPhoneX ? contentHeight+34 : contentHeight;
+    contentHeight = udIsIPhoneXSeries ? contentHeight+34 : contentHeight;
     
     CGFloat contentY = UD_SCREEN_HEIGHT > contentHeight ? UD_SCREEN_HEIGHT-contentHeight : 0;
     self.contentView.frame = CGRectMake(0, contentY, self.udWidth, contentHeight);

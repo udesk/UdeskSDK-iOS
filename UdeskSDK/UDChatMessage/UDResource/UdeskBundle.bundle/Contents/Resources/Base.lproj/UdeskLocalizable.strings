@@ -107,6 +107,7 @@
 "udesk_survey_tips" = "请您对当前服务做个评价，谢谢！";
 "udesk_survey_remark_required" = "评价备注为必填项";
 "udesk_admin" = "管理员";
+"udesk_queue" = "排队中";
 
 "udesk_video_call_duration" = "通话时长：";
 

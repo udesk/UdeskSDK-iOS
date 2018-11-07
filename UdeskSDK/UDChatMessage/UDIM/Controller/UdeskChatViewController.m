@@ -213,6 +213,7 @@
 - (void)updateAgent:(UdeskAgent *)agent {
 
     [self setupPreSessionMessageUI:NO];
+    self.moreView.isQueue = (agent.code == UDAgentStatusResultQueue)?YES:NO;
     self.chatInputToolBar.agent = agent;
     [self.titleView updateTitle:agent];
 }
@@ -293,7 +294,7 @@
     // 设置Message TableView 的bottom
     CGFloat inputViewHeight = 52.0f;
     // 输入工具条
-    _chatInputToolBar = [[UdeskChatInputToolBar alloc] initWithFrame:CGRectMake(0.0f,self.view.udHeight - inputViewHeight - (ud_is_iPhoneX?34:0),self.view.udWidth,inputViewHeight+(ud_is_iPhoneX?34:0)) tableView:_messageTableView];
+    _chatInputToolBar = [[UdeskChatInputToolBar alloc] initWithFrame:CGRectMake(0.0f,self.view.udHeight - inputViewHeight - (udIsIPhoneXSeries?34:0),self.view.udWidth,inputViewHeight+(udIsIPhoneXSeries?34:0)) tableView:_messageTableView];
     _chatInputToolBar.delegate = self;
     [self.view addSubview:_chatInputToolBar];
     
@@ -304,7 +305,7 @@
     }
     else {
         
-        _messageTableView.udHeight -= ud_is_iPhoneX?34:0;
+        _messageTableView.udHeight -= udIsIPhoneXSeries?34:0;
         [_messageTableView setTableViewInsetsWithBottomValue:self.view.udHeight - _chatInputToolBar.udY];
     }
     
@@ -554,26 +555,22 @@
 - (void)didResendMessage:(UdeskMessage *)resendMessage {
 
     @udWeakify(self);
-    if (self.chatInputToolBar.agent.code != UDAgentStatusResultOnline &&
-        self.chatInputToolBar.agent.code != UDAgentStatusResultLeaveMessage) {
-        [self.chatViewModel showAgentStatusAlert];
-    }
-    else {
+    [self.chatViewModel resendMessageWithMessage:resendMessage progress:^(NSString *messageId, float percent) {
         
-        //重发
-        [UdeskManager sendMessage:resendMessage progress:^(NSString *key, float percent) {
-            
-            //更新进度
-            @udStrongify(self);
-            [self updateVideoPercentButtonTitle:resendMessage.messageId progress:percent sendStatus:UDMessageSendStatusSending];
-            
-        } completion:^(UdeskMessage *message) {
-            
-            //处理发送结果UI
-            @udStrongify(self);
-            [self updateMessageStatus:message];
-        }];
-    }
+        //更新进度
+        @udStrongify(self);
+        [self updateVideoPercentButtonTitle:resendMessage.messageId progress:percent sendStatus:UDMessageSendStatusSending];
+        
+    } completion:^(UdeskMessage *message) {
+        //处理发送结果UI
+        @udStrongify(self);
+        [self updateMessageStatus:message];
+    }];
+}
+
+//点击留言
+- (void)didTapLeaveMessageButton:(UdeskMessage *)message {
+    [self.chatViewModel clickLeaveMsgAlertButtonAction];
 }
 
 #pragma mark - UDChatTableViewDelegate
@@ -590,7 +587,7 @@
     if ([touch.view isKindOfClass:[UILabel class]]){
         return NO;
     }
-    
+
     return YES;
 }
 
@@ -743,7 +740,7 @@
         __block CGRect otherMenuViewFrame = CGRectMake(0, 0, 0, 0);
         
         CGFloat spacing = 0;
-        if (ud_is_iPhoneX) {
+        if (udIsIPhoneXSeries) {
             spacing = 34;
         }
         
@@ -1003,8 +1000,10 @@
 - (void)sendLoactionMessageWithModel:(UdeskLocationModel *)locationModel {
     if (!locationModel || locationModel == (id)kCFNull) return ;
     
+    @udWeakify(self);
     [self.chatViewModel sendLocationMessage:locationModel completion:^(UdeskMessage *message) {
         //处理发送结果UI
+        @udStrongify(self);
         [self updateMessageStatus:message];
     }];
 }
@@ -1013,8 +1012,10 @@
 - (void)sendGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel {
     if (!goodsModel || goodsModel == (id)kCFNull) return ;
     
+    @udWeakify(self);
     [self.chatViewModel sendGoodsMessage:goodsModel completion:^(UdeskMessage *message) {
         //处理发送结果UI
+        @udStrongify(self);
         [self updateMessageStatus:message];
     }];
 }
@@ -1032,7 +1033,8 @@
         case UDMessageSendStatusFailed:
         case UDMessageSendStatusOffSending:
             
-            if (self.chatInputToolBar.agent.code == UDAgentStatusResultLeaveMessage) {
+            if (self.chatInputToolBar.agent.code == UDAgentStatusResultLeaveMessage ||
+                self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
                 [self updateChatMessageUI:message];
                 break;
             }
@@ -1078,7 +1080,7 @@
     [self.chatViewModel addResendMessageToArray:message];
     //开启重发
     @udWeakify(self);
-    [self.chatViewModel resendFailedMessageWithProgress:^(NSString *key, float percent) {
+    [self.chatViewModel autoResendFailedMessageWithProgress:^(NSString *key, float percent) {
         
         //更新进度
         @udStrongify(self);
@@ -1221,6 +1223,7 @@
 
 //评价客服
 - (void)servicesFeedbackSurveyWithAgentId:(NSString *)agentId {
+    if (!agentId || agentId == (id)kCFNull) return ;
     
     [UdeskManager checkHasSurveyWithAgentId:agentId completion:^(NSString *hasSurvey, NSError *error) {
         if ([hasSurvey boolValue]) {
@@ -1444,6 +1447,13 @@
             self.sdkConfig.actionConfig.leaveChatViewControllerBlock();
         }
     }
+    
+    //离开页面放弃排队
+    if (self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
+        [UdeskManager quitQueueWithType:[self.sdkConfig quitQueueString]];
+    }
+    //取消所有请求
+    [UdeskManager cancelAllOperations];
 }
 
 #pragma mark - 设置背景颜色
@@ -1467,7 +1477,7 @@
                 CGFloat keyboardY = [self.view convertRect:keyboardRect fromView:nil].origin.y;
                 CGRect inputViewFrame = self.chatInputToolBar.frame;
                 //底部功能栏需要的Y
-                CGFloat inputViewFrameY = keyboardY - inputViewFrame.size.height + (ud_is_iPhoneX?34:0);
+                CGFloat inputViewFrameY = keyboardY - inputViewFrame.size.height + (udIsIPhoneXSeries?34:0);
                 //tableview的bottom
                 CGFloat messageViewFrameBottom = self.view.frame.size.height - inputViewFrame.size.height;
                 if (inputViewFrameY > messageViewFrameBottom)
@@ -1504,7 +1514,7 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
-    CGFloat spacing = ud_is_iPhoneX?34:0;
+    CGFloat spacing = udIsIPhoneXSeries?34:0;
     
     CGFloat moreViewY = CGRectGetHeight(self.view.bounds);
     if (self.chatInputToolBar.chatInputType == UdeskChatInputTypeMore) {
@@ -1537,18 +1547,6 @@
     [[UdeskAudioPlayer shared] stopAudio];
     
     self.chatViewModel.isNotShowAlert = YES;
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    
-    //离开页面放弃排队
-    if (self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
-        [UdeskManager quitQueueWithType:[self.sdkConfig quitQueueString]];
-    }
-    //取消所有请求
-    [UdeskManager cancelAllOperations];
 }
 
 - (void)dealloc {

@@ -13,8 +13,6 @@
 
 //使用时需要注意8.3以下需要在主线层执行，其他要在子线程执行
 + (NSAttributedString *)attributedStringWithHTML:(NSString *)html;
-//判断iPhoneX
-+ (BOOL)udIsIPhoneX;
 //判断字符串是否为空
 + (BOOL)isBlankString:(NSString *)string;
 //随机生成唯一字符串

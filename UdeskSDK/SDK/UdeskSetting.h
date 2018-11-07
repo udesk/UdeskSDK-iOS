@@ -48,6 +48,8 @@
 @property (nonatomic, copy  , readonly) NSString *leaveMessageGuide;
 /** 客户需要发送的条数才转人工 */
 @property (nonatomic, copy  , readonly) NSString *showRobotTimes;
+/** 机器人名称 */
+@property (nonatomic, copy  , readonly) NSString *robotName;
 
 /**
  *  JSON数据转换成UdeskSetting

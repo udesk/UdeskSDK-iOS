@@ -174,16 +174,22 @@
                 cell.detailTextLabel.text = self.customerModel.sdkToken;
                 break;
             case 1:
-                cell.detailTextLabel.text = self.customerModel.nickName;
+                cell.detailTextLabel.text = self.customerModel.customerToken;
                 break;
             case 2:
-                cell.detailTextLabel.text = self.customerModel.cellphone;
+                cell.detailTextLabel.text = self.customerModel.nickName;
                 break;
             case 3:
-                cell.detailTextLabel.text = self.customerModel.email;
+                cell.detailTextLabel.text = self.customerModel.cellphone;
                 break;
             case 4:
+                cell.detailTextLabel.text = self.customerModel.email;
+                break;
+            case 5:
                 cell.detailTextLabel.text = self.customerModel.customerDescription;
+                break;
+            case 6:
+                cell.detailTextLabel.text = self.customerModel.channel;
                 break;
                 
             default:
@@ -221,16 +227,22 @@
                     self.customerModel.sdkToken = textField.text;
                     break;
                 case 1:
-                    self.customerModel.nickName = textField.text;
+                    self.customerModel.customerToken = textField.text;
                     break;
                 case 2:
-                    self.customerModel.cellphone = textField.text;
+                    self.customerModel.nickName = textField.text;
                     break;
                 case 3:
-                    self.customerModel.email = textField.text;
+                    self.customerModel.cellphone = textField.text;
                     break;
                 case 4:
+                    self.customerModel.email = textField.text;
+                    break;
+                case 5:
                     self.customerModel.customerDescription = textField.text;
+                    break;
+                case 6:
+                    self.customerModel.channel = textField.text;
                     break;
                     
                 default:
@@ -271,7 +283,7 @@
 
 - (NSMutableArray *)customerInfo {
     if (!_customerInfo) {
-        _customerInfo = [NSMutableArray arrayWithObjects:@"sdkToken",@"nickName",@"cellphone",@"email",@"description", nil];
+        _customerInfo = [NSMutableArray arrayWithObjects:@"sdkToken",@"customerToken",@"nickName",@"cellphone",@"email",@"description",@"channel", nil];
     }
     return _customerInfo;
 }

@@ -157,7 +157,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 
 /** im标题 */
 @property (nonatomic, copy) NSString *imTitle;
-/** 机器人标题 */
+/** 机器人标题（显示优先级：管理员后台配置>自定义配置>默认配置） */
 @property (nonatomic, copy) NSString *robotTtile;
 /** 帮助中心标题 */
 @property (nonatomic, copy) NSString *faqTitle;

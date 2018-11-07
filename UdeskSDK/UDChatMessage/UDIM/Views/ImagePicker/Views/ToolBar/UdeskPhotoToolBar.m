@@ -12,6 +12,7 @@
 #import "UdeskAssetModel.h"
 #import "UdeskAssetsPickerManager.h"
 #import "UdeskSDKUtil.h"
+#import "UdeskSDKMacro.h"
 
 static NSString *kCollectionViewCellIdentifier = @"kCollectionViewCellIdentifier";
 
@@ -212,7 +213,7 @@ static NSString *kCollectionViewCellIdentifier = @"kCollectionViewCellIdentifier
         _lineView.frame = CGRectMake(0, topSpace, CGRectGetWidth(self.frame), 1);
     }
     
-    CGFloat iphoneX = [UdeskSDKUtil udIsIPhoneX] ? 34 : 0;
+    CGFloat iphoneX = udIsIPhoneXSeries ? 34 : 0;
     _previewButton.frame = CGRectMake(8, (CGRectGetHeight(self.frame)-30-iphoneX + topSpace)/2, 60, 30);
     _originalPhotoButton.frame = CGRectMake(self.center.x-40, (CGRectGetHeight(self.frame)-20-iphoneX + topSpace)/2, 80, 20);
     _doneButton.frame = CGRectMake(CGRectGetWidth(self.frame) - 60 - 10, (CGRectGetHeight(self.frame)-30-iphoneX + topSpace)/2, 60, 30);

@@ -184,57 +184,84 @@
     }
 }
 
+- (void)setIsQueue:(BOOL)isQueue {
+    _isQueue = isQueue;
+    
+    //排队
+    if (isQueue) {
+        [self removeNotSupportButton];
+    }
+    else {
+        [self appendSupportButton];
+    }
+}
+
 - (void)setIsPreSessionMessage:(BOOL)isPreSessionMessage {
     _isPreSessionMessage = isPreSessionMessage;
     
+    //无消息对话过滤
+    if (isPreSessionMessage) {
+        [self removeNotSupportButton];
+    }
+    else {
+        [self appendSupportButton];
+    }
+}
+
+- (void)removeNotSupportButton {
+    
     @try {
-        
-        //无消息对话过滤
-        if (isPreSessionMessage) {
-            
-            //移除评价按钮
-            if (_enableSurvey) {
-                [self removeSurveyButton];
-            }
-            //移除视频直播按钮
-            if (_enableVideoCall) {
-                [self removeVideoCallButton];
-            }
-            //移除自定义按钮
-            if (self.customMenuItems.count) {
-                NSArray *array = [self.allItems copy];
-                for (UdeskButton *button in array) {
-                    //自定义按钮
-                    if (button.tag >= (9347 + 5)) {
-                        [button removeFromSuperview];
-                        if ([self.allItems containsObject:button]) {
-                            [self.allItems removeObject:button];
-                        }
+        //移除评价按钮
+        if (_enableSurvey) {
+            [self removeSurveyButton];
+        }
+        //移除视频直播按钮
+        if (_enableVideoCall) {
+            [self removeVideoCallButton];
+        }
+        //移除自定义按钮
+        if (self.customMenuItems.count) {
+            NSArray *array = [self.allItems copy];
+            for (UdeskButton *button in array) {
+                //自定义按钮
+                if (button.tag >= (9347 + 5)) {
+                    [button removeFromSuperview];
+                    if ([self.allItems containsObject:button]) {
+                        [self.allItems removeObject:button];
                     }
                 }
             }
-            
-            [self setNeedsLayout];
         }
-        else {
-            
-            //添加评价按钮
-            if (_enableSurvey && ![self.allItems containsObject:self.surveyButton]) {
-                [self appendSurveyButton];
-            }
-            //添加视频直播按钮
-            if (_enableVideoCall && ![self.allItems containsObject:self.videoCallButton]) {
-                [self appendVideoCallButton];
-            }
-            
-            //检查是否有自定义按钮
-            NSArray *array = [self.allItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"tag >= %d",(9347 + 5)]];
-            //重新赋值
-            if (self.customMenuItems.count && !array.count) {
-                self.customMenuItems = self.customMenuItems;
-            }
-            [self setNeedsLayout];
+        
+        [self setNeedsLayout];
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
+- (void)appendSupportButton {
+    
+    @try {
+     
+        //添加评价按钮
+        if (_enableSurvey && ![self.allItems containsObject:self.surveyButton]) {
+            [self appendSurveyButton];
         }
+        //添加视频直播按钮
+        if (_enableVideoCall && ![self.allItems containsObject:self.videoCallButton]) {
+            [self appendVideoCallButton];
+        }
+        
+        //检查是否有自定义按钮
+        NSArray *array = [self.allItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"tag >= %d",(9347 + 5)]];
+        //重新赋值
+        if (self.customMenuItems.count && !array.count) {
+            self.customMenuItems = self.customMenuItems;
+        }
+        [self setNeedsLayout];
+        
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {

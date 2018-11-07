@@ -25,6 +25,8 @@
 - (void)didTapUdeskVideoCallMessage:(UdeskMessage *)message;
 /** 重新发送消息 */
 - (void)didResendMessage:(UdeskMessage *)resendMessage;
+/** 点击了留言 */
+- (void)didTapLeaveMessageButton:(UdeskMessage *)message;
 
 @end
 

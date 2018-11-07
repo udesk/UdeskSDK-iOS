@@ -39,13 +39,11 @@
         
         //customer
         self.customerTextColor = [UIColor whiteColor];
-        self.customerBubbleColor = [UIColor udColorWithHexString:@"#0B84FE"];
         self.customerBubbleImage = [UIImage udBubbleSendImage];
         self.customerVoiceDurationColor = [UIColor udColorWithHexString:@"#8E8E93"];;
         
         //agent
         self.agentTextColor = [UIColor blackColor];
-        self.agentBubbleColor = [UIColor whiteColor];
         self.agentBubbleImage = [UIImage udBubbleReceiveImage];
         self.agentVoiceDurationColor = [UIColor udColorWithHexString:@"#8E8E93"];
         
