@@ -218,9 +218,9 @@
 		44D3A3DC1F66307E001145EA /* UdeskCustomLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44D3A3D81F66307E001145EA /* UdeskCustomLocationViewController.m */; };
 		44D3A3DD1F66307E001145EA /* UdeskCustomLocationViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44D3A3DA1F66307E001145EA /* UdeskCustomLocationViewModel.m */; };
 		44D3A3F01F66372B001145EA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44D3A3EF1F66372B001145EA /* MapKit.framework */; };
-		44DCCF04219D606C00340C96 /* UdeskQueueMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 44DCCF03219D606C00340C96 /* UdeskQueueMessage.m */; };
-		44DCCF07219D607C00340C96 /* UdeskQueueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 44DCCF05219D607B00340C96 /* UdeskQueueCell.m */; };
 		44E6F4181F34BBF400FEDCBB /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44E6F4171F34BBF400FEDCBB /* WebKit.framework */; };
+		44F9483121A00E06007F70FC /* UdeskQueueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F9482F21A00E06007F70FC /* UdeskQueueCell.m */; };
+		44F9483421A00E10007F70FC /* UdeskQueueMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F9483221A00E10007F70FC /* UdeskQueueMessage.m */; };
 		AAC74908B63DD1E4156730FD /* Pods_UdeskSDKExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13EDA0B74284E2870B19392C /* Pods_UdeskSDKExample.framework */; };
 /* End PBXBuildFile section */
 
@@ -634,11 +634,11 @@
 		44D3A3D91F66307E001145EA /* UdeskCustomLocationViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskCustomLocationViewModel.h; sourceTree = "<group>"; };
 		44D3A3DA1F66307E001145EA /* UdeskCustomLocationViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCustomLocationViewModel.m; sourceTree = "<group>"; };
 		44D3A3EF1F66372B001145EA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		44DCCF02219D606B00340C96 /* UdeskQueueMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskQueueMessage.h; sourceTree = "<group>"; };
-		44DCCF03219D606C00340C96 /* UdeskQueueMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskQueueMessage.m; sourceTree = "<group>"; };
-		44DCCF05219D607B00340C96 /* UdeskQueueCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskQueueCell.m; sourceTree = "<group>"; };
-		44DCCF06219D607C00340C96 /* UdeskQueueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskQueueCell.h; sourceTree = "<group>"; };
 		44E6F4171F34BBF400FEDCBB /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		44F9482F21A00E06007F70FC /* UdeskQueueCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskQueueCell.m; sourceTree = "<group>"; };
+		44F9483021A00E06007F70FC /* UdeskQueueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskQueueCell.h; sourceTree = "<group>"; };
+		44F9483221A00E10007F70FC /* UdeskQueueMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskQueueMessage.m; sourceTree = "<group>"; };
+		44F9483321A00E10007F70FC /* UdeskQueueMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskQueueMessage.h; sourceTree = "<group>"; };
 		E01C2A32A469CBD70D23D497 /* Pods-UdeskSDKExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UdeskSDKExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-UdeskSDKExample/Pods-UdeskSDKExample.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1284,8 +1284,8 @@
 				448623F72133A27300C8F7E5 /* UdeskVideoMessage.m */,
 				448623ED2133A27300C8F7E5 /* UdeskVoiceMessage.h */,
 				448623FC2133A27300C8F7E5 /* UdeskVoiceMessage.m */,
-				44DCCF02219D606B00340C96 /* UdeskQueueMessage.h */,
-				44DCCF03219D606C00340C96 /* UdeskQueueMessage.m */,
+				44F9483321A00E10007F70FC /* UdeskQueueMessage.h */,
+				44F9483221A00E10007F70FC /* UdeskQueueMessage.m */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -1477,8 +1477,8 @@
 				448624492133A27300C8F7E5 /* UdeskVideoCell.m */,
 				448624432133A27300C8F7E5 /* UdeskVoiceCell.h */,
 				4486244C2133A27300C8F7E5 /* UdeskVoiceCell.m */,
-				44DCCF06219D607C00340C96 /* UdeskQueueCell.h */,
-				44DCCF05219D607B00340C96 /* UdeskQueueCell.m */,
+				44F9483021A00E06007F70FC /* UdeskQueueCell.h */,
+				44F9482F21A00E06007F70FC /* UdeskQueueCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1973,7 +1973,6 @@
 				4420BA8820D8FC06005E1D18 /* UDViewController.m in Sources */,
 				4486251C2133A27300C8F7E5 /* UdeskCustomToolBar.m in Sources */,
 				4486252E2133A27300C8F7E5 /* UdeskAssetsPickerManager.m in Sources */,
-				44DCCF04219D606C00340C96 /* UdeskQueueMessage.m in Sources */,
 				448624B52133A27300C8F7E5 /* UdeskHPGrowingTextView.m in Sources */,
 				448625082133A27300C8F7E5 /* UdeskLocationModel.m in Sources */,
 				448625042133A27300C8F7E5 /* UdeskVideoCallMessage.m in Sources */,
@@ -1994,7 +1993,6 @@
 				448624DB2133A27300C8F7E5 /* UdeskVoiceRecord.m in Sources */,
 				4486250E2133A27300C8F7E5 /* UdeskTicketViewController.m in Sources */,
 				4420BA9320D8FC06005E1D18 /* UdeskSmallViewTestViewController.m in Sources */,
-				44DCCF07219D607C00340C96 /* UdeskQueueCell.m in Sources */,
 				448624C02133A27300C8F7E5 /* UdeskReachability.m in Sources */,
 				448625002133A27300C8F7E5 /* UdeskProductMessage.m in Sources */,
 				448624B92133A27300C8F7E5 /* Udesk_WHC_BaseOperation.m in Sources */,
@@ -2016,6 +2014,7 @@
 				44C70DB62193D6B300926959 /* UdeskPushAnimation.m in Sources */,
 				4420BA8E20D8FC06005E1D18 /* UdeskRobotCustomInfoViewController.m in Sources */,
 				448624B22133A27300C8F7E5 /* UdeskLocationResultDataSource.m in Sources */,
+				44F9483421A00E10007F70FC /* UdeskQueueMessage.m in Sources */,
 				448625052133A27300C8F7E5 /* UdeskLocationMessage.m in Sources */,
 				448624BA2133A27300C8F7E5 /* Udesk_WHC_DownloadOperation.m in Sources */,
 				4420BA9220D8FC06005E1D18 /* UdeskButtonConfigViewController.m in Sources */,
@@ -2039,6 +2038,7 @@
 				44D3A3DB1F66307E001145EA /* UdeskCustomLocationDataSource.m in Sources */,
 				448624D12133A27300C8F7E5 /* MKAnnotationView+Udesk_YYWebImage.m in Sources */,
 				44D3A3DD1F66307E001145EA /* UdeskCustomLocationViewModel.m in Sources */,
+				44F9483121A00E06007F70FC /* UdeskQueueCell.m in Sources */,
 				4420BA8720D8FC06005E1D18 /* UDAgentWebViewController.m in Sources */,
 				4420BA8A20D8FC06005E1D18 /* UDFunctionViewController.m in Sources */,
 				448625112133A27300C8F7E5 /* UdeskChatViewController.m in Sources */,
