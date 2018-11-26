@@ -1448,6 +1448,8 @@
         }
     }
     
+    self.chatViewModel.isNotShowAlert = YES;
+    
     //离开页面放弃排队
     if (self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
         [UdeskManager quitQueueWithType:[self.sdkConfig quitQueueString]];
@@ -1545,8 +1547,6 @@
     [self udUnsubscribeKeyboard];
     // 停止播放语音
     [[UdeskAudioPlayer shared] stopAudio];
-    
-    self.chatViewModel.isNotShowAlert = YES;
 }
 
 - (void)dealloc {

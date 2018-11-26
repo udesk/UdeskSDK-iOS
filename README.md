@@ -927,6 +927,14 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v4.1.1版本更新功能:
+
+1.修复了在无消息对话过滤界面发送表情显示code问题
+
+2.修复了偶发出现配置英文还提示中文弹窗的问题
+
+------
+
 sdk v4.1.0版本更新功能:
 
 1.机器人支持自动转人工事件

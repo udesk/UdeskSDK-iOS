@@ -269,14 +269,15 @@
     
     //客服离线
     if (agentModel.code != UDAgentStatusResultOnline) {
-        if (self.isNotShowAlert) return;
         
         //排队
         if (agentModel.code == UDAgentStatusResultQueue) {
             [self showQueueEvent];
         }
         else {
-            [self agentOffline];
+            if (!self.isNotShowAlert) {
+                [self agentOffline];
+            }
         }
     }
     else {
@@ -824,6 +825,7 @@
             UdeskMessage *imageMessage = [[UdeskMessage alloc] initWithImage:preImage];
             if (imageMessage) {
                 @udWeakify(self);
+                [[Udesk_YYWebImageManager sharedManager].cache setImage:imageMessage.image forKey:imageMessage.messageId];
                 [self endPreSessionWithMessage:imageMessage delay:0.8f completion:^{
                     @udStrongify(self);
                     [self addMessageToChatMessageArray:@[imageMessage]];
@@ -840,6 +842,7 @@
     //排队消息
     if (_agentModel.code == UDAgentStatusResultQueue) {
         UdeskMessage *imageMessage = [[UdeskMessage alloc] initWithImage:image];
+        [[Udesk_YYWebImageManager sharedManager].cache setImage:imageMessage.image forKey:imageMessage.messageId];
         [self sendQueueMessage:imageMessage progress:progress completion:completion];
         return;
     }

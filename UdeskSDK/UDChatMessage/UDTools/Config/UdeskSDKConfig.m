@@ -88,7 +88,6 @@
     self.smallVideoResolution = UDSmallVideoResolutionTypePhoto;
     self.smallVideoDuration = 15;
     self.orientationMask = UIInterfaceOrientationMaskPortrait;
-    self.languageType = UDLanguageTypeCN;
 }
 
 - (NSString *)quitQueueString {

@@ -10,8 +10,6 @@
 #import "UdeskSDKUtil.h"
 #import "UdeskSDKMacro.h"
 
-static UdeskLanguageConfig *sharedModel;
-
 @interface UdeskLanguageConfig()
 
 @property (nonatomic,strong) NSBundle *bundle;
