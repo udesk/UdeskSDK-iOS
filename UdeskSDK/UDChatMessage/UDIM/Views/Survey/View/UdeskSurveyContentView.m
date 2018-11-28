@@ -304,7 +304,7 @@ static NSString *kUDSurveyTagsCollectionViewCellReuseIdentifier = @"kUDSurveyTag
 //文本模式
 - (void)reloadTextSurvey {
     
-    self.selectedOptionId = self.surveyModel.text.defaultOptionId;
+    [self setDefaultOptionId:self.surveyModel.text.defaultOptionId options:self.surveyModel.text.options];
     
     _textSurveyView = [[UdeskTextSurveyView alloc] initWithFrame:CGRectZero];
     _textSurveyView.delegate = self;
@@ -315,7 +315,7 @@ static NSString *kUDSurveyTagsCollectionViewCellReuseIdentifier = @"kUDSurveyTag
 //表情模式
 - (void)reloadExpressionSurvey {
     
-    self.selectedOptionId = self.surveyModel.expression.defaultOptionId;
+    [self setDefaultOptionId:self.surveyModel.expression.defaultOptionId options:self.surveyModel.expression.options];
     
     _expressionSurveyView = [[UdeskExpressionSurveyView alloc] initWithFrame:CGRectZero];
     _expressionSurveyView.delegate = self;
@@ -326,12 +326,24 @@ static NSString *kUDSurveyTagsCollectionViewCellReuseIdentifier = @"kUDSurveyTag
 //星星模式
 - (void)reloadStarSurvey {
     
-    self.selectedOptionId = self.surveyModel.star.defaultOptionId;
+    [self setDefaultOptionId:self.surveyModel.star.defaultOptionId options:self.surveyModel.star.options];
     
     _starSurveyView = [[UdeskStarSurveyView alloc] initWithFrame:CGRectZero];
     _starSurveyView.delegate = self;
     _starSurveyView.starSurvey = self.surveyModel.star;
     [self.contentScrollerView addSubview:_starSurveyView];
+}
+
+- (void)setDefaultOptionId:(NSNumber *)defaultOptionId options:(NSArray *)options {
+    if (!defaultOptionId || defaultOptionId == (id)kCFNull) return ;
+    if (!options || options == (id)kCFNull) return ;
+    
+    for (UdeskSurveyOption *option in options) {
+        if ([option.optionId isEqualToNumber:defaultOptionId] && option.enabled.boolValue != NO) {
+            self.selectedOptionId = option.optionId;
+            break;
+        }
+    }
 }
 
 - (void)setKeyboardHeight:(CGFloat)keyboardHeight {
@@ -356,6 +368,7 @@ static NSString *kUDSurveyTagsCollectionViewCellReuseIdentifier = @"kUDSurveyTag
         _submitButton.udTop = self.remarkTextView.udBottom+kUDSurveySubmitButtonSpacing;
         _remarkRequiredLabel.udTop = self.remarkTextView.udBottom+kUDSurveyRemarkRequiredLabelToVerticalEdgeSpacing;
     }
+    [self checkRemarkTextViewHeight];
 }
 
 #pragma mark - UICollectionViewDataSource && Delegate
@@ -370,11 +383,14 @@ static NSString *kUDSurveyTagsCollectionViewCellReuseIdentifier = @"kUDSurveyTag
     if (self.allOptionTags.count > indexPath.row) {
         UILabel *label = [[UILabel alloc] init];
         label.text = self.allOptionTags[indexPath.row];
-        label.textColor = [UIColor colorWithRed:0.6f  green:0.6f  blue:0.6f alpha:1];
         label.font = [UIFont systemFontOfSize:12];
         label.textAlignment = NSTextAlignmentCenter;
-        UDViewBorderRadius(label, 2, 0.6, [UIColor colorWithRed:0.898f  green:0.898f  blue:0.898f alpha:1]);
         cell.backgroundView = label;
+        [self normalTagColor:label];
+        
+        if ([self.selectedOptionTags containsObject:label.text]) {
+            [self selectedTagColor:label];
+        }
     }
     
     return cell;
@@ -393,22 +409,34 @@ static NSString *kUDSurveyTagsCollectionViewCellReuseIdentifier = @"kUDSurveyTag
             
             [array removeObject:tag];
             if ([label isKindOfClass:[UILabel class]]) {
-                label.textColor = [UIColor colorWithRed:0.6f  green:0.6f  blue:0.6f alpha:1];
-                label.backgroundColor = [UIColor clearColor];
-                UDViewBorderRadius(label, 2, 0.6, [UIColor colorWithRed:0.898f  green:0.898f  blue:0.898f alpha:1]);
+                [self normalTagColor:label];
             }
         }
         else {
             
             [array addObject:tag];
             if ([label isKindOfClass:[UILabel class]]) {
-                label.textColor = [UIColor colorWithRed:0.165f  green:0.576f  blue:0.98f alpha:1];
-                label.backgroundColor = [UIColor colorWithRed:0.957f  green:0.976f  blue:1 alpha:1];
-                UDViewBorderRadius(label, 2, 0.6, [UIColor colorWithRed:0.165f  green:0.576f  blue:0.98f alpha:1]);
+                [self selectedTagColor:label];
             }
         }
         self.selectedOptionTags = [array copy];
     }
+}
+
+//选择状态标签颜色
+- (void)selectedTagColor:(UILabel *)label {
+    
+    label.textColor = [UIColor colorWithRed:0.165f  green:0.576f  blue:0.98f alpha:1];
+    label.backgroundColor = [UIColor colorWithRed:0.957f  green:0.976f  blue:1 alpha:1];
+    UDViewBorderRadius(label, 2, 0.6, [UIColor colorWithRed:0.165f  green:0.576f  blue:0.98f alpha:1]);
+}
+
+//未选择状态标签颜色
+- (void)normalTagColor:(UILabel *)label {
+    
+    label.textColor = [UIColor colorWithRed:0.6f  green:0.6f  blue:0.6f alpha:1];
+    label.backgroundColor = [UIColor clearColor];
+    UDViewBorderRadius(label, 2, 0.6, [UIColor colorWithRed:0.898f  green:0.898f  blue:0.898f alpha:1]);
 }
 
 #pragma mark - UITextViewDelegate
@@ -416,7 +444,6 @@ static NSString *kUDSurveyTagsCollectionViewCellReuseIdentifier = @"kUDSurveyTag
     
     if ([text isEqualToString:@"\n"]){ //判断输入的字是否是回车，即按下return
         [growingTextView resignFirstResponder];
-        [self checkRemarkTextViewHeight];
         return NO;
     }
     return YES;

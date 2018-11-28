@@ -47,7 +47,7 @@
 #import "UdeskCallingView.h"
 #endif
 
-@interface UdeskChatViewController ()<UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskCellDelegate,UdeskImagePickerControllerDelegate,UdeskSmallVideoViewControllerDelegate,UdeskChatInputToolBarDelegate,UdeskChatToolBarMoreViewDelegate,UdeskEmojiKeyboardControlDelegate>
+@interface UdeskChatViewController ()<UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskCellDelegate,UdeskImagePickerControllerDelegate,UdeskSmallVideoViewControllerDelegate,UdeskChatInputToolBarDelegate,UdeskChatToolBarMoreViewDelegate,UdeskEmojiKeyboardControlDelegate,UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UdeskMessageTableView     *messageTableView;//用于显示消息的TableView
 @property (nonatomic, strong) UdeskEmojiKeyboardControl *emojiKeyboard;
@@ -287,6 +287,7 @@
     //添加单击手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapChatTableView:)];
     tap.cancelsTouchesInView = false;
+    tap.delegate = self;
     [_messageTableView addGestureRecognizer:tap];
     
     // 设置Message TableView 的bottom
@@ -503,6 +504,11 @@
 
 //发送咨询对象URL
 - (void)didSendProductURL:(NSString *)url {
+    if (self.sdkConfig.actionConfig.productMessageSendLinkClickBlock) {
+        self.sdkConfig.actionConfig.productMessageSendLinkClickBlock(self,self.sdkConfig.productDictionary);
+        return;
+    }
+    
     [self sendTextMessageWithContent:url];
 }
 
@@ -512,10 +518,10 @@
 }
 
 //结构化消息
-- (void)didTapStructMessageButton {
+- (void)didTapStructMessageButtonWithValue:(NSString *)value callbackName:(NSString *)callbackName {
 
     if (self.sdkConfig.actionConfig.structMessageClickBlock) {
-        self.sdkConfig.actionConfig.structMessageClickBlock();
+        self.sdkConfig.actionConfig.structMessageClickBlock(value,callbackName);
     }
 }
 
@@ -562,10 +568,20 @@
 
 #pragma mark - UDChatTableViewDelegate
 //点击空白处隐藏键盘
-- (void)didTapChatTableView:(UITableView *)tableView {
+- (void)didTapChatTableView:(UIGestureRecognizer *)recognizer {
     
-    [self layoutOtherMenuViewHiden:YES];
-    [self.chatInputToolBar resetAllButtonSelectedStatus];
+    if ([self.chatInputToolBar.chatTextView resignFirstResponder]) {
+        [self layoutOtherMenuViewHiden:YES];
+        [self.chatInputToolBar resetAllButtonSelectedStatus];
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([touch.view isKindOfClass:[UILabel class]]){
+        return NO;
+    }
+
+    return YES;
 }
 
 #pragma mark - 下拉加载更多数据
@@ -977,8 +993,10 @@
 - (void)sendLoactionMessageWithModel:(UdeskLocationModel *)locationModel {
     if (!locationModel || locationModel == (id)kCFNull) return ;
     
+    @udWeakify(self);
     [self.chatViewModel sendLocationMessage:locationModel completion:^(UdeskMessage *message) {
         //处理发送结果UI
+        @udStrongify(self);
         [self updateMessageStatus:message];
     }];
 }
@@ -1408,6 +1426,13 @@
             self.sdkConfig.actionConfig.leaveChatViewControllerBlock();
         }
     }
+    
+    //离开页面放弃排队
+    if (self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
+        [UdeskManager quitQueueWithType:[self.sdkConfig quitQueueString]];
+    }
+    //取消所有请求
+    [UdeskManager cancelAllOperations];
 }
 
 #pragma mark - 设置背景颜色
@@ -1501,18 +1526,6 @@
     [[UdeskAudioPlayer shared] stopAudio];
     
     self.chatViewModel.isNotShowAlert = YES;
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    
-    //离开页面放弃排队
-    if (self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
-        [UdeskManager quitQueueWithType:[self.sdkConfig quitQueueString]];
-    }
-    //取消所有请求
-    [UdeskManager cancelAllOperations];
 }
 
 - (void)dealloc {

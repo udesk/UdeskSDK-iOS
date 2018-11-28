@@ -32,6 +32,7 @@
     _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _titleLabel.textColor = [UIColor colorWithRed:0.2f  green:0.2f  blue:0.2f alpha:1];
     _titleLabel.textAlignment = NSTextAlignmentCenter;
+    _titleLabel.numberOfLines = 2;
     [self addSubview:_titleLabel];
 }
 
@@ -39,7 +40,7 @@
     [super layoutSubviews];
     
     _closeButton.frame = CGRectMake(self.udWidth-14-20, (self.udHeight-14)/2, 14, 14);
-    _titleLabel.frame = CGRectMake(14+20, 0, _closeButton.udLeft-10-10, self.udHeight);
+    _titleLabel.frame = CGRectMake(14+20, 0, _closeButton.udLeft-20-14, self.udHeight);
     
     [self setNeedsDisplay];
 }

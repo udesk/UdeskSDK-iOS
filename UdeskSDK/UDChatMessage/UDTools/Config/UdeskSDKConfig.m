@@ -63,6 +63,7 @@
     self.ticketTitle = nil;
     self.articleTitle = nil;
     self.agentMenuTitle = nil;
+    self.productSendText = nil;
     self.customButtons = nil;
     self.customEmojis = nil;
     self.robotModelKey = nil;
@@ -87,7 +88,6 @@
     self.smallVideoResolution = UDSmallVideoResolutionTypePhoto;
     self.smallVideoDuration = 15;
     self.orientationMask = UIInterfaceOrientationMaskPortrait;
-    self.languageType = UDLanguageTypeCN;
 }
 
 - (NSString *)quitQueueString {

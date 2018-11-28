@@ -77,7 +77,14 @@ _Pragma("clang diagnostic pop")
 #define ud_isPad                   (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 
 //是否是iPhonex
-#define ud_is_iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
+#define ud_is_iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ?\
+(\
+CGSizeEqualToSize(CGSizeMake(375, 812),[UIScreen mainScreen].bounds.size)\
+||\
+CGSizeEqualToSize(CGSizeMake(414, 896),[UIScreen mainScreen].bounds.size)\
+)\
+:\
+NO)
 
 // View 圆角和加边框
 #define UDViewBorderRadius(View, Radius, Width, Color)\

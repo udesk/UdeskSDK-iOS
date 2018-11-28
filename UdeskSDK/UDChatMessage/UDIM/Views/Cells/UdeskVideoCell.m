@@ -86,7 +86,7 @@
     UdeskVideoMessage *videoMessage = (UdeskVideoMessage *)self.baseMessage;
     if (!videoMessage || ![videoMessage isKindOfClass:[UdeskVideoMessage class]]) return;
     
-    [self openVideo:videoMessage.message.messageId];
+    [self openVideoWithMessageId:videoMessage.message.messageId contentURL:videoMessage.message.content];
 }
 
 - (void)readyDownloadVideo {
@@ -177,10 +177,16 @@
     }
 }
 
-- (void)openVideo:(NSString *)messageId {
+- (void)openVideoWithMessageId:(NSString *)messageId contentURL:(NSString *)contentURL {
     
-    NSString *path = [[UdeskCacheUtil sharedManager] filePathForkey:messageId];
-    NSURL *url = [NSURL fileURLWithPath:path];
+    NSURL *url = [NSURL URLWithString:@"https://www.udesk.cn"];
+    if ([[UdeskCacheUtil sharedManager] containsObjectForKey:messageId]) {
+        NSString *path = [[UdeskCacheUtil sharedManager] filePathForkey:messageId];
+        url = [NSURL fileURLWithPath:path];
+    }
+    else {
+        url = [NSURL URLWithString:contentURL];
+    }
     
     MPMoviePlayerViewController *playerViewController = [[MPMoviePlayerViewController alloc] initWithContentURL:url];
     playerViewController.moviePlayer.movieSourceType = MPMovieSourceTypeFile;
@@ -257,6 +263,12 @@
         else {
             _uploadProgressLabel.hidden = YES;
             _playButton.hidden = NO;
+        }
+        
+        //检查是否有缓存
+        if (![[UdeskCacheUtil sharedManager] containsObjectForKey:videoMessage.message.messageId]) {
+            _downloadButton.hidden = NO;
+            _playButton.hidden = YES;
         }
     }
     else {

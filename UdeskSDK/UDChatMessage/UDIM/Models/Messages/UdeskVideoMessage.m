@@ -85,7 +85,7 @@ const CGFloat kUDVideoUploadProgressHeight = 48;
         NSString *path = [[UdeskCacheUtil sharedManager] filePathForkey:self.message.messageId];
         NSURL *URL = [NSURL fileURLWithPath:path];
         self.previewImage = [UdeskVideoUtil videoPreViewImageWithURL:URL.absoluteString] ? : [UIImage udDefaultLoadingImage];
-        self.videoDuration = [UdeskVideoUtil videoTimeFromDurationSecond:[UdeskVideoUtil videoDurationWithURL:URL.absoluteString]];;
+        self.videoDuration = [UdeskVideoUtil videoTimeFromDurationSecond:[UdeskVideoUtil videoDurationWithURL:URL.absoluteString]];
     }
     else {
         self.previewImage = [UdeskVideoUtil videoPreViewImageWithURL:self.message.content] ? : [UIImage udDefaultLoadingImage];

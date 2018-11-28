@@ -148,7 +148,7 @@
         remarkHeight = MAX(remarkPlaceholderHeight, kUDSurveyRemarkTextViewHeight);
     }
     
-    CGFloat contentHeight = kUDSurveyTitleHeight + kUDTextSurveyButtonToVerticalEdgeSpacing + surveyOptionHeight + surveyButtonSpacing + tagsCollectionHeight + tagsCollectionViewSpacing + tagsCollectionViewSpacing + remarkHeight + kUDSurveySubmitButtonSpacing + kUDSurveySubmitButtonHeight + kUDSurveySubmitButtonSpacing;
+    CGFloat contentHeight = kUDSurveyTitleHeight + kUDTextSurveyButtonToVerticalEdgeSpacing + surveyOptionHeight + surveyButtonSpacing + tagsCollectionHeight + tagsCollectionViewSpacing + remarkHeight + kUDSurveySubmitButtonSpacing + kUDSurveySubmitButtonHeight + kUDSurveySubmitButtonSpacing;
     
     if (!self.surveyModel.remarkEnabled.boolValue) {
         contentHeight -= (remarkHeight+kUDSurveySubmitButtonSpacing);
@@ -165,6 +165,8 @@
             contentHeight -= (remarkHeight+kUDSurveySubmitButtonSpacing);
         }
     }
+    
+    contentHeight = ud_is_iPhoneX ? contentHeight+34 : contentHeight;
     
     CGFloat contentY = UD_SCREEN_HEIGHT > contentHeight ? UD_SCREEN_HEIGHT-contentHeight : 0;
     self.contentView.frame = CGRectMake(0, contentY, self.udWidth, contentHeight);
@@ -231,23 +233,20 @@
     
     [self.surveyContentView.remarkTextView resignFirstResponder];
     if (!self.agentId || self.agentId == (id)kCFNull) return ;
-    if (!survey.selectedOptionId || survey.selectedOptionId == (id)kCFNull) return ;
     if (!self.imSubSessionId || self.imSubSessionId == (id)kCFNull) return ;
     
     @try {
         
-        if (!survey.selectedOptionId.integerValue) {
+        if (!survey.selectedOptionId || survey.selectedOptionId == (id)kCFNull) {
             [UdeskToast showToast:getUDLocalizedString(@"udesk_survey_tips") duration:0.5f window:self];
             return;
         }
         
         UdeskSurveyOption *option = [self selectedOption];
-        if (option) {
-            if (option.remarkOptionType == UdeskRemarkOptionTypeRequired) {
-                if (!self.surveyContentView.remarkTextView.text.length) {
-                    [UdeskToast showToast:getUDLocalizedString(@"udesk_survey_remark_required") duration:0.5f window:self];
-                    return;
-                }
+        if (self.surveyModel.remarkEnabled.boolValue && option && option.remarkOptionType == UdeskRemarkOptionTypeRequired) {
+            if (!self.surveyContentView.remarkTextView.text.length) {
+                [UdeskToast showToast:getUDLocalizedString(@"udesk_survey_remark_required") duration:0.5f window:self];
+                return;
             }
         }
         

@@ -27,7 +27,7 @@
             }
             
             NSNumber *code = responseObject[@"code"];
-            if ([code isEqual:@"1000"]) {
+            if ([code isEqual:@"1000"] || [code isEqual:@1000]) {
                 NSDictionary *result = responseObject[@"result"];
                 if ([responseObject isKindOfClass:[NSDictionary class]]) {
                     UdeskSurveyModel *surveyModel = [[UdeskSurveyModel alloc] initWithDictionary:result];

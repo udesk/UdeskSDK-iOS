@@ -23,8 +23,8 @@
 
 - (instancetype)init
 {
-    UdeskAlbumsViewController *albumsVC = [[UdeskAlbumsViewController alloc] init];
-    self = [super initWithRootViewController:albumsVC];
+    UdeskAssetsPickerController *assetsVC = [[UdeskAssetsPickerController alloc] init];
+    self = [super initWithRootViewController:assetsVC];
     if (self) {
         
         [self setup];

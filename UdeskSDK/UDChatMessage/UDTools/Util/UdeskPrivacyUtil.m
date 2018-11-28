@@ -85,6 +85,19 @@
                     completion();
                 }
             }
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                    [[[UIAlertView alloc] initWithTitle:nil
+                                                message:getUDLocalizedString(@"udesk_camera_denied")
+                                               delegate:nil
+                                      cancelButtonTitle:getUDLocalizedString(@"udesk_close")
+                                      otherButtonTitles:nil] show];
+#pragma clang diagnostic pop
+                });
+                
+            }
         });
     }];
 }
@@ -98,6 +111,19 @@
                 if (completion) {
                     completion();
                 }
+            }
+            else {
+                // 可以显示一个提示框告诉用户这个app没有得到允许？
+                dispatch_async(dispatch_get_main_queue(), ^{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                    [[[UIAlertView alloc] initWithTitle:nil
+                                                message:getUDLocalizedString(@"udesk_microphone_denied")
+                                               delegate:nil
+                                      cancelButtonTitle:getUDLocalizedString(@"udesk_close")
+                                      otherButtonTitles:nil] show];
+#pragma clang diagnostic pop
+                });
             }
         });
     }];

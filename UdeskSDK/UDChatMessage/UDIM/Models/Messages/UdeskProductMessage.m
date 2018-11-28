@@ -104,6 +104,9 @@ static CGFloat const kUDProductSendButtonHeight = 25.0;
             
             //咨询对象发送按钮
             self.productSendText = getUDLocalizedString(@"udesk_send_link");
+            if (![UdeskSDKUtil isBlankString:[UdeskSDKConfig customConfig].productSendText]) {
+                self.productSendText = [UdeskSDKConfig customConfig].productSendText;
+            }
             
             self.productSendFrame = CGRectMake(UD_SCREEN_WIDTH-kUDProductSendButtonWidth-kUDProductSendButtonToRightHorizontalEdgeSpacing, self.productTitleFrame.origin.y+self.productTitleFrame.size.height+kUDProductSendButtonToTitleVerticalEdgeSpacing, kUDProductSendButtonWidth, kUDProductSendButtonHeight);
             

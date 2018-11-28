@@ -15,6 +15,7 @@
 #import "UdeskImagePickerController.h"
 #import <Photos/Photos.h>
 #import "UdeskBundleUtils.h"
+#import "UdeskSDKMacro.h"
 
 static NSString *kUdeskPhotoPreviewCellIdentifier = @"kUdeskPhotoPreviewCellIdentifier";
 static NSString *kUdeskGIFPreviewCellIdentifier = @"kUdeskGIFPreviewCellIdentifier";
@@ -177,7 +178,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
-    _navBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.frame), [UdeskSDKUtil udIsIPhoneX]?88:64);
+    _navBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.frame), ud_is_iPhoneX?88:64);
     
     _previewFlowLayout.itemSize = CGSizeMake(CGRectGetWidth(self.view.frame) + 20, CGRectGetHeight(self.view.frame));
     _previewFlowLayout.minimumInteritemSpacing = 0;
@@ -185,7 +186,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
     _previewCollectionView.frame = CGRectMake(-10, 0, CGRectGetWidth(self.view.frame) + 20, CGRectGetHeight(self.view.frame));
     [_previewCollectionView setCollectionViewLayout:_previewFlowLayout];
     
-    CGFloat toolBarHeight = ([UdeskSDKUtil udIsIPhoneX] ? 50 + (83 - 49) : 50) + (_dataSource.count > 1 ? 80 : 0);
+    CGFloat toolBarHeight = (ud_is_iPhoneX ? 50 + (83 - 49) : 50) + (_dataSource.count > 1 ? 80 : 0);
     CGFloat toolBarTop = CGRectGetHeight(self.view.frame) - toolBarHeight;
     _toolBar.frame = CGRectMake(0, toolBarTop, CGRectGetWidth(self.view.frame), toolBarHeight);
 }

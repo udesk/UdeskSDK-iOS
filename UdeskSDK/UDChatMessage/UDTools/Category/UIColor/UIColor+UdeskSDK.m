@@ -13,6 +13,8 @@
 //16进制颜色转换
 + (UIColor *)udColorWithHexString:(NSString *)color
 {
+    if (!color || color == (id)kCFNull) return [UIColor clearColor];
+    
     NSString *cString = [[color stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
     
     // String should be 6 or 8 characters

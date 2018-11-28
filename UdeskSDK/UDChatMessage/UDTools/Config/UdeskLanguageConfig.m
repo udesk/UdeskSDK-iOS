@@ -10,8 +10,6 @@
 #import "UdeskSDKUtil.h"
 #import "UdeskSDKMacro.h"
 
-static UdeskLanguageConfig *sharedModel;
-
 @interface UdeskLanguageConfig()
 
 @property (nonatomic,strong) NSBundle *bundle;
@@ -21,10 +19,13 @@ static UdeskLanguageConfig *sharedModel;
 
 @implementation UdeskLanguageConfig
 
-+ (id)sharedConfig {
-    if (!sharedModel) {
++ (instancetype)sharedConfig {
+    
+    static UdeskLanguageConfig *sharedModel = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         sharedModel = [[UdeskLanguageConfig alloc] init];
-    }
+    });
     
     return sharedModel;
 }

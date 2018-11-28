@@ -96,18 +96,28 @@
 
 - (void)startSession {
     
-    if (![self.session isRunning]){
-        [self.session startRunning];
+    @synchronized (self) {
+        dispatch_async(self.sessionQueue, ^{
+            
+            if (![self.session isRunning]){
+                [self.session startRunning];
+            }
+        });
     }
 }
 
 - (void)stopSession {
     
-    if ([self.session isRunning]) {
-        [self.session stopRunning];
-        [self.preview removeFromSuperlayer];
-        self.session = nil;
-        self.preview = nil;
+    @synchronized (self) {
+        dispatch_async(self.sessionQueue, ^{
+            
+            if ([self.session isRunning]) {
+                [self.session stopRunning];
+                [self.preview removeFromSuperlayer];
+                self.session = nil;
+                self.preview = nil;
+            }
+        });
     }
 }
 
@@ -266,14 +276,13 @@
             [self.session removeInput:self.videoDeviceInput];
         }
         
-        [self configFrameDuration];
-        
         NSError *error = nil;
         self.videoDeviceInput = [[AVCaptureDeviceInput alloc] initWithDevice:self.captureDevice error:&error];
         if (!self.videoDeviceInput)  {  NSLog(@"未找到设备");  }
         
         // === beginConfiguration ===
         [self.session beginConfiguration];
+        [self configFrameDuration];
         if ([self.session canAddInput:self.videoDeviceInput]) {
             
             [self.session addInput:self.videoDeviceInput];

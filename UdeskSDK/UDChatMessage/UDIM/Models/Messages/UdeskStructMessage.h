@@ -20,6 +20,7 @@ static CGFloat const kUDStructViewWidth = 250.0;
 @property (nonatomic, copy) NSString *type;
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) NSString *value;
+@property (nonatomic, copy) NSString *callback_name;
 
 @end
 

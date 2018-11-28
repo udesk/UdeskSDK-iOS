@@ -99,13 +99,13 @@
 
 + (NSInteger)videoDurationWithURL:(NSString *)url {
     
-    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:url] options:nil];
+    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:nil];
     return CMTimeGetSeconds(asset.duration);
 }
 
 + (UIImage *)videoPreViewImageWithURL:(NSString *)url {
 
-    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:url] options:nil];
+    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:nil];
     AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:asset];
     
     gen.appliesPreferredTrackTransform = YES;

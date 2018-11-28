@@ -80,7 +80,7 @@
         //UdeskSDK代理
         [UdeskManager receiveUdeskDelegate:self];
         //获取db消息
-        [self fetchDatabaseMessage];
+        [self fetchDatabaseMessage:nil];
         //注册通知
         [self registrationNotice];
         //检测sdk配置
@@ -243,7 +243,7 @@
     //清空无消息会话ID
     self.preSessionId = nil;
     //获取会话记录
-    [self fetchSessionMessages:nil];
+    [self fetchSessionMessages:[NSString stringWithFormat:@"%ld",agentModel.imSubSessionId]];
     //回调客服信息到vc显示
     [self callbackAgentModel:agentModel];
     
@@ -406,7 +406,7 @@
 }
 
 #pragma mark - 本地消息数据
-- (void)fetchDatabaseMessage {
+- (void)fetchDatabaseMessage:(NSArray *)serverMsgList {
     
     [UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:[NSDate date] messagesNumber:20 result:^(NSArray *messagesArray) {
         
@@ -418,6 +418,35 @@
             if (messagesArray.count) {
                 self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:messagesArray agentNick:self.agentModel.nick lastMessage:nil];
             }
+            
+            //极端情况下，读取数据库失败，把服务器上拉取的记录做一次处理
+            if (serverMsgList.count > 0) {
+                NSMutableArray *tmpArray = [NSMutableArray arrayWithArray:self.messagesArray];
+                NSArray *msgList = [UdeskMessageUtil chatMessageWithMsgModel:serverMsgList agentNick:self.agentModel.nick lastMessage:nil];
+                //加一个标志，只有在异常的情况下才重新排序
+                BOOL somethingWrong = NO;
+                for (UdeskBaseMessage *msg in msgList) {
+                    if (![self checkMessage:msg existInList:tmpArray]) {
+                        [tmpArray addObject:msg];
+                        //有数据不一致
+                        if (!somethingWrong) {
+                            somethingWrong = YES;
+                        }
+                    }
+                }
+                //重新排序
+                if (tmpArray.count > 0 && somethingWrong) {
+                    self.messagesArray = [tmpArray sortedArrayUsingComparator:^NSComparisonResult(UdeskBaseMessage * obj1, UdeskBaseMessage * obj2) {
+                        if (obj2.message.timestamp && obj1.message.timestamp) {
+                            return [obj1.message.timestamp compare:obj2.message.timestamp];
+                        }
+                        return NSOrderedSame;
+                    }];
+                }
+                
+            }
+            
+            
             
             //添加留言文案
             [self appendLeaveMessageGuide];
@@ -523,6 +552,11 @@
         
         if (!message || message == (id)kCFNull) return ;
         if ([UdeskSDKUtil isBlankString:message.content]) return;
+        
+        //排队过程中收到消息 立马请求客服
+        if (self.agentModel && self.agentModel.code == UDAgentStatusResultQueue) {
+            [self requestAgentData:nil];
+        }
         
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [self addMessageToChatMessageArray:@[message]];
@@ -651,13 +685,16 @@
 
 //需要重新拉下消息
 - (void)fetchSessionMessages:(NSString *)sessionId {
+    if (!sessionId || sessionId == (id)kCFNull) return ;
+    if (![sessionId isKindOfClass:[NSString class]]) return ;
+    if ([sessionId isEqualToString:@"0"]) return;
     
     @udWeakify(self);
-    [UdeskManager fetchServersMessageWithSessionId:sessionId completion:^(NSError *error){
+    [UdeskManager fetchServersMessageWithSessionId:sessionId completion:^(NSError *error, NSArray *msgList){
         @udStrongify(self);
         if (!error) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.89 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self fetchDatabaseMessage];
+                [self fetchDatabaseMessage:msgList];
             });
         }
     }];
@@ -668,7 +705,9 @@
     
     //无消息过滤
     if (self.preSessionId) {
+        @udWeakify(self);
         [self endPreSessionMessage:^{
+            @udStrongify(self);
             [self sendTextMessage:text completion:completion];
         } delay:0];
         return;
@@ -735,7 +774,9 @@
             [self.preSessionMessages addObject:image];
         }
         self.preSessionMsgTimestamps = [[NSDate date] timeIntervalSince1970]*1000;
+        @udWeakify(self);
         [self endPreSessionMessage:^{
+            @udStrongify(self);
             for (UIImage *preImage in self.preSessionMessages) {
                 [self sendImageMessage:preImage progress:progress completion:completion];
             }
@@ -783,7 +824,9 @@
             [self.preSessionMessages addObject:gifData];
         }
         self.preSessionMsgTimestamps = [[NSDate date] timeIntervalSince1970]*1000;
+        @udWeakify(self);
         [self endPreSessionMessage:^{
+            @udStrongify(self);
             for (NSData *preGIFData in self.preSessionMessages) {
                 [self sendGIFImageMessage:preGIFData progress:progress completion:completion];
             }
@@ -826,7 +869,9 @@
     
     //无消息过滤
     if (self.preSessionId) {
+        @udWeakify(self);
         [self endPreSessionMessage:^{
+            @udStrongify(self);
             [self sendVideoMessage:videoData progress:progress completion:completion];
         } delay:0.8f];
         return;
@@ -876,7 +921,9 @@
     
     //无消息过滤
     if (self.preSessionId) {
+        @udWeakify(self);
         [self endPreSessionMessage:^{
+            @udStrongify(self);
             [self sendVoiceMessage:voicePath voiceDuration:voiceDuration completion:completion];
         } delay:0];
         return;
@@ -904,7 +951,9 @@
     
     //无消息过滤
     if (self.preSessionId) {
+        @udWeakify(self);
         [self endPreSessionMessage:^{
+            @udStrongify(self);
             [self sendLocationMessage:model completion:completion];
         } delay:0.8f];
         return;
@@ -1103,7 +1152,7 @@
 
 //直接留言
 - (void)sendLeaveMsg {
-
+    
     self.agentModel.code = UDAgentStatusResultLeaveMessage;
     self.agentModel.message = getUDLocalizedString(@"udesk_leave_msg");
     //回调客服信息到vc显示
@@ -1112,12 +1161,11 @@
     if (self.updateInputBarBlock) {
         self.updateInputBarBlock();
     }
-
+    
     if (!self.leaveMsgGuideSendFlag) {
         [self appendLeaveMessageGuide];
         self.leaveMsgGuideSendFlag = YES;
     }
-
     //隐藏弹窗
     [UdeskSDKAlert hide];
 }

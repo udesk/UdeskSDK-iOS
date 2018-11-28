@@ -205,7 +205,8 @@
         }
     }
     
-    if ([navigationAction.request.URL.absoluteString rangeOfString:@"udesk_notice_type=go_chat"].location != NSNotFound) {
+    if ([navigationAction.request.URL.absoluteString rangeOfString:@"udesk_notice_type=go_chat"].location != NSNotFound ||
+        navigationAction.navigationType == WKNavigationTypeLinkActivated) {
         decisionHandler(WKNavigationActionPolicyCancel);
     }
     else {

@@ -388,7 +388,7 @@ typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
  @param completion 完成回调
  */
 + (void)fetchServersMessageWithSessionId:(NSString *)sessionId
-                              completion:(void(^)(NSError *error))completion;
+                              completion:(void(^)(NSError *error, NSArray *msgList))completion;
 
 /**
  无消息会话
