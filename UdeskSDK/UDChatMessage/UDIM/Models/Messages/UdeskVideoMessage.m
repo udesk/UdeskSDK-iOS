@@ -84,12 +84,15 @@ const CGFloat kUDVideoUploadProgressHeight = 48;
     if ([[UdeskCacheUtil sharedManager] containsObjectForKey:self.message.messageId]) {
         NSString *path = [[UdeskCacheUtil sharedManager] filePathForkey:self.message.messageId];
         NSURL *URL = [NSURL fileURLWithPath:path];
-        self.previewImage = [UdeskVideoUtil videoPreViewImageWithURL:URL.absoluteString] ? : [UIImage udDefaultLoadingImage];
+        self.previewImage = [UdeskVideoUtil videoPreViewImageWithURL:URL.absoluteString];
         self.videoDuration = [UdeskVideoUtil videoTimeFromDurationSecond:[UdeskVideoUtil videoDurationWithURL:URL.absoluteString]];
+        
+        if (!self.previewImage) {
+            [self serviceVideoData];
+        }
     }
     else {
-        self.previewImage = [UdeskVideoUtil videoPreViewImageWithURL:self.message.content] ? : [UIImage udDefaultLoadingImage];
-        self.videoDuration = [UdeskVideoUtil videoTimeFromDurationSecond:[UdeskVideoUtil videoDurationWithURL:self.message.content]];
+        [self serviceVideoData];
     }
     
     CGSize previewSize = CGSizeMake(150, 150);
@@ -128,6 +131,12 @@ const CGFloat kUDVideoUploadProgressHeight = 48;
     
     //cell高度
     self.cellHeight = self.previewFrame.size.height+self.previewFrame.origin.y+kUDCellBottomMargin;
+}
+
+- (void)serviceVideoData {
+    
+    self.previewImage = [UdeskVideoUtil videoPreViewImageWithURL:self.message.content] ? : [UIImage udDefaultLoadingImage];
+    self.videoDuration = [UdeskVideoUtil videoTimeFromDurationSecond:[UdeskVideoUtil videoDurationWithURL:self.message.content]];
 }
 
 - (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {

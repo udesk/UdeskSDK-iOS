@@ -88,14 +88,6 @@
     
     self.chatViewModel = [[UdeskChatViewModel alloc] initWithSDKSetting:self.sdkSetting];
     self.chatViewModel.delegate = self;
-    
-    @udWeakify(self);
-    self.chatViewModel.updateInputBarBlock = ^{
-        @udStrongify(self);
-        if (self.chatInputToolBar) {
-            [self.chatInputToolBar updateInputBarForLeaveMessage];
-        }
-    };
 }
 
 #pragma mark - UdeskChatViewModelDelegate
@@ -528,8 +520,6 @@
 
 //点击商品消息
 - (void)didTapGoodsMessageWithURL:(NSString *)goodsURL goodsId:(NSString *)goodsId {
-    if (!goodsURL || goodsURL == (id)kCFNull) return ;
-    if (![goodsURL isKindOfClass:[NSString class]]) return ;
     
     if (self.sdkConfig.actionConfig.goodsMessageClickBlock) {
         self.sdkConfig.actionConfig.goodsMessageClickBlock(self,goodsURL,goodsId);

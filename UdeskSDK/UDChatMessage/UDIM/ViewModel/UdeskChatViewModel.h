@@ -51,8 +51,6 @@
 @property (nonatomic, assign) BOOL isNotShowAlert;
 /** ViewModel代理 */
 @property (nonatomic, weak  ) id <UdeskChatViewModelDelegate> delegate;
-/** 更新输入框 */
-@property (nonatomic, copy  ) void(^updateInputBarBlock)(void);
 
 /** 消息数据 */
 @property (nonatomic, strong, readonly) NSArray *messagesArray;

@@ -293,6 +293,9 @@
 //客服离线
 - (void)agentOffline {
     
+    //放弃排队
+    [self quitQueue];
+    
     //开启留言
     if (self.sdkSetting.enableWebImFeedback.boolValue && [self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
         [self sendLeaveMsg];
@@ -593,8 +596,8 @@
         if (!message || message == (id)kCFNull) return ;
         if ([UdeskSDKUtil isBlankString:message.content]) return;
         
-        //排队过程中收到消息 立马请求客服
-        if (self.agentModel && self.agentModel.code == UDAgentStatusResultQueue) {
+        //收到消息时当前客服状态不在线 请求客服验证
+        if (self.agentModel && self.agentModel.code != UDAgentStatusResultOnline) {
             [self requestAgentDataWithPreSessionMessage:nil completion:nil];
         }
         
@@ -1349,8 +1352,6 @@
 //放弃排队
 - (void)quitQueue {
     
-    //取消所有网络请求
-    [UdeskManager cancelAllOperations];
     //放弃排队
     [UdeskManager quitQueueWithType:[[UdeskSDKConfig customConfig] quitQueueString]];
 }
@@ -1373,10 +1374,6 @@
     self.agentModel.message = getUDLocalizedString(@"udesk_leave_msg");
     //回调客服信息到vc显示
     [self callbackAgentModel:self.agentModel];
-    //更新输入框
-    if (self.updateInputBarBlock) {
-        self.updateInputBarBlock();
-    }
     
     if (!self.leaveMsgGuideSendFlag) {
         [self appendLeaveMessageGuide];

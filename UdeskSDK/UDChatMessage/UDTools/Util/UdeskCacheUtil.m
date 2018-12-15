@@ -45,6 +45,18 @@
     return [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp4",key]];
 }
 
+- (BOOL)removeObjectForKey:(NSString *)key {
+    
+    NSString *filePath = self.diskCache.path;
+    filePath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp4",key]];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if([fileManager fileExistsAtPath:filePath]){
+        return [fileManager removeItemAtPath:filePath error:nil];
+    }
+    return NO;
+}
+
 - (NSString *)filePath {
     
     return self.diskCache.path;

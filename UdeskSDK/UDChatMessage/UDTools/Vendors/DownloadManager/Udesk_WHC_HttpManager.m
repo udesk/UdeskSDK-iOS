@@ -280,37 +280,9 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
     if (strUrl != nil && ![_failedUrls containsObject:strUrl]) {
         fileName = [self handleFileName:saveFileName url:strUrl];
         
-        NSMutableDictionary * cacheDictionary = [NSMutableDictionary dictionaryWithContentsOfFile:[Udesk_WHC_DownloadObject cachePlistPath]];
-
-        if (cacheDictionary != nil) {
-            NSArray * allKeys = [cacheDictionary allKeys];
-            if ([allKeys containsObject:fileName]) {
-                __autoreleasing NSError * error = [self error:[NSString stringWithFormat:@"已在下载列表中"]];
-                
-                if (responseBlock) {
-                    responseBlock(nil, error, NO);
-                } else if (finishedBlock) {
-                    finishedBlock(nil ,nil, error, NO);
-                }
-                return nil;
-            }
-        }
- 
-//        for (WHC_DownloadOperation * tempDownloadOperation in _fileDownloadOperationQueue.operations) {
-//            
-//            if ([fileName isEqualToString:tempDownloadOperation.saveFileName]){
-//                __autoreleasing NSError * error = [self error:[NSString stringWithFormat:@"已在下载列表中，去查看吧。。"]];
-//                if (responseBlock) {
-//                    responseBlock(tempDownloadOperation, error, NO);
-//                } else if (finishedBlock) {
-//                    finishedBlock(tempDownloadOperation ,nil, error, NO);
-//                }
-//                return tempDownloadOperation;
-//            }
-//        }
-        
         if([self createFileSavePath:savePath]) {
             downloadOperation = [Udesk_WHC_DownloadOperation new];
+            downloadOperation.isDeleted = YES;
             downloadOperation.requestType = Udesk_WHCHttpRequestGet;
             downloadOperation.saveFileName = fileName;
             downloadOperation.saveFilePath = savePath;

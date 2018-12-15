@@ -927,6 +927,16 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v4.1.2版本更新功能:
+
+1.客服连接逻辑优化
+
+2.视频消息下载优化
+
+3.稳定性优化
+
+------
+
 sdk v4.1.1版本更新功能:
 
 1.修复了在无消息对话过滤界面发送表情显示code问题

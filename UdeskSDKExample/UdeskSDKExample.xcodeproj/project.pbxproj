@@ -903,16 +903,16 @@
 		4486233C2133A27300C8F7E5 /* DownloadManager */ = {
 			isa = PBXGroup;
 			children = (
-				4486233D2133A27300C8F7E5 /* Udesk_WHC_HttpManager.m */,
-				4486233E2133A27300C8F7E5 /* Udesk_WHC_DownloadOperation.h */,
-				4486233F2133A27300C8F7E5 /* Udesk_WHC_DownloadObject.m */,
-				448623402133A27300C8F7E5 /* Udesk_WHC_HttpOperation.m */,
-				448623412133A27300C8F7E5 /* Udesk_WHC_BaseOperation.m */,
-				448623422133A27300C8F7E5 /* Udesk_WHC_HttpManager.h */,
-				448623432133A27300C8F7E5 /* Udesk_WHC_DownloadOperation.m */,
-				448623442133A27300C8F7E5 /* Udesk_WHC_DownloadObject.h */,
-				448623452133A27300C8F7E5 /* Udesk_WHC_HttpOperation.h */,
 				448623462133A27300C8F7E5 /* Udesk_WHC_BaseOperation.h */,
+				448623412133A27300C8F7E5 /* Udesk_WHC_BaseOperation.m */,
+				448623442133A27300C8F7E5 /* Udesk_WHC_DownloadObject.h */,
+				4486233F2133A27300C8F7E5 /* Udesk_WHC_DownloadObject.m */,
+				4486233E2133A27300C8F7E5 /* Udesk_WHC_DownloadOperation.h */,
+				448623432133A27300C8F7E5 /* Udesk_WHC_DownloadOperation.m */,
+				448623422133A27300C8F7E5 /* Udesk_WHC_HttpManager.h */,
+				4486233D2133A27300C8F7E5 /* Udesk_WHC_HttpManager.m */,
+				448623452133A27300C8F7E5 /* Udesk_WHC_HttpOperation.h */,
+				448623402133A27300C8F7E5 /* Udesk_WHC_HttpOperation.m */,
 			);
 			path = DownloadManager;
 			sourceTree = "<group>";
