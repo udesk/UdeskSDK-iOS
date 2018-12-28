@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 4.1.2
+//  Version: 4.1.3
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -67,6 +67,11 @@ typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
  需要重新拉取消息
  */
 - (void)fetchSessionMessages:(NSString *)sessionId;
+
+/**
+ 请求客服信息，创建会话
+ */
+- (void)fetchAgentAgainCreateSession;
 
 @end
 

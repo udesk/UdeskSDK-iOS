@@ -554,7 +554,7 @@
     } completion:^(UdeskMessage *message) {
         //处理发送结果UI
         @udStrongify(self);
-        [self updateMessageStatus:message];
+        [self updateChatMessageUI:message];
     }];
 }
 
@@ -1220,10 +1220,17 @@
             [UdeskTopAlertView showAlertType:UDAlertTypeOrange withMessage:getUDLocalizedString(@"udesk_has_survey") parentView:self.view];
         }
         else {
-            UdeskSurveyView *surveyView = [[UdeskSurveyView alloc] initWithAgentId:agentId imSubSessionId:[NSString stringWithFormat:@"%ld",self.chatInputToolBar.agent.imSubSessionId]];
-            [surveyView show];
+            [self showSurveyViewWithAgentId:agentId];
         }
     }];
+}
+
+//显示满意度评价
+- (void)showSurveyViewWithAgentId:(NSString *)agentId {
+    if (!agentId || agentId == (id)kCFNull) return ;
+    
+    UdeskSurveyView *surveyView = [[UdeskSurveyView alloc] initWithAgentId:agentId imSubSessionId:[NSString stringWithFormat:@"%ld",self.chatInputToolBar.agent.imSubSessionId]];
+    [surveyView show];
 }
 
 //开启用户相册
@@ -1406,7 +1413,7 @@
         if (![hasSurvey boolValue]) {
             //标记满意度只显示一次
             self.backAlreadyDisplayedSurvey = YES;
-            [self servicesFeedbackSurveyWithAgentId:self.chatInputToolBar.agent.agentId];
+            [self showSurveyViewWithAgentId:self.chatInputToolBar.agent.agentId];
         }
         else {
             [self dismissViewController];

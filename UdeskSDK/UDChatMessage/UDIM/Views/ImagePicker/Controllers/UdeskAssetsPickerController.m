@@ -432,6 +432,12 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
 }
 
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC{
+    
+    //预览图
+    if ([toVC isKindOfClass:[UdeskAssetPreviewController class]]) {
+        return nil;
+    }
+    
     if (operation == UINavigationControllerOperationPush) {
         return [[UdeskPopAnimation alloc] init];
     }

@@ -17,16 +17,12 @@
 - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
     
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
     UIView* toView = nil;
-    UIView* fromView = nil;
     
     if ([transitionContext respondsToSelector:@selector(viewForKey:)]) {
-        fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
         toView = [transitionContext viewForKey:UITransitionContextToViewKey];
     } else {
-        fromView = fromViewController.view;
         toView = toViewController.view;
     }
     

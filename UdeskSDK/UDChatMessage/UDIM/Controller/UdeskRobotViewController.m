@@ -153,7 +153,7 @@
                 NSURLRequest *request = [NSURLRequest requestWithURL:self.robotURL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
                 
                 if (ud_isIOS8) {
-                    
+
                     _robotWkWebView = [[WKWebView alloc] initWithFrame:webViewRect];
                     _robotWkWebView.UIDelegate = self;
                     _robotWkWebView.navigationDelegate = self;
@@ -163,7 +163,7 @@
                     [self.view addSubview:_robotWkWebView];
                 }
                 else {
-                    
+
                     _robotWebView = [[UIWebView alloc] initWithFrame:webViewRect];
                     _robotWebView.udHeight -= spacing;
                     _robotWebView.backgroundColor=[UIColor whiteColor];

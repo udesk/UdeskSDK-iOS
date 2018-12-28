@@ -45,7 +45,7 @@
     return [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp4",key]];
 }
 
-- (BOOL)removeObjectForKey:(NSString *)key {
+- (BOOL)udRemoveObjectForKey:(NSString *)key {
     
     NSString *filePath = self.diskCache.path;
     filePath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp4",key]];

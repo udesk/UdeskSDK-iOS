@@ -180,7 +180,7 @@
     _downloadButton.hidden = NO;
     _playButton.hidden = YES;
     
-    [[UdeskCacheUtil sharedManager] removeObjectForKey:self.baseMessage.messageId];
+    [[UdeskCacheUtil sharedManager] udRemoveObjectForKey:self.baseMessage.messageId];
     [self removeDownloadStateOperation:operation];
 }
 

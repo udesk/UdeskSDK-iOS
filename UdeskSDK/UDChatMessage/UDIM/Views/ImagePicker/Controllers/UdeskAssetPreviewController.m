@@ -186,7 +186,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
     _previewCollectionView.frame = CGRectMake(-10, 0, CGRectGetWidth(self.view.frame) + 20, CGRectGetHeight(self.view.frame));
     [_previewCollectionView setCollectionViewLayout:_previewFlowLayout];
     
-    CGFloat toolBarHeight = (udIsIPhoneXSeries ? 50 + (83 - 49) : 50) + (_dataSource.count > 1 ? 80 : 0);
+    CGFloat toolBarHeight = (udIsIPhoneXSeries ? 50 + (83 - 49) : 50) + (self.selectedAssetArray.count > 1 ? 80 : 0);
     CGFloat toolBarTop = CGRectGetHeight(self.view.frame) - toolBarHeight;
     _toolBar.frame = CGRectMake(0, toolBarTop, CGRectGetWidth(self.view.frame), toolBarHeight);
 }
@@ -284,7 +284,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
         
         [self.toolBar updateSendNumber:udImagePicker.selectedModels.count];
         self.toolBar.selectedAssets = udImagePicker.selectedModels;
-        if (_dataSource.count > 1) {
+        if (self.selectedAssetArray.count > 1) {
             self.toolBar.toolBarCollectionView.hidden = NO;
         }
         [self.view setNeedsLayout];

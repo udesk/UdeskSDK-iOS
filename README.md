@@ -31,6 +31,20 @@ https://github.com/udesk/UdeskSDK-iOS
 
 ##### **注意：UdeskSDK并不依赖UdeskCall，如果不需要此功能则不要导入该SDK。**
 
+### 兼容性
+
+| 类别     | 兼容范围                      |
+| -------- | ----------------------------- |
+| 系统     | 支持iOS 7.0及以上系统         |
+| 架构     | armv7、arm64、i386、x86_64    |
+| 开发环境 | 建议使用最新版本Xcode进行开发 |
+
+### SDK大小说明
+
+1. 由于 Bitcode 开启会导致二进制文件体积增大，这部分会在 AppStore 发布时进行进一步编译优化，并不会引起最终文件的体积变化，故此处计算的是关闭 Bitcode 下的二进制增量。
+2. .a中是多个架构做了合并，使用lipo可以看到细节。所以.a库文件本身很大，且打包出来的ipa也相对较大。但用户实际下载到手机中会被AppStore优化，只下载用户设备需要的架构，所以实际在手机上占用的空间很小。`Architectures in the fat file: libUdesk.a are: armv7 i386 x86_64 arm64 `
+3. DemoApp 在iPhoneX 12.1 中实际占用大小小于10M
+
 ### 导入UdeskSDK到工程
 
 #### 1.1 手动导入
@@ -321,7 +335,20 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 UdeskEmojiPanelModel *model = [UdeskEmojiPanelModel new];
 //必填
 model.emojiIcon = [UIImage imageNamed:@"likeSticker"];
-model.bundleURL = [[NSBundle mainBundle] URLForResource:@"Sticker" withExtension:@".bundle"];
+model.stickerPaths = @[
+                       [[NSBundle mainBundle] pathForResource:@"angry"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"cry"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"dead"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"embarrass"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"happy"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"joy"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"love"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"sad"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"shy"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"sleepy"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"surprise"ofType:@"png"],
+                       [[NSBundle mainBundle] pathForResource:@"wink"ofType:@"png"],
+                       ];
 //非必填
 model.stickerTitles = @[@"愤怒",@"哭泣",@"糟糕",@"冷汗",@"大笑",@"可爱",@"爱",@"流汗",@"害羞",@"睡觉",@"惊讶",@"调皮"];
 
@@ -926,6 +953,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+
+sdk v4.1.3版本更新功能:
+
+1.消息优化
+
+------
 
 sdk v4.1.2版本更新功能:
 

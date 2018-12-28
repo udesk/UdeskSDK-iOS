@@ -18,7 +18,7 @@
 + (NSArray *)chatMessageWithMsgModel:(NSArray *)array agentNick:(NSString *)agentNick lastMessage:(UdeskMessage *)lastMessage;
 
 //重发失败的消息
-+ (void)resendFailedMessage:(NSMutableArray *)resendMessageArray progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion;
++ (NSTimer *)resendFailedMessage:(NSMutableArray *)resendMessageArray progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion;
 
 //地理位置消息转换
 + (UdeskLocationModel *)locationModelWithMessage:(UdeskMessage *)message;

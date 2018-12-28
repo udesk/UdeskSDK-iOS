@@ -438,7 +438,22 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
     
     UdeskEmojiPanelModel *model = [UdeskEmojiPanelModel new];
     model.emojiIcon = [UIImage imageNamed:@"likeSticker"];
-    model.bundleURL = [[NSBundle mainBundle] URLForResource:@"Sticker" withExtension:@".bundle"];
+    
+    model.stickerPaths = @[
+                           [[NSBundle mainBundle] pathForResource:@"angry"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"cry"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"dead"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"embarrass"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"happy"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"joy"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"love"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"sad"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"shy"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"sleepy"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"surprise"ofType:@"png"],
+                           [[NSBundle mainBundle] pathForResource:@"wink"ofType:@"png"],
+                           ];
+    
     model.stickerTitles = @[@"愤怒",@"哭泣",@"糟糕",@"冷汗",@"大笑",@"可爱",@"爱",@"流汗",@"害羞",@"睡觉",@"惊讶",@"调皮"];
     
     UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];

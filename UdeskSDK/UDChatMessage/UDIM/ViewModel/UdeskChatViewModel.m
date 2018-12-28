@@ -68,6 +68,8 @@
 @property (nonatomic, strong) UdeskQueueMessage *queueMessage;
 /** 排队消息最大 */
 @property (nonatomic, copy  ) NSString          *queueMessageMaxTips;
+/** 重发消息Timer */
+@property (nonatomic, strong) NSTimer *chatMsgTimer;
 
 #if __has_include(<UdeskCall/UdeskCall.h>)
 /** 用户ID */
@@ -743,6 +745,19 @@
     }];
 }
 
+//请求客服信息，创建会话
+- (void)fetchAgentAgainCreateSession {
+    
+    [self requestAgentDataWithPreSessionMessage:nil completion:^(UdeskAgent *agentModel) {
+        if (agentModel.code == UDAgentStatusResultOffline) {
+            if (self.chatMsgTimer) {
+                [self.chatMsgTimer invalidate];
+                self.chatMsgTimer = nil;
+            }
+        }
+    }];
+}
+
 #pragma mark - 发送文字消息
 - (void)sendTextMessage:(NSString *)text completion:(void(^)(UdeskMessage *message))completion {
     
@@ -1201,11 +1216,9 @@
     dispatch_after(delayTime, dispatch_get_main_queue(), ^{
         [UdeskSDKAlert showWithMsg:getUDLocalizedString(@"udesk_connecting_agent")];
         [self requestAgentDataWithPreSessionMessage:message completion:^(UdeskAgent *agentModel) {
-            if (agentModel.code == UDAgentStatusResultOnline || agentModel.code == UDAgentStatusResultQueue) {
-                message.messageStatus = UDMessageSendStatusSuccess;
-                if (completion) {
-                    completion();
-                }
+            message.messageStatus = UDMessageSendStatusSuccess;
+            if (completion) {
+                completion();
             }
         }];
     });
@@ -1426,7 +1439,8 @@
 - (void)autoResendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress
                                  completion:(void(^)(UdeskMessage *failedMessage))completion {
     
-    [UdeskMessageUtil resendFailedMessage:self.resendArray progress:progress completion:completion];
+    if (!self.resendArray || self.resendArray == (id)kCFNull || self.resendArray.count == 0) return ;
+    self.chatMsgTimer = [UdeskMessageUtil resendFailedMessage:self.resendArray progress:progress completion:completion];
 }
 
 - (void)resendMessageWithMessage:(UdeskMessage *)resendMessage
@@ -1448,6 +1462,9 @@
     else if (self.agentModel.code != UDAgentStatusResultOnline &&
              self.agentModel.code != UDAgentStatusResultLeaveMessage) {
         [self showAgentStatusAlert];
+        if (completion) {
+            completion(resendMessage);
+        }
     }
     else {
         
