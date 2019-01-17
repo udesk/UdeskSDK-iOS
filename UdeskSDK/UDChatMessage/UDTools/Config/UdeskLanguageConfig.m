@@ -13,7 +13,6 @@
 @interface UdeskLanguageConfig()
 
 @property (nonatomic,strong) NSBundle *bundle;
-@property (nonatomic,copy  ) NSString *language;
 
 @end
 
@@ -44,12 +43,12 @@
     @try {
         
         NSString *tmp = [[NSUserDefaults standardUserDefaults] objectForKey:LANGUAGE_SET];
-        //默认是中文
+        //未设置, 默认是中文
         if ([UdeskSDKUtil isBlankString:tmp]) {
             tmp = @"zh-Hans";
         }
         
-        self.language = tmp;
+        _language = tmp;
         [self updateBundle];
         
     } @catch (NSException *exception) {
@@ -70,15 +69,33 @@
 - (void)setSDKLanguageToEnglish {
     
     self.language = @"en";
-    [self updateBundle];
-    [self updateLanguageUserDefaults];
 }
 
 - (void)setSDKLanguageToChinease {
     
     self.language = @"zh-Hans";
+}
+
+-(void)setLanguage:(NSString *)language{
+    NSString *saveDefaults = @"";
+    if (!language || ![language isKindOfClass:[NSString class]] || language.length == 0) { //未设置, 本地使用中文
+        _language = @"zh-Hans";
+        saveDefaults = @"";
+    }
+    else if ([language isEqualToString:@"en-us"]) { // 如果设置的是 en-us
+        _language = @"en";
+        saveDefaults = @"en";
+    }
+    else if([language isEqualToString:@"zh-cn"]){ //如果设置的是中文
+        _language = @"zh-Hans";
+        saveDefaults = @"zh-Hans";
+    }
+    else{
+        _language = language;
+        saveDefaults = language;
+    }
     [self updateBundle];
-    [self updateLanguageUserDefaults];
+    [self updateLanguageUserDefaults:saveDefaults];
 }
 
 - (void)updateBundle {
@@ -89,9 +106,9 @@
     self.bundle = [NSBundle bundleWithPath:path];
 }
 
-- (void)updateLanguageUserDefaults {
+- (void)updateLanguageUserDefaults:(NSString *)language {
     
-    [[NSUserDefaults standardUserDefaults]setObject:self.language forKey:LANGUAGE_SET];
+    [[NSUserDefaults standardUserDefaults]setObject:language?language:@"" forKey:LANGUAGE_SET];
     [[NSUserDefaults standardUserDefaults]synchronize];
 }
 

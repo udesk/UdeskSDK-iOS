@@ -10,7 +10,7 @@
 
 @interface UdeskLanguageConfig : NSObject
 
-+ (id)sharedConfig;
++ (instancetype)sharedConfig;
 
 /**
  *  返回table中指定的key的值
@@ -25,5 +25,7 @@
 //更新语言
 - (void)setSDKLanguageToEnglish;
 - (void)setSDKLanguageToChinease;
+
+@property (nonatomic,strong) NSString *language;
 
 @end

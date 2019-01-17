@@ -52,6 +52,10 @@
     }
 }
 
+-(void)setLanguage:(NSString *)language{
+    [UdeskLanguageConfig sharedConfig].language = language;
+}
+
 - (void)setConfigToDefault {
     
     self.agentId = nil;

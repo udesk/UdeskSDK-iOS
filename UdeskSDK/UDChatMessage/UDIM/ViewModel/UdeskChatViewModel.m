@@ -1559,7 +1559,9 @@
             if (self.netWorkChange) {
                 self.netWorkChange = NO;
                 //请求客服数据
-                [self requestAgentDataWithPreSessionMessage:nil completion:nil];
+                if (!self.preSessionId) {
+                    [self requestAgentDataWithPreSessionMessage:nil completion:nil];
+                }
             }
             break;
         }
