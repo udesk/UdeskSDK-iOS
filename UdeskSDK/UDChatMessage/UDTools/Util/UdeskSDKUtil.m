@@ -11,6 +11,7 @@
 #import <sys/utsname.h>
 
 static NSString *kUdeskGroupId = @"kUdeskGroupId";
+static NSString *kUdeskMenuId = @"kUdeskMenuId";
 
 @implementation UdeskSDKUtil
 
@@ -228,6 +229,34 @@ static NSString *kUdeskGroupId = @"kUdeskGroupId";
     
     @try {
         return [[NSUserDefaults standardUserDefaults] stringForKey:kUdeskGroupId];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
++ (void)storeMenuId:(NSString *)menuId {
+    @try {
+        //用户传入GroupId
+        if ([UdeskSDKUtil isBlankString:menuId]) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUdeskMenuId];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        else {
+            menuId = [NSString stringWithFormat:@"%@",menuId];
+            [[NSUserDefaults standardUserDefaults] setObject:menuId forKey:kUdeskMenuId];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
++ (NSString *)getMenuId {
+    
+    @try {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:kUdeskMenuId];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {

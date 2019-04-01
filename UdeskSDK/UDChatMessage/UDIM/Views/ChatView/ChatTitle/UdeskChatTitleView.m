@@ -10,8 +10,6 @@
 #import "UdeskAgent.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskBundleUtils.h"
-#import "UdeskStringSizeUtil.h"
-#import "UIView+UdeskSDK.h"
 #import "UdeskSDKUtil.h"
 
 @implementation UdeskChatTitleView
@@ -31,7 +29,7 @@
     _titleLabel = [[UILabel alloc] initWithFrame:self.frame];
     _titleLabel.textColor = [UdeskSDKConfig customConfig].sdkStyle.titleColor;
     _titleLabel.font = [UdeskSDKConfig customConfig].sdkStyle.titleFont;
-    _titleLabel.text = getUDLocalizedString(@"udesk_connecting_agent");
+    _titleLabel.text = getUDLocalizedString(@"udesk_connecting");
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     [self addSubview:_titleLabel];
 }
@@ -86,7 +84,7 @@
     [attri appendAttributedString:string];
     _titleLabel.attributedText = attri;
     
-    _titleLabel.frame = CGRectMake(0, 0, self.udWidth, self.udHeight);
+    _titleLabel.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
 }
 
 @end

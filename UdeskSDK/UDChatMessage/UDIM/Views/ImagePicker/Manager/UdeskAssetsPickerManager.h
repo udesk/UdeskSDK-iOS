@@ -24,7 +24,7 @@
 - (void)fetchOriginalGifPhotoWithAssets:(NSArray<PHAsset *> *)assets completion:(void (^)(NSArray<NSData *> *gifs))completion;
 
 //获取视频
-- (void)fetchCompressVideoWithAssets:(NSArray<PHAsset *> *)assets completion:(void (^)(NSArray<NSString *> *paths))completion;
+- (void)fetchCompressVideoWithAssets:(NSArray<PHAsset *> *)assets completion:(void (^)(NSArray<NSString *> *paths,NSString *errorMessage))completion;
 
 //获取原图Data
 + (void)fetchOriginalDataWithAsset:(PHAsset *)asset completion:(void (^)(NSData *imageData))completion;

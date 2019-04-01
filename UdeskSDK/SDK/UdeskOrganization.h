@@ -17,8 +17,6 @@
 /** 公司移动SDK App ID */
 @property (nonatomic, copy) NSString *appId;
 
-- (instancetype)initWithDomain:(NSString *)domian
-                        appKey:(NSString *)appKey
-                         appId:(NSString *)appId;
+- (instancetype)initWithDomain:(NSString *)domian appKey:(NSString *)appKey appId:(NSString *)appId;
 
 @end

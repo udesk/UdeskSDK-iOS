@@ -8,20 +8,23 @@
 
 #import "UdeskBaseMessage.h"
 #import "UdeskDateUtil.h"
-#import "UdeskSDKMacro.h"
-#import "UdeskSDKConfig.h"
-#import "UdeskSDKUtil.h"
 
 /** 头像距离屏幕水平边沿距离 */
-const CGFloat kUDAvatarToHorizontalEdgeSpacing = 15.0;
+const CGFloat kUDAvatarToHorizontalEdgeSpacing = 8.0;
 /** 头像距离屏幕垂直边沿距离 */
-const CGFloat kUDAvatarToVerticalEdgeSpacing = 15.0;
+const CGFloat kUDAvatarToVerticalEdgeSpacing = 12.0;
 /** 头像与聊天气泡之间的距离 */
-const CGFloat kUDAvatarToBubbleSpacing = 8.0;
+const CGFloat kUDAvatarToBubbleSpacing = 4.0;
+/** 头像与聊天气泡之间的距离 */
+const CGFloat kUDNOAvatarToBubbleSpacing = 1;
+/** 气泡距离屏幕水平边沿距离 */
+const CGFloat kUDBubbleToHorizontalEdgeSpacing = 8.0;
+/** 气泡距离屏幕垂直边沿距离 */
+const CGFloat kUDBubbleToVerticalEdgeSpacing = 13.0;
 /** 聊天气泡和Indicator的间距 */
 const CGFloat kUDCellBubbleToIndicatorSpacing = 5.0;
 /** 聊天头像大小 */
-const CGFloat kUDAvatarDiameter = 40.0;
+const CGFloat kUDAvatarDiameter = 24.0;
 /** 时间高度 */
 const CGFloat kUDChatMessageDateCellHeight = 14.0f;
 /** 发送状态大小 */
@@ -34,8 +37,28 @@ const CGFloat kUDChatMessageDateLabelY   = 10.0f;
 const CGFloat kUDArrowMarginWidth        = 10.5f;
 /** 底部留白 */
 const CGFloat kUDCellBottomMargin = 10.0;
+/** 底部留白 */
+const CGFloat kUDParticularCellBottomMargin = 1;
 /** 客服昵称高度 */
-const CGFloat kUDAgentNicknameHeight = 15.0;
+const CGFloat kUDAgentNicknameHeight = 16.0;
+
+/** 转人工垂直距离 */
+const CGFloat kUDTransferVerticalEdgeSpacing = 16.0;
+/** 转人工宽度 */
+const CGFloat kUDTransferWidth = 130;
+/** 转人工高度 */
+const CGFloat kUDTransferHeight = 32.0;
+
+/** 转人工垂直距离 */
+const CGFloat kUDUsefulVerticalEdgeSpacing = 8.0;
+/** 转人工水平距离 */
+const CGFloat kUDUsefulHorizontalEdgeSpacing = 8.0;
+/** 转人工宽度 */
+const CGFloat kUDUsefulWidth = 32.0;
+/** 转人工高度 */
+const CGFloat kUDUsefulHeight = 32.0;
+/** 有问答评价的消息最小高度 */
+const CGFloat kUDAnswerBubbleMinHeight = 75.0;
 
 @interface UdeskBaseMessage()
 
@@ -76,6 +99,7 @@ const CGFloat kUDAgentNicknameHeight = 15.0;
     
     [self layoutDate];
     [self layoutAvatar];
+    [self layoutTransfer];
     
     //重发按钮图片
     self.failureImage = [UIImage udDefaultRefreshImage];
@@ -98,26 +122,47 @@ const CGFloat kUDAgentNicknameHeight = 15.0;
     }
 }
 
+//转人工
+- (void)layoutTransfer {
+    
+    if ([self.message.switchStaffType isEqualToString:@"1"]) {
+        _transferHeight = kUDTransferHeight + kUDTransferVerticalEdgeSpacing;
+    }
+}
+
 //头像
 - (void)layoutAvatar {
     
     //布局
     if (self.message.messageFrom == UDMessageTypeReceiving) {
+        
+        BOOL showAvatar = [self checkAvatarDisplayWithBubbleType:self.message.bubbleType];
+        //文本消息的头像需要根据气泡的规则选择显示
+        if (self.message.messageType == UDMessageContentTypeText && !showAvatar) {
+            return;
+        }
         //用户头像frame
-        self.avatarFrame = CGRectMake(kUDAvatarToHorizontalEdgeSpacing, self.dateFrame.origin.y+self.dateFrame.size.height+kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
+        self.avatarFrame = CGRectMake(kUDAvatarToHorizontalEdgeSpacing, CGRectGetMaxY(self.dateFrame)+kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
         if (![UdeskSDKUtil isBlankString:self.message.nickName]) {
-            self.nicknameFrame = CGRectMake(CGRectGetMaxX(self.avatarFrame)+kUDAvatarToBubbleSpacing, CGRectGetMinY(self.avatarFrame), UD_SCREEN_WIDTH>320?235:180, kUDAgentNicknameHeight);
+            self.nicknameFrame = CGRectMake(CGRectGetMaxX(self.avatarFrame)+kUDAvatarToBubbleSpacing, CGRectGetMinY(self.avatarFrame)+(kUDAvatarDiameter-kUDAgentNicknameHeight)/2, UD_SCREEN_WIDTH>320?235:180, kUDAgentNicknameHeight);
         }
         self.avatarImage = [UIImage udDefaultAgentImage];
         self.avatarURL = self.message.avatar;
     }
-    else if (self.message.messageFrom == UDMessageTypeSending) {
+}
+
+- (BOOL)checkAvatarDisplayWithBubbleType:(NSString *)bubbleType {
     
-        self.avatarFrame = CGRectMake(UD_SCREEN_WIDTH-kUDAvatarToHorizontalEdgeSpacing-kUDAvatarDiameter, self.dateFrame.origin.y+self.dateFrame.size.height+ kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
-        //数据
-        self.avatarImage = [UdeskSDKConfig customConfig].sdkStyle.customerImage;
-        self.avatarURL = [UdeskSDKConfig customConfig].sdkStyle.customerImageURL;
+    if (!bubbleType) {
+        return YES;
     }
+    
+    if ([bubbleType isEqualToString:@"udChatBubbleSendingSolid02.png"] ||
+        [bubbleType isEqualToString:@"udChatBubbleReceivingSolid02.png"]) {
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {

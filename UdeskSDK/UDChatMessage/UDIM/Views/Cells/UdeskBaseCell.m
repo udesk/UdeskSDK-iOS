@@ -7,11 +7,11 @@
 //
 
 #import "UdeskBaseCell.h"
-#import "UdeskSDKConfig.h"
 #import "UdeskDateUtil.h"
-#import "UIImage+UdeskSDK.h"
 #import "Udesk_YYWebImage.h"
-#import "UdeskSDKUtil.h"
+#import "UdeskBundleUtils.h"
+#import "UdeskAlertController.h"
+#import "UdeskManager.h"
 
 @interface UdeskBaseCell ()
 
@@ -27,6 +27,12 @@
 @property (nonatomic, strong, readwrite) UIButton    *resetButton;
 /** 菊花 */
 @property (nonatomic, strong, readwrite) UIActivityIndicatorView *sendingIndicator;
+/** 转人工 */
+@property (nonatomic, strong) UIButton    *transferButton;
+/** 有用 */
+@property (nonatomic, strong) UIButton    *usefulButton;
+/** 无用 */
+@property (nonatomic, strong) UIButton    *uselessButton;
 
 @end
 
@@ -50,7 +56,7 @@
         _avatarImageView = [[UIImageView alloc] init];
         _avatarImageView.contentMode = UIViewContentModeScaleAspectFit;
         _avatarImageView.userInteractionEnabled = YES;
-        UDViewRadius(_avatarImageView, 20);
+        UDViewRadius(_avatarImageView, 12);
         [self.contentView addSubview:_avatarImageView];
     }
     return _avatarImageView;
@@ -115,24 +121,51 @@
     return _sendingIndicator;
 }
 
+- (UIButton *)transferButton {
+    
+    if (!_transferButton) {
+        _transferButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _transferButton.titleLabel.font = [UIFont systemFontOfSize:14];
+        UDViewBorderRadius(_transferButton, 16, 1, [UIColor colorWithRed:0.18f  green:0.478f  blue:0.91f alpha:1]);
+        [_transferButton setTitleColor:[UIColor colorWithRed:0.18f  green:0.478f  blue:0.91f alpha:1] forState:UIControlStateNormal];
+        [_transferButton setTitle:getUDLocalizedString(@"udesk_redirect") forState:UIControlStateNormal];
+        [_transferButton addTarget:self action:@selector(tapTransferButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:_transferButton];
+    }
+    return _transferButton;
+}
+
+- (UIButton *)usefulButton {
+    
+    if (!_usefulButton) {
+        _usefulButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_usefulButton setImage:[UIImage udDefaultUseful] forState:UIControlStateNormal];
+        [_usefulButton setImage:[UIImage udDefaultUsefulSelected] forState:UIControlStateSelected];;
+        [_usefulButton addTarget:self action:@selector(tapUsefulButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:_usefulButton];
+    }
+    return _usefulButton;
+}
+
+- (UIButton *)uselessButton {
+    
+    if (!_uselessButton) {
+        _uselessButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_uselessButton setImage:[UIImage udDefaultUseless] forState:UIControlStateNormal];
+        [_uselessButton setImage:[UIImage udDefaultUselessSelected] forState:UIControlStateSelected];;
+        [_uselessButton addTarget:self action:@selector(tapUselessButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:_uselessButton];
+    }
+    return _uselessButton;
+}
+
 - (void)updateCellWithMessage:(UdeskBaseMessage *)baseMessage {
 
     if (!baseMessage || baseMessage == (id)kCFNull) return ;
     self.baseMessage = baseMessage;
     //时间
     self.dateLabel.frame = baseMessage.dateFrame;
-    if (baseMessage.message.messageType == UDMessageContentTypeLeaveEvent ||
-        baseMessage.message.messageType == UDMessageContentTypeRollback ||
-        baseMessage.message.messageType == UDMessageContentTypeRedirect) {
-        
-        NSDateFormatter *formatter = [UdeskDateUtil sharedFormatter].dateFormatter;
-        [formatter setDateFormat:@"yyyy/MM/dd HH:mm:ss"];
-        NSString *date = [formatter stringFromDate:baseMessage.message.timestamp];
-        self.dateLabel.text = [NSString stringWithFormat:@"——— %@ ———",date];
-    }
-    else {
-        self.dateLabel.text = [[UdeskDateUtil sharedFormatter] udStyleDateForDate:baseMessage.message.timestamp];
-    }
+    self.dateLabel.text = [[UdeskDateUtil sharedFormatter] udStyleDateForDate:baseMessage.message.timestamp];
     
     //头像位置
     self.avatarImageView.frame = baseMessage.avatarFrame;
@@ -162,7 +195,7 @@
                 self.bubbleImageView.tintColor = bubbleColor;
             }
             
-            self.bubbleImageView.image = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width*0.5f topCapHeight:bubbleImage.size.height*0.8f];
+            self.bubbleImageView.image = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width/3 topCapHeight:bubbleImage.size.height/2];
             
             //客服昵称
             self.nicknameLabel.frame = baseMessage.nicknameFrame;
@@ -181,7 +214,7 @@
                 self.bubbleImageView.tintColor = bubbleColor;
             }
             
-            self.bubbleImageView.image = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width*0.5f topCapHeight:bubbleImage.size.height*0.8f];
+            self.bubbleImageView.image = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width/3 topCapHeight:bubbleImage.size.height/2];
             
             self.nicknameLabel.frame = CGRectZero;
             self.nicknameLabel.text = @"";
@@ -194,7 +227,6 @@
     }
     
     if (baseMessage.message.messageType == UDMessageContentTypeText ||
-        baseMessage.message.messageType == UDMessageContentTypeLeaveMsg ||
         baseMessage.message.messageType == UDMessageContentTypeVoice ||
         baseMessage.message.messageType == UDMessageContentTypeVideo ||
         baseMessage.message.messageType == UDMessageContentTypeGoods) {
@@ -206,6 +238,12 @@
         [self.sendingIndicator stopAnimating];
         self.resetButton.hidden = YES;
     }
+    
+    //转人工
+    [self setupAnswerTransfer];
+    
+    //答案评价
+    [self setupAnswerEvaluation];
 }
 
 - (void)updateMessageSendStatus:(UDMessageSendStatus)sendStatus {
@@ -235,14 +273,121 @@
     }
 }
 
-- (void)tapResetButtonAction:(UIButton *)button {
-
-    self.resetButton.hidden = YES;
-    self.sendingIndicator.hidden = NO;
-    [self.sendingIndicator startAnimating];
+- (void)setupAnswerTransfer {
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didResendMessage:)]) {
-        [self.delegate didResendMessage:self.baseMessage.message];
+    if ([self.baseMessage.message.switchStaffType isKindOfClass:[NSString class]] && [self.baseMessage.message.switchStaffType isEqualToString:@"1"]) {
+        
+        if (![UdeskSDKUtil isBlankString:self.baseMessage.message.switchStaffTips]) {
+            CGSize size = [UdeskStringSizeUtil textSize:self.baseMessage.message.switchStaffTips withFont:[UIFont systemFontOfSize:14] withSize:CGSizeMake(UD_SCREEN_WIDTH-(kUDBubbleToHorizontalEdgeSpacing*2), kUDTransferHeight)];
+            CGFloat transferWidth = size.width + (kUDBubbleToHorizontalEdgeSpacing*4);
+            self.transferButton.frame = CGRectMake((UD_SCREEN_WIDTH-(kUDBubbleToHorizontalEdgeSpacing*2)-transferWidth)/2, CGRectGetMaxY(self.bubbleImageView.frame)+kUDTransferVerticalEdgeSpacing, transferWidth, kUDTransferHeight);
+            [self.transferButton setTitle:self.baseMessage.message.switchStaffTips forState:UIControlStateNormal];
+        }
+        else {
+            self.transferButton.frame = CGRectMake((UD_SCREEN_WIDTH-kUDTransferWidth)/2, CGRectGetMaxY(self.bubbleImageView.frame)+kUDTransferVerticalEdgeSpacing, kUDTransferWidth, kUDTransferHeight);
+        }
+    }
+    else {
+        self.transferButton.frame = CGRectZero;
+    }
+}
+
+- (void)setupAnswerEvaluation {
+    
+    if (self.baseMessage.message.showUseful) {
+        if (self.baseMessage.message.answerEvaluation) {
+            if ([self.baseMessage.message.answerEvaluation isEqualToString:@"1"]) {
+                self.usefulButton.selected = YES;
+                self.usefulButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
+            }
+            else if ([self.baseMessage.message.answerEvaluation isEqualToString:@"2"]) {
+                self.uselessButton.selected = YES;
+                self.uselessButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
+            }
+        }
+        else {
+            self.uselessButton.selected = NO;
+            self.usefulButton.selected = NO;
+            self.uselessButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
+            self.usefulButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMinY(self.uselessButton.frame)-kUDUsefulHeight-kUDUsefulVerticalEdgeSpacing, kUDUsefulWidth, kUDUsefulHeight);
+        }
+    }
+    else {
+        self.usefulButton.frame = CGRectZero;
+        self.uselessButton.frame = CGRectZero;
+    }
+}
+
+- (void)tapResetButtonAction:(UIButton *)button {
+    
+    UdeskAlertController *alert = [UdeskAlertController alertControllerWithTitle:nil message:nil preferredStyle:UdeskAlertControllerStyleActionSheet];
+    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_cancel") style:UdeskAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_reset_message") style:UdeskAlertActionStyleDefault handler:^(UdeskAlertAction *action) {
+        
+        self.resetButton.hidden = YES;
+        self.sendingIndicator.hidden = NO;
+        [self.sendingIndicator startAnimating];
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didResendMessage:)]) {
+            [self.delegate didResendMessage:self.baseMessage.message];
+        }
+    }]];
+    [[UdeskSDKUtil currentViewController] presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)tapTransferButtonAction:(UIButton *)button {
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didTapTransferAgentServer:)]) {
+        [self.delegate didTapTransferAgentServer:self.baseMessage.message];
+    }
+}
+
+- (void)tapUsefulButtonAction:(UIButton *)button {
+    
+    [self updateAnswerSurvey:button useful:YES];
+}
+
+- (void)tapUselessButtonAction:(UIButton *)button {
+    
+    [self updateAnswerSurvey:button useful:NO];
+}
+
+- (void)updateAnswerSurvey:(UIButton *)button useful:(BOOL)useful {
+    
+    if (self.usefulButton.selected || self.uselessButton.selected) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(aswerHasSurvey)]) {
+            [self.delegate aswerHasSurvey];
+        }
+        return ;
+    }
+    
+    NSString *orgEvaluation = self.baseMessage.message.answerEvaluation;
+    self.baseMessage.message.answerEvaluation = useful?@"1":@"2";
+    
+    [UdeskManager answerSurvey:self.baseMessage.message completion:^(NSError *error) {
+        if (!error) {
+            button.selected = YES;
+            [self updateAnswerEvaluation:useful];
+        }
+        else {
+            self.baseMessage.message.answerEvaluation = orgEvaluation;
+        }
+    }];
+}
+
+- (void)updateAnswerEvaluation:(BOOL)useful {
+    
+    if (useful) {
+        self.usefulButton.hidden = NO;
+        self.uselessButton.hidden = YES;
+        [self.uselessButton removeFromSuperview];
+        self.usefulButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
+    }
+    else {
+        self.uselessButton.hidden = NO;
+        self.usefulButton.hidden = YES;
+        [self.usefulButton removeFromSuperview];
+        self.uselessButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
     }
 }
 

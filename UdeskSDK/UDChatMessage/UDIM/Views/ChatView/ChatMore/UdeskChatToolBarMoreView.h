@@ -29,8 +29,10 @@ typedef NS_ENUM(NSUInteger, UdeskChatToolBarMoreType) {
 
 @property (nonatomic, strong) NSArray *customMenuItems;
 @property (nonatomic, weak  ) id<UdeskChatToolBarMoreViewDelegate> delegate;
-@property (nonatomic, assign) BOOL isPreSessionMessage;
-@property (nonatomic, assign) BOOL isQueue;
+@property (nonatomic, assign) BOOL isAgentSession;
+@property (nonatomic, assign) BOOL isPreSession;
+@property (nonatomic, assign) BOOL isRobotSession;
+@property (nonatomic, assign) BOOL isQueueSession;
 
 - (instancetype)initWithEnableSurvey:(BOOL)enableSurvey enableVideoCall:(BOOL)enableVideoCall;
 

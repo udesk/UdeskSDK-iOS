@@ -101,31 +101,47 @@
     
     @try {
         
-        CGSize transferTextSize = [UdeskStringSizeUtil textSize:title withFont:[UIFont systemFontOfSize:16] withSize:CGSizeMake(85, 30)];
+        UIView *customView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 50, 44)];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:target action:action];
+        [customView addGestureRecognizer:tap];
+        
+        CGSize transferTextSize = [UdeskStringSizeUtil textSize:title withFont:[UIFont systemFontOfSize:10] withSize:CGSizeMake(85, 44)];
         UIImage *rightImage = [UIImage udDefaultTransferImage];
         
         //导航栏右键
         UIButton *navBarRightButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [navBarRightButton setTitle:title forState:UIControlStateNormal];
-        rightImage = [rightImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [navBarRightButton setTintColor:[UdeskSDKConfig customConfig].sdkStyle.transferButtonColor];
         [navBarRightButton setImage:rightImage forState:UIControlStateNormal];
-        navBarRightButton.frame = CGRectMake(0, 0, transferTextSize.width+rightImage.size.width, transferTextSize.height);
-        navBarRightButton.titleLabel.font = [UIFont systemFontOfSize:16];
+        navBarRightButton.frame = CGRectMake(CGRectGetWidth(customView.frame)-transferTextSize.width, 0, transferTextSize.width, 44);
+        navBarRightButton.titleLabel.font = [UIFont systemFontOfSize:10];
         [navBarRightButton setTitleColor:[UdeskSDKConfig customConfig].sdkStyle.transferButtonColor forState:UIControlStateNormal];
         
-        if (ud_isIOS11) {
-            navBarRightButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-            [navBarRightButton setImageEdgeInsets:UIEdgeInsetsMake(0,0,0, -5 *UD_SCREEN_WIDTH /375.0)];
-            [navBarRightButton setTitleEdgeInsets:UIEdgeInsetsMake(0,0,0,-7 * UD_SCREEN_WIDTH/375.0)];
-        }
-        
+        [self setEdgeInsets:navBarRightButton];
         [navBarRightButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
-        return [[UIBarButtonItem alloc] initWithCustomView:navBarRightButton];
+        
+        [customView addSubview:navBarRightButton];
+        return [[UIBarButtonItem alloc] initWithCustomView:customView];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
     }
+}
+
++ (void)setEdgeInsets:(UIButton *)btn {
+    if (!btn || btn == (id)kCFNull) return ;
+    
+    float  spacing = 1;//图片和文字的上下间距
+    
+    CGSize imageSize = btn.imageView.frame.size;
+    CGSize titleSize = btn.titleLabel.frame.size;
+    CGSize textSize = [btn.titleLabel.text sizeWithAttributes:@{NSFontAttributeName : btn.titleLabel.font}];
+    CGSize frameSize = CGSizeMake(ceilf(textSize.width), ceilf(textSize.height));
+    if (titleSize.width + 0.5 < frameSize.width) {
+        titleSize.width = frameSize.width;
+    }
+    CGFloat totalHeight = (imageSize.height + titleSize.height + spacing);
+    btn.imageEdgeInsets = UIEdgeInsetsMake(- (totalHeight - imageSize.height), 0.0, 0.0, - titleSize.width);
+    btn.titleEdgeInsets = UIEdgeInsetsMake(0, - imageSize.width, - (totalHeight - titleSize.height), 0);
 }
 
 @end

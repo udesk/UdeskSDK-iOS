@@ -35,7 +35,7 @@
 "udesk_album_denied" = "app需要访问您的照片。\n请启用照片-设置/隐私/照片";
 "udesk_camera_denied" = "app需要访问您的相机。\n请启用相机-设置/隐私/相机";
 "udesk_leave_msg" = "留言";
-"udesk_connecting_agent" = "连接客服中...";
+"udesk_connecting" = "连接中...";
 "udesk_agent_offline" = "客服不在线";
 "udesk_agent_busy" = "客服繁忙";
 "udesk_redirect" = "转人工";
@@ -109,6 +109,19 @@
 "udesk_survey_remark_required" = "评价备注为必填项";
 "udesk_admin" = "管理员";
 "udesk_queue" = "排队中";
+
+//v4
+"udesk_please_talk" = "请说话";
+"udesk_clean" = "清空";
+"udesk_collapse" = "收起";
+"udesk_edit_content" = "编辑内容";
+"udesk_reset_message" = "重发消息";
+"udesk_notwork_failure" = "当前网络不可用，请检查你的网络设置";
+"udesk_answer_has_survey" = "已评价";
+"udesk_robot_survey" = "机器人评价";
+"udesk_robot_welcome_message" = "您好，智能机器人为您服务！";
+"udesk_change_group" = "换一组";
+"udesk_robot_recommendation_question" = "您是不是要咨询下面的问题？";
 
 "udesk_video_call_duration" = "通话时长：";
 

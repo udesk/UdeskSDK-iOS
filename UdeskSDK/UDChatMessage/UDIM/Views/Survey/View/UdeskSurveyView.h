@@ -14,7 +14,7 @@
 @property (nonatomic, strong) UdeskSurveyContentView *surveyContentView;
 @property (nonatomic, strong) UIView *contentView;
 
-- (instancetype)initWithAgentId:(NSString *)agentId imSubSessionId:(NSString *)imSubSessionId;
+- (instancetype)initWithAgentId:(NSString *)agentId imSubSessionId:(NSString *)imSubSessionId isRobotSession:(BOOL)isRobotSession;
 
 - (void)show;
 - (void)dismiss;

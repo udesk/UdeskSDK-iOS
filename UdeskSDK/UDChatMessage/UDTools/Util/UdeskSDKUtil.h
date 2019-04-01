@@ -31,6 +31,10 @@
 + (void)storeGroupId:(NSString *)groupId;
 //获取组ID
 + (NSString *)getGroupId;
+//存菜单ID
++ (void)storeMenuId:(NSString *)menuId;
+//获取菜单ID
++ (NSString *)getMenuId;
 //号码正则
 + (NSArray *)numberRegexs;
 //URL正则

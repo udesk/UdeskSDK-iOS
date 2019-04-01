@@ -2,19 +2,19 @@
 //  UdeskStructView.m
 //  UdeskSDK
 //
-//  Created by 许晨 on 17/1/18.
-//  Copyright © 2017年 xushichen. All rights reserved.
+//  Created by xuchen on 17/1/18.
+//  Copyright © 2017年 Udesk. All rights reserved.
 //
 
 #import "UdeskStructView.h"
 
-@interface UdeskActionButton : UIButton
+@interface UdeskStructActionButton : UIButton
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor forState:(UIControlState)state;
 
 @end
 
-@implementation UdeskActionButton
+@implementation UdeskStructActionButton
 
 - (void)setEnabled:(BOOL)enabled
 {
@@ -70,11 +70,11 @@
 @end
 
 
-@interface UdeskActionScrollView : UIScrollView
+@interface UdeskStructActionScrollView : UIScrollView
 
 @end
 
-@implementation UdeskActionScrollView
+@implementation UdeskStructActionScrollView
 
 - (BOOL)touchesShouldCancelInContentView:(UIView *)view
 {
@@ -92,7 +92,7 @@
 
 @implementation UdeskStructAction
 
-+ (instancetype)actionWithTitle:(nullable NSString *)title handler:(void (^ __nullable)(UdeskStructAction *))handler
++ (instancetype _Nonnull )actionWithTitle:(nullable NSString *)title handler:(void (^ __nullable)(UdeskStructAction * _Nullable action))handler;
 {
     UdeskStructAction *instance = [UdeskStructAction new];
     instance -> _title = title;
@@ -121,7 +121,7 @@ static CGRect menuScrollViewRect;
 
 @property (nonatomic, strong) UdeskStructScrollView *imageScrollView;
 @property (nonatomic, strong) UIScrollView *textScrollView;
-@property (nonatomic, strong) UdeskActionScrollView *menuScrollView;
+@property (nonatomic, strong) UdeskStructActionScrollView *menuScrollView;
 @property (nonatomic, strong) UIImageView *structImageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *messageLbel;
@@ -185,7 +185,7 @@ static CGRect menuScrollViewRect;
 - (void)creatAllButtons
 {
     for (int i = 0; i < self.actions.count; i++) {
-        UdeskActionButton *button = [UdeskActionButton buttonWithType:UIButtonTypeCustom];
+        UdeskStructActionButton *button = [UdeskStructActionButton buttonWithType:UIButtonTypeCustom];
         button.tag = 10 + i;
         [button setBackgroundColor:[UIColor colorWithWhite:0.95 alpha:1] forState:UIControlStateHighlighted];
         button.titleLabel.font = [UIFont systemFontOfSize:17];
@@ -394,10 +394,10 @@ static CGRect menuScrollViewRect;
     return _textScrollView;
 }
 
-- (UdeskActionScrollView *)menuScrollView
+- (UdeskStructActionScrollView *)menuScrollView
 {
     if (!_menuScrollView) {
-        _menuScrollView = [UdeskActionScrollView new];
+        _menuScrollView = [UdeskStructActionScrollView new];
         _menuScrollView.showsHorizontalScrollIndicator = NO;
         _menuScrollView.delaysContentTouches = NO;
         [self addSubview:_menuScrollView];

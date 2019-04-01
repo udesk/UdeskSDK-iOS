@@ -17,7 +17,6 @@
 + (void)showBigVideoPoint;
 //黑名单
 + (void)showBlacklisted:(NSString *)message handler:(void(^)(void))handler;
-
 //根据客服code显示
 + (void)showWithAgentCode:(NSInteger)agentCode message:(NSString *)message enableFeedback:(BOOL)enableFeedback leaveMsgHandler:(void(^)(void))leaveMsgHandler;
 

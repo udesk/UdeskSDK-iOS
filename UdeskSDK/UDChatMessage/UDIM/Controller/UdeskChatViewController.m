@@ -10,7 +10,6 @@
 #import "UdeskChatViewController.h"
 #import "UdeskTopAlertView.h"
 #import "UdeskMessageTableView.h"
-#import "UdeskTicketViewController.h"
 #import "UdeskImagePicker.h"
 #import "UIViewController+UdeskSDK.h"
 #import "UIView+UdeskSDK.h"
@@ -26,12 +25,10 @@
 #import "UdeskImageCell.h"
 #import "UdeskChatTitleView.h"
 #import "UdeskLocationViewController.h"
-
 #import "UdeskImagePickerController.h"
 #import "UdeskSmallVideoViewController.h"
 #import "UdeskChatInputToolBar.h"
 #import "UdeskChatToolBarMoreView.h"
-#import "UdeskCustomToolBar.h"
 #import "UdeskPrivacyUtil.h"
 #import "UdeskVoiceRecord.h"
 #import "UdeskEmojiKeyboardControl.h"
@@ -39,15 +36,18 @@
 #import "UdeskSDKUtil.h"
 #import "UdeskSmallVideoNavigationController.h"
 #import "UdeskMessageUtil.h"
+#import "UdeskSDKAlert.h"
+#import "UdeskAgentMenuViewController.h"
+#import "UdeskRobotTipsView.h"
+#import "UdeskSDKShow.h"
+#import "UdeskSurveyManager.h"
+#import "UdeskSpeechRecognizerView.h"
+#import "UIBarButtonItem+UdeskSDK.h"
+#import "UdeskProductView.h"
 
-//video call
-#if __has_include(<UdeskCall/UdeskCall.h>)
-#import <UdeskCall/UdeskCall.h>
-#import "UdeskCallInviteView.h"
-#import "UdeskCallingView.h"
-#endif
+static CGFloat udInputBarHeight = 54.0f;
 
-@interface UdeskChatViewController ()<UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskCellDelegate,UdeskImagePickerControllerDelegate,UdeskSmallVideoViewControllerDelegate,UdeskChatInputToolBarDelegate,UdeskChatToolBarMoreViewDelegate,UdeskEmojiKeyboardControlDelegate,UIGestureRecognizerDelegate>
+@interface UdeskChatViewController ()<UITableViewDelegate,UITableViewDataSource,UdeskChatViewModelDelegate,UdeskCellDelegate,UdeskImagePickerControllerDelegate,UdeskSmallVideoViewControllerDelegate,UdeskChatInputToolBarDelegate,UdeskChatToolBarMoreViewDelegate,UdeskEmojiKeyboardControlDelegate,UdeskSpeechRecognizerViewDelegate,UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UdeskMessageTableView     *messageTableView;//用于显示消息的TableView
 @property (nonatomic, strong) UdeskEmojiKeyboardControl *emojiKeyboard;
@@ -55,6 +55,9 @@
 @property (nonatomic, strong) UdeskChatInputToolBar     *chatInputToolBar;
 @property (nonatomic, strong) UdeskChatTitleView        *titleView;//标题
 @property (nonatomic, strong) UdeskVoiceRecordView      *voiceRecordView;//
+@property (nonatomic, strong) UdeskRobotTipsView        *robotTipsView;
+@property (nonatomic, strong) UdeskSpeechRecognizerView *recognizerView;
+@property (nonatomic, strong) UdeskProductView          *productView;
 
 @property (nonatomic, strong) UdeskImagePicker    *photographyHelper;//
 @property (nonatomic, strong) UdeskVoiceRecord    *voiceRecordHelper;//
@@ -62,12 +65,6 @@
 @property (nonatomic, assign) BOOL                      isMaxTimeStop;//判断是不是超出了录音最大时长
 @property (nonatomic, assign) BOOL                      backAlreadyDisplayedSurvey;//返回展示满意度
 @property (nonatomic, strong, readwrite) UdeskChatViewModel  *chatViewModel;
-
-//video call
-#if __has_include(<UdeskCall/UdeskCall.h>)
-@property (nonatomic, strong) UdeskCallingView *callingView;
-@property (nonatomic, strong) UdeskCallInviteView *callInviteView;
-#endif
 
 @end
 
@@ -78,19 +75,18 @@
     [super viewDidLoad];
 
     //初始化viewModel
-    [self initViewModel];
+    [self setupViewModel];
     //初始化消息页面布局
-    [self initilzer];
+    [self setupUI];
 }
 
-#pragma mark - 初始化viewModel
-- (void)initViewModel {
+#pragma mark - 初始化ViewModel
+- (void)setupViewModel {
     
-    self.chatViewModel = [[UdeskChatViewModel alloc] initWithSDKSetting:self.sdkSetting];
-    self.chatViewModel.delegate = self;
+    self.chatViewModel = [[UdeskChatViewModel alloc] initWithSDKSetting:self.sdkSetting delegate:self];
 }
 
-#pragma mark - UdeskChatViewModelDelegate
+#pragma mark - @protocol UdeskChatViewModelDelegate
 //刷新表
 - (void)reloadChatTableView {
     
@@ -105,13 +101,12 @@
 }
 
 - (void)didUpdateCellModelWithIndexPath:(NSIndexPath *)indexPath {
-    dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f/*延迟执行时间*/ * NSEC_PER_SEC));
-    dispatch_after(delayTime, dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self safeCellUpdate:indexPath.section row:indexPath.row];
     });
 }
 
-- (void)safeCellUpdate:(NSUInteger)section row: (NSUInteger) row {
+- (void)safeCellUpdate:(NSUInteger)section row:(NSUInteger)row {
     
     dispatch_async(dispatch_get_main_queue(), ^{
         NSUInteger lastSection = [self.messageTableView numberOfSections];
@@ -137,7 +132,6 @@
             }
             [self.messageTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
         }
-        
         @catch (NSException *exception) {
             NSLog(@"%@",exception);
             return;
@@ -146,30 +140,30 @@
 }
 
 //接受客服状态，弹出下拉动画
-- (void)didReceiveAgentPresence:(UdeskAgent *)agent {
-    
-    if (!agent) return;
-    if (agent.code) {
-        //显示top AlertView
-        [UdeskTopAlertView showWithCode:agent.code withMessage:agent.message parentView:self.view];
-        [self updateAgent:agent];
-        if (agent.code == UDAgentConversationOver) {
-            [self setupPreSessionMessageUI:NO];
-            [self layoutOtherMenuViewHiden:YES];
-            [self.chatInputToolBar resetAllButtonSelectedStatus];
-        }
-    }
+- (void)didUpdateAgentPresence:(UdeskAgent *)agent {
+
+    [UdeskTopAlertView showWithCode:agent.code withMessage:agent.message parentView:self.view];
+    [self didUpdateAgentModel:agent];
 }
 
 //更新客服信息
-- (void)didFetchAgentModel:(UdeskAgent *)agent {
+- (void)didUpdateAgentModel:(UdeskAgent *)agent {
+    if (!agent || agent == (id)kCFNull) return ;
+
+    [self setupAgentSessionMessageUI:YES];
+    self.moreView.isQueueSession = (agent.code == UDAgentStatusResultQueue)?YES:NO;
+    self.chatInputToolBar.agent = agent;
+    [self.titleView updateTitle:agent];
     
-    if (!agent) return;
-    [self updateAgent:agent];
     //客服在线
     if (agent.code == UDAgentStatusResultOnline) {
         //自动消息
         [self sendPreMessage];
+    }
+    else if (agent.code == UDAgentConversationOver) {
+        //会话已关闭
+        [self layoutOtherMenuViewHiden:YES];
+        [self.chatInputToolBar resetAllButtonSelectedStatus];
     }
 }
 
@@ -181,66 +175,93 @@
 
 //无消息会话标题
 - (void)showPreSessionWithTitle:(NSString *)title {
+    
     self.titleView.titleLabel.text = title;
     [self setupPreSessionMessageUI:YES];
 }
 
-//收到视频邀请
-- (void)didReceiveInviteWithAgentModel:(UdeskAgent *)agent {
+/** 展示机器人会话 */
+- (void)showRobotSessionWithName:(NSString *)name {
     
-#if __has_include(<UdeskCall/UdeskCall.h>)
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        [self.chatInputToolBar.chatTextView resignFirstResponder];
-        self.callInviteView.avatarURL = agent.avatar;
-        self.callInviteView.nickName = agent.nick;
-        [UIView animateWithDuration:0.35 animations:^{
-            self.callInviteView.udTop = 0;
-        }];
-    });
-#endif
-    
+    self.titleView.titleLabel.text = name;
+    [self setupRobotMessageUI:YES];
 }
 
-- (void)updateAgent:(UdeskAgent *)agent {
+//客户在黑名单
+- (void)customerOnTheBlacklist:(NSString *)message {
+    
+    [UdeskSDKAlert showBlacklisted:message handler:^{
+        [self dismissViewController];
+    }];
+}
 
+//网络断开链接
+- (void)didReceiveNetworkDisconnect {
+    
+    //网络不可用提示
+    [UdeskTopAlertView showAlertType:UDAlertTypeNetworkFailure withMessage:getUDLocalizedString(@"udesk_notwork_failure") parentView:self.view];
+}
+
+//自动转人工
+- (void)didReceiveAutoTransferAgentServer {
+    
+    [self transferToAgentServer];
+}
+
+//显示转人工按钮
+- (void)showTransferButton {
+    
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem udRightItemWithTitle:getUDLocalizedString(@"udesk_redirect") target:self action:@selector(didSelectNavigationRightButton)];
+}
+
+//配置人工会话的UI
+- (void)setupAgentSessionMessageUI:(BOOL)isAgentSession {
+    
     [self setupPreSessionMessageUI:NO];
-    self.moreView.isQueue = (agent.code == UDAgentStatusResultQueue)?YES:NO;
-    self.chatInputToolBar.agent = agent;
-    [self.titleView updateTitle:agent];
-}
-
-//点击发送留言
-- (void)didSelectSendTicket {
-
-    self.chatViewModel.isNotShowAlert = YES;
     
-    //如果用户实现了自定义留言界面
-    if (self.sdkConfig.actionConfig.leaveMessageClickBlock) {
-        self.sdkConfig.actionConfig.leaveMessageClickBlock(self);
-        return;
-    }
-    
-    UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] initWithSDKConfig:self.sdkConfig setting:self.sdkSetting];
-    [self presentViewController:offLineTicket animated:YES completion:nil];
-}
-
-//点击黑名单弹窗提示的确定
-- (void)didSelectBlacklistedAlertViewOkButton {
-
-    self.chatViewModel.isNotShowAlert = YES;
-    [self dismissChatViewController];
+    self.chatInputToolBar.isAgentSession = isAgentSession;
+    self.moreView.isAgentSession = isAgentSession;
 }
 
 //配置无消息对话过滤的UI
 - (void)setupPreSessionMessageUI:(BOOL)isPreSessionMessage {
     
-    self.chatInputToolBar.isPreSessionMessage = isPreSessionMessage;
-    self.moreView.isPreSessionMessage = isPreSessionMessage;
+    [self setupRobotMessageUI:NO];
+    
+    self.chatInputToolBar.isPreSession = isPreSessionMessage;
+    self.moreView.isPreSession = isPreSessionMessage;
+}
+
+//配置机器人的UI
+- (void)setupRobotMessageUI:(BOOL)isRobotSession {
+    
+    self.chatInputToolBar.isRobotSession = isRobotSession;
+    self.moreView.isRobotSession = isRobotSession;
+    
+    //显示转人工按钮
+    if (isRobotSession) {
+        [self showTransferButton];
+    }
+    
+    //无法转人工
+    if (!self.sdkSetting.enableAgent.boolValue) {
+        self.navigationItem.rightBarButtonItems = nil;
+    }
+    
+    //设置了客服发送多少条消息之后才展示转人工按钮
+    if (self.sdkSetting.showRobotTimes.integerValue) {
+        self.navigationItem.rightBarButtonItems = nil;
+    }
+    
+    if (!isRobotSession) {
+        self.navigationItem.rightBarButtonItems = nil;
+    }
 }
 
 //发送预知消息
 - (void)sendPreMessage {
+    
+    if (!self.sdkConfig.preSendMessages || self.sdkConfig.preSendMessages == (id)kCFNull) return ;
     
     //自动消息
     dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC));
@@ -257,8 +278,8 @@
     });
 }
 
-#pragma mark - 初始化视图
-- (void)initilzer {
+#pragma mark - 配置UI
+- (void)setupUI {
     
     //用户自己设置了标题
     if (self.sdkConfig.imTitle) {
@@ -268,52 +289,65 @@
         self.navigationItem.titleView = self.titleView;
     }
     
-    // 初始化message tableView
+    self.view.backgroundColor = self.sdkConfig.sdkStyle.chatViewControllerBackGroundColor;
+    
+    //聊天页面
 	_messageTableView = [[UdeskMessageTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _messageTableView.delegate = self;
     _messageTableView.dataSource = self;
-    //是否需要下拉刷新
-    [_messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
-    
+    _messageTableView.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
     [self.view addSubview:_messageTableView];
     
-    //添加单击手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapChatTableView:)];
     tap.cancelsTouchesInView = false;
     tap.delegate = self;
     [_messageTableView addGestureRecognizer:tap];
     
-    // 设置Message TableView 的bottom
-    CGFloat inputViewHeight = 52.0f;
-    // 输入工具条
-    _chatInputToolBar = [[UdeskChatInputToolBar alloc] initWithFrame:CGRectMake(0.0f,self.view.udHeight - inputViewHeight - (udIsIPhoneXSeries?34:0),self.view.udWidth,inputViewHeight+(udIsIPhoneXSeries?34:0)) tableView:_messageTableView];
+    //咨询对象
+    if (self.sdkConfig.productDictionary) {
+        self.productView.productData = self.sdkConfig.productDictionary;
+        _messageTableView.udTop = self.productView.udBottom;
+        _messageTableView.udHeight = _messageTableView.udHeight - self.productView.udBottom;
+    }
+    
+    //输入框
+    _chatInputToolBar = [[UdeskChatInputToolBar alloc] initWithFrame:CGRectMake(0.0f,self.view.udHeight - udInputBarHeight - (udIsIPhoneXSeries?34:0),self.view.udWidth,udInputBarHeight+(udIsIPhoneXSeries?34:0)) tableView:_messageTableView];
     _chatInputToolBar.delegate = self;
     [self.view addSubview:_chatInputToolBar];
     
     //配置自定义按钮
-    if (self.sdkConfig.isShowCustomButtons) {
-        _chatInputToolBar.enableSurvey = self.sdkSetting.enableImSurvey.boolValue;
-        _chatInputToolBar.customButtonConfigs = self.sdkConfig.customButtons;
-    }
-    else {
-        
-        _messageTableView.udHeight -= udIsIPhoneXSeries?34:0;
-        [_messageTableView setTableViewInsetsWithBottomValue:self.view.udHeight - _chatInputToolBar.udY];
-    }
+    _chatInputToolBar.enableSurvey = self.sdkSetting.enableImSurvey.boolValue;
+    _chatInputToolBar.customButtonConfigs = self.sdkConfig.customButtons;
     
-    // 设置整体背景颜色
-    [self setBackgroundColor];
+    _messageTableView.udHeight -= udIsIPhoneXSeries?34:0;
+    [_messageTableView setTableViewInsetsWithBottomValue:self.view.udHeight - _chatInputToolBar.udY];
+}
+
+//点击空白处隐藏键盘
+- (void)didTapChatTableView:(UIGestureRecognizer *)recognizer {
+    
+    if ([self.chatInputToolBar.chatTextView resignFirstResponder]) {
+        [self layoutOtherMenuViewHiden:YES];
+        [self.chatInputToolBar resetAllButtonSelectedStatus];
+    }
 }
 
 #pragma mark - @protocol UdeskChatInputToolBarDelegate
-/** 发送文本消息，包括系统的表情 */
+//发送文本消息
 - (void)didSendText:(NSString *)text {
     
     [self sendTextMessageWithContent:text];
 }
 
-/** 点击语音 */
+//点击语音
 - (void)didSelectVoice:(UdeskButton *)voiceButton {
+    
+    //机器人
+    if (self.moreView.isRobotSession) {
+        [self.recognizerView show];
+        [self layoutOtherMenuViewHiden:YES];
+        return;
+    }
     
     if (voiceButton.selected) {
         [self layoutOtherMenuViewHiden:YES];
@@ -321,17 +355,18 @@
         [self.chatInputToolBar.chatTextView becomeFirstResponder];
     }
 }
-/** 点击表情 */
+
+//点击表情
 - (void)didSelectEmotion:(UdeskButton *)emotionButton {
     
     if (emotionButton.selected) {
-        [self emojiKeyboard];
         [self layoutOtherMenuViewHiden:NO];
     } else {
         [self.chatInputToolBar.chatTextView becomeFirstResponder];
     }
 }
-/** 点击更多 */
+
+//点击更多
 - (void)didSelectMore:(UdeskButton *)moreButton {
     
     if (moreButton.selected) {
@@ -340,37 +375,39 @@
         [self.chatInputToolBar.chatTextView becomeFirstResponder];
     }
 }
-/** 点击UdeskChatInputToolBar */
+
+//点击UdeskChatInputToolBar
 - (void)didClickChatInputToolBar {
     
-    //根据客服code 实现相应的点击事件
-    [self.chatViewModel clickInputViewShowAlertView];
+    [self.chatViewModel showSDKAlert];
 }
 
-/** 点击自定义按钮 */
+//点击自定义按钮
 - (void)didSelectCustomToolBar:(UdeskCustomToolBar *)toolBar atIndex:(NSInteger)index {
     
     [self callbackCustomButtonActionWithIndex:index];
 }
 
-/** 点击自定义评价 */
+//点击自定义评价
 - (void)didSelectCustomToolBarSurvey:(UdeskCustomToolBar *)toolBar {
     
     [self servicesFeedbackSurveyWithAgentId:self.chatInputToolBar.agent.agentId];
 }
 
-/** 准备录音 */
+//准备录音
 - (void)prepareRecordingVoiceActionWithCompletion:(BOOL (^)(void))completion {
     
     [self.voiceRecordHelper prepareRecordingCompletion:completion];
 }
-/** 开始录音 */
+
+//开始录音
 - (void)didStartRecordingVoiceAction {
     
     [self.voiceRecordView startRecordingAtView:self.view];
     [self.voiceRecordHelper startRecordingWithStartRecorderCompletion:nil];
 }
-/** 手指向上滑动取消录音 */
+
+//手指向上滑动取消录音
 - (void)didCancelRecordingVoiceAction {
     
     @udWeakify(self);
@@ -380,7 +417,8 @@
     }];
     [self.voiceRecordHelper cancelledDeleteWithCompletion:nil];
 }
-/** 松开手指完成录音 */
+
+//松开手指完成录音
 - (void)didFinishRecoingVoiceAction {
     
     if (self.isMaxTimeStop == NO) {
@@ -389,12 +427,14 @@
         self.isMaxTimeStop = NO;
     }
 }
-/** 当手指离开按钮的范围内时 */
+
+//当手指离开按钮的范围内时
 - (void)didDragOutsideAction {
     
     [self.voiceRecordView resaueRecord];
 }
-/** 当手指再次进入按钮的范围内时 */
+
+//当手指再次进入按钮的范围内时
 - (void)didDragInsideAction {
     
     [self.voiceRecordView pauseRecord];
@@ -414,717 +454,16 @@
     }];
 }
 
-#pragma mark - TableViewDataSource
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.chatViewModel.messagesArray.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//文本发生改变
+- (void)chatTextViewShouldChangeText:(NSString *)text {
     
-    if (indexPath.row >= self.chatViewModel.messagesArray.count) {
-        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ErrorMessagesArray"];
-        return cell;
-    }
-    
-    id message = self.chatViewModel.messagesArray[indexPath.row];
-
-    NSString *messageModelName = NSStringFromClass([message class]);
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:messageModelName];
-    
-    if (!cell) {
-        
-        if ([message isKindOfClass:[UdeskBaseMessage class]]) {
-            cell = [(UdeskBaseMessage *)message getCellWithReuseIdentifier:messageModelName];
-        }
-        else {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ErrorMessagesArray"];
-        }
-        
-        if ([cell isKindOfClass:[UdeskBaseCell class]]) {
-            UdeskBaseCell *chatCell = (UdeskBaseCell *)cell;
-            chatCell.delegate = self;
-        }
-    }
-    
-    if (![cell isKindOfClass:[UdeskBaseCell class]]) {
-        return cell;
-    }
-    
-    [(UdeskBaseCell*)cell updateCellWithMessage:message];
-    
-    return cell;
-}
-
-#pragma mark - Table View Delegate
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (indexPath.row >= self.chatViewModel.messagesArray.count) {
-        return 44;
-    }
-    
-    UdeskBaseMessage *message = self.chatViewModel.messagesArray[indexPath.row];
-    if ([message isKindOfClass:[UdeskBaseMessage class]]) {
-        if (message.cellHeight) {
-            return message.cellHeight;
-        }
-        else {
-            return 44;
-        }
-    }
-    else {
-        return 44;
+    //机器人会话使用联想功能
+    if (self.moreView.isRobotSession) {
+        [self.robotTipsView updateWithKeyword:text];
     }
 }
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    
-    //滑动表隐藏Menu
-    UIMenuController *menu = [UIMenuController sharedMenuController];
-    if (menu.isMenuVisible) {
-        [menu setMenuVisible:NO animated:YES];
-    }
-
-    if (self.chatInputToolBar.chatInputType != UdeskChatInputTypeNormal) {
-        [self layoutOtherMenuViewHiden:YES];
-    }
-    [self.chatInputToolBar resetAllButtonSelectedStatus];
-}
-
-#pragma mark - UdeskCellDelegate
-- (void)didTapChatImageView {
-    [self.view endEditing:YES];
-}
-
-//发送咨询对象URL
-- (void)didSendProductURL:(NSString *)url {
-    if (self.sdkConfig.actionConfig.productMessageSendLinkClickBlock) {
-        self.sdkConfig.actionConfig.productMessageSendLinkClickBlock(self,self.sdkConfig.productDictionary);
-        return;
-    }
-    
-    [self sendTextMessageWithContent:url];
-}
-
-//再次呼叫
-- (void)didTapUdeskVideoCallMessage:(UdeskMessage *)message {
-    [self startUdeskVideoCall];
-}
-
-//结构化消息
-- (void)didTapStructMessageButtonWithValue:(NSString *)value callbackName:(NSString *)callbackName {
-
-    if (self.sdkConfig.actionConfig.structMessageClickBlock) {
-        self.sdkConfig.actionConfig.structMessageClickBlock(value,callbackName);
-    }
-}
-
-//点击商品消息
-- (void)didTapGoodsMessageWithURL:(NSString *)goodsURL goodsId:(NSString *)goodsId {
-    
-    if (self.sdkConfig.actionConfig.goodsMessageClickBlock) {
-        self.sdkConfig.actionConfig.goodsMessageClickBlock(self,goodsURL,goodsId);
-    }
-}
-
-//查看地理位置
-- (void)didTapLocationMessage:(UdeskMessage *)message {
-
-    UdeskLocationModel *model = [UdeskMessageUtil locationModelWithMessage:message];
-    //用户自己选择回调方式定位
-    if (self.sdkConfig.actionConfig.locationMessageClickBlock) {
-        self.sdkConfig.actionConfig.locationMessageClickBlock(self,model);
-        return;
-    }
-    
-    UdeskLocationViewController *location = [[UdeskLocationViewController alloc] initWithSDKConfig:self.sdkConfig hasSend:YES];
-    location.locationModel = model;
-    [self presentViewController:location animated:YES completion:nil];
-}
-
-//重发消息
-- (void)didResendMessage:(UdeskMessage *)resendMessage {
-
-    @udWeakify(self);
-    [self.chatViewModel resendMessageWithMessage:resendMessage progress:^(NSString *messageId, float percent) {
-        
-        //更新进度
-        @udStrongify(self);
-        [self updateVideoPercentButtonTitle:resendMessage.messageId progress:percent sendStatus:UDMessageSendStatusSending];
-        
-    } completion:^(UdeskMessage *message) {
-        //处理发送结果UI
-        @udStrongify(self);
-        [self updateChatMessageUI:message];
-    }];
-}
-
-//点击留言
-- (void)didTapLeaveMessageButton:(UdeskMessage *)message {
-    [self.chatViewModel clickLeaveMsgAlertButtonAction];
-}
-
-#pragma mark - UDChatTableViewDelegate
-//点击空白处隐藏键盘
-- (void)didTapChatTableView:(UIGestureRecognizer *)recognizer {
-    
-    if ([self.chatInputToolBar.chatTextView resignFirstResponder]) {
-        [self layoutOtherMenuViewHiden:YES];
-        [self.chatInputToolBar resetAllButtonSelectedStatus];
-    }
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    if ([touch.view isKindOfClass:[UILabel class]]){
-        return NO;
-    }
-
-    return YES;
-}
-
-#pragma mark - 下拉加载更多数据
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    @try {
-        
-        if (scrollView.contentOffset.y<0 && self.messageTableView.isRefresh) {
-            //开始刷新
-            [self.messageTableView startLoadingMoreMessages];
-            //获取更多数据
-            [self.chatViewModel fetchNextPageDatebaseMessage];
-            //延迟0.8，提高用户体验
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                //关闭刷新、刷新数据
-                [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
-            });
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
-}
-
-#pragma mark - video
-#if __has_include(<UdeskCall/UdeskCall.h>)
-- (UdeskCallingView *)callingView {
-    if (!_callingView) {
-        _callingView = [UdeskCallingView instanceCallingView];
-        _callingView.frame = [UIScreen mainScreen].bounds;
-        _callingView.udTop = UD_SCREEN_HEIGHT;
-        [[UIApplication sharedApplication].delegate.window addSubview:_callingView];
-        @udWeakify(self);
-        _callingView.callEndedBlock = ^{
-            @udStrongify(self);
-            [self.callingView removeFromSuperview];
-            self.callingView = nil;
-        };
-    }
-    return _callingView;
-}
-
-//邀请view
-- (UdeskCallInviteView *)callInviteView {
-    if (!_callInviteView) {
-        _callInviteView = [UdeskCallInviteView instanceCallInviteView];
-        _callInviteView.frame = [UIScreen mainScreen].bounds;
-        _callInviteView.udTop = UD_SCREEN_HEIGHT;
-        [[UIApplication sharedApplication].delegate.window addSubview:_callInviteView];
-        @udWeakify(self);
-        _callInviteView.callEndedBlock = ^{
-            @udStrongify(self);
-            [self.callInviteView removeFromSuperview];
-            self.callInviteView = nil;
-            [self.chatViewModel stopPlayVideoCallRing];
-        };
-    }
-    return _callInviteView;
-}
-#endif
-
-#pragma mark - title
-- (UdeskChatTitleView *)titleView {
-
-    if (!_titleView) {
-        CGFloat titleViewWidth = UD_SCREEN_WIDTH>320?210:175;
-        _titleView = [[UdeskChatTitleView alloc] initWithFrame:CGRectMake(0, 0, titleViewWidth, 44)];
-    }
-    return _titleView;
-}
-
-#pragma mark - 表情view
-- (UdeskEmojiKeyboardControl *)emojiKeyboard {
-    if (!_emojiKeyboard) {
-        _emojiKeyboard = [[UdeskEmojiKeyboardControl alloc] init];
-        _emojiKeyboard.delegate = self;
-        _emojiKeyboard.backgroundColor = [UIColor colorWithWhite:0.961 alpha:1.000];
-        _emojiKeyboard.alpha = 0.0;
-        [self.view addSubview:_emojiKeyboard];
-    }
-    return _emojiKeyboard;
-}
-
-#pragma mark - 更多
-- (UdeskChatToolBarMoreView *)moreView {
-    
-    if (!_moreView) {
-        _moreView = [[UdeskChatToolBarMoreView alloc] initWithEnableSurvey:self.sdkSetting.enableImSurvey.boolValue enableVideoCall:self.sdkSetting.sdkVCall.boolValue];
-        _moreView.customMenuItems = self.sdkConfig.customButtons;
-        _moreView.backgroundColor = [UIColor colorWithWhite:0.961 alpha:1.000];
-        _moreView.alpha = 0.0;
-        _moreView.delegate = self;
-        [self.view addSubview:_moreView];
-    }
-    return _moreView;
-}
-
-#pragma mark - 图片选择器
-- (UdeskImagePicker *)photographyHelper {
-    
-    if (!_photographyHelper) {
-        _photographyHelper = [[UdeskImagePicker alloc] init];
-    }
-    return _photographyHelper;
-}
-
-#pragma mark - 录音动画view
-- (UdeskVoiceRecordView *)voiceRecordView {
-    if (!_voiceRecordView) {
-        _voiceRecordView = [[UdeskVoiceRecordView alloc] initWithFrame:CGRectMake(0, 0, 150, 150)];
-    }
-    return _voiceRecordView;
-}
-
-- (UdeskVoiceRecord *)voiceRecordHelper {
-    if (!_voiceRecordHelper) {
-        _isMaxTimeStop = NO;
-        @udWeakify(self);
-        _voiceRecordHelper = [[UdeskVoiceRecord alloc] init];
-        _voiceRecordHelper.maxTimeStopRecorderCompletion = ^{
-            @udStrongify(self);
-            self.isMaxTimeStop = YES;
-            [self.chatInputToolBar resetRecordButton];
-            [self finishRecorded];
-        };
-        
-        _voiceRecordHelper.peakPowerForChannel = ^(float peakPowerForChannel) {
-            @udStrongify(self);
-            self.voiceRecordView.peakPower = peakPowerForChannel;
-        };
-        
-        _voiceRecordHelper.tooShortRecorderFailue = ^{
-            @udStrongify(self);
-            [self.voiceRecordView speakDurationTooShort];
-        };
-        
-        _voiceRecordHelper.maxRecordTime = kUdeskVoiceRecorderTotalTime;
-    }
-    return _voiceRecordHelper;
-}
-
-#pragma mark - 显示功能面板
-- (void)layoutOtherMenuViewHiden:(BOOL)hide {
-    
-    //根据textViewInputViewType切换功能面板
-    [self.chatInputToolBar.chatTextView resignFirstResponder];
-    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        __block CGRect inputViewFrame = self.chatInputToolBar.frame;
-        __block CGRect otherMenuViewFrame = CGRectMake(0, 0, 0, 0);
-        
-        CGFloat spacing = 0;
-        if (udIsIPhoneXSeries) {
-            spacing = 34;
-        }
-        
-        void (^InputViewAnimation)(BOOL hide) = ^(BOOL hide) {
-            inputViewFrame.origin.y = (hide ? (CGRectGetHeight(self.view.bounds) - CGRectGetHeight(inputViewFrame)) : (CGRectGetMinY(otherMenuViewFrame) - CGRectGetHeight(inputViewFrame)) + spacing);
-            self.chatInputToolBar.frame = inputViewFrame;
-        };
-        
-        void (^EmotionManagerViewAnimation)(BOOL hide) = ^(BOOL hide) {
-            otherMenuViewFrame = self.emojiKeyboard.frame;
-            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
-            self.emojiKeyboard.alpha = !hide;
-            self.emojiKeyboard.frame = otherMenuViewFrame;
-        };
-        
-        void (^MoreViewAnimation)(BOOL hide) = ^(BOOL hide) {
-            otherMenuViewFrame = self.moreView.frame;
-            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
-            self.moreView.alpha = !hide;
-            self.moreView.frame = otherMenuViewFrame;
-        };
-        
-        if (hide) {
-            switch (self.chatInputToolBar.chatInputType) {
-                case UdeskChatInputTypeEmotion: {
-                    EmotionManagerViewAnimation(hide);
-                    break;
-                }
-                case UdeskChatInputTypeText: {
-                    EmotionManagerViewAnimation(hide);
-                    MoreViewAnimation(hide);
-                    break;
-                }
-                case UdeskChatInputTypeMore: {
-                    MoreViewAnimation(hide);
-                    break;
-                }
-                case UdeskChatInputTypeVoice: {
-                    EmotionManagerViewAnimation(hide);
-                    MoreViewAnimation(hide);
-                    break;
-                }
-                default:
-                    break;
-            }
-        } else {
-            
-
-            switch (self.chatInputToolBar.chatInputType) {
-                case UdeskChatInputTypeEmotion: {
-                    // 1、先隐藏和自己无关的View
-                    MoreViewAnimation(!hide);
-                    // 2、再显示和自己相关的View
-                    EmotionManagerViewAnimation(hide);
-                    break;
-                }
-                case UdeskChatInputTypeVoice: {
-                    // 1、先隐藏和自己无关的View
-                    EmotionManagerViewAnimation(!hide);
-                    MoreViewAnimation(!hide);
-                    break;
-                }
-                case UdeskChatInputTypeText: {
-                    EmotionManagerViewAnimation(!hide);
-                    MoreViewAnimation(!hide);
-                    break;
-                }
-                case UdeskChatInputTypeMore: {
-                    EmotionManagerViewAnimation(!hide);
-                    MoreViewAnimation(hide);
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-        
-        InputViewAnimation(hide);
-        
-        [self.messageTableView setTableViewInsetsWithBottomValue:self.view.frame.size.height
-         - self.chatInputToolBar.frame.origin.y];
-        [self.messageTableView scrollToBottomAnimated:NO];
-        
-    } completion:^(BOOL finished) {
-        
-        if (hide) {
-            self.chatInputToolBar.chatInputType = UdeskChatInputTypeNormal;
-        }
-    }];
-
-}
-
-#pragma mark - 发送文字
-- (void)sendTextMessageWithContent:(NSString *)content {
-    if (!content || content == (id)kCFNull) return ;
-    
-    @udWeakify(self);
-    [self.chatViewModel sendTextMessage:content completion:^(UdeskMessage *message) {
-        //处理发送结果UI
-        @udStrongify(self);
-        [self updateMessageStatus:message];
-    }];
-    
-    [self.chatInputToolBar.chatTextView setText:nil];
-}
-
-#pragma mark - 发送图片
-- (void)sendImageMessageWithImage:(UIImage *)image {
-    if (!image || image == (id)kCFNull) return ;
-    
-    @udWeakify(self);
-    [self.chatViewModel sendImageMessage:image progress:^(NSString *key,float progress){
-        
-        //更新进度
-        @udStrongify(self);
-        [self updateImageUploadProgress:progress messageId:key sendStatus:UDMessageSendStatusSending];
-        
-    } completion:^(UdeskMessage *message) {
-        //处理发送结果UI
-        @udStrongify(self);
-        [self updateMessageStatus:message];
-        //更新进度
-        [self updateImageUploadProgress:message.messageStatus == UDMessageSendStatusSuccess?1:0
-                              messageId:message.messageId
-                             sendStatus:message.messageStatus];
-    }];
-}
-
-//发送GIF图片
-- (void)sendGIFMessageWithGIFData:(NSData *)gifData {
-    if (!gifData || gifData == (id)kCFNull) return ;
-    
-    @udWeakify(self);
-    [self.chatViewModel sendGIFImageMessage:gifData progress:^(NSString *key,float progress){
-        
-        //更新进度
-        @udStrongify(self);
-        [self updateImageUploadProgress:progress messageId:key sendStatus:UDMessageSendStatusSending];
-        
-    } completion:^(UdeskMessage *message) {
-        //处理发送结果UI
-        @udStrongify(self);
-        [self updateMessageStatus:message];
-        //更新进度
-        [self updateImageUploadProgress:message.messageStatus == UDMessageSendStatusSuccess?1:0
-                              messageId:message.messageId
-                             sendStatus:message.messageStatus];
-    }];
-}
-
-//更新视频上传进度
-- (void)updateImageUploadProgress:(float)progress
-                        messageId:(NSString *)messageId
-                       sendStatus:(UDMessageSendStatus)sendStatus {
-    
-    @try {
-        
-        NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
-        UdeskImageCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
-        
-        if ([cell isKindOfClass:[UdeskImageCell class]]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                if (progress == 1.0f || sendStatus == UDMessageSendStatusSuccess) {
-                    [cell uploadImageSuccess];
-                }
-                else {
-                    [cell imageUploading];
-                    cell.progressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
-                }
-            });
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
-}
-
-#pragma mark - 发送视频
-- (void)sendVideoMessageWithVideoFile:(NSString *)videoFile {
-    if (!videoFile || videoFile == (id)kCFNull) return ;
-    if (![videoFile isKindOfClass:[NSString class]]) return ;
-    
-    NSData *videoData = [NSData dataWithContentsOfFile:videoFile];
-    if (!videoData || videoData == (id)kCFNull) {
-        videoData = [NSData dataWithContentsOfURL:[NSURL URLWithString:videoFile]];
-    }
-
-    if (!videoData || videoData == (id)kCFNull) return ;
-    if (![videoData isKindOfClass:[NSData class]]) return ;
-    
-    @udWeakify(self);
-    [self.chatViewModel sendVideoMessage:videoData progress:^(NSString *key,float progress){
-    
-        //更新进度
-        @udStrongify(self);
-        [self updateVideoPercentButtonTitle:key progress:progress sendStatus:UDMessageSendStatusSending];
-        
-    } completion:^(UdeskMessage *message) {
-        
-        //处理发送结果UI
-        @udStrongify(self);
-        [self updateMessageStatus:message];
-        //更新进度
-        [self updateVideoPercentButtonTitle:message.messageId
-                                   progress:message.messageStatus == UDMessageSendStatusSuccess?1:0
-                                 sendStatus:message.messageStatus];
-    }];
-}
-
-//更新视频上传进度
-- (void)updateVideoPercentButtonTitle:(NSString *)messageId
-                             progress:(float)progress
-                           sendStatus:(UDMessageSendStatus)sendStatus {
-
-    @try {
-        
-        NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
-        UdeskVideoCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
-        [cell updateMessageSendStatus:UDMessageSendStatusSending];
-        
-        if ([cell isKindOfClass:[UdeskVideoCell class]]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                if (progress == 1.0f || sendStatus == UDMessageSendStatusSuccess) {
-                    cell.uploadProgressLabel.hidden = YES;
-                    cell.playButton.hidden = NO;
-                    [cell updateMessageSendStatus:UDMessageSendStatusSuccess];
-                }
-                else {
-                    cell.uploadProgressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
-                }
-            });
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
-}
-
-#pragma mark - 发送语音
-- (void)sendVoiceMessageWithVoicePath:(NSString *)voicePath voiceDuration:(NSString *)voiceDuration {
-    if (!voicePath || voicePath == (id)kCFNull) return ;
-    if (!voiceDuration || voiceDuration == (id)kCFNull) return ;
-    
-    @udWeakify(self);
-    [self.chatViewModel sendVoiceMessage:voicePath voiceDuration:voiceDuration completion:^(UdeskMessage *message) {
-        //处理发送结果UI
-        @udStrongify(self);
-        [self updateMessageStatus:message];
-    }];
-}
-
-#pragma mark - 发送位置信息
-- (void)sendLoactionMessageWithModel:(UdeskLocationModel *)locationModel {
-    if (!locationModel || locationModel == (id)kCFNull) return ;
-    
-    @udWeakify(self);
-    [self.chatViewModel sendLocationMessage:locationModel completion:^(UdeskMessage *message) {
-        //处理发送结果UI
-        @udStrongify(self);
-        [self updateMessageStatus:message];
-    }];
-}
-
-#pragma mark - 发送商品信息
-- (void)sendGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel {
-    if (!goodsModel || goodsModel == (id)kCFNull) return ;
-    
-    @udWeakify(self);
-    [self.chatViewModel sendGoodsMessage:goodsModel completion:^(UdeskMessage *message) {
-        //处理发送结果UI
-        @udStrongify(self);
-        [self updateMessageStatus:message];
-    }];
-}
-
-//根据发送状态更新UI
-- (void)updateMessageStatus:(UdeskMessage *)message {
-    if (!message || message == (id)kCFNull) return ;
-    
-    switch (message.messageStatus) {
-        case UDMessageSendStatusSuccess:
-            
-            //更新UI
-            [self updateChatMessageUI:message];
-            break;
-        case UDMessageSendStatusFailed:
-        case UDMessageSendStatusOffSending:
-            
-            if (self.chatInputToolBar.agent.code == UDAgentStatusResultLeaveMessage ||
-                self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
-                [self updateChatMessageUI:message];
-                break;
-            }
-            
-            //开启重发
-            [self beginResendMessage:message];
-            
-            break;
-            
-        default:
-            break;
-    }
-}
-
-//根据发送状态更新UI
-- (void)updateChatMessageUI:(UdeskMessage *)message {
-    
-    @try {
-        
-        NSArray *messageArray = self.chatViewModel.messagesArray;
-        
-        for (UdeskBaseMessage *baseMessage in messageArray) {
-            if (![baseMessage isKindOfClass:[UdeskBaseMessage class]]) return ;
-            
-            if ([baseMessage.message.messageId isEqualToString:message.messageId]) {
-                
-                baseMessage.message.messageStatus = message.messageStatus;
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.chatViewModel.messagesArray indexOfObject:baseMessage] inSection:0];
-                
-                UdeskBaseCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
-                [cell updateMessageSendStatus:baseMessage.message.messageStatus];
-            }
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
-}
-
-//开始重发
-- (void)beginResendMessage:(UdeskMessage *)message {
-    
-    [self.chatViewModel addResendMessageToArray:message];
-    //开启重发
-    @udWeakify(self);
-    [self.chatViewModel autoResendFailedMessageWithProgress:^(NSString *key, float percent) {
-        
-        //更新进度
-        @udStrongify(self);
-        [self updateVideoPercentButtonTitle:key progress:percent sendStatus:UDMessageSendStatusSending];
-        
-    } completion:^(UdeskMessage *failedMessage) {
-        
-        //发送成功删除失败消息数组里的消息
-        @udStrongify(self);
-        if (failedMessage.messageStatus == UDMessageSendStatusSuccess) {
-            [self.chatViewModel removeResendMessageInArray:failedMessage];
-        }
-        //根据发送状态更新UI
-        [self updateChatMessageUI:message];
-        if (failedMessage.messageType == UDMessageContentTypeVideo) {
-            //更新进度
-            [self updateVideoPercentButtonTitle:message.messageId
-                                       progress:failedMessage.messageStatus == UDMessageSendStatusSuccess?1:0
-                                     sendStatus:failedMessage.messageStatus];
-        }
-    }];
-}
-
-#pragma mark - @protocol UdeskEmojiKeyboardControlDelegate
-- (void)emojiViewDidPressEmojiWithResource:(NSString *)resource {
-    if (!resource || resource == (id)kCFNull) return ;
-    
-    if ([self.chatInputToolBar.chatTextView.textColor isEqual:[UIColor lightGrayColor]] && [self.chatInputToolBar.chatTextView.text isEqualToString:getUDLocalizedString(@"udesk_typing")]) {
-        self.chatInputToolBar.chatTextView.text = nil;
-        self.chatInputToolBar.chatTextView.textColor = [UIColor blackColor];
-    }
-    self.chatInputToolBar.chatTextView.text = [self.chatInputToolBar.chatTextView.text stringByAppendingString:resource];
-}
-
-- (void)emojiViewDidPressStickerWithResource:(NSString *)resource {
-    if (!resource || resource == (id)kCFNull) return ;
-    
-    [self sendGIFMessageWithGIFData:[NSData dataWithContentsOfURL:[NSURL fileURLWithPath:resource]]];
-}
-
-- (void)emojiViewDidPressDelete {
-    
-    if (self.chatInputToolBar.chatTextView.text.length > 0) {
-        NSRange lastRange = [self.chatInputToolBar.chatTextView.text rangeOfComposedCharacterSequenceAtIndex:self.chatInputToolBar.chatTextView.text.length-1];
-        self.chatInputToolBar.chatTextView.text = [self.chatInputToolBar.chatTextView.text substringToIndex:lastRange.location];
-    }
-}
-
-- (void)emojiViewDidPressSend {
-    
-    [self sendTextMessageWithContent:self.chatInputToolBar.chatTextView.text];
-}
-
-#pragma mark - UdeskChatToolBarMoreViewDelegate
+#pragma mark - @protocol UdeskChatToolBarMoreViewDelegate
 //点击默认的按钮
 - (void)didSelectMoreMenuItem:(UdeskChatToolBarMoreView *)moreMenuItem itemType:(UdeskChatToolBarMoreType)itemType {
     
@@ -1181,15 +520,8 @@
 //开始视频
 - (void)startUdeskVideoCall {
     
-#if __has_include(<UdeskCall/UdeskCall.h>)
     [self.chatInputToolBar.chatTextView resignFirstResponder];
-    [self callingView];
-    //邀请
-    [[UdeskCallSessionManager sharedManager] inviteVideo];
-    [UIView animateWithDuration:0.35 animations:^{
-        self.callingView.udTop = 0;
-    }];
-#endif
+    [self.chatViewModel startUdeskVideoCall];
 }
 
 //开始定位
@@ -1213,10 +545,9 @@
 
 //评价客服
 - (void)servicesFeedbackSurveyWithAgentId:(NSString *)agentId {
-    if (!agentId || agentId == (id)kCFNull) return ;
     
-    [UdeskManager checkHasSurveyWithAgentId:agentId completion:^(NSString *hasSurvey, NSError *error) {
-        if ([hasSurvey boolValue]) {
+    [UdeskSurveyManager checkHasSurveyWithAgentId:agentId isRobotSession:self.moreView.isRobotSession completion:^(BOOL hasSurvey, NSError *error) {
+        if (hasSurvey) {
             [UdeskTopAlertView showAlertType:UDAlertTypeOrange withMessage:getUDLocalizedString(@"udesk_has_survey") parentView:self.view];
         }
         else {
@@ -1227,9 +558,8 @@
 
 //显示满意度评价
 - (void)showSurveyViewWithAgentId:(NSString *)agentId {
-    if (!agentId || agentId == (id)kCFNull) return ;
     
-    UdeskSurveyView *surveyView = [[UdeskSurveyView alloc] initWithAgentId:agentId imSubSessionId:[NSString stringWithFormat:@"%ld",self.chatInputToolBar.agent.imSubSessionId]];
+    UdeskSurveyView *surveyView = [[UdeskSurveyView alloc] initWithAgentId:agentId imSubSessionId:[NSString stringWithFormat:@"%ld",(long)self.chatInputToolBar.agent.imSubSessionId] isRobotSession:self.moreView.isRobotSession];
     [surveyView show];
 }
 
@@ -1252,31 +582,6 @@
         
         [self sendImageWithSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     }];
-}
-
-#pragma mark - @protocol UdeskImagePickerControllerDelegate
-// 如果选择发送了图片，下面的handle会被执行
-- (void)imagePickerController:(UdeskImagePickerController *)picker didFinishPickingPhotos:(NSArray<UIImage *> *)photos {
-    
-    for (UIImage *image in photos) {
-        [self sendImageMessageWithImage:image];
-    }
-}
-
-// 如果选择发送了视频，下面的handle会被执行
-- (void)imagePickerController:(UdeskImagePickerController *)picker didFinishPickingVideos:(NSArray<NSString *> *)videoPaths {
-    
-    for (NSString *path in videoPaths) {
-        [self sendVideoMessageWithVideoFile:path];
-    }
-}
-
-// 如果选择发送了gif图片，下面的handle会被执行
-- (void)imagePickerController:(UdeskImagePickerController *)picker didFinishPickingGIFImages:(NSArray<NSData *> *)gifImages {
-    
-    for (NSData *data in gifImages) {
-        [self sendGIFMessageWithGIFData:data];
-    }
 }
 
 //开启用户相机
@@ -1305,6 +610,31 @@
         
         [self sendImageWithSourceType:UIImagePickerControllerSourceTypeCamera];
     }];
+}
+
+#pragma mark - @protocol UdeskImagePickerControllerDelegate
+// 如果选择发送了图片，下面的handle会被执行
+- (void)imagePickerController:(UdeskImagePickerController *)picker didFinishPickingPhotos:(NSArray<UIImage *> *)photos {
+    
+    for (UIImage *image in photos) {
+        [self sendImageMessageWithImage:image];
+    }
+}
+
+// 如果选择发送了视频，下面的handle会被执行
+- (void)imagePickerController:(UdeskImagePickerController *)picker didFinishPickingVideos:(NSArray<NSString *> *)videoPaths {
+    
+    for (NSString *path in videoPaths) {
+        [self sendVideoMessageWithVideoFile:path];
+    }
+}
+
+// 如果选择发送了gif图片，下面的handle会被执行
+- (void)imagePickerController:(UdeskImagePickerController *)picker didFinishPickingGIFImages:(NSArray<NSData *> *)gifImages {
+    
+    for (NSData *data in gifImages) {
+        [self sendGIFMessageWithGIFData:data];
+    }
 }
 
 #pragma mark - @protocol UdeskSmallVideoViewControllerDelegate
@@ -1355,12 +685,517 @@
                                                    compledVideo:PickerMediaVideoBlock];
 }
 
-//点击返回
+
+#pragma mark - @protocol TableViewDataSource
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.chatViewModel.messagesArray.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.row >= self.chatViewModel.messagesArray.count) {
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ErrorMessagesArray"];
+        return cell;
+    }
+    
+    id message = self.chatViewModel.messagesArray[indexPath.row];
+
+    NSString *messageModelName = NSStringFromClass([message class]);
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:messageModelName];
+    
+    if (!cell) {
+        
+        if ([message isKindOfClass:[UdeskBaseMessage class]]) {
+            cell = [(UdeskBaseMessage *)message getCellWithReuseIdentifier:messageModelName];
+        }
+        else {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ErrorMessagesArray"];
+        }
+        
+        if ([cell isKindOfClass:[UdeskBaseCell class]]) {
+            UdeskBaseCell *chatCell = (UdeskBaseCell *)cell;
+            chatCell.delegate = self;
+        }
+    }
+    
+    if (![cell isKindOfClass:[UdeskBaseCell class]]) {
+        return cell;
+    }
+    
+    [(UdeskBaseCell*)cell updateCellWithMessage:message];
+    
+    return cell;
+}
+
+#pragma mark - @protocol TableViewDelegate
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.row >= self.chatViewModel.messagesArray.count) {
+        return 44;
+    }
+    
+    UdeskBaseMessage *message = self.chatViewModel.messagesArray[indexPath.row];
+    if ([message isKindOfClass:[UdeskBaseMessage class]]) {
+        if (message.cellHeight) {
+            return message.cellHeight;
+        }
+        else {
+            return 44;
+        }
+    }
+    else {
+        return 44;
+    }
+}
+
+//滑动table
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
+    //滑动表隐藏Menu
+    UIMenuController *menu = [UIMenuController sharedMenuController];
+    if (menu.isMenuVisible) {
+        [menu setMenuVisible:NO animated:YES];
+    }
+
+    if (self.chatInputToolBar.chatInputType != UdeskChatInputTypeNormal) {
+        [self layoutOtherMenuViewHiden:YES];
+    }
+    [self.chatInputToolBar resetAllButtonSelectedStatus];
+}
+
+//下拉加载更多数据
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if (scrollView.contentOffset.y<0 && self.messageTableView.isRefresh) {
+        //开始刷新
+        [self.messageTableView startLoadingMoreMessages];
+        //获取更多数据
+        [self.chatViewModel fetchNextPageMessages];
+        //延迟1.5，提高用户体验
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //关闭刷新、刷新数据
+            [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
+        });
+    }
+}
+
+#pragma mark - @protocol UdeskCellDelegate
+- (void)didTapChatImageView {
+    [self.view endEditing:YES];
+}
+
+//再次呼叫
+- (void)didTapUdeskVideoCallMessage:(UdeskMessage *)message {
+    [self startUdeskVideoCall];
+}
+
+//结构化消息
+- (void)didTapStructMessageButtonWithValue:(NSString *)value callbackName:(NSString *)callbackName {
+
+    if (self.sdkConfig.actionConfig.structMessageClickBlock) {
+        self.sdkConfig.actionConfig.structMessageClickBlock(value,callbackName);
+    }
+}
+
+//点击商品消息
+- (void)didTapGoodsMessageWithURL:(NSString *)goodsURL goodsId:(NSString *)goodsId {
+    
+    if (self.sdkConfig.actionConfig.goodsMessageClickBlock) {
+        self.sdkConfig.actionConfig.goodsMessageClickBlock(self,goodsURL,goodsId);
+    }
+}
+
+//查看地理位置
+- (void)didTapLocationMessage:(UdeskMessage *)message {
+
+    UdeskLocationModel *model = [UdeskMessageUtil locationModelWithMessage:message];
+    //用户自己选择回调方式定位
+    if (self.sdkConfig.actionConfig.locationMessageClickBlock) {
+        self.sdkConfig.actionConfig.locationMessageClickBlock(self,model);
+        return;
+    }
+    
+    UdeskLocationViewController *location = [[UdeskLocationViewController alloc] initWithSDKConfig:self.sdkConfig hasSend:YES];
+    location.locationModel = model;
+    [self presentViewController:location animated:YES completion:nil];
+}
+
+//点击重发消息
+- (void)didResendMessage:(UdeskMessage *)resendMessage {
+
+    @udWeakify(self);
+    [self.chatViewModel resendMessageWithMessage:resendMessage progress:^(float percent) {
+        
+        //更新进度
+        @udStrongify(self);
+        [self updateUploadProgress:percent messageId:resendMessage.messageId sendStatus:UDMessageSendStatusSending];
+        
+    } completion:^(UdeskMessage *message) {
+        //处理发送结果UI
+        @udStrongify(self);
+        [self updateChatMessageUI:message];
+    }];
+}
+
+//点击留言
+- (void)didTapLeaveMessageButton:(UdeskMessage *)message {
+    [self.chatViewModel leaveMessageTapAction];
+}
+
+//点击常见问题
+- (void)didSendRobotMessage:(UdeskMessage *)message {
+    
+    @udWeakify(self);
+    [self.chatViewModel sendRobotMessage:message completion:^(UdeskMessage *message) {
+        @udStrongify(self);
+        [self updateChatMessageUI:message];
+    }];
+}
+
+//点击消息转人工
+- (void)didTapTransferAgentServer:(UdeskMessage *)message {
+    
+    [self transferToAgentServer];
+}
+
+//答案已评价
+- (void)aswerHasSurvey {
+    
+    [UdeskTopAlertView showAlertType:UDAlertTypeOrange withMessage:getUDLocalizedString(@"udesk_answer_has_survey") parentView:self.view];
+}
+
+//刷新
+- (void)reloadTableViewAtCell:(UITableViewCell *)cell {
+    
+    [self reloadChatTableView];
+}
+
+#pragma mark - @protocol UIGestureRecognizerDelegate
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([touch.view isKindOfClass:[UILabel class]]){
+        return NO;
+    }
+    return YES;
+}
+
+#pragma mark - 发送文字
+- (void)sendTextMessageWithContent:(NSString *)content {
+    if (!content || content == (id)kCFNull) return ;
+    
+    @udWeakify(self);
+    [self.chatViewModel sendTextMessage:content completion:^(UdeskMessage *message) {
+
+        @udStrongify(self);
+        [self updateMessageStatus:message];
+    }];
+    
+    [self.chatInputToolBar.chatTextView setText:nil];
+    self.robotTipsView.alpha = 0;
+}
+
+#pragma mark - 发送图片
+- (void)sendImageMessageWithImage:(UIImage *)image {
+    if (!image || image == (id)kCFNull) return ;
+    
+    @udWeakify(self);
+    [self.chatViewModel sendImageMessage:image progress:^(NSString *key,float progress){
+        
+        @udStrongify(self);
+        [self updateUploadProgress:progress messageId:key sendStatus:UDMessageSendStatusSending];
+        
+    } completion:^(UdeskMessage *message) {
+
+        @udStrongify(self);
+        [self updateMessageStatus:message];
+        [self updateUploadProgress:message.messageStatus == UDMessageSendStatusSuccess?1:0 messageId:message.messageId sendStatus:message.messageStatus];
+    }];
+}
+
+//发送GIF图片
+- (void)sendGIFMessageWithGIFData:(NSData *)gifData {
+    if (!gifData || gifData == (id)kCFNull) return ;
+    
+    @udWeakify(self);
+    [self.chatViewModel sendGIFImageMessage:gifData progress:^(NSString *key,float progress){
+        
+        @udStrongify(self);
+        [self updateUploadProgress:progress messageId:key sendStatus:UDMessageSendStatusSending];
+        
+    } completion:^(UdeskMessage *message) {
+
+        @udStrongify(self);
+        [self updateMessageStatus:message];
+        [self updateUploadProgress:message.messageStatus == UDMessageSendStatusSuccess?1:0 messageId:message.messageId sendStatus:message.messageStatus];
+    }];
+}
+
+#pragma mark - 发送视频
+- (void)sendVideoMessageWithVideoFile:(NSString *)videoFile {
+    if (!videoFile || videoFile == (id)kCFNull) return ;
+    if (![videoFile isKindOfClass:[NSString class]]) return ;
+    
+    NSData *videoData = [NSData dataWithContentsOfFile:videoFile];
+    if (!videoData || videoData == (id)kCFNull) {
+        videoData = [NSData dataWithContentsOfURL:[NSURL URLWithString:videoFile]];
+    }
+
+    if (!videoData || videoData == (id)kCFNull) return ;
+    if (![videoData isKindOfClass:[NSData class]]) return ;
+    
+    @udWeakify(self);
+    [self.chatViewModel sendVideoMessage:videoData progress:^(NSString *key,float progress){
+    
+        @udStrongify(self);
+        [self updateUploadProgress:progress messageId:key sendStatus:UDMessageSendStatusSending];
+        
+    } completion:^(UdeskMessage *message) {
+        
+        @udStrongify(self);
+        [self updateMessageStatus:message];
+        [self updateUploadProgress:message.messageStatus == UDMessageSendStatusSuccess?1:0 messageId:message.messageId sendStatus:message.messageStatus];
+    }];
+}
+
+#pragma mark - 发送语音
+- (void)sendVoiceMessageWithVoicePath:(NSString *)voicePath voiceDuration:(NSString *)voiceDuration {
+    if (!voicePath || voicePath == (id)kCFNull) return ;
+    if (!voiceDuration || voiceDuration == (id)kCFNull) return ;
+    
+    @udWeakify(self);
+    [self.chatViewModel sendVoiceMessage:voicePath voiceDuration:voiceDuration completion:^(UdeskMessage *message) {
+        
+        @udStrongify(self);
+        [self updateMessageStatus:message];
+    }];
+}
+
+#pragma mark - 发送位置信息
+- (void)sendLoactionMessageWithModel:(UdeskLocationModel *)locationModel {
+    if (!locationModel || locationModel == (id)kCFNull) return ;
+    
+    @udWeakify(self);
+    [self.chatViewModel sendLocationMessage:locationModel completion:^(UdeskMessage *message) {
+        
+        @udStrongify(self);
+        [self updateMessageStatus:message];
+    }];
+}
+
+#pragma mark - 发送商品信息
+- (void)sendGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel {
+    if (!goodsModel || goodsModel == (id)kCFNull) return ;
+    
+    @udWeakify(self);
+    [self.chatViewModel sendGoodsMessage:goodsModel completion:^(UdeskMessage *message) {
+        
+        @udStrongify(self);
+        [self updateMessageStatus:message];
+    }];
+}
+
+#pragma mark - 更新消息状态
+//根据发送状态更新UI
+- (void)updateMessageStatus:(UdeskMessage *)message {
+    if (!message || message == (id)kCFNull) return ;
+    
+    switch (message.messageStatus) {
+        case UDMessageSendStatusSuccess:
+            
+            [self updateChatMessageUI:message];
+            break;
+        case UDMessageSendStatusFailed:
+        case UDMessageSendStatusOffSending:
+            
+            if (self.chatInputToolBar.agent.code == UDAgentStatusResultLeaveMessage ||
+                self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
+                [self updateChatMessageUI:message];
+                break;
+            }
+            
+            //开启重发
+            [self beginResendMessage:message];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+//根据发送状态更新UI
+- (void)updateChatMessageUI:(UdeskMessage *)message {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        @try {
+            
+            NSArray *messageArray = self.chatViewModel.messagesArray;
+            
+            for (UdeskBaseMessage *baseMessage in messageArray) {
+                if (![baseMessage isKindOfClass:[UdeskBaseMessage class]]) return ;
+                
+                if ([baseMessage.message.messageId isEqualToString:message.messageId]) {
+                    
+                    baseMessage.message.messageStatus = message.messageStatus;
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.chatViewModel.messagesArray indexOfObject:baseMessage] inSection:0];
+                    
+                    UdeskBaseCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
+                    [cell updateMessageSendStatus:baseMessage.message.messageStatus];
+                }
+            }
+            
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
+        }
+    });
+}
+
+//更新上传进度
+- (void)updateUploadProgress:(float)progress messageId:(NSString *)messageId sendStatus:(UDMessageSendStatus)sendStatus {
+        
+    dispatch_async(dispatch_get_main_queue(), ^{
+        @try {
+            
+            NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
+            UdeskBaseCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
+            
+            if ([cell isKindOfClass:[UdeskImageCell class]]) {
+                UdeskImageCell *imageCell = (UdeskImageCell *)cell;
+                if (progress == 1.0f || sendStatus == UDMessageSendStatusSuccess) {
+                    [imageCell uploadImageSuccess];
+                }
+                else {
+                    [imageCell imageUploading];
+                    imageCell.progressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
+                }
+            }
+            else if ([cell isKindOfClass:[UdeskVideoCell class]]) {
+                UdeskVideoCell *videoCell = (UdeskVideoCell *)cell;
+                if (progress == 1.0f || sendStatus == UDMessageSendStatusSuccess) {
+                    [videoCell uploadVideoSuccess];
+                    [videoCell updateMessageSendStatus:UDMessageSendStatusSuccess];
+                }
+                else {
+                    videoCell.uploadProgressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
+                }
+            }
+            
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
+        }
+    });
+}
+
+#pragma mark - 自动重发
+- (void)beginResendMessage:(UdeskMessage *)message {
+    
+    [self.chatViewModel addResendMessageToArray:message];
+    @udWeakify(self);
+    [self.chatViewModel autoResendFailedMessageWithProgress:^(float percent) {
+        
+        @udStrongify(self);
+        [self updateUploadProgress:percent messageId:message.messageId sendStatus:UDMessageSendStatusSending];
+        
+    } completion:^(UdeskMessage *failedMessage) {
+        
+        //发送成功删除失败消息数组里的消息
+        @udStrongify(self);
+        if (failedMessage.messageStatus == UDMessageSendStatusSuccess) {
+            [self.chatViewModel removeResendMessageInArray:failedMessage];
+        }
+
+        [self updateChatMessageUI:message];
+        [self updateUploadProgress:failedMessage.messageStatus == UDMessageSendStatusSuccess?1:0 messageId:message.messageId sendStatus:failedMessage.messageStatus];
+    }];
+}
+
+#pragma mark - @protocol UdeskEmojiKeyboardControlDelegate
+//点击默认表情
+- (void)emojiViewDidPressEmojiWithResource:(NSString *)resource {
+    if (!resource || resource == (id)kCFNull) return ;
+    
+    if ([self.chatInputToolBar.chatTextView.textColor isEqual:[UIColor lightGrayColor]] &&
+        [self.chatInputToolBar.chatTextView.text isEqualToString:getUDLocalizedString(@"udesk_typing")]) {
+        self.chatInputToolBar.chatTextView.text = nil;
+        self.chatInputToolBar.chatTextView.textColor = [UIColor blackColor];
+    }
+    self.chatInputToolBar.chatTextView.text = [self.chatInputToolBar.chatTextView.text stringByAppendingString:resource];
+}
+
+//点击自定义表情
+- (void)emojiViewDidPressStickerWithResource:(NSString *)resource {
+    if (!resource || resource == (id)kCFNull) return ;
+    
+    NSData *imageData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:resource]];
+    NSString *imageType = [UdeskImageUtil contentTypeForImageData:imageData];
+    if ([imageType isEqualToString:@"gif"]) {
+        [self sendGIFMessageWithGIFData:imageData];
+    }
+    else {
+        [self sendImageMessageWithImage:[UIImage imageWithData:imageData]];
+    }
+}
+
+//删除表情
+- (void)emojiViewDidPressDelete {
+    
+    if (self.chatInputToolBar.chatTextView.text.length > 0) {
+        NSRange lastRange = [self.chatInputToolBar.chatTextView.text rangeOfComposedCharacterSequenceAtIndex:self.chatInputToolBar.chatTextView.text.length-1];
+        self.chatInputToolBar.chatTextView.text = [self.chatInputToolBar.chatTextView.text substringToIndex:lastRange.location];
+    }
+}
+
+//发送表情
+- (void)emojiViewDidPressSend {
+    
+    [self sendTextMessageWithContent:self.chatInputToolBar.chatTextView.text];
+}
+
+#pragma mark - 导航栏右侧按钮事件
+- (void)didSelectNavigationRightButton {
+    
+    [self transferToAgentServer];
+}
+
+//转人工
+- (void)transferToAgentServer {
+    
+    //开通了导航栏
+    if (self.sdkSetting.enableImGroup.boolValue) {
+     
+        [UdeskManager fetchAgentMenu:^(id responseObject, NSError *error) {
+            
+            if (error) return ;
+            NSArray *result = [responseObject objectForKey:@"result"];
+            //有设置客服导航栏
+            if (result.count) {
+                
+                UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:self.sdkConfig];
+                UdeskAgentMenuViewController *agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:self.sdkConfig setting:self.sdkSetting];
+                agentMenu.menuDataSource = result;
+                @udWeakify(self);
+                agentMenu.didSelectAgentGroupServerBlock = ^{
+                    @udStrongify(self);
+                    self.titleView.titleLabel.text = getUDLocalizedString(@"udesk_connecting");
+                    [self.chatViewModel transferToAgentServer];
+                };
+                [show presentOnViewController:self udeskViewController:agentMenu transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+            }
+        }];
+        return;
+    }
+    
+    self.titleView.titleLabel.text = getUDLocalizedString(@"udesk_connecting");
+    [self.chatViewModel transferToAgentServer];
+}
+
+#pragma mark - 返回页面事件
 - (void)dismissChatViewController {
     
     //隐藏键盘
     [self.chatInputToolBar.chatTextView resignFirstResponder];
-    if (self.sdkSetting) {
+    if (self.sdkSetting && !self.chatInputToolBar.isRobotSession) {
         [self checkInvestigationWhenLeave];
     }
     else {
@@ -1402,7 +1237,7 @@
     }
     
     //检查是否已经评价
-    [UdeskManager checkHasSurveyWithAgentId:self.chatInputToolBar.agent.agentId completion:^(NSString *hasSurvey, NSError *error) {
+    [UdeskManager checkHasSurveyWithAgentId:self.chatInputToolBar.agent.agentId completion:^(BOOL hasSurvey,NSError *error) {
         
         //失败
         if (error) {
@@ -1410,7 +1245,7 @@
             return ;
         }
         //还未评价
-        if (![hasSurvey boolValue]) {
+        if (!hasSurvey) {
             //标记满意度只显示一次
             self.backAlreadyDisplayedSurvey = YES;
             [self showSurveyViewWithAgentId:self.chatInputToolBar.agent.agentId];
@@ -1445,8 +1280,6 @@
         }
     }
     
-    self.chatViewModel.isNotShowAlert = YES;
-    
     //离开页面放弃排队
     if (self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
         [UdeskManager quitQueueWithType:[self.sdkConfig quitQueueString]];
@@ -1455,59 +1288,266 @@
     [UdeskManager cancelAllOperations];
 }
 
-#pragma mark - 设置背景颜色
-- (void)setBackgroundColor {
-    
-    self.view.backgroundColor = self.sdkConfig.sdkStyle.chatViewControllerBackGroundColor;
-    self.messageTableView.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
-}
-
 #pragma mark - 监听键盘通知做出相应的操作
 - (void)subscribeToKeyboard {
 
     @udWeakify(self);
     [self udSubscribeKeyboardWithBeforeAnimations:nil animations:^(CGRect keyboardRect, NSTimeInterval duration, BOOL isShowing) {
 
-        @try {
-            
-            @udStrongify(self);
-            if (self.chatInputToolBar.chatInputType == UdeskChatInputTypeText) {
-                //计算键盘的Y
-                CGFloat keyboardY = [self.view convertRect:keyboardRect fromView:nil].origin.y;
-                CGRect inputViewFrame = self.chatInputToolBar.frame;
-                //底部功能栏需要的Y
-                CGFloat inputViewFrameY = keyboardY - inputViewFrame.size.height + (udIsIPhoneXSeries?34:0);
-                //tableview的bottom
-                CGFloat messageViewFrameBottom = self.view.frame.size.height - inputViewFrame.size.height;
-                if (inputViewFrameY > messageViewFrameBottom)
-                    inputViewFrameY = messageViewFrameBottom;
-                //改变底部功能栏frame
-                self.chatInputToolBar.frame = CGRectMake(inputViewFrame.origin.x,
-                                                 inputViewFrameY,
-                                                 inputViewFrame.size.width,
-                                                 inputViewFrame.size.height);
-                
-                //改变tableview frame
-                [self.messageTableView setTableViewInsetsWithBottomValue:self.view.frame.size.height
-                 - self.chatInputToolBar.frame.origin.y];
-                
-                if (isShowing) {
-                    [self.messageTableView scrollToBottomAnimated:NO];
-                    self.emojiKeyboard.alpha = 0.0;
-                    self.moreView.alpha = 0.0;
-                } else {
-                    
-                    [self.chatInputToolBar.chatTextView resignFirstResponder];
-                }
+        @udStrongify(self);
+        if (self.chatInputToolBar.chatInputType == UdeskChatInputTypeText) {
+            //计算键盘的Y
+            CGFloat keyboardY = [self.view convertRect:keyboardRect fromView:nil].origin.y;
+            CGRect inputViewFrame = self.chatInputToolBar.frame;
+            //底部功能栏需要的Y
+            CGFloat inputViewFrameY = keyboardY - inputViewFrame.size.height + (udIsIPhoneXSeries?34:0);
+            //tableview的bottom
+            CGFloat messageViewFrameBottom = self.view.udHeight - inputViewFrame.size.height;
+            if (inputViewFrameY > messageViewFrameBottom) {
+                inputViewFrameY = messageViewFrameBottom;
             }
+            //改变底部功能栏frame
+            self.chatInputToolBar.frame = CGRectMake(inputViewFrame.origin.x,inputViewFrameY, inputViewFrame.size.width, inputViewFrame.size.height);
+            //改变tableview frame
+            [self.messageTableView setTableViewInsetsWithBottomValue:self.view.udHeight - self.chatInputToolBar.udY];
             
-        } @catch (NSException *exception) {
-            NSLog(@"%@",exception);
-        } @finally {
+            if (isShowing) {
+                [self.messageTableView scrollToBottomAnimated:NO];
+                self.emojiKeyboard.alpha = 0.0;
+                self.moreView.alpha = 0.0;
+            } else {
+                [self.chatInputToolBar.chatTextView resignFirstResponder];
+            }
         }
-
+        
     } completion:nil];
+}
 
+#pragma mark - 显示功能面板
+- (void)layoutOtherMenuViewHiden:(BOOL)hide {
+    
+    //根据textViewInputViewType切换功能面板
+    self.robotTipsView.alpha = 0;
+    [self.chatInputToolBar.chatTextView resignFirstResponder];
+    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        __block CGRect inputViewFrame = self.chatInputToolBar.frame;
+        __block CGRect otherMenuViewFrame = CGRectMake(0, 0, 0, 0);
+        
+        CGFloat spacing = 0;
+        if (udIsIPhoneXSeries) {
+            spacing = 34;
+        }
+        
+        void (^InputViewAnimation)(BOOL hide) = ^(BOOL hide) {
+            inputViewFrame.origin.y = (hide ? (CGRectGetHeight(self.view.bounds) - CGRectGetHeight(inputViewFrame)) : (CGRectGetMinY(otherMenuViewFrame) - CGRectGetHeight(inputViewFrame)) + spacing);
+            self.chatInputToolBar.frame = inputViewFrame;
+        };
+        
+        void (^EmotionManagerViewAnimation)(BOOL hide) = ^(BOOL hide) {
+            otherMenuViewFrame = self.emojiKeyboard.frame;
+            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
+            self.emojiKeyboard.alpha = !hide;
+            self.emojiKeyboard.frame = otherMenuViewFrame;
+        };
+        
+        void (^MoreViewAnimation)(BOOL hide) = ^(BOOL hide) {
+            otherMenuViewFrame = self.moreView.frame;
+            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
+            self.moreView.alpha = !hide;
+            self.moreView.frame = otherMenuViewFrame;
+        };
+        
+        if (hide) {
+            switch (self.chatInputToolBar.chatInputType) {
+                case UdeskChatInputTypeEmotion: {
+                    EmotionManagerViewAnimation(hide);
+                    break;
+                }
+                case UdeskChatInputTypeText: {
+                    EmotionManagerViewAnimation(hide);
+                    MoreViewAnimation(hide);
+                    break;
+                }
+                case UdeskChatInputTypeMore: {
+                    MoreViewAnimation(hide);
+                    break;
+                }
+                case UdeskChatInputTypeVoice: {
+                    EmotionManagerViewAnimation(hide);
+                    MoreViewAnimation(hide);
+                    break;
+                }
+                default:
+                    break;
+            }
+        } else {
+            
+            switch (self.chatInputToolBar.chatInputType) {
+                case UdeskChatInputTypeEmotion: {
+                    MoreViewAnimation(!hide);
+                    EmotionManagerViewAnimation(hide);
+                    break;
+                }
+                case UdeskChatInputTypeVoice: {
+                    EmotionManagerViewAnimation(!hide);
+                    MoreViewAnimation(!hide);
+                    break;
+                }
+                case UdeskChatInputTypeText: {
+                    EmotionManagerViewAnimation(!hide);
+                    MoreViewAnimation(!hide);
+                    break;
+                }
+                case UdeskChatInputTypeMore: {
+                    EmotionManagerViewAnimation(!hide);
+                    MoreViewAnimation(hide);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+        
+        InputViewAnimation(hide);
+        
+        [self.messageTableView setTableViewInsetsWithBottomValue:self.view.udHeight - self.chatInputToolBar.udY];
+        [self.messageTableView scrollToBottomAnimated:NO];
+        
+    } completion:^(BOOL finished) {
+        
+        if (hide) {
+            self.chatInputToolBar.chatInputType = UdeskChatInputTypeNormal;
+        }
+    }];
+}
+
+#pragma mark - @protocol UdeskRecognizerViewDelegate
+- (void)didSendRecognizerVoiceResultText:(NSString *)resultText {
+    [self sendTextMessageWithContent:resultText];
+}
+
+#pragma mark - lazy
+//标题栏
+- (UdeskChatTitleView *)titleView {
+    if (!_titleView) {
+        CGFloat titleViewWidth = UD_SCREEN_WIDTH>320?220:185;
+        _titleView = [[UdeskChatTitleView alloc] initWithFrame:CGRectMake(0, 0, titleViewWidth, 44)];
+    }
+    return _titleView;
+}
+
+//表情
+- (UdeskEmojiKeyboardControl *)emojiKeyboard {
+    if (!_emojiKeyboard) {
+        _emojiKeyboard = [[UdeskEmojiKeyboardControl alloc] init];
+        _emojiKeyboard.delegate = self;
+        _emojiKeyboard.backgroundColor = self.sdkConfig.sdkStyle.chatViewControllerBackGroundColor;
+        _emojiKeyboard.alpha = 0.0;
+        [self.view addSubview:_emojiKeyboard];
+    }
+    return _emojiKeyboard;
+}
+
+//更多
+- (UdeskChatToolBarMoreView *)moreView {
+    if (!_moreView) {
+        _moreView = [[UdeskChatToolBarMoreView alloc] initWithEnableSurvey:self.sdkSetting.enableImSurvey.boolValue enableVideoCall:self.sdkSetting.sdkVCall.boolValue];
+        _moreView.backgroundColor = self.sdkConfig.sdkStyle.chatViewControllerBackGroundColor;
+        _moreView.alpha = 0.0;
+        _moreView.delegate = self;
+        [self.view addSubview:_moreView];
+    }
+    return _moreView;
+}
+
+//机器人提示
+- (UdeskRobotTipsView *)robotTipsView {
+    if (!_robotTipsView) {
+        _robotTipsView = [[UdeskRobotTipsView alloc] initWithFrame:CGRectMake(0, UD_SCREEN_HEIGHT, UD_SCREEN_WIDTH, 0) chatInputToolBar:self.chatInputToolBar];
+        @udWeakify(self);
+        _robotTipsView.didTapRobotTipsBlock = ^(UdeskMessage *message) {
+            @udStrongify(self);
+            [self.chatInputToolBar.chatTextView setText:nil];
+            [self.chatViewModel sendRobotMessage:message completion:^(UdeskMessage *message) {
+                [self updateChatMessageUI:message];
+            }];
+        };
+        [self.view addSubview:_robotTipsView];
+    }
+    return _robotTipsView;
+}
+
+//图片选择器
+- (UdeskImagePicker *)photographyHelper {
+    if (!_photographyHelper) {
+        _photographyHelper = [[UdeskImagePicker alloc] init];
+    }
+    return _photographyHelper;
+}
+
+//机器人录音
+- (UdeskSpeechRecognizerView *)recognizerView {
+    if (!_recognizerView) {
+        _recognizerView = [[UdeskSpeechRecognizerView alloc] init];
+        _recognizerView.delegate = self;
+    }
+    return _recognizerView;
+}
+
+//录音动画
+- (UdeskVoiceRecordView *)voiceRecordView {
+    if (!_voiceRecordView) {
+        _voiceRecordView = [[UdeskVoiceRecordView alloc] initWithFrame:CGRectMake(0, 0, 150, 150)];
+    }
+    return _voiceRecordView;
+}
+
+//咨询对象
+- (UdeskProductView *)productView {
+    if (!_productView) {
+        _productView = [[UdeskProductView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, kUDProductHeight)];
+        @udWeakify(self);
+        _productView.didTapProductSendBlock = ^(NSString *productURL) {
+            @udStrongify(self);
+            //发送咨询对象URL
+            if (self.sdkConfig.actionConfig.productMessageSendLinkClickBlock) {
+                self.sdkConfig.actionConfig.productMessageSendLinkClickBlock(self,self.sdkConfig.productDictionary);
+            }
+            else {
+                [self sendTextMessageWithContent:productURL];
+            }
+        };
+        [self.view addSubview:_productView];
+    }
+    return _productView;
+}
+
+//录音
+- (UdeskVoiceRecord *)voiceRecordHelper {
+    if (!_voiceRecordHelper) {
+        _isMaxTimeStop = NO;
+        @udWeakify(self);
+        _voiceRecordHelper = [[UdeskVoiceRecord alloc] init];
+        _voiceRecordHelper.maxTimeStopRecorderCompletion = ^{
+            @udStrongify(self);
+            self.isMaxTimeStop = YES;
+            [self.chatInputToolBar resetRecordButton];
+            [self finishRecorded];
+        };
+        
+        _voiceRecordHelper.peakPowerForChannel = ^(float peakPowerForChannel) {
+            @udStrongify(self);
+            self.voiceRecordView.peakPower = peakPowerForChannel;
+        };
+        
+        _voiceRecordHelper.tooShortRecorderFailue = ^{
+            @udStrongify(self);
+            [self.voiceRecordView speakDurationTooShort];
+        };
+        
+        _voiceRecordHelper.maxRecordTime = kUdeskVoiceRecorderTotalTime;
+    }
+    return _voiceRecordHelper;
 }
 
 - (void)viewDidLayoutSubviews {
@@ -1548,7 +1588,6 @@
 
 - (void)dealloc {
     
-    NSLog(@"UdeskSDK：%@释放了",[self class]);
     _messageTableView.delegate = nil;
     _messageTableView.dataSource = nil;
 }

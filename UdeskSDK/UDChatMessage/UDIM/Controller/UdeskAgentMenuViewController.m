@@ -40,20 +40,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.view.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
-    
-    if (self.sdkConfig.agentMenuTitle) {
-        self.title = self.sdkConfig.agentMenuTitle;
-    }
-    else {
-        self.title = getUDLocalizedString(@"udesk_choose_group");
-    }
-    
-    [self setAgentMenuScrollView];
+    [self setupUI];
 }
 
 #pragma mark - 设置MenuScrollView
-- (void)setAgentMenuScrollView {
+- (void)setupUI {
+    
+    self.view.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
+    self.title = [UdeskSDKUtil isBlankString:self.sdkConfig.agentMenuTitle] ? getUDLocalizedString(@"udesk_choose_group") : self.sdkConfig.agentMenuTitle;
     
     _agentMenuScrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     _agentMenuScrollView.udHeight -= [self getSpacing];
@@ -64,18 +58,7 @@
     _agentMenuScrollView.alwaysBounceHorizontal = NO;
     _agentMenuScrollView.pagingEnabled = YES;
     _agentMenuScrollView.scrollEnabled = NO;
-    
     [self.view addSubview:_agentMenuScrollView];
-}
-
-- (CGFloat)getSpacing {
-    
-    CGFloat spacing = 0;
-    if (udIsIPhoneXSeries) {
-        spacing = 34;
-    }
-    
-    return spacing;
 }
 
 #pragma mark - 请求客服组选择菜单
@@ -85,7 +68,7 @@
         
         for (NSDictionary *menuDict in result) {
             
-            UdeskAgentMenuModel *agentMenuModel = [[UdeskAgentMenuModel alloc] initWithContentsOfDic:menuDict];
+            UdeskAgentMenuModel *agentMenuModel = [[UdeskAgentMenuModel alloc] initModelWithJSON:menuDict];
             [self.allAgentMenuData addObject:agentMenuModel];
         }
         
@@ -99,7 +82,7 @@
                 [rootMenuArray addObject:agentMenuModel];
             }
             
-            tableViewCount += [agentMenuModel.has_next intValue];
+            tableViewCount += [agentMenuModel.hasNext intValue];
         }
         //根据最大的级数设置ScrollView.contentSize
         self.agentMenuScrollView.contentSize = CGSizeMake(tableViewCount*UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT);
@@ -129,7 +112,6 @@
         NSLog(@"%@",exception);
     } @finally {
     }
-
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -151,7 +133,7 @@
     
     if (tableView.tag == self.menuPage+100) {
         UdeskAgentMenuModel *agentMenuModel = self.agentMenuData[indexPath.row];
-        cell.textLabel.text = agentMenuModel.item_name;
+        cell.textLabel.text = agentMenuModel.itemName;
     }
     
     return cell;
@@ -170,27 +152,17 @@
         NSMutableArray *menuArray = [NSMutableArray array];
         
         //获取点击菜单选项的子集
-        UdeskAgentMenuModel *didSelectModel = self.agentMenuData[indexPath.row];
+        UdeskAgentMenuModel *menuModel = self.agentMenuData[indexPath.row];
         
-        if ([didSelectModel.group_id isKindOfClass:[NSNumber class]]) {
-            didSelectModel.group_id = [NSString stringWithFormat:@"%@",didSelectModel.group_id];
-        }
-        
-        if (didSelectModel.group_id.length > 0 && didSelectModel.group_id) {
-            
-            self.sdkConfig.groupId = didSelectModel.group_id;
-            //存储
-            [UdeskSDKUtil storeGroupId:didSelectModel.group_id];
-            UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:self.sdkConfig];
-            UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig setting:self.sdkSetting];
-            [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+        if (!menuModel.hasNext.boolValue) {
+            [self pushChatViewWithMenuId:menuModel.menuId];
         }
         else {
             
             self.menuPage ++;
             for (UdeskAgentMenuModel *allAgentMenuModel in self.allAgentMenuData) {
                 
-                if ([allAgentMenuModel.parentId isEqualToString:didSelectModel.menu_id]) {
+                if ([menuModel.parentId isEqualToString:menuModel.menuId]) {
                     [menuArray addObject:allAgentMenuModel];
                 }
             }
@@ -204,11 +176,11 @@
                 } completion:^(BOOL finished) {
                     
                     if ([UdeskSDKUtil isBlankString:self.pathString]) {
-                        self.pathString = [NSString stringWithFormat:@"   %@",didSelectModel.item_name];
+                        self.pathString = [NSString stringWithFormat:@"   %@",menuModel.itemName];
                     }
                     else {
                         self.pathString = [NSString stringWithFormat:@"%@ > ",self.pathString];
-                        self.pathString = [self.pathString stringByAppendingString:didSelectModel.item_name];
+                        self.pathString = [self.pathString stringByAppendingString:menuModel.itemName];
                     }
                     
                     self.agentMenuData = menuArray;
@@ -223,65 +195,63 @@
                 self.menuPage -- ;
             }
         }
+
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
+    }
+}
+
+- (void)pushChatViewWithMenuId:(NSString *)menuId {
+    
+    self.sdkConfig.menuId = menuId;
+    [UdeskSDKUtil storeMenuId:menuId];
+    
+    //UdeskChatViewController已经存在
+    if ([self.sdkConfig.udViewControllers containsObject:NSStringFromClass([UdeskChatViewController class])]) {
+        if (self.didSelectAgentGroupServerBlock) {
+            self.didSelectAgentGroupServerBlock();
+        }
+        [self dismissChatViewController];
+    }
+    else {
+        
+        UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:self.sdkConfig];
+        UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:self.sdkConfig setting:self.sdkSetting];
+        [show presentOnViewController:self udeskViewController:chat transiteAnimation:UDTransiteAnimationTypePush completion:nil];
     }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     
-    @try {
+    if (self.menuPage) {
         
-        if (self.menuPage) {
-            
-            UIButton *pathButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            [pathButton setTitle:self.pathString forState:UIControlStateNormal];
-            pathButton.frame = CGRectMake(0, 0, tableView.udWidth-0, 30);
-            pathButton.titleLabel.numberOfLines = 0;
-            pathButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            [pathButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-            [pathButton addTarget:self action:@selector(pathBackButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-            
-            return pathButton;
-        }
-        else {
-            
-            return nil;
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
+        UIButton *pathButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [pathButton setTitle:self.pathString forState:UIControlStateNormal];
+        pathButton.frame = CGRectMake(0, 0, tableView.udWidth-0, 30);
+        pathButton.titleLabel.numberOfLines = 0;
+        pathButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [pathButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [pathButton addTarget:self action:@selector(pathBackButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        return pathButton;
     }
-    
+    else {
+        
+        return nil;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     
-    @try {
+    if (self.menuPage) {
         
-        if (self.menuPage) {
-            
-            CGSize pathSize = [UdeskStringSizeUtil textSize:self.pathString withFont:[UIFont systemFontOfSize:17] withSize:CGSizeMake(tableView.udWidth, CGFLOAT_MAX)];
-            
-            CGFloat otherH;
-            if (pathSize.height==0) {
-                otherH = 45;
-            }
-            else {
-                otherH = 25;
-            }
-            
-            return pathSize.height+otherH;
-        }
-        else {
-            
-            return 0;
-        }
+        CGSize pathSize = [UdeskStringSizeUtil textSize:self.pathString withFont:[UIFont systemFontOfSize:17] withSize:CGSizeMake(tableView.udWidth, CGFLOAT_MAX)];
+        CGFloat otherH = pathSize.height==0?45:25;
         
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
+        return pathSize.height+otherH;
+    }
+    else {
+        return 0;
     }
 }
 
@@ -308,15 +278,15 @@
                 //查找属于上级菜单的父级
                 for (UdeskAgentMenuModel *model in self.allAgentMenuData) {
                     
-                    if ([model.menu_id isEqualToString:subMenuModel.parentId]) {
+                    if ([model.menuId isEqualToString:subMenuModel.parentId]) {
                         
                         parentId = model.parentId;
                         
                         if ([model.parentId isEqualToString:@"item_0"]) {
-                            upString = model.item_name;
+                            upString = model.itemName;
                         }
                         else {
-                            upString = [NSString stringWithFormat:@" > %@",model.item_name];
+                            upString = [NSString stringWithFormat:@" > %@",model.itemName];
                         }
                     }
                 }
@@ -355,11 +325,20 @@
 }
 
 - (NSMutableArray *)allAgentMenuData {
-
     if (!_allAgentMenuData) {
         _allAgentMenuData = [NSMutableArray array];
     }
     return _allAgentMenuData;
+}
+
+- (CGFloat)getSpacing {
+    
+    CGFloat spacing = 0;
+    if (udIsIPhoneXSeries) {
+        spacing = 34;
+    }
+    
+    return spacing;
 }
 
 - (void)viewDidAppear:(BOOL)animated {

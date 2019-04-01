@@ -12,7 +12,6 @@ typedef enum : NSUInteger {
     UDAgentStatusResultOnline       = 2000,//客服在线
     UDAgentStatusResultQueue        = 2001,//客服繁忙
     UDAgentStatusResultOffline      = 2002,//客服离线
-    UDAgentStatusResultNotNetWork   = 2003,//无网络
     UDAgentConversationOver         = 2004,//会话结束
     UDAgentStatusResultNoExist      = 5050,//客服不存在
     UDAgentGroupStatusResultNoExist = 5060,//客服组不存在

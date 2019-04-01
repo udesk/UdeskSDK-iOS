@@ -35,7 +35,7 @@
 "udesk_album_denied" = "Allow app to access your album";
 "udesk_camera_denied" = "Allow app to access your camera";
 "udesk_leave_msg" = "Leave message";
-"udesk_connecting_agent" = "Connecting agent...";
+"udesk_connecting" = "Connecting...";
 "udesk_agent_offline" = "Agent offline";
 "udesk_agent_busy" = "Agent busy";
 "udesk_redirect" = "Operator";
@@ -109,6 +109,18 @@
 "udesk_survey_remark_required" = "Remarks are required";
 "udesk_admin" = "Admin";
 "udesk_queue" = "In the queue";
+
+"udesk_please_talk" = "Please enter";
+"udesk_clean" = "clear out";
+"udesk_collapse" = "Retract";
+"udesk_edit_content" = "Editing";
+"udesk_reset_message" = "Resend message";
+"udesk_notwork_failure" = "The current network is unavailable. Please check your network settings.";
+"udesk_answer_has_survey" = "Already evaluated";
+"udesk_robot_survey" = "Robot Evaluation";
+"udesk_robot_welcome_message" = "Hello, the robot is at your service!";
+"udesk_change_group" = "change another words";
+"udesk_robot_recommendation_question" = "Would you like to ask the following questions?";
 
 "udesk_video_call_duration" = "Talk time：";
 

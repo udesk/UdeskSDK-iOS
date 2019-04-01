@@ -9,6 +9,7 @@
 #import "UdeskTopAlertView.h"
 #import "UdeskSDKMacro.h"
 #import "UdeskSDKUtil.h"
+#import "UIImage+UdeskSDK.h"
 
 #define UD_TEXTSIZE(text, font) [text length] > 0 ? [text \
 sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
@@ -23,6 +24,7 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
 #define FlatGreenDark hsb(145, 78, 68)
 #define FlatOrangeDark hsb(24, 100, 83)
 #define FlatRedDark hsb(6, 78, 75)
+#define FlatNetworkFailure [UIColor colorWithRed:1  green:0.875f  blue:0.875f alpha:1]
 
 @interface UdeskTopAlertView ()
 
@@ -150,20 +152,36 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
         
         self.backgroundColor = FlatOrange;
     }
+    else if (type == UDAlertTypeNetworkFailure) {
+        self.backgroundColor = FlatNetworkFailure;
+        
+        CGFloat textLabelWidth = width*0.8;
+        
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setImage:[UIImage udDefaultRefreshImage] forState:UIControlStateNormal];
+        [button setTitle:message forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor colorWithRed:0.294f  green:0.294f  blue:0.302f alpha:1] forState:UIControlStateNormal];
+        button.frame = CGRectMake((width - textLabelWidth)*0.5, 0, textLabelWidth, CGRectGetHeight(self.frame));
+        button.titleLabel.textAlignment = NSTextAlignmentCenter;
+        button.titleLabel.font = [UIFont systemFontOfSize:13];
+        button.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+        [self addSubview:button];
+    }
     else {
     
         self.backgroundColor = FlatRed;
     }
     
-    CGFloat textLabelWidth = width*0.8;
-    UILabel *textLabel = [[UILabel alloc]initWithFrame:CGRectMake((width - textLabelWidth)*0.5, 0, textLabelWidth, CGRectGetHeight(self.frame))];
-    textLabel.backgroundColor = [UIColor clearColor];
-    [textLabel setTextColor:[UIColor whiteColor]];
-    textLabel.textAlignment = NSTextAlignmentCenter;
-    textLabel.font = [UIFont systemFontOfSize:13];
-    textLabel.text = message;
-    [self addSubview:textLabel];
-    
+    if (type != UDAlertTypeNetworkFailure) {
+        CGFloat textLabelWidth = width*0.8;
+        UILabel *textLabel = [[UILabel alloc]initWithFrame:CGRectMake((width - textLabelWidth)*0.5, 0, textLabelWidth, CGRectGetHeight(self.frame))];
+        textLabel.backgroundColor = [UIColor clearColor];
+        [textLabel setTextColor:[UIColor whiteColor]];
+        textLabel.textAlignment = NSTextAlignmentCenter;
+        textLabel.font = [UIFont systemFontOfSize:13];
+        textLabel.text = message;
+        [self addSubview:textLabel];
+    }
 }
 
 - (void)show{

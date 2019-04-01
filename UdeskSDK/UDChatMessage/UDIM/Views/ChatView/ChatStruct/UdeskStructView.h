@@ -2,17 +2,15 @@
 //  UdeskStructView.h
 //  UdeskSDK
 //
-//  Created by 许晨 on 17/1/18.
-//  Copyright © 2017年 xushichen. All rights reserved.
+//  Created by xuchen on 17/1/18.
+//  Copyright © 2017年 Udesk. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface UdeskStructAction : NSObject
 
-+ (instancetype)actionWithTitle:(nullable NSString *)title handler:(void (^ __nullable)(UdeskStructAction *action))handler;
++ (instancetype _Nonnull )actionWithTitle:(nullable NSString *)title handler:(void (^ __nullable)(UdeskStructAction * _Nullable action))handler;
 
 @property (nullable, nonatomic, readonly) NSString *title;
 @property (nonatomic, getter=isEnabled) BOOL enabled;
@@ -21,18 +19,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UdeskStructView : UIView
 
-@property (nonatomic, readonly) NSArray<UdeskStructAction *> *actions;
+@property (nonatomic, readonly) NSArray<UdeskStructAction *> * _Nullable actions;
 @property (nullable, nonatomic, strong) UIImage *image;
 @property (nullable, nonatomic, copy) NSString *title;
 @property (nullable, nonatomic, copy) NSString *message;
-@property (nonatomic, strong) NSMutableArray *mutableActions;
+@property (nonatomic, strong) NSMutableArray * _Nullable mutableActions;
 
-- (instancetype)initWithImage:(nullable UIImage *)image
-                        title:(nullable NSString *)title
-                      message:(nullable NSString *)message
-                      buttons:(nullable NSArray<UdeskStructAction *> *)buttons
-                       origin:(CGPoint)origin;
+- (instancetype _Nullable )initWithImage:(nullable UIImage *)image
+                                   title:(nullable NSString *)title
+                                 message:(nullable NSString *)message
+                                 buttons:(nullable NSArray<UdeskStructAction *> *)buttons
+                                  origin:(CGPoint)origin;
 
 @end
-
-NS_ASSUME_NONNULL_END

@@ -86,6 +86,8 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, copy) NSString *agentId;
 /** 指定客服组id */
 @property (nonatomic, copy) NSString *groupId;
+/** 导航栏客服组id（注意：不需要传这个参数，这个是本地记录用的） */
+@property (nonatomic, copy) NSString *menuId;
 
 /*  ----------- 自动消息 ------------  */
 
@@ -172,10 +174,6 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, strong) NSDictionary *productDictionary;
 /** sdk方向(默认只支持竖屏) */
 @property (nonatomic, assign) UIInterfaceOrientationMask orientationMask;
-/** 机器人推荐问题（后台配置获取key） */
-@property (nonatomic, copy  ) NSString  *robotModelKey;
-/** 机器人客户信息 */
-@property (nonatomic, copy  ) NSString  *robotCustomerInfo;
 /** 自定义表情 */
 @property (nonatomic, strong) NSArray<UdeskEmojiPanelModel *> *customEmojis;
 
@@ -191,10 +189,10 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, copy) NSString *ticketTitle;
 /** 客服导航栏菜单标题 */
 @property (nonatomic, copy) NSString *agentMenuTitle;
-/** 返回按钮文字 */
-@property (nonatomic, copy) NSString *backText;
 /** 咨询对象按钮文字 */
 @property (nonatomic, copy) NSString *productSendText;
+/** 机器人会话欢迎语 */
+@property (nonatomic, copy) NSString *robotWelcomeMessage;
 
 /** SDK事件 */
 @property (nonatomic, strong) UdeskSDKActionConfig *actionConfig;

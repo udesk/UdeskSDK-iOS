@@ -12,11 +12,6 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskSDKMacro.h"
 
-typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
-    UDChatViewStyleTypeDefault,
-    UDChatViewStyleTypeBlue
-};
-
 @interface UdeskSDKStyle : NSObject
 
 /** 用户的消息颜色 */
@@ -39,9 +34,6 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 
 /** 时间颜色（默认灰色）*/
 @property (nonatomic, strong) UIColor  *chatTimeColor;
-
-/** IM页面底部功能栏背景颜色(默认白色) */
-@property (nonatomic, strong) UIColor  *inputViewColor;
 
 /** IM页面底部输入栏背景颜色(默认白色) */
 @property (nonatomic, strong) UIColor  *textViewColor;
@@ -121,11 +113,6 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 /** 相册取消按钮颜色 */
 @property (nonatomic, strong) UIColor  *albumCancelColor;
 
-/** 客户头像 */
-@property (nonatomic, strong) UIImage  *customerImage;
-/** 客户头像URL */
-@property (nonatomic, copy  ) NSString *customerImageURL;
-
 /** 超链接点击颜色 */
 @property (nonatomic, strong) UIColor *activeLinkColor;
 /** 超链接颜色 */
@@ -142,7 +129,6 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 @property (nonatomic, strong) UIColor *goodsNameTextColor;
 
 + (instancetype)defaultStyle;
-+ (instancetype)blueStyle;
 + (instancetype)customStyle;
 
 @end

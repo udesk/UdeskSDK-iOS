@@ -19,7 +19,11 @@
 + (UIImage *)imageWithOriginalImage:(UIImage *)image;
 //压缩图片 压缩质量
 + (UIImage *)imageWithOriginalImage:(UIImage *)image quality:(CGFloat)quality;
+//压缩图片
++ (UIImage *)imageWithOriginalImage:(UIImage *)image maxWidth:(CGFloat)maxWidth maxHeight:(CGFloat)maxHeight;
 // 计算图片实际大小
 + (CGSize)udImageSize:(UIImage *)image;
+// 获取图片的类型
++ (NSString *)contentTypeForImageData:(NSData *)data;
 
 @end

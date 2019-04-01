@@ -12,13 +12,11 @@
 
 @interface UdeskMessageUtil : NSObject
 
-//把UdeskMessage转换成UdeskChatMessage
-+ (NSArray *)udeskMsgModelWithleaveMsg:(NSArray *)leaveMsgs messagesArray:(NSArray *)messagesArray;
 //消息model转chatMessage
-+ (NSArray *)chatMessageWithMsgModel:(NSArray *)array agentNick:(NSString *)agentNick lastMessage:(UdeskMessage *)lastMessage;
++ (NSArray *)chatMessageWithMsgModel:(NSArray *)array lastMessage:(UdeskMessage *)lastMessage;
 
 //重发失败的消息
-+ (NSTimer *)resendFailedMessage:(NSMutableArray *)resendMessageArray progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion;
++ (NSTimer *)resendFailedMessage:(NSMutableArray *)resendMessageArray progress:(void(^)(float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion;
 
 //地理位置消息转换
 + (UdeskLocationModel *)locationModelWithMessage:(UdeskMessage *)message;

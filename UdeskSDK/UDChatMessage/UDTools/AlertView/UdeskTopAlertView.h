@@ -13,7 +13,8 @@ typedef enum : NSUInteger {
     UDAlertTypeGreen,
     UDAlertTypeOrange,
     UDAlertTypeSkyBlue,
-    UDAlertTypeRed
+    UDAlertTypeRed,
+    UDAlertTypeNetworkFailure,
 } UDAlertType;
 
 @interface UdeskTopAlertView : UIView

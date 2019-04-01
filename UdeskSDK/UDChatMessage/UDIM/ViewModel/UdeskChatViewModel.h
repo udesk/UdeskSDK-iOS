@@ -23,23 +23,25 @@
 - (void)didUpdateCellModelWithIndexPath:(NSIndexPath *)indexPath;
 
 /** 接收到客服 */
-- (void)didFetchAgentModel:(UdeskAgent *)agent;
+- (void)didUpdateAgentModel:(UdeskAgent *)agent;
 /** 接受客服状态 */
-- (void)didReceiveAgentPresence:(UdeskAgent *)agent;
+- (void)didUpdateAgentPresence:(UdeskAgent *)agent;
 /** 收到邀请评价 */
 - (void)didReceiveSurveyWithAgentId:(NSString *)agentId;
 
+/** 展示机器人会话 */
+- (void)showRobotSessionWithName:(NSString *)name;
 /** 展示无消息会话 */
 - (void)showPreSessionWithTitle:(NSString *)title;
+/** 客户在黑名单 */
+- (void)customerOnTheBlacklist:(NSString *)message;
+/** 收到自动转人工 */
+- (void)didReceiveAutoTransferAgentServer;
+/** 显示转人工按钮 */
+- (void)showTransferButton;
 
-/** 点击了发送表单 */
-- (void)didSelectSendTicket;
-/** 点击了黑名单提示框确定 */
-- (void)didSelectBlacklistedAlertViewOkButton;
-
-//Udesk Call
-/** 收到邀请视频 */
-- (void)didReceiveInviteWithAgentModel:(UdeskAgent *)agent;
+/** 网络断开连接 */
+- (void)didReceiveNetworkDisconnect;
 
 @end
 
@@ -47,8 +49,6 @@
 
 /** 是否需要显示下拉加载 */
 @property (nonatomic, assign) BOOL isShowRefresh;
-/** 不显示alertview */
-@property (nonatomic, assign) BOOL isNotShowAlert;
 /** ViewModel代理 */
 @property (nonatomic, weak  ) id <UdeskChatViewModelDelegate> delegate;
 
@@ -57,16 +57,17 @@
 /** 无消息会话ID */
 @property (nonatomic, strong, readonly) NSNumber *preSessionId;
 
-- (instancetype)initWithSDKSetting:(UdeskSetting *)sdkSetting;
+- (instancetype)initWithSDKSetting:(UdeskSetting *)sdkSetting delegate:(id)delegate;
 
 /** 加载更多DB消息 */
-- (void)fetchNextPageDatebaseMessage;
-/** 点击底部功能栏坐相应操作 */
-- (void)clickInputViewShowAlertView;
+- (void)fetchNextPageMessages;
+/** 转人工 */
+- (void)transferToAgentServer;
 
+//发送消息
+- (void)sendRobotMessage:(UdeskMessage *)message completion:(void(^)(UdeskMessage *message))completion;
 /** 发送文本消息 */
-- (void)sendTextMessage:(NSString *)text
-             completion:(void(^)(UdeskMessage *message))completion;
+- (void)sendTextMessage:(NSString *)text completion:(void(^)(UdeskMessage *message))completion;
 /** 发送图片消息 */
 - (void)sendImageMessage:(UIImage *)image progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *message))completion;
 /** 发送gif图片消息 */
@@ -84,20 +85,16 @@
 /** 移除发送失败的消息 */
 - (void)removeResendMessageInArray:(UdeskMessage *)message;
 /** 自动重发失败的消息 */
-- (void)autoResendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion;
+- (void)autoResendFailedMessageWithProgress:(void(^)(float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion;
 /** 重发失败的消息 */
-- (void)resendMessageWithMessage:(UdeskMessage *)resendMessage progress:(void(^)(NSString *messageId,float percent))progress completion:(void(^)(UdeskMessage *message))completion;
+- (void)resendMessageWithMessage:(UdeskMessage *)resendMessage progress:(void(^)(float percent))progress completion:(void(^)(UdeskMessage *message))completion;
+
+/** 显示提示框 */
+- (void)showSDKAlert;
 /** 留言 */
-- (void)clickLeaveMsgAlertButtonAction;
+- (void)leaveMessageTapAction;
 
-//根据客服code展示alertview
-- (void)showAgentStatusAlert;
-
-//Udesk Call
-
-#if __has_include(<UdeskCall/UdeskCall.h>)
-//关闭视频铃声
-- (void)stopPlayVideoCallRing;
-#endif
+//开始视频通话
+- (void)startUdeskVideoCall;
 
 @end

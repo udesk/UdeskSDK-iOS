@@ -13,11 +13,14 @@
 //16进制颜色转换
 + (UIColor *)udColorWithHexString:(NSString *)color
 {
+    if (!color || color == (id)kCFNull) return [UIColor blackColor];
+    if (![color isKindOfClass:[NSString class]]) return [UIColor blackColor];
+    
     NSString *cString = [[color stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
     
     // String should be 6 or 8 characters
     if ([cString length] < 6) {
-        return [UIColor whiteColor];
+        return [UIColor blackColor];
     }
     
     // strip 0X if it appears
@@ -26,7 +29,7 @@
     if ([cString hasPrefix:@"#"])
         cString = [cString substringFromIndex:1];
     if ([cString length] != 6)
-        return [UIColor clearColor];
+        return [UIColor blackColor];
     
     // Separate into r, g, b substrings
     NSRange range;

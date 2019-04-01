@@ -25,7 +25,7 @@
 /** 留言文案 */
 @property (nonatomic, copy  , readonly) NSString *noReplyHint;
 /** 机器人URL */
-@property (nonatomic, copy  , readonly) NSString *robot;
+@property (nonatomic, copy  , readonly) NSString *robotURL;
 /** 留言类型 msg、form */
 @property (nonatomic, copy  , readonly) NSString *leaveMessageType;
 /** 返回弹出留言 */
@@ -50,6 +50,20 @@
 @property (nonatomic, copy  , readonly) NSString *showRobotTimes;
 /** 机器人名称 */
 @property (nonatomic, copy  , readonly) NSString *robotName;
+/** 无消息标题 */
+@property (nonatomic, copy  , readonly) NSString *preSessionTitle;
+/** 无消息对话过滤ID */
+@property (nonatomic, strong, readonly) NSNumber *preSessionId;
+/** 无消息对话过滤 */
+@property (nonatomic, strong, readonly) NSNumber *showPreSession;
+/** 图片请求头 */
+@property (nonatomic, copy  , readonly) NSString *referer;
+/** 是否在黑名单 */
+@property (nonatomic, strong, readonly) NSNumber *isBlocked;
+/** 黑名单提示语 */
+@property (nonatomic, copy  , readonly) NSString *blackListNotice;
+/** 会话状态（chatting|queuing|pre_session|init） */
+@property (nonatomic, copy  , readonly) NSString *status;
 
 /**
  *  JSON数据转换成UdeskSetting

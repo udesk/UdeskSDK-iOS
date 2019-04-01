@@ -31,17 +31,19 @@
 
 @property (nonatomic, copy  ) NSString *agentId;
 @property (nonatomic, copy  ) NSString *imSubSessionId;
+@property (nonatomic, assign) BOOL isRobotSession;
 
 @end
 
 @implementation UdeskSurveyView
 
-- (instancetype)initWithAgentId:(NSString *)agentId imSubSessionId:(NSString *)imSubSessionId
+- (instancetype)initWithAgentId:(NSString *)agentId imSubSessionId:(NSString *)imSubSessionId isRobotSession:(BOOL)isRobotSession
 {
     self = [super initWithFrame:[[UIScreen mainScreen] bounds]];
     if (self) {
         _agentId = agentId;
         _imSubSessionId = imSubSessionId;
+        _isRobotSession = isRobotSession;
         
         [self setupUI];
         [self fetchSurveyOptions];
@@ -224,6 +226,7 @@
 - (UdeskSurveyManager *)surveyManager {
     if (!_surveyManager) {
         _surveyManager = [[UdeskSurveyManager alloc] init];
+        _surveyManager.isRobotSession = self.isRobotSession;
     }
     return _surveyManager;
 }
@@ -232,15 +235,19 @@
 - (void)clickSubmitSurvey:(UdeskSurveyContentView *)survey {
     
     [self.surveyContentView.remarkTextView resignFirstResponder];
-    if (!self.agentId || self.agentId == (id)kCFNull) return ;
-    if (!self.imSubSessionId || self.imSubSessionId == (id)kCFNull) return ;
+    
+    if (!survey.selectedOptionId || survey.selectedOptionId == (id)kCFNull) {
+        [UdeskToast showToast:getUDLocalizedString(@"udesk_survey_tips") duration:0.5f window:self];
+        return;
+    }
+    
+    //机器人会话满意度
+    if (!self.isRobotSession) {
+        if (!self.agentId || self.agentId == (id)kCFNull) return ;
+        if (!self.imSubSessionId || self.imSubSessionId == (id)kCFNull) return ;
+    }
     
     @try {
-        
-        if (!survey.selectedOptionId || survey.selectedOptionId == (id)kCFNull) {
-            [UdeskToast showToast:getUDLocalizedString(@"udesk_survey_tips") duration:0.5f window:self];
-            return;
-        }
         
         UdeskSurveyOption *option = [self selectedOption];
         if (self.surveyModel.remarkEnabled.boolValue && option && option.remarkOptionType == UdeskRemarkOptionTypeRequired) {
@@ -251,30 +258,22 @@
         }
         
         NSDictionary *parameters = @{
-                                     @"agent_id":self.agentId,
-                                     @"option_id":survey.selectedOptionId,
-                                     @"im_sub_session_id":self.imSubSessionId,
+                                     @"agent_id":self.agentId?:@"",
+                                     @"option_id":survey.selectedOptionId?:@"",
+                                     @"im_sub_session_id":self.imSubSessionId?:@"",
                                      @"show_type":[self.surveyModel stringWithOptionType],
                                      };
         
-        [self.surveyManager checkHasSurveyWithAgentId:self.agentId completion:^(BOOL result, NSError *error) {
-            if (!result) {
-                
-                [self.surveyManager submitSurveyWithParameters:parameters surveyRemark:survey.remarkTextView.text tags:survey.selectedOptionTags completion:^(NSError *error) {
-                    NSString *string = getUDLocalizedString(@"udesk_top_view_thanks_evaluation");
-                    if (error) {
-                        string = getUDLocalizedString(@"udesk_top_view_failure");
-                    }
-                    [UdeskToast showToast:string duration:0.5f window:self];
-                    dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6/*延迟执行时间*/ * NSEC_PER_SEC));
-                    dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-                        [self closeSurveyViewAction:nil];
-                    });
-                }];
+        [self.surveyManager submitSurveyWithParameters:parameters surveyRemark:survey.remarkTextView.text tags:survey.selectedOptionTags completion:^(NSError *error) {
+            NSString *string = getUDLocalizedString(@"udesk_top_view_thanks_evaluation");
+            if (error) {
+                string = getUDLocalizedString(@"udesk_top_view_failure");
             }
-            else {
-                [UdeskToast showToast:getUDLocalizedString(@"udesk_has_survey") duration:0.5f window:self];
-            }
+            [UdeskToast showToast:string duration:0.5f window:self];
+            dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6/*延迟执行时间*/ * NSEC_PER_SEC));
+            dispatch_after(delayTime, dispatch_get_main_queue(), ^{
+                [self closeSurveyViewAction:nil];
+            });
         }];
         
     } @catch (NSException *exception) {

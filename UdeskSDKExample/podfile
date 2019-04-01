@@ -2,11 +2,9 @@ platform :ios, '8.0'
 use_frameworks!
 
 target 'UdeskSDKExample' do
-
-   pod 'Masonry'
-   pod 'JPush'
-   pod 'AgoraRtcEngine_iOS', '~> 2.0.2'
-   pod 'BaiduMapKit'
-   pod 'YYWebImage'
+  pod 'AgoraRtcEngine_iOS', '~> 2.0.2'
+  pod 'Masonry', '~> 1.1.0'
+  pod 'JPush', '~> 3.0.9'
+  pod 'BaiduMapKit', '~> 4.1.1'
 end
 

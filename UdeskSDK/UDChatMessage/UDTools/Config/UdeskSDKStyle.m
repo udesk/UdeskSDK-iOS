@@ -7,29 +7,15 @@
 //
 
 #import "UdeskSDKStyle.h"
-#import "UdeskSDKStyleBlue.h"
 
 @implementation UdeskSDKStyle
 
-+ (instancetype)createWithStyle:(UDChatViewStyleType)type {
-    switch (type) {
-        case UDChatViewStyleTypeBlue:
-            return [UdeskSDKStyleBlue new];
-        default:
-            return [UdeskSDKStyle new];
-    }
-}
-
 + (instancetype)customStyle {
-    return [self createWithStyle:(UDChatViewStyleTypeDefault)];
+    return [UdeskSDKStyle new];
 }
 
 + (instancetype)defaultStyle {
-    return [self createWithStyle:(UDChatViewStyleTypeDefault)];
-}
-
-+ (instancetype)blueStyle {
-    return [self createWithStyle:(UDChatViewStyleTypeBlue)];
+    return [UdeskSDKStyle new];
 }
 
 - (instancetype)init
@@ -39,21 +25,20 @@
         
         //customer
         self.customerTextColor = [UIColor whiteColor];
-        self.customerBubbleImage = [UIImage udBubbleSendImage];
-        self.customerVoiceDurationColor = [UIColor udColorWithHexString:@"#8E8E93"];;
+        self.customerBubbleImage = [UIImage udBubbleSend01Image];
+        self.customerVoiceDurationColor = [UIColor whiteColor];
         
         //agent
         self.agentTextColor = [UIColor blackColor];
-        self.agentBubbleImage = [UIImage udBubbleReceiveImage];
-        self.agentVoiceDurationColor = [UIColor udColorWithHexString:@"#8E8E93"];
+        self.agentBubbleImage = [UIImage udBubbleReceive01Image];
+        self.agentVoiceDurationColor = [UIColor colorWithRed:0.129f  green:0.129f  blue:0.129f alpha:1];
         
         //im
-        self.tableViewBackGroundColor = [UIColor udColorWithHexString:@"#F0F2F2"];
-        self.chatViewControllerBackGroundColor = [UIColor udColorWithHexString:@"#F0F2F2"];
+        self.tableViewBackGroundColor = [UIColor colorWithRed:0.949f  green:0.957f  blue:0.961f alpha:1];
+        self.chatViewControllerBackGroundColor = [UIColor colorWithRed:0.949f  green:0.957f  blue:0.961f alpha:1];
         self.chatTimeColor = [UIColor udColorWithHexString:@"#8E8E93"];
-        self.inputViewColor = [UIColor whiteColor];
         self.textViewColor = [UIColor whiteColor];
-        self.messageContentFont = [UIFont systemFontOfSize:16];
+        self.messageContentFont = [UIFont systemFontOfSize:15];
         self.messageTimeFont = [UIFont systemFontOfSize:12];
         self.linkColor = [UIColor blueColor];
         self.activeLinkColor = [UIColor redColor];
@@ -65,7 +50,7 @@
         //nav
         self.navBackButtonColor = [UIColor udColorWithHexString:@"#007AFF"];
         self.navRightButtonColor = [UIColor udColorWithHexString:@"#007AFF"];
-        self.navBackButtonImage = nil;
+        self.navBackButtonImage = [UIImage udDefaultBackImage];
         self.navigationColor = [UIColor colorWithRed:0.976f  green:0.976f  blue:0.976f alpha:1];
         self.navBarBackgroundImage = nil;
         
@@ -74,7 +59,7 @@
         self.titleColor = [UIColor blackColor];
         
         //right
-        self.transferButtonColor = [UIColor udColorWithHexString:@"#0B84FE"];
+        self.transferButtonColor = [UIColor colorWithRed:0.459f  green:0.459f  blue:0.459f alpha:1];
         
         //record
         self.recordViewColor = [UIColor udColorWithHexString:@"#FAFAFA"];
@@ -90,8 +75,6 @@
         self.productDetailColor = [UIColor udColorWithHexString:@"#FF3B30"];
         self.productSendBackGroundColor = [UIColor udColorWithHexString:@"#FF3B30"];
         self.productSendTitleColor = [UIColor whiteColor];
-        
-        self.customerImage = [UIImage udDefaultCustomerImage];
         
     }
     return self;

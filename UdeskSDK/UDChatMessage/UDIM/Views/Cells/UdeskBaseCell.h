@@ -19,14 +19,20 @@
 - (void)didTapLocationMessage:(UdeskMessage *)message;
 /** 商品消息 */
 - (void)didTapGoodsMessageWithURL:(NSString *)goodsURL goodsId:(NSString *)goodsId;
-/** 发送咨询对象连接 */
-- (void)didSendProductURL:(NSString *)url;
 /** 点击视频通话消息 */
 - (void)didTapUdeskVideoCallMessage:(UdeskMessage *)message;
 /** 重新发送消息 */
 - (void)didResendMessage:(UdeskMessage *)resendMessage;
 /** 点击了留言 */
 - (void)didTapLeaveMessageButton:(UdeskMessage *)message;
+/** 发送机器人消息 */
+- (void)didSendRobotMessage:(UdeskMessage *)message;
+/** 点击了转人工 */
+- (void)didTapTransferAgentServer:(UdeskMessage *)message;
+/** 答案已评价 */
+- (void)aswerHasSurvey;
+/** 刷新 */
+- (void)reloadTableViewAtCell:(UITableViewCell *)cell;
 
 @end
 
@@ -46,6 +52,14 @@
 @property (nonatomic, strong, readonly) UIButton    *resetButton;
 /** 菊花 */
 @property (nonatomic, strong, readonly) UIActivityIndicatorView *sendingIndicator;
+
+/** 机器人答案有用按钮 */
+@property (nonatomic, strong, readonly) UIButton    *usefulButton;
+/** 机器人答案无用按钮 */
+@property (nonatomic, strong, readonly) UIButton    *uselessButton;
+/** 机器人转人工按钮 */
+@property (nonatomic, strong, readonly) UIButton    *transferButton;
+
 /** 布局 */
 @property (nonatomic, strong) UdeskBaseMessage  *baseMessage;
 

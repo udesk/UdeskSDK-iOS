@@ -72,7 +72,7 @@
             if (![panelModel isKindOfClass:[UdeskEmojiPanelModel class]]) return;
             if (!panelModel.stickerPaths || panelModel.stickerPaths == (id)kCFNull) return ;
             if (![panelModel.stickerPaths.firstObject isKindOfClass:[NSString class]]) return ;
-
+            
             NSMutableArray *emojiContent = [NSMutableArray new];
             for (NSString *path in panelModel.stickerPaths) {
                 UdeskEmojiContentModel *model = [UdeskEmojiContentModel new];

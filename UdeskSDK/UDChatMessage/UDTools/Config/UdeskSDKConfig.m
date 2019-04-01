@@ -8,6 +8,7 @@
 
 #import "UdeskSDKConfig.h"
 #import "UdeskLanguageConfig.h"
+#import "UdeskBundleUtils.h"
 
 @implementation UdeskSDKActionConfig
 
@@ -60,6 +61,7 @@
     
     self.agentId = nil;
     self.groupId = nil;
+    self.menuId = nil;
     self.productDictionary = nil;
     self.imTitle = nil;
     self.robotTtile = nil;
@@ -70,8 +72,6 @@
     self.productSendText = nil;
     self.customButtons = nil;
     self.customEmojis = nil;
-    self.robotModelKey = nil;
-    self.robotCustomerInfo = nil;
     self.preSendMessages = nil;
     self.showAlbumEntry = YES;
     self.showVoiceEntry = YES;
@@ -82,8 +82,6 @@
     self.imagePickerEnabled = YES;
     
     self.sdkStyle = [UdeskSDKStyle defaultStyle];
-    self.sdkStyle.customerImage = [UIImage udDefaultCustomerImage];
-    self.sdkStyle.customerImageURL = nil;
     self.maxImagesCount = 9;
     self.quality = 0.5;
     self.allowPickingVideo = YES;
@@ -92,6 +90,7 @@
     self.smallVideoResolution = UDSmallVideoResolutionTypePhoto;
     self.smallVideoDuration = 15;
     self.orientationMask = UIInterfaceOrientationMaskPortrait;
+    self.robotWelcomeMessage = getUDLocalizedString(@"udesk_robot_welcome_message");
 }
 
 - (NSString *)quitQueueString {

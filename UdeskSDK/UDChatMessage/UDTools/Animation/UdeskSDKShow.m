@@ -11,7 +11,6 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskSDKMacro.h"
 #import "UdeskFAQViewController.h"
-#import "UdeskRobotViewController.h"
 #import "UdeskChatViewController.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskStringSizeUtil.h"
@@ -121,69 +120,10 @@
     }
     
     //导航栏左键
-    UIBarButtonItem *customizedBackItem = nil;
-    if (_sdkConfig.sdkStyle.navBackButtonImage) {
-        customizedBackItem = [UIBarButtonItem udItemWithIcon:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] target:viewController action:@selector(dismissChatViewController)];
-    }
+    UIBarButtonItem *customizedBackItem = [UIBarButtonItem udItemWithIcon:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] target:viewController action:@selector(dismissChatViewController)];
+    viewController.navigationItem.leftBarButtonItem = customizedBackItem;
     
-    NSString *backText = _sdkConfig.backText ? : getUDLocalizedString(@"udesk_back");
-    if (_sdkConfig.presentingAnimation == UDTransiteAnimationTypePresent) {
-       viewController.navigationItem.leftBarButtonItem = customizedBackItem ?: [[UIBarButtonItem alloc] initWithTitle:backText style:UIBarButtonItemStylePlain target:viewController action:@selector(dismissChatViewController)];
-    } else {
-
-        UIBarButtonItem *leftBarButtonItem = [UIBarButtonItem udItemWithTitle:backText target:viewController action:@selector(dismissChatViewController)];
-        UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
-                                           initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                           target:nil action:nil];
-
-        // 调整 leftBarButtonItem 在 iOS7 下面的位置
-        if((FUDSystemVersion>=7.0)){
-
-            negativeSpacer.width = -13;
-            if (customizedBackItem) {
-                viewController.navigationItem.leftBarButtonItem = customizedBackItem;
-            }
-            else {
-                viewController.navigationItem.leftBarButtonItems = @[negativeSpacer,leftBarButtonItem];
-            }
-        }
-        else {
-            viewController.navigationItem.leftBarButtonItem = customizedBackItem ?: leftBarButtonItem;
-        }
-    }
-    
-    if ([viewController isKindOfClass:[UdeskRobotViewController class]]) {
-        
-        NSString *transferText = getUDLocalizedString(@"udesk_redirect");
-        
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
-        UIBarButtonItem *rightBarButtonItem = [UIBarButtonItem udRightItemWithTitle:transferText target:viewController action:@selector(didSelectNavigationRightButton)];
-#pragma clang diagnostic pop
-
-        UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
-                                           initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                           target:nil action:nil];
-        
-        // 调整 leftBarButtonItem 在 iOS7 下面的位置
-        if((FUDSystemVersion>=7.0)){
-            
-            negativeSpacer.width = -10;
-            viewController.navigationItem.rightBarButtonItems = @[negativeSpacer,rightBarButtonItem];
-            
-        }else
-            viewController.navigationItem.rightBarButtonItem = rightBarButtonItem;
-        
-        //导航栏标题
-        if (_sdkConfig.robotTtile) {
-            viewController.navigationItem.title = _sdkConfig.robotTtile;
-        }
-        else {
-            viewController.navigationItem.title = getUDLocalizedString(@"udesk_robot_title");
-        }
-        
-    }
-    else if ([viewController isKindOfClass:[UdeskFAQViewController class]]) {
+    if ([viewController isKindOfClass:[UdeskFAQViewController class]]) {
         
         //导航栏标题
         if (_sdkConfig.faqTitle) {

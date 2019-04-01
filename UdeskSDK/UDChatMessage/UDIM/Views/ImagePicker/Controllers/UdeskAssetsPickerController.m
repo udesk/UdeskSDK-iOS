@@ -331,12 +331,14 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     if (selectedModels.count == 0) return;
     
     dispatch_group_enter(group);
-    [self.viewManager fetchCompressVideoWithAssets:[selectedModels valueForKey:@"asset"] completion:^(NSArray<NSString *> *paths) {
+    [self.viewManager fetchCompressVideoWithAssets:[selectedModels valueForKey:@"asset"] completion:^(NSArray<NSString *> *paths,NSString *errorMessage) {
         
         if (!paths) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_video_export_failed") preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:getUDLocalizedString(@"udesk_video_export_failed") message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
             [alert addAction:[UIAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UIAlertActionStyleDefault handler:nil]];
             [self presentViewController:alert animated:YES completion:nil];
+            [self.loadingView stopAnimating];
+            [self.loadingView setHidesWhenStopped:YES];
             return ;
         }
         
@@ -401,17 +403,9 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
 
 - (UIActivityIndicatorView *)loadingView {
     if (!_loadingView) {
-        
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 120)];
-        view.center = self.view.center;
-        view.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.8];
-        view.layer.masksToBounds = YES;
-        view.layer.cornerRadius = 5;
-        [self.view addSubview:view];
-        
         _loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        _loadingView.frame = CGRectMake(60, 60, 0, 0);
-        [view addSubview:_loadingView];
+        _loadingView.center = self.view.center;
+        [self.view addSubview:_loadingView];
     }
     return _loadingView;
 }

@@ -16,6 +16,11 @@ typedef NS_ENUM(NSUInteger, UdeskCustomButtonConfigType) {
     UdeskCustomButtonConfigTypeInMoreView, //在更多view里面
 };
 
+typedef NS_ENUM(NSUInteger, UdeskCustomButtonConfigScenes) {
+    UdeskCustomButtonConfigScenesAgent = 0,   //人工
+    UdeskCustomButtonConfigScenesRobot,  //机器人
+};
+
 //点击回调，返回按钮所在的控制器
 typedef void(^CustomButtonClickBlock)(UdeskCustomButtonConfig *customButton,UdeskChatViewController *viewController);
 
@@ -24,6 +29,9 @@ typedef void(^CustomButtonClickBlock)(UdeskCustomButtonConfig *customButton,Udes
 @property (nonatomic, copy  ) NSString *title;
 @property (nonatomic, strong) UIImage  *image;
 @property (nonatomic, assign) UdeskCustomButtonConfigType type;
+
+/** 注意，机器人场景只能发送文本消息 */
+@property (nonatomic, assign) UdeskCustomButtonConfigScenes scenesType;
 @property (nonatomic, copy  ) CustomButtonClickBlock clickBlock;
 
 /**

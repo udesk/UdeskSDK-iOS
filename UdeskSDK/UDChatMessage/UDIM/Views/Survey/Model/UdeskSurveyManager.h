@@ -11,6 +11,8 @@
 
 @interface UdeskSurveyManager : NSObject
 
+@property (nonatomic, assign) BOOL isRobotSession;
+
 //满意度调查配置选项
 - (void)fetchSurveyOptions:(void(^)(UdeskSurveyModel *surveyModel))completion;
 //提交满意度调查
@@ -19,7 +21,6 @@
                               tags:(NSArray *)tags
                         completion:(void(^)(NSError *error))completion;
 //检查是否已经评价
-- (void)checkHasSurveyWithAgentId:(NSString *)agentId
-                       completion:(void(^)(BOOL result,NSError *error))completion;
++ (void)checkHasSurveyWithAgentId:(NSString *)agentId isRobotSession:(BOOL)isRobotSession completion:(void(^)(BOOL hasSurvey,NSError *error))completion;
 
 @end

@@ -77,6 +77,8 @@
         }
         [[UdeskSDKConfig customConfig] setConfigToDefault];
     }
+    
+    NSLog(@"UdeskSDK：%@释放了",[self class]);
 }
 
 @end

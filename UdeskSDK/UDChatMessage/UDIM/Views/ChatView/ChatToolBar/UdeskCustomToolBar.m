@@ -11,12 +11,11 @@
 #import "UdeskButton.h"
 #import "UdeskStringSizeUtil.h"
 #import "UdeskSDKMacro.h"
-#import "UdeskButton.h"
 #import "UdeskBundleUtils.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskSDKConfig.h"
 
-static CGFloat kUdeskCustomButtonHeight = 30;
+static CGFloat kUdeskCustomButtonHeight = 32;
 static CGFloat kUdeskCustomSurveySpacing = 11;
 
 @interface UdeskCustomToolBar()
@@ -47,7 +46,9 @@ static CGFloat kUdeskCustomSurveySpacing = 11;
     
     self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin);
     self.opaque = YES;
-    self.backgroundColor = [UIColor whiteColor];
+    
+    UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
+    self.backgroundColor = sdkConfig.sdkStyle.chatViewControllerBackGroundColor;
     
     _scrollview = [[UIScrollView alloc] init];
     _scrollview.canCancelContentTouches = NO;
@@ -83,9 +84,10 @@ static CGFloat kUdeskCustomSurveySpacing = 11;
             [button addTarget:self action:@selector(customButtonAction:) forControlEvents:UIControlEventTouchUpInside];
             [button setTitle:customButton.title forState:UIControlStateNormal];
             button.titleLabel.font = [UIFont systemFontOfSize:14];
-            [button setTitleColor:[UIColor colorWithRed:0.471f  green:0.471f  blue:0.471f alpha:1] forState:UIControlStateNormal];
+            button.backgroundColor = [UIColor whiteColor];
+            [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             button.tag = 9447 + [self.customButtonConfigs indexOfObject:customButton];
-            UDViewBorderRadius(button, 13, 1, [UIColor colorWithRed:0.906f  green:0.906f  blue:0.906f alpha:1]);
+            UDViewRadius(button, 16);
             [self.scrollview addSubview:button];
             [self.customButtons addObject:button];
         }
@@ -151,19 +153,6 @@ static CGFloat kUdeskCustomSurveySpacing = 11;
         _customButtons = [NSMutableArray array];
     }
     return _customButtons;
-}
-
-- (void)drawRect:(CGRect)rect {
-    [super drawRect:rect];
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextSetLineWidth(ctx, 1.0);
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.9 alpha:1].CGColor);
-    
-    CGContextMoveToPoint(ctx, 0, 44);
-    CGContextAddLineToPoint(ctx, rect.size.width, 44);
-    
-    CGContextClosePath(ctx);
-    CGContextStrokePath(ctx);
 }
 
 @end

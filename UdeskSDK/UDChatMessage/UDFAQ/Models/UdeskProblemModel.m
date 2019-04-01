@@ -10,15 +10,15 @@
 
 @implementation UdeskProblemModel
 
-- (id)initWithContentsOfDic:(NSDictionary *)dic {
-    
-    self = [super initWithContentsOfDic:dic];
+- (instancetype)initModelWithJSON:(id)json
+{
+    self = [super init];
     if (self) {
-        self.articleId = dic[@"id"];
+        
+        self.articleId = json[@"id"];
+        self.subject = json[@"subject"];
     }
-    
     return self;
 }
-
 
 @end

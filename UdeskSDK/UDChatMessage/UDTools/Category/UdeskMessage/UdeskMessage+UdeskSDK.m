@@ -61,6 +61,7 @@
         self.height = size.height;
         self.width = size.width;
         self.content = self.messageId;
+        self.sourceData = UIImageJPEGRepresentation(image, 1);
     }
     
     return self;
@@ -76,8 +77,7 @@
         self.messageFrom = UDMessageTypeSending;
         self.messageStatus = UDMessageSendStatusSending;
         self.timestamp = [NSDate date];
-        self.isGif = YES;
-        self.imageData = gifData;
+        self.sourceData = gifData;
         self.content = self.messageId;
     }
     
@@ -94,8 +94,8 @@
         self.messageFrom = UDMessageTypeSending;
         self.messageStatus = UDMessageSendStatusSending;
         self.timestamp = [NSDate date];
-        self.voiceData = voiceData;
-        self.voiceDuration = duration.floatValue;
+        self.sourceData = voiceData;
+        self.duration = duration.floatValue;
         self.content = self.messageId;
     }
     
@@ -112,7 +112,7 @@
         self.messageFrom = UDMessageTypeSending;
         self.messageStatus = UDMessageSendStatusSending;
         self.timestamp = [NSDate date];
-        self.videoData = videoData;
+        self.sourceData = videoData;
         self.content = self.messageId;
     }
     
@@ -127,6 +127,7 @@
         self.messageId = [[NSUUID UUID] UUIDString];
         self.messageType = UDMessageContentTypeProduct;
         self.productMessage = productMessage;
+        self.timestamp = [NSDate date];
     }
     return self;
 }
@@ -147,18 +148,17 @@
     return self;
 }
 
-- (instancetype)initWithLeaveMessage:(NSString *)text leaveMessageFlag:(BOOL)leaveMsgFlag {
+- (instancetype)initWithRobotTransferMessage:(NSString *)text {
     
     self = [super init];
     if (self) {
         
         self.messageId = [[NSUUID UUID] UUIDString];
-        self.messageType = UDMessageContentTypeLeaveMsg;
-        self.messageFrom = UDMessageTypeSending;
-        self.messageStatus = UDMessageSendStatusSending;
+        self.messageType = UDMessageContentTypeRobotTransfer;
+        self.messageFrom = UDMessageTypeCenter;
+        self.messageStatus = UDMessageSendStatusSuccess;
         self.timestamp = [NSDate date];
         self.content = text;
-        self.leaveMsgFlag = leaveMsgFlag;
     }
     
     return self;

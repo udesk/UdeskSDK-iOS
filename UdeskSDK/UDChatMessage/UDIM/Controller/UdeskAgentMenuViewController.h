@@ -10,6 +10,7 @@
 
 @interface UdeskAgentMenuViewController : UdeskBaseViewController
 
+@property (nonatomic, copy) void(^didSelectAgentGroupServerBlock)(void);
 @property (nonatomic, strong) NSArray *menuDataSource;
 
 @end

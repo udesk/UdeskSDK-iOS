@@ -19,5 +19,6 @@
  *  本地图片放大浏览    
  */
 -(void)showLocalPhoto:(UIImageView *)selecView withMessageURL:(NSString *)url;
+-(void)showPhotoWithRect:(CGRect)rect withMessageURL:(NSString *)url;
 
 @end

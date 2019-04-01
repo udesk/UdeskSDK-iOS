@@ -23,6 +23,16 @@
 /**
  *  本地图片放大浏览
  */
+-(void)showPhotoWithRect:(CGRect)rect withMessageURL:(NSString *)url
+{
+    
+    UIImageView *selecView = [[UIImageView alloc] initWithFrame:rect];
+    [self showLocalPhoto:selecView withMessageURL:url];
+}
+
+/**
+ *  本地图片放大浏览
+ */
 -(void)showLocalPhoto:(UIImageView *)selecView withMessageURL:(NSString *)url
 {
     

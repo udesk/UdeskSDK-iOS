@@ -35,7 +35,7 @@
                          textWidth:(CGFloat)textWidth
 {
     if ([UdeskSDKUtil isBlankString:attributedText.string]) {
-        return CGSizeMake(50, 50);
+        return CGSizeMake(100, 20);
     }
     
     CGSize constraint = CGSizeMake(textWidth , CGFLOAT_MAX);
@@ -44,9 +44,9 @@
                                                      options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                                      context:nil];
     
-    stringRect.size.height = stringRect.size.height < 30 ? stringRect.size.height = 18 : stringRect.size.height;
+    stringRect.size.height = stringRect.size.height < 30 ? stringRect.size.height = 20 : stringRect.size.height;
     
-    return CGRectIntegral(stringRect).size;
+    return CGSizeMake(stringRect.size.width, stringRect.size.height+2);
 }
 
 + (CGSize)textSize:(NSString *)text withFont:(UIFont *)font withSize:(CGSize)size {
@@ -77,6 +77,19 @@
     }
     
     return newSize;
+}
+
++ (CGSize)getSizeForAttributedText:(NSAttributedString *)aString width:(CGFloat)width height:(CGFloat)height
+{
+    CGSize constraint = CGSizeMake(width , height);
+    
+    CGRect stringRect = [aString boundingRectWithSize:constraint
+                                                     options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                                     context:nil];
+    
+    stringRect.size.height = stringRect.size.height < 30 ? stringRect.size.height = 20 : stringRect.size.height;
+    
+    return CGSizeMake(stringRect.size.width, stringRect.size.height+2);
 }
 
 @end

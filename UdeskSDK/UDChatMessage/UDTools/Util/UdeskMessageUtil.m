@@ -15,7 +15,6 @@
 #import "UdeskStructMessage.h"
 #import "UdeskLocationMessage.h"
 #import "UdeskVideoCallMessage.h"
-#import "UdeskProductMessage.h"
 #import "UdeskGoodsMessage.h"
 #import "UdeskSDKUtil.h"
 #import "UdeskBundleUtils.h"
@@ -26,53 +25,19 @@
 #import "Udesk_YYWebImage.h"
 #import "UdeskCacheUtil.h"
 #import "UdeskQueueMessage.h"
+#import "UdeskRichMessage.h"
+#import "UdeskTopAskMessage.h"
+#import "UdeskNewsMessage.h"
+#import "UdeskLinkMessage.h"
+#import "UdeskListMessage.h"
+#import "UdeskTableMessage.h"
+#import "UdeskProductMessage.h"
+#import "UdeskProductListMessage.h"
 
 @implementation UdeskMessageUtil
 
-//把UdeskMessage转换成UdeskChatMessage
-+ (NSArray *)udeskMsgModelWithleaveMsg:(NSArray *)leaveMsgs messagesArray:(NSArray *)messagesArray {
-    
-    @try {
-        
-        NSMutableArray *messages = [[NSMutableArray alloc] init];
-        NSArray *array = [messagesArray valueForKey:@"messageId"];
-        
-        for (UdeskMessage *message in leaveMsgs) {
-            
-            if (![array containsObject:message.messageId]) {
-                
-                if (message.messageType == UDMessageContentTypeText||
-                    message.messageType == UDMessageContentTypeLeaveMsg) {
-                    
-                    UdeskTextMessage *textMessage = [[UdeskTextMessage alloc] initWithMessage:message displayTimestamp:NO];
-                    if (textMessage) {
-                        [messages addObject:textMessage];
-                    }
-                }
-                else if (message.messageType == UDMessageContentTypeLeaveEvent) {
-                    
-                    UdeskEventMessage *eventMessage = [[UdeskEventMessage alloc] initWithMessage:message displayTimestamp:YES];
-                    if (eventMessage) {
-                        [messages addObject:eventMessage];
-                    }
-                }
-            }
-        }
-        
-        //如果只有一个事件消息 则不需要显示
-        if (messages.count==1 && [messages.firstObject isKindOfClass:[UdeskEventMessage class]]) {
-            [messages removeAllObjects];
-        }
-        
-        return messages;
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
-}
-
 //消息model转chatMessage
-+ (NSArray *)chatMessageWithMsgModel:(NSArray *)array agentNick:(NSString *)agentNick lastMessage:(UdeskMessage *)lastMessage {
++ (NSArray *)chatMessageWithMsgModel:(NSArray *)array lastMessage:(UdeskMessage *)lastMessage {
     
     NSMutableArray *msgLayout = [NSMutableArray array];
     [array enumerateObjectsUsingBlock:^(UdeskMessage *message, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -84,20 +49,34 @@
             if (idx>0) {
                 previousMessage = [array objectAtIndex:idx-1];
             }
-            
+
             if (!previousMessage && lastMessage) {
                 previousMessage = lastMessage;
+            }
+            
+            
+            //检查是否需要显示时间（第一条信息和超过3分钟间隔的显示时间）
+            UdeskMessage *lastMessageCopy;
+            if (idx+1<array.count) {
+                lastMessageCopy = [array objectAtIndex:idx+1];
             }
             
             BOOL isDisplayTimestamp = [self checkWhetherMessageTimeDisplayed:previousMessage laterMessage:message];
             
             switch (message.messageType) {
-                case UDMessageContentTypeRich:
-                case UDMessageContentTypeLeaveMsg:
                 case UDMessageContentTypeText:{
+                    
+                    NSString *bubbleType = [self setupMessageBubble:message laterMessage:lastMessageCopy previousMessage:previousMessage];
+                    message.bubbleType = bubbleType;
                     
                     UdeskTextMessage *textMessage = [[UdeskTextMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:textMessage];
+                    break;
+                }
+                case UDMessageContentTypeRich:{
+                    
+                    UdeskRichMessage *richMessage = [[UdeskRichMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:richMessage];
                     break;
                 }
                 case UDMessageContentTypeImage:{
@@ -129,6 +108,8 @@
                     break;
                 }
                 case UDMessageContentTypeRedirect:
+                case UDMessageContentTypeRobotEvent:
+                case UDMessageContentTypeRobotTransfer:
                 case UDMessageContentTypeLeaveEvent:{
                     
                     UdeskEventMessage *eventMessage = [[UdeskEventMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
@@ -137,12 +118,6 @@
                 }
                 case UDMessageContentTypeRollback: {
                     
-                    NSString *agentNick = message.content;
-                    if ([UdeskSDKUtil isBlankString:agentNick]) {
-                        agentNick = agentNick;
-                    }
-                    NSString *rollbackText = [NSString stringWithFormat:@"%@%@%@",getUDLocalizedString(@"udesk_agent"),agentNick,getUDLocalizedString(@"udesk_rollback")];
-                    message.content = rollbackText;
                     UdeskEventMessage *eventMessage = [[UdeskEventMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:eventMessage];
                     break;
@@ -159,12 +134,6 @@
                     [msgLayout addObject:videoCallMessage];
                     break;
                 }
-                case UDMessageContentTypeProduct: {
-                    
-                    UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithMessage:message displayTimestamp:YES];
-                    [msgLayout addObject:productMessage];
-                    break;
-                }
                 case UDMessageContentTypeGoods: {
                     
                     UdeskGoodsMessage *goodsMessage = [[UdeskGoodsMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
@@ -175,6 +144,49 @@
                     
                     UdeskQueueMessage *queueMessage = [[UdeskQueueMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:queueMessage];
+                    break;
+                }
+                case UDMessageContentTypeTopAsk: {
+                    
+                    UdeskTopAskMessage *topAskMessage = [[UdeskTopAskMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:topAskMessage];
+                    break;
+                }
+                case UDMessageContentTypeNews: {
+                    
+                    UdeskNewsMessage *newsMessage = [[UdeskNewsMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:newsMessage];
+                    break;
+                }
+                case UDMessageContentTypeLink: {
+                    
+                    UdeskLinkMessage *linkMessage = [[UdeskLinkMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:linkMessage];
+                    break;
+                }
+                case UDMessageContentTypeTable: {
+                    
+                    UdeskTableMessage *tableMessage = [[UdeskTableMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:tableMessage];
+                    break;
+                }
+                case UDMessageContentTypeList: {
+                    
+                    UdeskListMessage *listMessage = [[UdeskListMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:listMessage];
+                    break;
+                }
+                case UDMessageContentTypeShowProduct:
+                case UDMessageContentTypeSelectiveProduct: {
+                    
+                    UdeskProductListMessage *productListMessage = [[UdeskProductListMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:productListMessage];
+                    break;
+                }
+                case UDMessageContentTypeReplyProduct: {
+                    
+                    UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:productMessage];
                     break;
                 }
                     
@@ -194,8 +206,8 @@
 + (void)storeImageWithMessage:(UdeskMessage *)message {
     
     if (message.messageFrom == UDMessageTypeReceiving) {
-        if (message.imageData) {
-            Udesk_YYImage *gifImage = [[Udesk_YYImage alloc] initWithData:message.imageData];
+        if (message.sourceData) {
+            Udesk_YYImage *gifImage = [[Udesk_YYImage alloc] initWithData:message.sourceData];
             message.image = gifImage;
             [[Udesk_YYWebImageManager sharedManager].cache setImage:gifImage forKey:message.content];
         }
@@ -209,7 +221,7 @@
 + (void)storeVoiceWithMessage:(UdeskMessage *)message {
     
     if (message.messageFrom == UDMessageTypeReceiving) {
-        [[UdeskCacheUtil sharedManager] setObject:message.voiceData forKey:message.messageId];
+        [[UdeskCacheUtil sharedManager] setObject:message.sourceData forKey:message.messageId];
     }
 }
 
@@ -224,13 +236,6 @@
         if (![previousMessage isKindOfClass:[UdeskMessage class]]) return YES;
         if (![laterMessage isKindOfClass:[UdeskMessage class]]) return YES;
         
-        if (laterMessage.messageType == UDMessageContentTypeLeaveEvent ||
-            laterMessage.messageType == UDMessageContentTypeRedirect ||
-            laterMessage.messageType == UDMessageContentTypeStruct ||
-            laterMessage.messageType == UDMessageContentTypeRollback) {
-            return YES;
-        }
-        
         NSInteger interval=[laterMessage.timestamp timeIntervalSinceDate:previousMessage.timestamp];
         if(interval>60*3) return YES;
         
@@ -241,8 +246,140 @@
     }
 }
 
++ (NSString *)setupMessageBubble:(UdeskMessage *)currentMessage laterMessage:(UdeskMessage *)laterMessage previousMessage:(UdeskMessage *)previousMessage {
+    
+    //没有后一个消息
+    if (!laterMessage && previousMessage) {
+        
+        return [self setupPreviousBubble:currentMessage previousMessage:previousMessage];
+    }
+    
+    //没有前一个消息
+    if (!previousMessage && laterMessage) {
+        
+        return [self setupLasterBubble:currentMessage laterMessage:laterMessage];
+    }
+    
+    //前后都有消息
+    if (previousMessage && laterMessage) {
+        
+        NSString *lasterBubble = [self setupLasterBubble:currentMessage laterMessage:laterMessage];
+        NSString *previousBubble = [self setupPreviousBubble:currentMessage previousMessage:previousMessage];
+        NSString *middleBubble = [self setupMiddleBubble:currentMessage laterMessage:laterMessage previousMessage:previousMessage];
+        
+        if (middleBubble) {
+            return middleBubble;
+        }
+        
+        if (lasterBubble) {
+            return lasterBubble;
+        }
+        
+        if (previousBubble) {
+            return previousBubble;
+        }
+    }
+    
+    return nil;
+}
+
++ (NSString *)setupLasterBubble:(UdeskMessage *)currentMessage laterMessage:(UdeskMessage *)laterMessage {
+    
+    if (currentMessage.agentJid && laterMessage.agentJid && ![currentMessage.agentJid isEqualToString:laterMessage.agentJid]) {
+        return nil;
+    }
+    
+    //消息间隔小于20s
+    NSInteger interval = [currentMessage.timestamp timeIntervalSinceDate:laterMessage.timestamp];
+    
+    BOOL curMsgType = currentMessage.messageType == UDMessageContentTypeText;
+    BOOL latMsgType = laterMessage.messageType == UDMessageContentTypeText;
+    
+    //不是同一个发送者
+    if (currentMessage.messageFrom == laterMessage.messageFrom &&
+        currentMessage.messageType == laterMessage.messageType &&
+        curMsgType &&
+        latMsgType &&
+        interval >= -20) {
+        
+        NSString *currentBubble = @"udChatBubbleSendingSolid02.png";
+        if (currentMessage.messageFrom == UDMessageTypeReceiving) {
+            currentBubble = @"udChatBubbleReceivingSolid02.png";
+        }
+        return currentBubble;
+    }
+    
+    return nil;
+}
+
++ (NSString *)setupPreviousBubble:(UdeskMessage *)currentMessage previousMessage:(UdeskMessage *)previousMessage {
+    
+    if (currentMessage.agentJid && previousMessage.agentJid && ![currentMessage.agentJid isEqualToString:previousMessage.agentJid]) {
+        return nil;
+    }
+    
+    //消息间隔小于20s
+    NSInteger interval = [currentMessage.timestamp timeIntervalSinceDate:previousMessage.timestamp];
+    
+    BOOL curMsgType = currentMessage.messageType == UDMessageContentTypeText;
+    BOOL preMsgType = previousMessage.messageType == UDMessageContentTypeText;
+    
+    //不是同一个发送者
+    if (currentMessage.messageFrom == previousMessage.messageFrom &&
+        currentMessage.messageType == previousMessage.messageType &&
+        curMsgType &&
+        preMsgType &&
+        interval <= 20) {
+        
+        NSString *currentBubble = @"udChatBubbleSendingSolid04.png";
+        if (currentMessage.messageFrom == UDMessageTypeReceiving) {
+            currentBubble = @"udChatBubbleReceivingSolid04.png";
+        }
+        return currentBubble;
+    }
+    
+    return nil;
+}
+
++ (NSString *)setupMiddleBubble:(UdeskMessage *)currentMessage laterMessage:(UdeskMessage *)laterMessage previousMessage:(UdeskMessage *)previousMessage {
+    
+    if (currentMessage.agentJid && laterMessage.agentJid && previousMessage.agentJid) {
+        if (![currentMessage.agentJid isEqualToString:laterMessage.agentJid] || ![currentMessage.agentJid isEqualToString:previousMessage.agentJid]) {
+            return nil;
+        }
+    }
+    
+    //消息间隔小于20s
+    NSInteger laterInterval = [currentMessage.timestamp timeIntervalSinceDate:laterMessage.timestamp];
+    NSInteger previousInterval = [currentMessage.timestamp timeIntervalSinceDate:previousMessage.timestamp];
+    
+    BOOL curMsgType = currentMessage.messageType == UDMessageContentTypeText;
+    BOOL latMsgType = laterMessage.messageType == UDMessageContentTypeText;
+    BOOL preMsgType = previousMessage.messageType == UDMessageContentTypeText;
+    
+    //不是同一个发送者
+    if (currentMessage.messageFrom == laterMessage.messageFrom &&
+        currentMessage.messageType == laterMessage.messageType &&
+        curMsgType &&
+        latMsgType &&
+        laterInterval >= -20 &&
+        currentMessage.messageFrom == previousMessage.messageFrom &&
+        currentMessage.messageType == previousMessage.messageType &&
+        preMsgType &&
+        previousInterval <= 20) {
+        
+        NSString *currentBubble = @"udChatBubbleSendingSolid03.png";
+        if (currentMessage.messageFrom == UDMessageTypeReceiving) {
+            currentBubble = @"udChatBubbleReceivingSolid03.png";
+        }
+        return currentBubble;
+    }
+    
+    return nil;
+}
+
 #pragma mark - 重发失败的消息
-+ (NSTimer *)resendFailedMessage:(NSMutableArray *)resendMessageArray progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion {
++ (NSTimer *)resendFailedMessage:(NSMutableArray *)resendMessageArray progress:(void(^)(float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion {
     
     NSTimer *timer = [NSTimer udScheduleTimerWithTimeInterval:6.0f repeats:YES usingBlock:^(NSTimer *timer) {
         
@@ -269,14 +406,14 @@
                         
                     } else {
                         
-                        [UdeskManager sendMessage:resendMessage progress:^(NSString *key, float percent) {
+                        [UdeskManager sendMessage:resendMessage progress:^(float percent) {
                             
                             if ([resendMessageArray containsObject:resendMessage]) {
                                 [resendMessageArray removeObject:resendMessage];
                             }
                             
                             if (progress) {
-                                progress(resendMessage.messageId,percent);
+                                progress(percent);
                             }
                             
                         } completion:completion];

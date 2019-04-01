@@ -191,7 +191,7 @@
                 NSMutableArray *muArray = [NSMutableArray array];
                 NSArray *contents = [responseObject objectForKey:@"contents"];
                 for (NSDictionary *dic in contents) {
-                    UdeskProblemModel *model = [[UdeskProblemModel alloc] initWithContentsOfDic:dic];
+                    UdeskProblemModel *model = [[UdeskProblemModel alloc] initModelWithJSON:dic];
                     if (model) {
                         [muArray addObject:model];
                     }

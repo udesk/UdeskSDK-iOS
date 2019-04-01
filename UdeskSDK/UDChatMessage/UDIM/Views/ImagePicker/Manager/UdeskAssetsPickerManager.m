@@ -9,6 +9,7 @@
 #import "UdeskAssetsPickerManager.h"
 #import "UdeskVideoUtil.h"
 #import "UdeskImageUtil.h"
+#import "UdeskBundleUtils.h"
 
 @interface UdeskAssetsPickerManager()
 
@@ -143,7 +144,7 @@
 }
 
 //获取压缩Video
-- (void)fetchCompressVideoWithAssets:(NSArray<PHAsset *> *)assets completion:(void (^)(NSArray<NSString *> *paths))completion {
+- (void)fetchCompressVideoWithAssets:(NSArray<PHAsset *> *)assets completion:(void (^)(NSArray<NSString *> *paths,NSString *errorMessage))completion {
     
     if (!assets || assets == (id)kCFNull) return ;
     if (![assets isKindOfClass:[NSArray class]]) return ;
@@ -157,12 +158,12 @@
             }
             
             if (pathArray.count == assets.count) {
-                if (completion) completion(pathArray);
+                if (completion) completion(pathArray,nil);
             }
             
         } failure:^(NSString *errorMessage, NSError *error) {
             NSLog(@"%@",error);
-            if (completion) completion(nil);
+            if (completion) completion(nil,errorMessage);
         }];
     }
 }
@@ -179,6 +180,17 @@
     [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset* avasset, AVAudioMix* audioMix, NSDictionary* info){
         
         AVURLAsset *videoAsset = (AVURLAsset*)avasset;
+        NSNumber *size;
+        [videoAsset.URL getResourceValue:&size forKey:NSURLFileSizeKey error:nil];
+        
+        if (([size floatValue]/(1024.0*1024.0)) > 31.f) {
+            
+            if (failure) {
+                failure(getUDLocalizedString(@"udesk_video_big_tips"),nil);
+            }
+            return ;
+        }
+        
         [self startExportVideoWithVideoAsset:videoAsset presetName:presetName success:success failure:failure];
     }];
 }

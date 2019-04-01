@@ -29,5 +29,12 @@
             preSessionMessage:(UdeskMessage *)preSessionMessage
                    completion:(void(^)(UdeskAgent *agentModel,NSError *error))completion;
 
+/** 指定分配客服组 */
++ (void)fetchAgentWithMenuId:(NSString *)menuId
+                preSessionId:(NSNumber *)preSessionId
+           preSessionMessage:(UdeskMessage *)preSessionMessage
+                  completion:(void(^)(UdeskAgent *agentModel,NSError *error))completion;
+
+
 
 @end
