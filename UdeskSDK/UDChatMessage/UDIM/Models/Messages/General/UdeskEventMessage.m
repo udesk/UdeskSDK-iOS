@@ -39,14 +39,6 @@ static CGFloat const kUDEventHeight = 24;
 
 - (void)layoutEventMessage {
 
-    if (self.message.messageType == UDMessageContentTypeRobotEvent) {
-        NSString *robotWelcomMessage = [UdeskSDKConfig customConfig].robotWelcomeMessage;
-        if ([UdeskSDKUtil isBlankString:robotWelcomMessage]) {
-            robotWelcomMessage = getUDLocalizedString(@"udesk_robot_welcome_message");
-        }
-        self.message.content = robotWelcomMessage;
-    }
-    
     CGFloat eventWidth = [self getEventContentWidth:self.message.content];
     self.eventLabelFrame = CGRectMake((UD_SCREEN_WIDTH-eventWidth)/2, CGRectGetMaxY(self.dateFrame)+kUDEventToVerticalEdgeSpacing, eventWidth, kUDEventHeight);
     

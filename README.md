@@ -1,8 +1,4 @@
 # UdeskSDK-iOS
-### 公告
-
-SDK原生机器人功能在 5.x 分支下。
-
 ### SDK下载地址
 
 https://github.com/udesk/UdeskSDK-iOS
@@ -33,11 +29,12 @@ https://github.com/udesk/UdeskSDK-iOS
 
 ### 兼容性
 
-| 类别     | 兼容范围                      |
-| -------- | ----------------------------- |
-| 系统     | 支持iOS 7.0及以上系统         |
-| 架构     | armv7、arm64、i386、x86_64    |
-| 开发环境 | 建议使用最新版本Xcode进行开发 |
+| 类别      | 兼容范围                      |
+| --------- | ----------------------------- |
+| 系统      | 支持iOS 7.0及以上系统         |
+| 架构      | armv7、arm64、i386、x86_64    |
+| 开发环境  | 建议使用最新版本Xcode进行开发 |
+| Cocoapods | 使用1.5.3版本                 |
 
 ### SDK大小说明
 
@@ -1292,22 +1289,9 @@ sdk v3.3.3版本更新功能：
 
 # 八、功能截图
 
-以下是SDK部分功能截图
+![udesk](https://qn-im.udesk.cn/03_1554862457_781.png)
 
-### 商品消息
-![udesk](https://qn-im.udesk.cn/QQ20180927-105917_1538017915_503.png)
 
-### 咨询对象
-![udesk](https://qn-im.udesk.cn/QQ20180927-105034_1538017914_750.png)
-
-### 自定义表情
-![udesk](https://qn-im.udesk.cn/QQ20180927-104429_1538017914_710.png)
-
-### 自定义按钮
-![udesk](https://qn-im.udesk.cn/QQ20180927-104341_1538029819_848.png)
-
-### 地理位置和视频消息
-![udesk](https://qn-im.udesk.cn/2221538017487_.pic_hd_1538027283_385.png)
 
 
 

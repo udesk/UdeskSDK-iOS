@@ -178,6 +178,7 @@
 //放弃排队
 - (void)quitQueue {
     
+    [UdeskManager cancelAllOperations];
     [UdeskManager quitQueueWithType:[[UdeskSDKConfig customConfig] quitQueueString]];
 }
 

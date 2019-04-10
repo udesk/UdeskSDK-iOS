@@ -35,6 +35,8 @@
 @property (nonatomic, strong) NSTimer *chatMsgTimer;
 /** 临时 */
 @property (nonatomic, strong) NSMutableArray *robotTempArray;
+/** 线程 */
+@property (nonatomic, strong) dispatch_queue_t messagesArrayModificationQueue;
 
 @end
 
@@ -45,6 +47,7 @@
     self = [super init];
     if (self) {
         _sdkSetting = setting;
+        self.messagesArrayModificationQueue = dispatch_queue_create("com.udesk.sdk.message.array", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }
@@ -291,30 +294,32 @@
     if (!messageArray || messageArray == (id)kCFNull) return ;
     if (![messageArray isKindOfClass:[NSArray class]]) return;
     
-    @try {
-        
-        UdeskMessage *lastMessage = [self getLastMessage];
-        
-        //这里把最后一个消息元素和新的消息元素一起传过去为了检查气泡形状是否需要修改
-        NSMutableArray *msgsArray = [NSMutableArray array];
-        if (lastMessage) {
-            [msgsArray addObject:lastMessage];
+    dispatch_barrier_async(self.messagesArrayModificationQueue, ^{
+       
+        @try {
+            UdeskMessage *lastMessage = [self getLastMessage];
+            
+            //这里把最后一个消息元素和新的消息元素一起传过去为了检查气泡形状是否需要修改
+            NSMutableArray *msgsArray = [NSMutableArray array];
+            if (lastMessage) {
+                [msgsArray addObject:lastMessage];
+            }
+            [msgsArray addObjectsFromArray:messageArray];
+            NSArray *array = [UdeskMessageUtil chatMessageWithMsgModel:msgsArray lastMessage:[self getSecondLastMessage]];
+            NSMutableArray *mArray = [NSMutableArray arrayWithArray:self.messagesArray];
+            if (array) {
+                //返回的数组包括了最后一个元素，所以这里要删除下
+                [mArray removeLastObject];
+                [mArray addObjectsFromArray:array];
+            }
+            self.messagesArray = mArray;
+            [self updateCallbackMessages];
+            [self checkTempStore:messageArray];
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        } @finally {
         }
-        [msgsArray addObjectsFromArray:messageArray];
-        NSArray *array = [UdeskMessageUtil chatMessageWithMsgModel:msgsArray lastMessage:[self getSecondLastMessage]];
-        NSMutableArray *mArray = [NSMutableArray arrayWithArray:self.messagesArray];
-        if (array) {
-            //返回的数组包括了最后一个元素，所以这里要删除下
-            [mArray removeLastObject];
-            [mArray addObjectsFromArray:array];
-        }
-        self.messagesArray = mArray;
-        [self updateCallbackMessages];
-        [self checkTempStore:messageArray];
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
+    });
 }
 
 //检查需要暂时存储到内存的消息

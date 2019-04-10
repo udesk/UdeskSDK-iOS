@@ -101,6 +101,9 @@
     if (!setting || setting == (id)kCFNull) return ;
     _sdkSetting = setting;
     
+    //置空机器人消息条数
+    self.robotMessageCount = 0;
+    
     //用户在黑名单
     if (setting.isBlocked.boolValue) {
         [self customerInBlackList:setting.blackListNotice];
@@ -124,7 +127,10 @@
     //无消息对话过滤
     if (setting.showPreSession.boolValue && !setting.inSession.boolValue) {
         [self preSessionWithTitle:setting.preSessionTitle preSessionId:setting.preSessionId];
+        return;
     }
+    
+    [self requestAgentDataWithPreSessionMessage:nil completion:nil];
 }
 
 #pragma mark - 请求客服数据
@@ -151,23 +157,14 @@
     if ([UdeskSDKUtil isBlankString:message.content]) return;
     
     //收到消息时当前客服状态不在线 请求客服验证
-    if (self.agentManager.agentModel && self.agentManager.agentModel.code != UDAgentStatusResultOnline) {
+    if (self.agentManager.agentModel && self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
+        !self.messageManager.isRobotSession && message.sendType != UDMessageSendTypeRobot) {
+        
         [self requestAgentDataWithPreSessionMessage:nil completion:nil];
     }
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [self.messageManager addMessageToArray:@[message]];
-    });
-}
-
-//收到消息组
-- (void)didReceiveMessagesArray:(NSArray<UdeskMessage *> *)messageArray {
-    if (!messageArray || messageArray == (id)kCFNull) return ;
-    if (![messageArray isKindOfClass:[NSArray class]] || !messageArray.count) return ;
-    if (![messageArray.firstObject isKindOfClass:[UdeskMessage class]]) return ;
-    
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self.messageManager addMessageToArray:messageArray];
     });
 }
 

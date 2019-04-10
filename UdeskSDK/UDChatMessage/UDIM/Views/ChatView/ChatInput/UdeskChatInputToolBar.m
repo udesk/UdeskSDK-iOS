@@ -562,12 +562,12 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     if (isRobotSession) {
         [self resetAllButton];
         
+        self.voiceButton.hidden = YES;
+        self.emotionButton.hidden = YES;
+        
 #if __has_include("BDSEventManager.h")
         self.voiceButton.hidden = NO;
-#else
-        self.voiceButton.hidden = YES;
 #endif
-        self.emotionButton.hidden = YES;
         
         [self setNeedsLayout];
     }

@@ -295,22 +295,7 @@
 - (void)setupAnswerEvaluation {
     
     if (self.baseMessage.message.showUseful) {
-        if (self.baseMessage.message.answerEvaluation) {
-            if ([self.baseMessage.message.answerEvaluation isEqualToString:@"1"]) {
-                self.usefulButton.selected = YES;
-                self.usefulButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
-            }
-            else if ([self.baseMessage.message.answerEvaluation isEqualToString:@"2"]) {
-                self.uselessButton.selected = YES;
-                self.uselessButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
-            }
-        }
-        else {
-            self.uselessButton.selected = NO;
-            self.usefulButton.selected = NO;
-            self.uselessButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
-            self.usefulButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMinY(self.uselessButton.frame)-kUDUsefulHeight-kUDUsefulVerticalEdgeSpacing, kUDUsefulWidth, kUDUsefulHeight);
-        }
+        [self updateAnswerEvaluation:self.baseMessage.message.answerEvaluation];
     }
     else {
         self.usefulButton.frame = CGRectZero;
@@ -367,7 +352,7 @@
     [UdeskManager answerSurvey:self.baseMessage.message completion:^(NSError *error) {
         if (!error) {
             button.selected = YES;
-            [self updateAnswerEvaluation:useful];
+            [self updateAnswerEvaluation:self.baseMessage.message.answerEvaluation];
         }
         else {
             self.baseMessage.message.answerEvaluation = orgEvaluation;
@@ -375,19 +360,32 @@
     }];
 }
 
-- (void)updateAnswerEvaluation:(BOOL)useful {
+- (void)updateAnswerEvaluation:(NSString *)answerEvaluation {
     
-    if (useful) {
+    if ([answerEvaluation isEqualToString:@"1"]) {
+        
         self.usefulButton.hidden = NO;
         self.uselessButton.hidden = YES;
-        [self.uselessButton removeFromSuperview];
+        self.usefulButton.selected = YES;
+        self.uselessButton.selected = NO;
         self.usefulButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
     }
-    else {
+    else if ([answerEvaluation isEqualToString:@"2"]) {
+        
         self.uselessButton.hidden = NO;
         self.usefulButton.hidden = YES;
-        [self.usefulButton removeFromSuperview];
+        self.uselessButton.selected = YES;
+        self.usefulButton.selected = NO;
         self.uselessButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
+    }
+    else {
+        
+        self.uselessButton.hidden = NO;
+        self.usefulButton.hidden = NO;
+        self.uselessButton.selected = NO;
+        self.usefulButton.selected = NO;
+        self.uselessButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMaxY(self.bubbleImageView.frame)-kUDUsefulHeight, kUDUsefulWidth, kUDUsefulHeight);
+        self.usefulButton.frame = CGRectMake(CGRectGetMaxX(self.bubbleImageView.frame)+kUDUsefulHorizontalEdgeSpacing, CGRectGetMinY(self.uselessButton.frame)-kUDUsefulHeight-kUDUsefulVerticalEdgeSpacing, kUDUsefulWidth, kUDUsefulHeight);
     }
 }
 

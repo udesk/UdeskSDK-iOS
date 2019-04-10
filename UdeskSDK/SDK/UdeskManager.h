@@ -31,13 +31,6 @@
 - (void)didReceiveMessages:(UdeskMessage *)message;
 
 /**
- *  接收消息代理
- *
- *  @param messageArray 接收的消息
- */
-- (void)didReceiveMessagesArray:(NSArray<UdeskMessage *> *)messageArray;
-
-/**
  *  接受转移
  *
  *  @param agent 转接之后的客服

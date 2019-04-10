@@ -10,9 +10,6 @@
 #import "UdeskImageUtil.h"
 #import "UdeskStructCell.h"
 
-/** 边距 */
-static CGFloat const kUDStructPadding = 10.0;
-
 @implementation UdeskStructButton
 
 - (instancetype)initModelWithJSON:(id)json
@@ -113,8 +110,8 @@ static CGFloat const kUDStructPadding = 10.0;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
                     self.structContentView = [[UdeskStructView alloc] initWithImage:self.structImage title:self.title message:self.udDescription buttons:actionArray origin:CGPointMake(kUDBubbleToHorizontalEdgeSpacing, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing)];
-                    
-                    self.cellHeight = CGRectGetHeight(self.structContentView.frame)+CGRectGetHeight(self.avatarFrame)+(kUDStructPadding*3);
+
+                    self.cellHeight = self.structContentView.frame.size.height+self.structContentView.frame.origin.y+kUDCellBottomMargin;
                 });
             }
         } @catch (NSException *exception) {
