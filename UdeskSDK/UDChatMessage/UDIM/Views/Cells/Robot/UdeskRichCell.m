@@ -142,8 +142,11 @@
     }
     else if ([URL.absoluteString hasPrefix:@"data-type:"]) {
         
-        NSString *content = [textView.text stringByReplacingOccurrencesOfString:@"\n" withString:@""];;
-        [self flowMessageWithText:content flowContent:URL.absoluteString];
+        if (textView.text.length >= (characterRange.location+characterRange.length)) {
+            NSString *content = [[textView.text substringWithRange:characterRange] stringByReplacingOccurrencesOfString:@"\n" withString:@""];;
+            [self flowMessageWithText:content flowContent:URL.absoluteString];
+        }
+        return NO;
     }
     else {
         
@@ -158,7 +161,6 @@
         else {
             [self openURL:URL];
         }
-        
         return NO;
     }
     

@@ -120,7 +120,7 @@
     }
     
     //导航栏左键
-    UIBarButtonItem *customizedBackItem = [UIBarButtonItem udItemWithIcon:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] target:viewController action:@selector(dismissChatViewController)];
+    UIBarButtonItem *customizedBackItem = [UIBarButtonItem udLeftItemWithIcon:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] target:viewController action:@selector(dismissChatViewController)];
     viewController.navigationItem.leftBarButtonItem = customizedBackItem;
     
     if ([viewController isKindOfClass:[UdeskFAQViewController class]]) {

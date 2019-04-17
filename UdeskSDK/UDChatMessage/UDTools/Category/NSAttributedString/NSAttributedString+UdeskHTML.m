@@ -16,6 +16,11 @@
     if (!htmlString || htmlString == (id)kCFNull) {
         return [[NSAttributedString alloc] initWithString:@"" attributes:nil];
     }
+    
+    if (!customFont || customFont == (id)kCFNull) {
+        customFont = [UIFont systemFontOfSize:15];
+    }
+    
     NSData *documentData = [htmlString dataUsingEncoding:NSUTF8StringEncoding];
     xmlDoc *document = htmlReadMemory(documentData.bytes, (int)documentData.length, nil, "UTF-8", HTML_PARSE_NOWARNING | HTML_PARSE_NOERROR);
     

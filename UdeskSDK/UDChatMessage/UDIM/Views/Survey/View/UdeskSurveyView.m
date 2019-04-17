@@ -144,7 +144,7 @@
     CGFloat tagsCollectionViewSpacing = tagsCollectionHeight ? kUDSurveyCollectionViewItemToVerticalEdgeSpacing : 0;
     
     CGFloat remarkHeight = kUDSurveyRemarkTextViewMaxHeight;
-    CGFloat remarkPlaceholderHeight = [UdeskStringSizeUtil textSize:self.surveyContentView.remarkTextView.placeholder withFont:[UIFont systemFontOfSize:15] withSize:CGSizeMake(self.contentView.udWidth-(kUDSurveyContentSpacing*3), MAXFLOAT)].height + 15;
+    CGFloat remarkPlaceholderHeight = [UdeskStringSizeUtil sizeWithText:self.surveyContentView.remarkTextView.placeholder font:[UIFont systemFontOfSize:15] size:CGSizeMake(self.contentView.udWidth-(kUDSurveyContentSpacing*3), MAXFLOAT)].height + 15;
     
     if (!self.surveyContentView.remarkTextView.text.length) {
         remarkHeight = MAX(remarkPlaceholderHeight, kUDSurveyRemarkTextViewHeight);

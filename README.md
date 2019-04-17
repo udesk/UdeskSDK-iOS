@@ -1,14 +1,15 @@
-# UdeskSDK-iOS
+UdeskSDK-iOS
+
 ### SDK下载地址
 
 https://github.com/udesk/UdeskSDK-iOS
 
 ## 目录
 - [一、集成SDK](#%E4%B8%80%e9%9b%86%e6%88%90sdk)
-- [二、快速使用SDK](#%E4%BA%8C%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8sdk)
-- [三、Udesk SDK 自定义配置](#%E4%B8%89udesk-sdk-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
+- [二、快速使用](#%E4%BA%8C%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8)
+- [三、自定义配置](#%E4%B8%89%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
 - [四、消息推送](#%E5%9B%9B%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81)
-- [五、Udesk SDK API说明](#%E4%BA%94udesk-sdk-api%E8%AF%B4%E6%98%8E)
+- [五、API说明](#%E4%BA%94api%E8%AF%B4%E6%98%8E)
 - [六、常见问题](#%E5%85%AD%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 - [七、更新记录](#%E4%B8%83%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95)
 - [八、功能截图](#%E5%85%AB%E5%8A%9F%E8%83%BD%E6%88%AA%E5%9B%BE)
@@ -34,7 +35,7 @@ https://github.com/udesk/UdeskSDK-iOS
 | 系统      | 支持iOS 7.0及以上系统         |
 | 架构      | armv7、arm64、i386、x86_64    |
 | 开发环境  | 建议使用最新版本Xcode进行开发 |
-| Cocoapods | 使用1.5.3版本                 |
+| Cocoapods | 1.5.3版本                     |
 
 ### SDK大小说明
 
@@ -96,7 +97,13 @@ import UdeskSDK
 
 #### 权限问题
 
-SDK使用了iOS的相册、相机、麦克风、地理位置、保存图片功能，请在info.plist里加入相对应的权限
+SDK使用了iOS的相册、相机、麦克风、地理位置、保存图片功能，请在info.plist里加入相对应的权限。
+
+**如果不加，会 crash！！！**
+
+#### 其他问题
+
+SDK对大部分游戏项目并不支持（编译直接报错），建议游戏项目使用我们网页插件，[文档在这](<http://www.udesk.cn/doc/thirdparty/webim/>)。
 
 ### 导入UdeskCall到工程
 
@@ -104,7 +111,8 @@ SDK使用了iOS的相册、相机、麦克风、地理位置、保存图片功�
 
 - pod 'AgoraRtcEngine_iOS', '~> 2.0.2' 
 
-导入系统框架
+- 导入系统框架
+
 
 ```objective-c
 libicucore.tbd
@@ -116,7 +124,7 @@ Security.framework
 
 
 
-# 二、快速使用SDK
+# 二、快速使用
 
 Udesk提供了一套开源的聊天界面，帮助开发者快速创建对话窗口和帮助中心，并提供自定义接口，以实现定制需求。
 
@@ -126,26 +134,17 @@ Udesk提供了一套开源的聊天界面，帮助开发者快速创建对话窗
 //初始化公司（appKey、appID、domain都是必传字段）
 UdeskOrganization *organization = [[UdeskOrganization alloc] initWithDomain:"domain" appKey:"appKey" appId:"appId"];
 
-//注意sdktoken 是客户的唯一标识，用来识别身份,是你们生成传入给我们的。
-//sdk_token: 传入的字符请使用 字母 / 数字 等常见字符集 。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;其次如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。
 UdeskCustomer *customer = [UdeskCustomer new];
-//必填（请不要使用特殊字符）
 customer.sdkToken = @"sdkToken";
-//非必填
 customer.nickName = @"测试名字";
-//需要严格按照邮箱规则（没有则不填，不可以为空）
 customer.email = @"test@udesk.cn";
-//需要严格按照号码规则（没有则不填，不可以为空）
 customer.cellphone = @"18888888888";
 customer.customerDescription = @"我是测试";
-//robotModelKey由Udesk管理员后台配置获取
 customer.robotModelKey = @"TestKey";
-//qq
 customer.qq = @"573979861";
-//自定义渠道
 customer.channel = @"Test";
 
-//客户自定义字段（非必填）
+//客户自定义字段示例（非必填）
 UdeskCustomerCustomField *textField = [UdeskCustomerCustomField new];
 textField.fieldKey = @"TextField_390";
 textField.fieldValue = @"测试";
@@ -160,15 +159,32 @@ customer.customField = @[textField,selectField];
 [UdeskManager initWithOrganization:organization customer:customer];
 ```
 
-- domain为贵公司注册Udesk，Udesk分配的域名，domain格式为 xxx.udesk.cn 不需要添加https://
-- appKey和appId可以在 “管理后台”  ->  “管理中心”  ->  “渠道管理” ->  “移动 SDK”，新增App即可获得
-- fieldKey可以在 “管理后台”  ->  “管理中心”  ->  “管理”  ->  “客户字段” 获得
+| 参数名称            | 说明                                                         |
+| :------------------ | :----------------------------------------------------------- |
+| domain              | 贵公司注册Udesk，Udesk分配的域名                             |
+| appKey、appId       | Udesk分配的APP key和ID                                       |
+| sdkToken            | 用户的唯一标识，用来识别身份,是**你们生成传入给我们**的。**传入的字符请使用 字母 / 数字 等常见字符集** 。就如同身份证一样，**不允许出现一个身份证号对应多个人，或者一个人有多个身份证号**；其次如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客 |
+| nickName            | 用户昵称                                                     |
+| email               | 用户邮箱，**需要严格按照邮箱规则。没有则不填！不可以为空！不可以为固定值！不可以随便填！** |
+| cellphone           | 用户号码，**需要严格按照号码规则。没有则不填！不可以为空！不可以为固定值！不可以随便填！** |
+| customerDescription | 用户描述                                                     |
+| robotModelKey       | 机器人常见问题模版ID                                         |
+| qq                  | 用户qq号                                                     |
+| channel             | 自定义渠道                                                   |
+| customField         | 用户自定义字段                                               |
+
+- 以上字段domain、appkey、appId、sdkToken是必填参数，其他参数根据自身需求选择
+- domain格式为 xxx.udesk.cn 不需要添加https://
+- appKey和appId可以在 管理后台  ->  管理中心  ->  渠道管理 ->  移动 SDK，新增App即可获得
+- robotModelKey可以在 管理后台 -> 知识库 -> Udesk KM -> 常见问题，可以获取模版ID。
+- fieldKey是Udesk生成的，可以在 “管理后台”  ->  “管理中心”  ->  “管理”  ->  “客户字段” 获得
+- fieldValue有两种类型，1.文字字段：字符串类型；2.选择字段：数组类型（数组元素为选项的下标）
 
 ### 2.2 进入聊天页面
 
 ```objective-c
 //使用push
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:[UdeskSDKConfig customConfig]];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:[UdeskSDKConfig customConfig]];
 [sdkManager pushUdeskInViewController:self completion:nil];
 
 //使用present
@@ -179,20 +195,20 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 
 ```objective-c
 //使用push
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:[UdeskSDKConfig customConfig]];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:[UdeskSDKConfig customConfig]];
 [sdkManager pushUdeskInViewController:self udeskType:UdeskFAQ completion:nil];
 
 //使用present
 [sdkManager presentUdeskInViewController:self udeskType:UdeskFAQ completion:nil];
 ```
 
-- ##### [UdeskSDKStyle defaultStyle] 是 SDK默认的UI风格，用户可自定义风格，具体可[点击查看](#%E4%B8%89udesk-sdk-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
+- ##### [UdeskSDKStyle customStyle] 是 SDK默认的UI风格，用户可自定义风格，具体可[点击查看](#%E4%B8%89udesk-sdk-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
 
 - ##### [UdeskSDKConfig customConfig] 是 SDK的配置选项，具体可[点击查看](#%E4%B8%89udesk-sdk-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
 
 
 
-# 三、Udesk SDK 自定义配置
+# 三、自定义配置
 
 ### 3.1 自定义UI
 
@@ -214,7 +230,7 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:sdkStyle
 UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
 sdkConfig.agentId = @"agentId";
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 ### 3.3 指定客服组ID
@@ -223,7 +239,7 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
 sdkConfig.groupId = @"groupId";
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -231,14 +247,7 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 
 ```objective-c
 UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-//中文
-sdkConfig.languageType = UDLanguageTypeCN;
-//英文
-//sdkConfig.languageType = UDLanguageTypeEN;
-
-/*新方法*/
 /*
- 语言类型,推荐此方法.
 
  注意:
  1. 使用时请提前创建对应语言的语言包, 分为App端和和服务端.
@@ -261,7 +270,7 @@ sdkConfig.languageType = UDLanguageTypeCN;
  */
 sdkConfig.language = @"en-us";
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -274,7 +283,7 @@ sdkConfig.quitQueueType = UdeskForceQuit;
 //标记放弃
 //sdkConfig.quitQueueType = UdeskMark;
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -289,7 +298,7 @@ sdkConfig.orientationMask = UIInterfaceOrientationMaskPortrait;
 //强制横屏
 //sdkConfig.orientationMask = UIInterfaceOrientationMaskLandscape;
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 //强制横/竖屏，只能使用presentUdeskInViewController方法
 [sdkManager presentUdeskInViewController:self completion:nil];
 ```
@@ -317,7 +326,7 @@ sdkConfig.showCustomButtons = YES;
 sdkConfig.showTopCustomButtonSurvey = YES;
 sdkConfig.customButtons = @[customButton1,customButton2];
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -325,9 +334,10 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 
 ```objective-c
 UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
+//只支持文本和图片
 sdkConfig.preSendMessages = @[@"testPreMessage",[UIImage imageNamed:@"image"]];
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -357,7 +367,7 @@ model.stickerTitles = @[@"愤怒",@"哭泣",@"糟糕",@"冷汗",@"大笑",@"可�
 UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
 sdkConfig.customEmojis = @[model];
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -372,7 +382,7 @@ sdkConfig.videoResolution = UDSmatrVideoResolution1280x720;
 //小视频录制时长
 sdkConfig.smartVideoDuration = 30;
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -388,7 +398,7 @@ NSDictionary *dict = @{
 UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
 sdkConfig.productDictionary = dict;
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -412,7 +422,7 @@ action.goodsMessageClickBlock = ^(UdeskChatViewController *viewController, NSStr
 };
     
 //初始化sdk
-UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:config sdkActionConfig:action];
+UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:config sdkActionConfig:action];
 [chatViewManager pushUdeskInViewController:self completion:nil];
 
 - (UdeskGoodsModel *)getGoodsModel {
@@ -461,7 +471,7 @@ sdkConfig.allowPickingVideo = NO;
 sdkConfig.quality = 0.5f;
     
 //初始化sdk
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -472,7 +482,7 @@ UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
 sdkConfig.showLocationEntry = YES;
     
 //初始化sdk
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -520,18 +530,16 @@ actionConfig.locationMessageClickBlock = ^(UdeskChatViewController *viewControll
     //do something
 };
 
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:[UdeskSDKConfig customConfig] sdkActionConfig:actionConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:[UdeskSDKConfig customConfig] sdkActionConfig:actionConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
 ### 3.16 机器人语音
 
-```objective-c
-SDK已经支持百度语音识别，由于百度语音sdk文件体积太大 所以只能客户自己导入到工程里。
-UdeskSDk会自行判断是否有导入百度语音识别SDK从而显示语音录制按钮。
-```
+SDK已经支持机器人百度语音识别，由于百度语音sdk文件体积太大 所以只能客户自己导入到工程里。
+UdeskSDK会自行判断是否有导入百度语音识别SDK从而显示机器人语音识别按钮。
 
-#### 其他自定义配置请查看代码文件 “UdeskSDKConfig”**
+#### 其他自定义配置请查看代码文件 “UdeskSDKConfig”
 
 #### **其他UI配置请查看代码文件 “UdeskSDKStyle”**
 
@@ -673,9 +681,7 @@ App 进入后台后，Udesk推送给开发者服务端的消息数据格式中�
 
 
 
-# 五、Udesk SDK API说明
-
-注意：以下接口在Udesk开源UI里均有调用，如果你使用Udesk的开源UI则不需要调用以下任何接口
+# 五、API说明
 
 ### 5.1 断开与Udesk服务器连接 
 
@@ -701,21 +707,13 @@ App 进入后台后，Udesk推送给开发者服务端的消息数据格式中�
 [UdeskManager setupCustomerOffline];
 ```
 
-### 5.4 获取客户本地聊天数据
-
-```objective-c
-[UdeskManager fetchDatabaseMessagesWithDate:[NSDate date] result:^(NSArray *messagesArray,BOOL hasMore) {
-        
-}];
-```
-
-### 5.5 删除客户本地聊天数据
+### 5.4 删除客户本地聊天数据
 
 ```objective-c
 [UdeskManager removeAllMessagesFromDatabase];
 ```
 
-### 5.6 获取未读消息数量
+### 5.5 获取未读消息数量
 
 开发者可以在需要显示未读消息数是调用此接口，当用户进入聊天界面后，未读消息将会清零。
 
@@ -723,7 +721,7 @@ App 进入后台后，Udesk推送给开发者服务端的消息数据格式中�
 [UdeskManager getLocalUnreadeMessagesCount];
 ```
 
-### 5.7 获取未读消息
+### 5.6 获取未读消息
 
 开发者可以在需要显示未读消息时调用此接口，当用户进入聊天界面后，未读消息将会清空。
 
@@ -731,7 +729,7 @@ App 进入后台后，Udesk推送给开发者服务端的消息数据格式中�
 [UdeskManager getLocalUnreadeMessages];
 ```
 
-### 5.8 将所有未读消息设置为已读
+### 5.7 将所有未读消息设置为已读
 
 可以把客户的未读消息重置
 
@@ -739,11 +737,11 @@ App 进入后台后，Udesk推送给开发者服务端的消息数据格式中�
 [UdeskManager markAllMessagesAsRead];
 ```
 
-### 5.9 监听收到未读消息的广播
+### 5.8 监听收到未读消息的广播
 
 开发者可在合适的地方，监听收到消息的广播，用于提醒顾客有新消息。广播的名字为 `UD_RECEIVED_NEW_MESSAGES_NOTIFICATION`，定义在 UdeskManager.h 中。
 
-### 5.10 SDK支持发送地址位置
+### 5.9 SDK支持发送地址位置
 
 注：自iOS8起，开发者在使用定位功能之前，需要在info.plist里添加（以下二选一，两个都添加默认使用NSLocationWhenInUseUsageDescription）：
 
@@ -788,7 +786,7 @@ actionConfig.locationMessageClickBlock = ^(UdeskChatViewController *viewControll
 UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
 sdkConfig.showLocationEntry = YES;
     
-UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig sdkActionConfig:actionConfig];
+UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig sdkActionConfig:actionConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
@@ -811,7 +809,7 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 
 ### 出现在不同客户分配的会话在一个会话中
 
-出现这种情况，是客服传的sdktoken值一样。 sdktoken像身份证一样，是用户唯一的标识。让客户检查接入是传入的sdktoken值。
+出现这种情况，是客服传的sdkToken值一样。 sdkToken像身份证一样，是用户唯一的标识。让客户检查接入是传入的sdktoken值。
 
  如果设置了email 或者 cellphone  出现相同也会在一个客服的会话里。
 
@@ -820,6 +818,10 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 出现这种情况，请先检查手动导入时Xcode工程里的配置是否完善（参考2.2和2.3）。
 
 如果确认配置没有问题，请查看Other Linker Flags里是否写了-force_load，如果有写这个配置请在这个配置下面加入我们sdk .a文件的地址。
+
+### 进入SDK页面直接crash，堆栈信息显示UD的网络请求
+
+出现这种情况请检查是否使用了顶象sdk，升级到他们最新版本即可。
 
 ### APP使用百度地图，进入SDK会话页面直接崩溃，崩溃信息显示 "xmlFreeDoc"
 
@@ -850,7 +852,7 @@ SDK在退到后台之后不会马上离线，会导致客服发送消息一直�
 SDK暂时还没有支持旋转的UI适配，下面是解决办法
 
 ```objective-c
-UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle]];
 //强制竖屏
 chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 //强制横屏

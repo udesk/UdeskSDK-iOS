@@ -14,10 +14,6 @@
     return [UdeskSDKStyle new];
 }
 
-+ (instancetype)defaultStyle {
-    return [UdeskSDKStyle new];
-}
-
 - (instancetype)init
 {
     self = [super init];

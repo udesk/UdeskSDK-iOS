@@ -138,11 +138,6 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 /** 是否隐藏发送视频（开启小视频默认允许发送视频） */
 @property (nonatomic, assign, getter=isAllowShootingVideo) BOOL allowShootingVideo;
 
-
-/** 放弃排队方式 */
-@property (nonatomic, assign) UDQuitQueueType quitQueueType;
-/** 语言类型 (不推荐使用此方法)*/
-@property (nonatomic, assign) UDLanguageType languageType;
 /*
  语言类型,推荐此方法.
  
@@ -166,7 +161,8 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  zh-cn:中文简体; // 注意:App端对应zh-Hans.proj !!!!!!!!!
  */
 @property (nonatomic, strong) NSString *language;
-
+/** 放弃排队方式 */
+@property (nonatomic, assign) UDQuitQueueType quitQueueType;
 /** 页面弹出方式 */
 @property (nonatomic, assign) UDTransiteAnimationType presentingAnimation;
 

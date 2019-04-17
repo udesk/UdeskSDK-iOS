@@ -278,7 +278,7 @@
     if ([self.baseMessage.message.switchStaffType isKindOfClass:[NSString class]] && [self.baseMessage.message.switchStaffType isEqualToString:@"1"]) {
         
         if (![UdeskSDKUtil isBlankString:self.baseMessage.message.switchStaffTips]) {
-            CGSize size = [UdeskStringSizeUtil textSize:self.baseMessage.message.switchStaffTips withFont:[UIFont systemFontOfSize:14] withSize:CGSizeMake(UD_SCREEN_WIDTH-(kUDBubbleToHorizontalEdgeSpacing*2), kUDTransferHeight)];
+            CGSize size = [UdeskStringSizeUtil sizeWithText:self.baseMessage.message.switchStaffTips font:[UIFont systemFontOfSize:14] size:CGSizeMake(UD_SCREEN_WIDTH-(kUDBubbleToHorizontalEdgeSpacing*2), kUDTransferHeight)];
             CGFloat transferWidth = size.width + (kUDBubbleToHorizontalEdgeSpacing*4);
             self.transferButton.frame = CGRectMake((UD_SCREEN_WIDTH-(kUDBubbleToHorizontalEdgeSpacing*2)-transferWidth)/2, CGRectGetMaxY(self.bubbleImageView.frame)+kUDTransferVerticalEdgeSpacing, transferWidth, kUDTransferHeight);
             [self.transferButton setTitle:self.baseMessage.message.switchStaffTips forState:UIControlStateNormal];

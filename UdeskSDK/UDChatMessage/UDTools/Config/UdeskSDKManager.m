@@ -32,7 +32,7 @@
     if (self) {
      
         _sdkConfig = [UdeskSDKConfig customConfig];
-        _sdkConfig.sdkStyle = [UdeskSDKStyle defaultStyle];
+        _sdkConfig.sdkStyle = [UdeskSDKStyle customStyle];
         _show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
     }
     return self;

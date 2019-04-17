@@ -100,14 +100,8 @@
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
 
-    @try {
-        if (self.delegate) {
-            if ([self.delegate respondsToSelector:@selector(didAudioPlayerStopPlay:)]) {
-                [self.delegate didAudioPlayerStopPlay:_player];
-            }
-        }
-    } @catch (NSException *exception) {
-    } @finally {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didAudioPlayerStopPlay:)]) {
+        [self.delegate didAudioPlayerStopPlay:_player];
     }
 }
 

@@ -12,44 +12,7 @@
 
 @implementation UdeskStringSizeUtil
 
-+ (CGFloat)getHeightForAttributedText:(NSAttributedString *)attributedText
-                            textWidth:(CGFloat)textWidth
-{
-    if ([UdeskSDKUtil isBlankString:attributedText.string]) {
-        return 50;
-    }
-    
-    CGSize constraint = CGSizeMake(textWidth , CGFLOAT_MAX);
-    CGSize title_size;
-    CGFloat totalHeight;
-    title_size = [attributedText boundingRectWithSize:constraint
-                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
-                                              context:nil].size;
-    
-    totalHeight = ceil(title_size.height);
-    
-    return totalHeight;
-}
-
-+ (CGSize)getSizeForAttributedText:(NSAttributedString *)attributedText
-                         textWidth:(CGFloat)textWidth
-{
-    if ([UdeskSDKUtil isBlankString:attributedText.string]) {
-        return CGSizeMake(100, 20);
-    }
-    
-    CGSize constraint = CGSizeMake(textWidth , CGFLOAT_MAX);
-    
-    CGRect stringRect = [attributedText boundingRectWithSize:constraint
-                                                     options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
-                                                     context:nil];
-    
-    stringRect.size.height = stringRect.size.height < 30 ? stringRect.size.height = 20 : stringRect.size.height;
-    
-    return CGSizeMake(stringRect.size.width, stringRect.size.height+2);
-}
-
-+ (CGSize)textSize:(NSString *)text withFont:(UIFont *)font withSize:(CGSize)size {
++ (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font size:(CGSize)size {
 
     CGSize newSize = CGSizeMake(50, 50);
     
@@ -79,11 +42,15 @@
     return newSize;
 }
 
-+ (CGSize)getSizeForAttributedText:(NSAttributedString *)aString width:(CGFloat)width height:(CGFloat)height
-{
-    CGSize constraint = CGSizeMake(width , height);
++ (CGSize)sizeWithAttributedText:(NSAttributedString *)attributedText size:(CGSize)size {
     
-    CGRect stringRect = [aString boundingRectWithSize:constraint
+    if ([UdeskSDKUtil isBlankString:attributedText.string]) {
+        return CGSizeMake(100, 50);
+    }
+    
+    CGSize constraint = CGSizeMake(size.width , size.height);
+    
+    CGRect stringRect = [attributedText boundingRectWithSize:constraint
                                                      options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                                      context:nil];
     

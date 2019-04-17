@@ -54,7 +54,7 @@
 @implementation UdeskStructScrollView
 
 - (void)drawRect:(CGRect)rect {
-
+    
     [super drawRect:rect];
     
     CGContextRef ctx = UIGraphicsGetCurrentContext();
@@ -190,7 +190,7 @@ static CGRect menuScrollViewRect;
         [button setBackgroundColor:[UIColor colorWithWhite:0.95 alpha:1] forState:UIControlStateHighlighted];
         button.titleLabel.font = [UIFont systemFontOfSize:17];
         [button setTitleColor:[UIColor colorWithRed:0.08 green:0.49 blue:0.98 alpha:1.00] forState:UIControlStateNormal];
-
+        
         button.enabled = self.actions[i].enabled;
         [button setTitle:self.actions[i].title forState:UIControlStateNormal];
         [button addTarget:self action:@selector(buttonDidClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -208,7 +208,7 @@ static CGRect menuScrollViewRect;
 
 - (void)configImageScrollViewFrame
 {
- 
+    
     @try {
         
         if (!self.image) {
@@ -374,7 +374,7 @@ static CGRect menuScrollViewRect;
 }
 
 - (UdeskStructScrollView *)imageScrollView {
-
+    
     if (!_imageScrollView) {
         _imageScrollView = [UdeskStructScrollView new];
         _imageScrollView.backgroundColor = [UIColor clearColor];
@@ -406,7 +406,7 @@ static CGRect menuScrollViewRect;
 }
 
 - (UIImageView *)structImageView {
-
+    
     if (!_structImageView) {
         _structImageView = [UIImageView new];
         _structImageView.userInteractionEnabled = YES;
@@ -456,7 +456,7 @@ static CGRect menuScrollViewRect;
 }
 
 - (void)setImage:(UIImage *)image {
-
+    
     _image = image;
     
     _structImageView.image = image;

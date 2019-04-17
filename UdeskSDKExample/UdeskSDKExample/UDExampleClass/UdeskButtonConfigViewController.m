@@ -75,7 +75,7 @@
     sdkConfig.customButtons = @[buttonConfig1,buttonConfig2,buttonConfig3];
     
     //初始化sdk
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
     [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 

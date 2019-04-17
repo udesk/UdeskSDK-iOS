@@ -53,7 +53,7 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     UIBarButtonItem *leftBarButtonItem = [UIBarButtonItem udItemWithTitle:getUDLocalizedString(@"udesk_back") image:[UIImage udDefaultWhiteBackImage] target:self action:@selector(backSelectImageAction)];
     UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     
-    if((FUDSystemVersion>=7.0)){
+    if(ud_isIOS7){
         negativeSpacer.width = -13;
         self.navigationItem.leftBarButtonItems = @[negativeSpacer,leftBarButtonItem];
     }

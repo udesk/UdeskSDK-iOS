@@ -131,13 +131,13 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
         
         self.attributedString = mAtt;
         
-        CGSize textSize = [UdeskStringSizeUtil getSizeForAttributedText:mAtt textWidth:[self richMaxWidth]];
+        CGSize textSize = [UdeskStringSizeUtil sizeWithAttributedText:mAtt size:CGSizeMake([self richMaxWidth], CGFLOAT_MAX)];
         
         if ([UdeskSDKUtil stringContainsEmoji:[mAtt string]]) {
             textSize.width += kUDRichMendSpacingTwo;
         }
         
-        textSize.height += kUDRichMendSpacingTwo;
+        textSize.height += kUDRichMendSpacingTwo * 2;
         
         return textSize;
         

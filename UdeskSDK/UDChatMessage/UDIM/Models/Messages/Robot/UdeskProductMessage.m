@@ -66,7 +66,7 @@ static CGFloat const kUDProductTitleMaxHeight = 40.0;
         CGFloat textMaxWidth = [self productMaxWidth]-kUDBubbleToProductHorizontalSpacing-kUDProductImageWidth;
         
         self.titleAttributedString = [NSAttributedString attributedStringFromHTML:self.message.replyProduct.name customFont:[UIFont systemFontOfSize:15]];
-        CGSize titleSize = [UdeskStringSizeUtil getSizeForAttributedText:self.titleAttributedString width:textMaxWidth height:kUDProductTitleMaxHeight];
+        CGSize titleSize = [UdeskStringSizeUtil sizeWithAttributedText:self.titleAttributedString size:CGSizeMake(textMaxWidth, kUDProductTitleMaxHeight)];
         self.titleFrame = CGRectMake(CGRectGetMaxX(self.imageFrame)+kUDBubbleToProductHorizontalSpacing, kUDBubbleToProductVerticalSpacing, textMaxWidth, titleSize.height);
         
         CGFloat bubbleMaxY = CGRectGetMaxY(self.imageFrame);

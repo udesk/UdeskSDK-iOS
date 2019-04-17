@@ -75,7 +75,7 @@
 
 - (void)downloadAction {
     
-    if (![[UdeskSDKUtil internetStatus] isEqualToString:@"wifi"]) {
+    if (![[UdeskSDKUtil networkStatus] isEqualToString:@"wifi"]) {
         
         [UdeskSDKAlert showWithTitle:getUDLocalizedString(@"udesk_wwan_tips") message:getUDLocalizedString(@"udesk_video_send_tips") handler:^{
             [self readyDownloadVideo];

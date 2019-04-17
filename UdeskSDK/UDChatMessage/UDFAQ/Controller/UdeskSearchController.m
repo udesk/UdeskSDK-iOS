@@ -86,7 +86,7 @@
     
 #warning 如果你设置了UI 记得在这里也设置下
     UdeskSDKConfig *config = [UdeskSDKConfig customConfig];
-    config.sdkStyle = [UdeskSDKStyle defaultStyle];
+    config.sdkStyle = [UdeskSDKStyle customStyle];
     UdeskChatViewController *chat = [[UdeskChatViewController alloc] initWithSDKConfig:config setting:nil];
     
     UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:[UdeskSDKConfig customConfig]];

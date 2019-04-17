@@ -88,7 +88,7 @@ static NSString *kUDProductListProductCellId = @"kUDProductListProductCellId";
     CGFloat textMaxWidth = [self productListMaxWidth]-kUDProductListImageWidth-kUDBubbleToProductListHorizontalSpacing;
     
     self.productTitleLabel.attributedText = [NSAttributedString attributedStringFromHTML:productModel.name customFont:[UIFont systemFontOfSize:15]];
-    CGSize titleSize = [UdeskStringSizeUtil getSizeForAttributedText:self.productTitleLabel.attributedText width:textMaxWidth height:kUDProductListTitleMaxHeight];
+    CGSize titleSize = [UdeskStringSizeUtil sizeWithAttributedText:self.productTitleLabel.attributedText size:CGSizeMake(textMaxWidth, kUDProductListTitleMaxHeight)];
     self.productTitleLabel.frame = CGRectMake(CGRectGetMaxX(self.productImageView.frame)+kUDBubbleToProductListHorizontalSpacing, kUDBubbleToProductListVerticalSpacing, textMaxWidth, titleSize.height);
     
     if (!productModel.infoList || productModel.infoList == (id)kCFNull) return ;

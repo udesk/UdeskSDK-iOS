@@ -203,7 +203,7 @@
 
 - (void)faq:(id)sender {
     
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:[UdeskSDKConfig customConfig]];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:[UdeskSDKConfig customConfig]];
     [chatViewManager pushUdeskInViewController:self udeskType:UdeskFAQ completion:nil];
 }
 
@@ -212,6 +212,19 @@
     UdeskSDKStyle *style = [UdeskSDKStyle customStyle];
     UdeskSDKConfig *config = [UdeskSDKConfig customConfig];
     
+    UdeskCustomButtonConfig *buttonConfig1 = [[UdeskCustomButtonConfig alloc] initWithTitle:@"自定义按钮1" image:nil type:UdeskCustomButtonConfigTypeInMoreView clickBlock:^(UdeskCustomButtonConfig *customButton, UdeskChatViewController *viewController) {
+        
+        
+    }];
+    
+    UdeskCustomButtonConfig *buttonConfig2 = [[UdeskCustomButtonConfig alloc] initWithTitle:@"自定义按钮2" image:nil type:UdeskCustomButtonConfigTypeInMoreView clickBlock:^(UdeskCustomButtonConfig *customButton, UdeskChatViewController *viewController) {
+        
+        
+    }];
+    
+    config.showCustomButtons = YES;
+    config.customButtons = @[buttonConfig1,buttonConfig2];
+    
     //初始化sdk
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:style sdkConfig:config sdkActionConfig:nil];
     [chatViewManager pushUdeskInViewController:self completion:nil];
@@ -219,7 +232,7 @@
 
 - (void)ticket:(id)sender {
     
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:[UdeskSDKConfig customConfig]];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:[UdeskSDKConfig customConfig]];
     [chatViewManager presentUdeskInViewController:self udeskType:UdeskTicket completion:nil];
 }
 

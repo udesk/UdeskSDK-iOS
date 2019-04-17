@@ -268,7 +268,7 @@
 //排队消息已到最大值
 - (void)queueMessageHasMaxed:(NSString *)alertText {
     
-    [UdeskSDKAlert showWithMsg:alertText];
+    [UdeskSDKAlert showWithMessage:alertText handler:nil];
 }
 
 //自动转人工
@@ -441,7 +441,7 @@
     
     //检查是否是空消息
     if ([UdeskSDKUtil isBlankString:text]) {
-        [UdeskSDKAlert showWithMsg:getUDLocalizedString(@"udesk_no_send_empty")];
+        [UdeskSDKAlert showWithMessage:getUDLocalizedString(@"udesk_no_send_empty") handler:nil];
         return;
     }
     
@@ -620,7 +620,7 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             
             @udWeakify(self);
-            [UdeskSDKAlert showWithMsg:getUDLocalizedString(@"udesk_connecting")];
+            [UdeskSDKAlert showWithMessage:getUDLocalizedString(@"udesk_connecting") handler:nil];
             [self requestAgentDataWithPreSessionMessage:firstPreMessage completion:^(UdeskAgent *agentModel) {
                 @udStrongify(self);
                 if (agentModel.code == UDAgentStatusResultOffline) {

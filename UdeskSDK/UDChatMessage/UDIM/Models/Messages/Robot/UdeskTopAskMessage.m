@@ -58,7 +58,8 @@ const CGFloat kUDOptionToTagHorizontalSpacing = 8.0;
         
         self.leadingAttributedString = [NSAttributedString attributedStringFromHTML:self.message.answerTitle customFont:[UIFont systemFontOfSize:15]];
         
-        CGSize leadingWordSize = [UdeskStringSizeUtil getSizeForAttributedText:self.leadingAttributedString textWidth:[self topAskMaxWidth]-(kUDBubbleToTopAskHorizontalSpacing*2)];
+        CGFloat width = [self topAskMaxWidth]-(kUDBubbleToTopAskHorizontalSpacing*2);
+        CGSize leadingWordSize = [UdeskStringSizeUtil sizeWithAttributedText:self.leadingAttributedString size:CGSizeMake(width, CGFLOAT_MAX)];
         //引导文字frame
         self.leadingWordFrame = CGRectMake(kUDBubbleToTopAskHorizontalSpacing, kUDBubbleToTopAskVerticalSpacing, leadingWordSize.width, leadingWordSize.height);
         
@@ -71,7 +72,7 @@ const CGFloat kUDOptionToTagHorizontalSpacing = 8.0;
             if (self.message.topAsk.count > 1) {
                 NSAttributedString *topAskAttributed = [NSAttributedString attributedStringFromHTML:topAskMessage.questionType customFont:[UIFont systemFontOfSize:15]];
                 CGFloat width = [self topAskMaxWidth] - kUDBubbleToTopAskHorizontalSpacing*2;
-                CGSize topAskSize = [UdeskStringSizeUtil getSizeForAttributedText:topAskAttributed textWidth:width];
+                CGSize topAskSize = [UdeskStringSizeUtil sizeWithAttributedText:topAskAttributed size:CGSizeMake(width, CGFLOAT_MAX)];
                 [topAskHeightArray addObject:@(topAskSize.height+5)];
                 topAskHeight += topAskSize.height+5;
             }
@@ -82,7 +83,7 @@ const CGFloat kUDOptionToTagHorizontalSpacing = 8.0;
                 for (UdeskMessageOption *option in topAskMessage.optionsList) {
                     NSAttributedString *optionsAttributed = [NSAttributedString attributedStringFromHTML:option.value customFont:[UIFont systemFontOfSize:15]];
                     CGFloat optionMaxWidth = [self topAskMaxWidth] - kUDBubbleToTopAskHorizontalSpacing*3 - kUDTopAskOptionTagWidth;
-                    CGSize optionsSize = [UdeskStringSizeUtil getSizeForAttributedText:optionsAttributed textWidth:optionMaxWidth];
+                    CGSize optionsSize = [UdeskStringSizeUtil sizeWithAttributedText:optionsAttributed size:CGSizeMake(optionMaxWidth, CGFLOAT_MAX)];
                     topAskHeight = topAskHeight+optionsSize.height;
                     [questionHeightArray addObject:@(optionsSize.height)];
                 }

@@ -45,7 +45,7 @@
     };
     
     //初始化sdk
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:config sdkActionConfig:action];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:config sdkActionConfig:action];
     [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 

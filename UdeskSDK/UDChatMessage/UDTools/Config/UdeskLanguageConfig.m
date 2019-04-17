@@ -76,7 +76,7 @@
     self.language = @"zh-Hans";
 }
 
--(void)setLanguage:(NSString *)language{
+- (void)setLanguage:(NSString *)language{
     NSString *saveDefaults = @"";
     if (!language || ![language isKindOfClass:[NSString class]] || language.length == 0) { //未设置, 本地使用中文
         _language = @"zh-Hans";

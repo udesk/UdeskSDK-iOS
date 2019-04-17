@@ -58,7 +58,7 @@
         self.title = getUDLocalizedString(@"udesk_faq_details_title");
     }
     
-    CGSize contentTitleSize = [UdeskStringSizeUtil textSize:self.articlesTitle withFont:[UIFont systemFontOfSize:17] withSize:CGSizeMake(UD_SCREEN_WIDTH, MAXFLOAT)];
+    CGSize contentTitleSize = [UdeskStringSizeUtil sizeWithText:self.articlesTitle font:[UIFont systemFontOfSize:17] size:CGSizeMake(UD_SCREEN_WIDTH, MAXFLOAT)];
     
     CGFloat faqContentY = self.navigationController.navigationBarHidden?64:0;
     _labelTitle = [[UILabel alloc] initWithFrame:CGRectMake(10, 12+faqContentY, UD_SCREEN_WIDTH-30, contentTitleSize.height)];

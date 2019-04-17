@@ -183,7 +183,7 @@ const CGFloat udRecognizerTextViewEditHeight = 250;
     [_contentView addSubview:_closeButton];
     
     NSString *cleanText = getUDLocalizedString(@"udesk_clean");
-    CGFloat cleanWidth = [UdeskStringSizeUtil textSize:cleanText withFont:[UIFont systemFontOfSize:18] withSize:CGSizeMake(CGFLOAT_MAX, 25)].width;
+    CGFloat cleanWidth = [UdeskStringSizeUtil sizeWithText:cleanText font:[UIFont systemFontOfSize:18] size:CGSizeMake(CGFLOAT_MAX, 25)].width;
     
     _cleanButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _cleanButton.frame = CGRectMake(58, _recordView.udTop, cleanWidth, 25);
@@ -195,7 +195,7 @@ const CGFloat udRecognizerTextViewEditHeight = 250;
     [_contentView addSubview:_cleanButton];
     
     NSString *sendText = getUDLocalizedString(@"udesk_send");
-    CGFloat sendWidth = [UdeskStringSizeUtil textSize:cleanText withFont:[UIFont systemFontOfSize:18] withSize:CGSizeMake(CGFLOAT_MAX, 25)].width;
+    CGFloat sendWidth = [UdeskStringSizeUtil sizeWithText:cleanText font:[UIFont systemFontOfSize:18] size:CGSizeMake(CGFLOAT_MAX, 25)].width;
     
     _sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _sendButton.frame = CGRectMake(UD_SCREEN_WIDTH-58-sendWidth, _recordView.udTop, sendWidth, 25);
@@ -283,10 +283,10 @@ const CGFloat udRecognizerTextViewEditHeight = 250;
     
     self.navView.frame = CGRectMake(0, self.editable?0:UD_SCREEN_HEIGHT, UD_SCREEN_WIDTH, udIsIPhoneXSeries?88:64);
     
-    CGFloat buttonWidth = [UdeskStringSizeUtil textSize:self.collapseButton.titleLabel.text withFont:[UIFont systemFontOfSize:15] withSize:CGSizeMake(CGFLOAT_MAX, 25)].width;
+    CGFloat buttonWidth = [UdeskStringSizeUtil sizeWithText:self.collapseButton.titleLabel.text font:[UIFont systemFontOfSize:15] size:CGSizeMake(CGFLOAT_MAX, 25)].width;
     self.collapseButton.frame = CGRectMake(16, self.navView.udBottom-11-25, buttonWidth, 25);
     
-    CGFloat width = [UdeskStringSizeUtil textSize:self.titleLabel.text withFont:[UIFont systemFontOfSize:17] withSize:CGSizeMake(CGFLOAT_MAX, 25)].width;
+    CGFloat width = [UdeskStringSizeUtil sizeWithText:self.titleLabel.text font:[UIFont systemFontOfSize:17] size:CGSizeMake(CGFLOAT_MAX, 25)].width;
     self.titleLabel.frame = CGRectMake((UD_SCREEN_WIDTH-width)/2, self.navView.udBottom-13-25, width, 25);
     
     self.contentView.frame = CGRectMake(0, self.editable?self.navView.udBottom:(UD_SCREEN_HEIGHT-udRecognizerContentViewHeight), UD_SCREEN_WIDTH, self.editable?(UD_SCREEN_HEIGHT-self.navView.udHeight):udRecognizerContentViewHeight);

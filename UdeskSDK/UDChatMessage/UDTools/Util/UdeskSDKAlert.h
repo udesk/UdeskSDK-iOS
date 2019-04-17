@@ -11,15 +11,12 @@
 @interface UdeskSDKAlert : NSObject
 
 //提示
-+ (void)showWithMsg:(NSString *)message;
++ (void)showWithMessage:(NSString *)message handler:(void(^)(void))handler;
 + (void)showWithTitle:(NSString *)title message:(NSString *)message handler:(void(^)(void))handler;
-//视频超过最大限制
-+ (void)showBigVideoPoint;
-//黑名单
-+ (void)showBlacklisted:(NSString *)message handler:(void(^)(void))handler;
+
 //根据客服code显示
 + (void)showWithAgentCode:(NSInteger)agentCode message:(NSString *)message enableFeedback:(BOOL)enableFeedback leaveMsgHandler:(void(^)(void))leaveMsgHandler;
-
+//隐藏
 + (void)hide;
 
 @end

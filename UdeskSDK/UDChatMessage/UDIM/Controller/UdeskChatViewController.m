@@ -190,7 +190,11 @@ static CGFloat udInputBarHeight = 54.0f;
 //客户在黑名单
 - (void)customerOnTheBlacklist:(NSString *)message {
     
-    [UdeskSDKAlert showBlacklisted:message handler:^{
+    if ([UdeskSDKUtil isBlankString:message]) {
+        message = getUDLocalizedString(@"udesk_alert_view_blocked_list");
+    }
+    
+    [UdeskSDKAlert showWithMessage:message handler:^{
         [self dismissViewController];
     }];
 }

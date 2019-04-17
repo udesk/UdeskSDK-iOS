@@ -112,7 +112,7 @@ static CGFloat kUdeskCustomSurveySpacing = 11;
     [super layoutSubviews];
     
     if (self.enableSurvey) {
-        CGFloat surveyButtonWidth = [UdeskStringSizeUtil textSize:_surveyButton.titleLabel.text withFont:_surveyButton.titleLabel.font withSize:CGSizeMake(CGFLOAT_MAX, CGRectGetHeight(self.frame)-1)].width + 20;
+        CGFloat surveyButtonWidth = [UdeskStringSizeUtil sizeWithText:_surveyButton.titleLabel.text font:_surveyButton.titleLabel.font size:CGSizeMake(CGFLOAT_MAX, CGRectGetHeight(self.frame)-1)].width + 20;
         _surveyButton.frame = CGRectMake(CGRectGetWidth(self.frame)-surveyButtonWidth-kUdeskCustomSurveySpacing, 0, surveyButtonWidth, CGRectGetHeight(self.frame)-1);
     }
     
@@ -128,7 +128,7 @@ static CGFloat kUdeskCustomSurveySpacing = 11;
         @try {
          
             NSInteger index = [self.customButtons indexOfObject:button];
-            CGSize buttonSize = [UdeskStringSizeUtil textSize:button.titleLabel.text withFont:button.titleLabel.font withSize:CGSizeMake(CGFLOAT_MAX, kUdeskCustomButtonHeight)];
+            CGSize buttonSize = [UdeskStringSizeUtil sizeWithText:button.titleLabel.text font:button.titleLabel.font size:CGSizeMake(CGFLOAT_MAX, kUdeskCustomButtonHeight)];
             
             UdeskButton *previousButton;
             if (index-1 < self.customButtons.count && index > 0) {

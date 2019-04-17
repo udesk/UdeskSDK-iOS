@@ -30,12 +30,7 @@ typedef enum : NSUInteger {
 + (BOOL)hasViewWithParentView:(UIView*)parentView;
 + (void)hideViewWithParentView:(UIView*)parentView;
 
-+ (UdeskTopAlertView *)showAlertType:(UDAlertType)type
-                         withMessage:(NSString *)message
-                          parentView:(UIView*)parentView;
-
-+ (void)showWithCode:(NSInteger)code
-         withMessage:(NSString *)message
-          parentView:(UIView*)parentView;
++ (UdeskTopAlertView *)showAlertType:(UDAlertType)type withMessage:(NSString *)message parentView:(UIView*)parentView;
++ (void)showWithCode:(NSInteger)code withMessage:(NSString *)message parentView:(UIView*)parentView;
 
 @end

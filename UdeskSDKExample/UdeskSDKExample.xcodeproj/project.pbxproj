@@ -1097,16 +1097,16 @@
 			isa = PBXGroup;
 			children = (
 				4412BEC0225D8295004145C8 /* UdeskCustomButtonConfig.h */,
-				4412BEC1225D8295004145C8 /* UdeskSDKConfig.m */,
-				4412BEC2225D8295004145C8 /* UdeskSDKManager.m */,
-				4412BEC3225D8295004145C8 /* UdeskLanguageConfig.m */,
-				4412BEC4225D8295004145C8 /* UdeskGoodsModel.h */,
-				4412BEC5225D8295004145C8 /* UdeskSDKStyle.h */,
 				4412BEC6225D8295004145C8 /* UdeskCustomButtonConfig.m */,
-				4412BEC7225D8295004145C8 /* UdeskSDKManager.h */,
-				4412BEC8225D8295004145C8 /* UdeskSDKConfig.h */,
+				4412BEC4225D8295004145C8 /* UdeskGoodsModel.h */,
 				4412BEC9225D8295004145C8 /* UdeskGoodsModel.m */,
 				4412BECA225D8295004145C8 /* UdeskLanguageConfig.h */,
+				4412BEC3225D8295004145C8 /* UdeskLanguageConfig.m */,
+				4412BEC8225D8295004145C8 /* UdeskSDKConfig.h */,
+				4412BEC1225D8295004145C8 /* UdeskSDKConfig.m */,
+				4412BEC7225D8295004145C8 /* UdeskSDKManager.h */,
+				4412BEC2225D8295004145C8 /* UdeskSDKManager.m */,
+				4412BEC5225D8295004145C8 /* UdeskSDKStyle.h */,
 				4412BECB225D8295004145C8 /* UdeskSDKStyle.m */,
 			);
 			path = Config;
@@ -1191,9 +1191,9 @@
 			isa = PBXGroup;
 			children = (
 				4412BEEB225D8295004145C8 /* UdeskChatViewModel.h */,
-				4412BEEC225D8295004145C8 /* UdeskLocationViewModel.m */,
 				4412BEED225D8295004145C8 /* UdeskChatViewModel.m */,
 				4412BEEE225D8295004145C8 /* UdeskLocationViewModel.h */,
+				4412BEEC225D8295004145C8 /* UdeskLocationViewModel.m */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -1213,8 +1213,8 @@
 			isa = PBXGroup;
 			children = (
 				4412BEF1225D8295004145C8 /* General */,
-				4412BF06225D8295004145C8 /* UdeskBaseMessage.h */,
 				4412BF07225D8295004145C8 /* Robot */,
+				4412BF06225D8295004145C8 /* UdeskBaseMessage.h */,
 				4412BF18225D8295004145C8 /* UdeskBaseMessage.m */,
 			);
 			path = Messages;
@@ -1223,25 +1223,25 @@
 		4412BEF1225D8295004145C8 /* General */ = {
 			isa = PBXGroup;
 			children = (
-				4412BEF2225D8295004145C8 /* UdeskQueueMessage.h */,
-				4412BEF3225D8295004145C8 /* UdeskTextMessage.h */,
-				4412BEF4225D8295004145C8 /* UdeskImageMessage.h */,
-				4412BEF5225D8295004145C8 /* UdeskStructMessage.h */,
 				4412BEF6225D8295004145C8 /* UdeskEventMessage.h */,
-				4412BEF7225D8295004145C8 /* UdeskVideoMessage.h */,
-				4412BEF8225D8295004145C8 /* UdeskVoiceMessage.h */,
-				4412BEF9225D8295004145C8 /* UdeskLocationMessage.h */,
-				4412BEFA225D8295004145C8 /* UdeskVideoCallMessage.h */,
-				4412BEFB225D8295004145C8 /* UdeskGoodsMessage.m */,
 				4412BEFC225D8295004145C8 /* UdeskEventMessage.m */,
-				4412BEFD225D8295004145C8 /* UdeskStructMessage.m */,
-				4412BEFE225D8295004145C8 /* UdeskImageMessage.m */,
-				4412BEFF225D8295004145C8 /* UdeskTextMessage.m */,
-				4412BF00225D8295004145C8 /* UdeskQueueMessage.m */,
-				4412BF01225D8295004145C8 /* UdeskVideoMessage.m */,
-				4412BF02225D8295004145C8 /* UdeskVideoCallMessage.m */,
 				4412BF03225D8295004145C8 /* UdeskGoodsMessage.h */,
+				4412BEFB225D8295004145C8 /* UdeskGoodsMessage.m */,
+				4412BEF4225D8295004145C8 /* UdeskImageMessage.h */,
+				4412BEFE225D8295004145C8 /* UdeskImageMessage.m */,
+				4412BEF9225D8295004145C8 /* UdeskLocationMessage.h */,
 				4412BF04225D8295004145C8 /* UdeskLocationMessage.m */,
+				4412BEF2225D8295004145C8 /* UdeskQueueMessage.h */,
+				4412BF00225D8295004145C8 /* UdeskQueueMessage.m */,
+				4412BEF5225D8295004145C8 /* UdeskStructMessage.h */,
+				4412BEFD225D8295004145C8 /* UdeskStructMessage.m */,
+				4412BEF3225D8295004145C8 /* UdeskTextMessage.h */,
+				4412BEFF225D8295004145C8 /* UdeskTextMessage.m */,
+				4412BEFA225D8295004145C8 /* UdeskVideoCallMessage.h */,
+				4412BF02225D8295004145C8 /* UdeskVideoCallMessage.m */,
+				4412BEF7225D8295004145C8 /* UdeskVideoMessage.h */,
+				4412BF01225D8295004145C8 /* UdeskVideoMessage.m */,
+				4412BEF8225D8295004145C8 /* UdeskVoiceMessage.h */,
 				4412BF05225D8295004145C8 /* UdeskVoiceMessage.m */,
 			);
 			path = General;
@@ -1250,22 +1250,22 @@
 		4412BF07225D8295004145C8 /* Robot */ = {
 			isa = PBXGroup;
 			children = (
-				4412BF08225D8295004145C8 /* UdeskTopAskMessage.m */,
-				4412BF09225D8295004145C8 /* UdeskTableMessage.h */,
-				4412BF0A225D8295004145C8 /* UdeskProductMessage.h */,
-				4412BF0B225D8295004145C8 /* UdeskRichMessage.m */,
+				4412BF13225D8295004145C8 /* UdeskLinkMessage.h */,
 				4412BF0C225D8295004145C8 /* UdeskLinkMessage.m */,
-				4412BF0D225D8295004145C8 /* UdeskNewsMessage.m */,
 				4412BF0E225D8295004145C8 /* UdeskListMessage.h */,
+				4412BF17225D8295004145C8 /* UdeskListMessage.m */,
+				4412BF15225D8295004145C8 /* UdeskNewsMessage.h */,
+				4412BF0D225D8295004145C8 /* UdeskNewsMessage.m */,
+				4412BF16225D8295004145C8 /* UdeskProductListMessage.h */,
 				4412BF0F225D8295004145C8 /* UdeskProductListMessage.m */,
+				4412BF0A225D8295004145C8 /* UdeskProductMessage.h */,
 				4412BF10225D8295004145C8 /* UdeskProductMessage.m */,
+				4412BF14225D8295004145C8 /* UdeskRichMessage.h */,
+				4412BF0B225D8295004145C8 /* UdeskRichMessage.m */,
+				4412BF09225D8295004145C8 /* UdeskTableMessage.h */,
 				4412BF11225D8295004145C8 /* UdeskTableMessage.m */,
 				4412BF12225D8295004145C8 /* UdeskTopAskMessage.h */,
-				4412BF13225D8295004145C8 /* UdeskLinkMessage.h */,
-				4412BF14225D8295004145C8 /* UdeskRichMessage.h */,
-				4412BF15225D8295004145C8 /* UdeskNewsMessage.h */,
-				4412BF16225D8295004145C8 /* UdeskProductListMessage.h */,
-				4412BF17225D8295004145C8 /* UdeskListMessage.m */,
+				4412BF08225D8295004145C8 /* UdeskTopAskMessage.m */,
 			);
 			path = Robot;
 			sourceTree = "<group>";
@@ -1273,10 +1273,10 @@
 		4412BF19225D8295004145C8 /* Location */ = {
 			isa = PBXGroup;
 			children = (
-				4412BF1A225D8295004145C8 /* UdeskNearbyModel.m */,
+				4412BF1D225D8295004145C8 /* UdeskLocationModel.h */,
 				4412BF1B225D8295004145C8 /* UdeskLocationModel.m */,
 				4412BF1C225D8295004145C8 /* UdeskNearbyModel.h */,
-				4412BF1D225D8295004145C8 /* UdeskLocationModel.h */,
+				4412BF1A225D8295004145C8 /* UdeskNearbyModel.m */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -1308,20 +1308,20 @@
 		4412BF2A225D8295004145C8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				4412BF2B225D8295004145C8 /* UdeskBaseNavigationViewController.h */,
-				4412BF2C225D8295004145C8 /* UdeskTicketViewController.h */,
-				4412BF2D225D8295004145C8 /* UdeskWebViewController.m */,
-				4412BF2E225D8295004145C8 /* UdeskBaseViewController.h */,
-				4412BF2F225D8295004145C8 /* UdeskLocationViewController.m */,
-				4412BF30225D8295004145C8 /* UdeskChatViewController.h */,
-				4412BF31225D8295004145C8 /* UdeskAgentMenuViewController.m */,
-				4412BF32225D8295004145C8 /* UdeskTicketViewController.m */,
-				4412BF33225D8295004145C8 /* UdeskBaseNavigationViewController.m */,
-				4412BF34225D8295004145C8 /* UdeskLocationViewController.h */,
-				4412BF35225D8295004145C8 /* UdeskBaseViewController.m */,
-				4412BF36225D8295004145C8 /* UdeskWebViewController.h */,
 				4412BF37225D8295004145C8 /* UdeskAgentMenuViewController.h */,
+				4412BF31225D8295004145C8 /* UdeskAgentMenuViewController.m */,
+				4412BF2B225D8295004145C8 /* UdeskBaseNavigationViewController.h */,
+				4412BF33225D8295004145C8 /* UdeskBaseNavigationViewController.m */,
+				4412BF2E225D8295004145C8 /* UdeskBaseViewController.h */,
+				4412BF35225D8295004145C8 /* UdeskBaseViewController.m */,
+				4412BF30225D8295004145C8 /* UdeskChatViewController.h */,
 				4412BF38225D8295004145C8 /* UdeskChatViewController.m */,
+				4412BF34225D8295004145C8 /* UdeskLocationViewController.h */,
+				4412BF2F225D8295004145C8 /* UdeskLocationViewController.m */,
+				4412BF2C225D8295004145C8 /* UdeskTicketViewController.h */,
+				4412BF32225D8295004145C8 /* UdeskTicketViewController.m */,
+				4412BF36225D8295004145C8 /* UdeskWebViewController.h */,
+				4412BF2D225D8295004145C8 /* UdeskWebViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1465,10 +1465,10 @@
 		4412BF69225D8296004145C8 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				4412BF6A225D8296004145C8 /* UdeskBaseCell.m */,
 				4412BF6B225D8296004145C8 /* General */,
 				4412BF80225D8296004145C8 /* Robot */,
 				4412BF91225D8296004145C8 /* UdeskBaseCell.h */,
+				4412BF6A225D8296004145C8 /* UdeskBaseCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1476,26 +1476,26 @@
 		4412BF6B225D8296004145C8 /* General */ = {
 			isa = PBXGroup;
 			children = (
-				4412BF6C225D8296004145C8 /* UdeskVideoCell.h */,
-				4412BF6D225D8296004145C8 /* UdeskImageCell.m */,
-				4412BF6E225D8296004145C8 /* UdeskLocationCell.m */,
-				4412BF6F225D8296004145C8 /* UdeskVoiceCell.h */,
-				4412BF70225D8296004145C8 /* UdeskVideoCallCell.m */,
-				4412BF71225D8296004145C8 /* UdeskTextCell.m */,
-				4412BF72225D8296004145C8 /* UdeskGoodsCell.h */,
-				4412BF73225D8296004145C8 /* UdeskStructCell.h */,
-				4412BF74225D8296004145C8 /* UdeskQueueCell.h */,
-				4412BF75225D8296004145C8 /* UdeskEventCell.m */,
-				4412BF76225D8296004145C8 /* UdeskVideoCell.m */,
-				4412BF77225D8296004145C8 /* UdeskVideoCallCell.h */,
-				4412BF78225D8296004145C8 /* UdeskVoiceCell.m */,
-				4412BF79225D8296004145C8 /* UdeskLocationCell.h */,
-				4412BF7A225D8296004145C8 /* UdeskImageCell.h */,
-				4412BF7B225D8296004145C8 /* UdeskGoodsCell.m */,
-				4412BF7C225D8296004145C8 /* UdeskTextCell.h */,
 				4412BF7D225D8296004145C8 /* UdeskEventCell.h */,
+				4412BF75225D8296004145C8 /* UdeskEventCell.m */,
+				4412BF72225D8296004145C8 /* UdeskGoodsCell.h */,
+				4412BF7B225D8296004145C8 /* UdeskGoodsCell.m */,
+				4412BF7A225D8296004145C8 /* UdeskImageCell.h */,
+				4412BF6D225D8296004145C8 /* UdeskImageCell.m */,
+				4412BF79225D8296004145C8 /* UdeskLocationCell.h */,
+				4412BF6E225D8296004145C8 /* UdeskLocationCell.m */,
+				4412BF74225D8296004145C8 /* UdeskQueueCell.h */,
 				4412BF7E225D8296004145C8 /* UdeskQueueCell.m */,
+				4412BF73225D8296004145C8 /* UdeskStructCell.h */,
 				4412BF7F225D8296004145C8 /* UdeskStructCell.m */,
+				4412BF7C225D8296004145C8 /* UdeskTextCell.h */,
+				4412BF71225D8296004145C8 /* UdeskTextCell.m */,
+				4412BF77225D8296004145C8 /* UdeskVideoCallCell.h */,
+				4412BF70225D8296004145C8 /* UdeskVideoCallCell.m */,
+				4412BF6C225D8296004145C8 /* UdeskVideoCell.h */,
+				4412BF76225D8296004145C8 /* UdeskVideoCell.m */,
+				4412BF6F225D8296004145C8 /* UdeskVoiceCell.h */,
+				4412BF78225D8296004145C8 /* UdeskVoiceCell.m */,
 			);
 			path = General;
 			sourceTree = "<group>";
@@ -1503,22 +1503,22 @@
 		4412BF80225D8296004145C8 /* Robot */ = {
 			isa = PBXGroup;
 			children = (
-				4412BF81225D8296004145C8 /* UdeskProductListCell.h */,
-				4412BF82225D8296004145C8 /* UdeskTopAskCell.h */,
-				4412BF83225D8296004145C8 /* UdeskRichCell.m */,
-				4412BF84225D8296004145C8 /* UdeskProductCell.h */,
-				4412BF85225D8296004145C8 /* UdeskListCell.m */,
-				4412BF86225D8296004145C8 /* UdeskTableCell.m */,
 				4412BF87225D8296004145C8 /* UdeskLinkCell.h */,
-				4412BF88225D8296004145C8 /* UdeskNewsCell.m */,
-				4412BF89225D8296004145C8 /* UdeskRichCell.h */,
-				4412BF8A225D8296004145C8 /* UdeskTopAskCell.m */,
-				4412BF8B225D8296004145C8 /* UdeskProductListCell.m */,
-				4412BF8C225D8296004145C8 /* UdeskListCell.h */,
-				4412BF8D225D8296004145C8 /* UdeskTableCell.h */,
-				4412BF8E225D8296004145C8 /* UdeskProductCell.m */,
-				4412BF8F225D8296004145C8 /* UdeskNewsCell.h */,
 				4412BF90225D8296004145C8 /* UdeskLinkCell.m */,
+				4412BF8C225D8296004145C8 /* UdeskListCell.h */,
+				4412BF85225D8296004145C8 /* UdeskListCell.m */,
+				4412BF8F225D8296004145C8 /* UdeskNewsCell.h */,
+				4412BF88225D8296004145C8 /* UdeskNewsCell.m */,
+				4412BF84225D8296004145C8 /* UdeskProductCell.h */,
+				4412BF8E225D8296004145C8 /* UdeskProductCell.m */,
+				4412BF81225D8296004145C8 /* UdeskProductListCell.h */,
+				4412BF8B225D8296004145C8 /* UdeskProductListCell.m */,
+				4412BF89225D8296004145C8 /* UdeskRichCell.h */,
+				4412BF83225D8296004145C8 /* UdeskRichCell.m */,
+				4412BF8D225D8296004145C8 /* UdeskTableCell.h */,
+				4412BF86225D8296004145C8 /* UdeskTableCell.m */,
+				4412BF82225D8296004145C8 /* UdeskTopAskCell.h */,
+				4412BF8A225D8296004145C8 /* UdeskTopAskCell.m */,
 			);
 			path = Robot;
 			sourceTree = "<group>";

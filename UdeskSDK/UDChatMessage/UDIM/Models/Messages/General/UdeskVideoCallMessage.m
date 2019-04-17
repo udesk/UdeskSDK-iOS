@@ -71,7 +71,7 @@ static CGFloat const kUDCallTextMendSpacing = 2.0;
         
         self.cellText = mAttr;
         
-        CGSize textSize = [UdeskStringSizeUtil getSizeForAttributedText:mAttr textWidth:MAXFLOAT];
+        CGSize textSize = [UdeskStringSizeUtil sizeWithAttributedText:mAttr size:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
         
         switch (self.message.messageFrom) {
             case UDMessageTypeSending:{

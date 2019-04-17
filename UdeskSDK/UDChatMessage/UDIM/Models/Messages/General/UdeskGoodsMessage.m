@@ -72,7 +72,7 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
         //图片
         self.imgFrame = CGRectMake(kUDGoodsImageHorizontalSpacing, kUDGoodsImageVerticalSpacing, kUDGoodsImageWidth, kUDGoodsImageHeight);
         //名称+参数
-        CGSize paramsSize = [UdeskStringSizeUtil getSizeForAttributedText:self.paramsAttributedString textWidth:labelWidth];
+        CGSize paramsSize = [UdeskStringSizeUtil sizeWithAttributedText:self.paramsAttributedString size:CGSizeMake(labelWidth, CGFLOAT_MAX)];
         self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, kUDGoodsParamsVerticalSpacing, paramsSize.width, paramsSize.height+5);
         
         CGFloat bubbleHeight = MAX(kUDGoodsImageHeight+kUDGoodsImageVerticalSpacing, CGRectGetMaxY(self.paramsFrame));

@@ -46,7 +46,7 @@ const CGFloat kUDListHeight = 44.0;
         
         self.titleAttributedString = [NSAttributedString attributedStringFromHTML:self.message.answerTitle customFont:[UIFont systemFontOfSize:15]];
         
-        CGSize titleSize = [UdeskStringSizeUtil getSizeForAttributedText:self.titleAttributedString textWidth:[self listMaxWidth]];
+        CGSize titleSize = [UdeskStringSizeUtil sizeWithAttributedText:self.titleAttributedString size:CGSizeMake([self listMaxWidth], CGFLOAT_MAX)];
         self.titleFrame = CGRectMake(kUDBubbleToListHorizontalSpacing, kUDBubbleToListVerticalSpacing, [self listMaxWidth], titleSize.height);
         self.lineFrame = CGRectMake(0, CGRectGetMaxY(self.titleFrame), [self listMaxWidth]+kUDBubbleToListHorizontalSpacing*2, 1);
         self.listFrame = CGRectMake(kUDBubbleToListHorizontalSpacing, CGRectGetMaxY(self.lineFrame), [self listMaxWidth], self.message.list.count*kUDListHeight+kUDBubbleToListVerticalSpacing);

@@ -247,7 +247,7 @@
     
     if (self.menuPage) {
         
-        CGSize pathSize = [UdeskStringSizeUtil textSize:self.pathString withFont:[UIFont systemFontOfSize:17] withSize:CGSizeMake(tableView.udWidth, CGFLOAT_MAX)];
+        CGSize pathSize = [UdeskStringSizeUtil sizeWithText:self.pathString font:[UIFont systemFontOfSize:17] size:CGSizeMake(tableView.udWidth, CGFLOAT_MAX)];
         CGFloat otherH = pathSize.height==0?45:25;
         
         return pathSize.height+otherH;

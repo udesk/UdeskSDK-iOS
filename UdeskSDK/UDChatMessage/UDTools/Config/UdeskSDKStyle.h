@@ -128,7 +128,6 @@
 /** 商品消息名称颜色 */
 @property (nonatomic, strong) UIColor *goodsNameTextColor;
 
-+ (instancetype)defaultStyle;
 + (instancetype)customStyle;
 
 @end

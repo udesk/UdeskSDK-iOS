@@ -175,11 +175,11 @@ static CGFloat const kUDTextMendSpacing = 1.0;
         NSDictionary *cellTextAttributes = [[NSDictionary alloc] initWithDictionary:contentAttributes];
         self.cellText = [[NSAttributedString alloc] initWithString:text attributes:cellTextAttributes];
         
-        CGSize textSize = [UdeskStringSizeUtil getSizeForAttributedText:self.cellText textWidth:[self textMaxWidth]];
+        CGSize textSize = [UdeskStringSizeUtil sizeWithAttributedText:self.cellText size:CGSizeMake([self textMaxWidth], CGFLOAT_MAX)];
         
         if ([UdeskSDKUtil stringContainsEmoji:[self.cellText string]]) {
             NSAttributedString *oneLineText = [[NSAttributedString alloc] initWithString:@"haha" attributes:cellTextAttributes];
-            CGFloat oneLineTextHeight = [UdeskStringSizeUtil getHeightForAttributedText:oneLineText textWidth:[self textMaxWidth]];
+            CGFloat oneLineTextHeight = [UdeskStringSizeUtil sizeWithAttributedText:oneLineText size:CGSizeMake([self textMaxWidth], CGFLOAT_MAX)].height;
             NSInteger textLines = ceil(textSize.height / oneLineTextHeight);
             textSize.height += 8 * textLines;
         }

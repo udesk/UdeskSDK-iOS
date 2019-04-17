@@ -522,7 +522,7 @@
     if (!videoData || videoData == (id)kCFNull) return ;
     if (![videoData isKindOfClass:[NSData class]]) return ;
     
-    if (![[UdeskSDKUtil internetStatus] isEqualToString:@"wifi"]) {
+    if (![[UdeskSDKUtil networkStatus] isEqualToString:@"wifi"]) {
         
         dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8f/*延迟执行时间*/ * NSEC_PER_SEC));
         dispatch_after(delayTime, dispatch_get_main_queue(), ^{
@@ -565,7 +565,7 @@
     if (size > 31.f) {
         dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0/*延迟执行时间*/ * NSEC_PER_SEC));
         dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-            [UdeskSDKAlert showBigVideoPoint];
+            [UdeskSDKAlert showWithMessage:getUDLocalizedString(@"udesk_video_big_tips") handler:nil];
         });
         return nil;
     }

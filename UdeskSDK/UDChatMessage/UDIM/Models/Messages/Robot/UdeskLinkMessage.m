@@ -64,7 +64,7 @@ static CGFloat const kUDLinkMendSpacing = 1.0;
         
         self.attributedString = attString;
         
-        CGSize textSize = [UdeskStringSizeUtil getSizeForAttributedText:attString textWidth:[self linkMaxWidth]];
+        CGSize textSize = [UdeskStringSizeUtil sizeWithAttributedText:attString size:CGSizeMake([self linkMaxWidth], CGFLOAT_MAX)];
         textSize.height = textSize.height <= 40 ? 40 : textSize.height;
         
         CGFloat bubbleWidth = textSize.width+(kUDBubbleToLinkHorizontalSpacing*2);

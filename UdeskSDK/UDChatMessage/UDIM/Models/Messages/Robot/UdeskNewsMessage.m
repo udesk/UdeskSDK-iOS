@@ -75,7 +75,7 @@ const CGFloat kUDNewsOptionToTagHorizontalSpacing = 8.0;
         
         self.imgURL = self.message.newsCoverUrl;
         self.titleAttributedString = [NSAttributedString attributedStringFromHTML:self.message.newsContent customFont:[UIFont systemFontOfSize:16]];
-        CGSize titleSize = [UdeskStringSizeUtil getSizeForAttributedText:self.titleAttributedString width:[self textMaxWidth] height:kUDNewsTitleMaxHeight];
+        CGSize titleSize = [UdeskStringSizeUtil sizeWithAttributedText:self.titleAttributedString size:CGSizeMake([self textMaxWidth], kUDNewsTitleMaxHeight)];
         
         self.descAttributedString = [NSAttributedString attributedStringFromHTML:self.message.newsDescription customFont:[UIFont systemFontOfSize:12]];
         
@@ -96,7 +96,7 @@ const CGFloat kUDNewsOptionToTagHorizontalSpacing = 8.0;
             for (UdeskMessageOption *option in topAskMessage.optionsList) {
                 NSAttributedString *optionsAttributed = [NSAttributedString attributedStringFromHTML:option.value customFont:[UIFont systemFontOfSize:15]];
                 CGFloat optionMaxWidth = [self newsMaxWidth] - kUDBubbleToNewsHorizontalSpacing*3 - kUDNewsOptionTagWidth;
-                CGSize optionsSize = [UdeskStringSizeUtil getSizeForAttributedText:optionsAttributed textWidth:optionMaxWidth];
+                CGSize optionsSize = [UdeskStringSizeUtil sizeWithAttributedText:optionsAttributed size:CGSizeMake(optionMaxWidth, CGFLOAT_MAX)];
                 topAskHeight = topAskHeight+optionsSize.height;
                 [questionHeightArray addObject:@(optionsSize.height)];
             }

@@ -36,23 +36,6 @@
     return self;
 }
 
-- (void)setLanguageType:(UDLanguageType)languageType {
-    _languageType = languageType;
-    switch (languageType) {
-        case UDLanguageTypeEN:
-     
-            [[UdeskLanguageConfig sharedConfig] setSDKLanguageToEnglish];
-            break;
-        case UDLanguageTypeCN:
-            
-            [[UdeskLanguageConfig sharedConfig] setSDKLanguageToChinease];
-            break;
-            
-        default:
-            break;
-    }
-}
-
 -(void)setLanguage:(NSString *)language{
     [UdeskLanguageConfig sharedConfig].language = language;
 }
@@ -81,7 +64,7 @@
     self.allowShootingVideo = YES;
     self.imagePickerEnabled = YES;
     
-    self.sdkStyle = [UdeskSDKStyle defaultStyle];
+    self.sdkStyle = [UdeskSDKStyle customStyle];
     self.maxImagesCount = 9;
     self.quality = 0.5;
     self.allowPickingVideo = YES;

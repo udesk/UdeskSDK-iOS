@@ -11,14 +11,10 @@
 
 @interface UdeskSDKUtil : NSObject
 
-//使用时需要注意8.3以下需要在主线层执行，其他要在子线程执行
-+ (NSAttributedString *)attributedStringWithHTML:(NSString *)html;
 //判断字符串是否为空
 + (BOOL)isBlankString:(NSString *)string;
-//随机生成唯一字符串
-+ (NSString *)soleString;
 //网络状态
-+ (NSString *)internetStatus;
++ (NSString *)networkStatus;
 //判断是否有系统表情
 + (BOOL)stringContainsEmoji:(NSString *)string;
 //字符串转字典

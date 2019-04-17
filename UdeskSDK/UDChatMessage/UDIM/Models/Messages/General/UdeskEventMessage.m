@@ -52,7 +52,7 @@ static CGFloat const kUDEventHeight = 24;
 
 - (CGFloat)getEventContentWidth:(NSString *)eventContent {
 
-    CGSize size = [UdeskStringSizeUtil textSize:eventContent withFont:[UIFont systemFontOfSize:13] withSize:CGSizeMake(UD_SCREEN_WIDTH, kUDEventHeight)];
+    CGSize size = [UdeskStringSizeUtil sizeWithText:eventContent font:[UIFont systemFontOfSize:13] size:CGSizeMake(UD_SCREEN_WIDTH, kUDEventHeight)];
     return size.width+(kUDEventToHorizontalEdgeSpacing*2);
 }
 

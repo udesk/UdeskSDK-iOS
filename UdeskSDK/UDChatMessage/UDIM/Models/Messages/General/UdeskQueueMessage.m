@@ -69,7 +69,7 @@ static CGFloat const kUDQueueButtonToVerticalEdgeSpacing = 8.0;
     self.showLeaveMsgBtn = self.message.showLeaveMsgBtn;
     
     //内容高度
-    CGFloat height = [UdeskStringSizeUtil textSize:self.contentText withFont:[UIFont systemFontOfSize:16] withSize:CGSizeMake(UD_SCREEN_WIDTH-(kUDQueueToHorizontalEdgeSpacing*2+kUDQueueContentToHorizontalEdgeSpacing*2), MAXFLOAT)].height;
+    CGFloat height = [UdeskStringSizeUtil sizeWithText:self.contentText font:[UIFont systemFontOfSize:16] size:CGSizeMake(UD_SCREEN_WIDTH-(kUDQueueToHorizontalEdgeSpacing*2+kUDQueueContentToHorizontalEdgeSpacing*2), MAXFLOAT)].height;
     
     //背景
     self.backGroundFrame = CGRectMake(kUDQueueToHorizontalEdgeSpacing, kUDQueueToVerticalEdgeSpacing, UD_SCREEN_WIDTH-(kUDQueueToHorizontalEdgeSpacing*2), height+kUDQueueTitleHeight+(self.showLeaveMsgBtn?(kUDQueueButtonHeight+kUDQueueToVerticalEdgeSpacing):0)+(kUDQueueToVerticalEdgeSpacing*3));

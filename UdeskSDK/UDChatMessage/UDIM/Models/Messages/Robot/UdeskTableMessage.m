@@ -49,7 +49,7 @@ const CGFloat kUDSingleTableHeight = 40.0;
         
         self.titleAttributedString = [NSAttributedString attributedStringFromHTML:self.message.answerTitle customFont:[UIFont systemFontOfSize:15]];
         
-        CGSize titleSize = [UdeskStringSizeUtil getSizeForAttributedText:self.titleAttributedString textWidth:[self tableMaxWidth]];
+        CGSize titleSize = [UdeskStringSizeUtil sizeWithAttributedText:self.titleAttributedString size:CGSizeMake([self tableMaxWidth], CGFLOAT_MAX)];
         self.titleFrame = CGRectMake(kUDBubbleToTableHorizontalSpacing, kUDBubbleToTitleVerticalSpacing, [self tableMaxWidth], titleSize.height);
         self.lineFrame = CGRectMake(0, CGRectGetMaxY(self.titleFrame), [self tableMaxWidth]+(kUDBubbleToTableHorizontalSpacing*2), 1);
         

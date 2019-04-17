@@ -15,16 +15,6 @@ static NSString *kUdeskMenuId = @"kUdeskMenuId";
 
 @implementation UdeskSDKUtil
 
-+ (NSAttributedString *)attributedStringWithHTML:(NSString *)html {
-    
-    NSDictionary *dic = @{
-                          NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType,
-                          NSCharacterEncodingDocumentAttribute:@(NSUTF8StringEncoding)
-                          };
-    NSAttributedString *attri = [[NSAttributedString alloc] initWithData:[html dataUsingEncoding:NSUTF8StringEncoding] options:dic documentAttributes:nil error:nil];
-    return attri;
-}
-
 //字符串转字典
 + (id)dictionaryWithJSON:(NSString *)json {
     if (json == nil) {
@@ -82,7 +72,7 @@ static NSString *kUdeskMenuId = @"kUdeskMenuId";
 }
 
 //同步获取网络状态
-+ (NSString *)internetStatus {
++ (NSString *)networkStatus {
     
     UdeskReachability *reachability   = [UdeskReachability reachabilityWithHostName:@"www.apple.com"];
     UDNetworkStatus internetStatus = [reachability currentReachabilityStatus];
@@ -150,16 +140,6 @@ static NSString *kUdeskMenuId = @"kUdeskMenuId";
         return YES;
     }
     return NO;
-}
-
-//随机生成唯一标示
-+ (NSString *)soleString {
-
-    CFUUIDRef identifier = CFUUIDCreate(NULL);
-    NSString* identifierString = (NSString*)CFBridgingRelease(CFUUIDCreateString(NULL, identifier));
-    CFRelease(identifier);
-    
-    return identifierString;
 }
 
 + (BOOL)stringContainsEmoji:(NSString *)string

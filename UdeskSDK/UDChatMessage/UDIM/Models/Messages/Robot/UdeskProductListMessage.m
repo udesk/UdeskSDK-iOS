@@ -62,7 +62,7 @@ const CGFloat kUDProductListTitleMaxHeight = 40.0;
         
         self.titleAttributedString = [NSAttributedString attributedStringFromHTML:self.message.answerTitle customFont:[UIFont systemFontOfSize:15]];
         
-        CGSize titleSize = [UdeskStringSizeUtil getSizeForAttributedText:self.titleAttributedString textWidth:[self productListMaxWidth]];
+        CGSize titleSize = [UdeskStringSizeUtil sizeWithAttributedText:self.titleAttributedString size:CGSizeMake([self productListMaxWidth], CGFLOAT_MAX)];
         self.titleFrame = CGRectMake(kUDBubbleToProductListHorizontalSpacing, kUDBubbleToProductListVerticalSpacing, titleSize.width, titleSize.height);
         
         self.lineFrame = CGRectMake(0, CGRectGetMaxY(self.titleFrame), [self productListMaxWidth]+(kUDBubbleToProductListHorizontalSpacing*2), 1);
@@ -80,7 +80,7 @@ const CGFloat kUDProductListTitleMaxHeight = 40.0;
             CGFloat textMaxWidth = [self productListMaxWidth]-kUDBubbleToProductListHorizontalSpacing-kUDProductListImageWidth;
             
             NSAttributedString *productTitleAtt = [NSAttributedString attributedStringFromHTML:productModel.name customFont:[UIFont systemFontOfSize:15]];
-            CGSize titleSize = [UdeskStringSizeUtil getSizeForAttributedText:productTitleAtt width:textMaxWidth height:kUDProductListTitleMaxHeight];
+            CGSize titleSize = [UdeskStringSizeUtil sizeWithAttributedText:productTitleAtt size:CGSizeMake(textMaxWidth, kUDProductListTitleMaxHeight)];
             CGRect titleFrame = CGRectMake(kUDProductListImageWidth + kUDBubbleToProductListHorizontalSpacing, kUDBubbleToProductListVerticalSpacing, [self productListMaxWidth], titleSize.height);
             
             CGFloat cellMaxY = kUDBubbleToProductListVerticalSpacing + (titleSize.height>kUDProductListImageHeight?:kUDProductListImageHeight);
