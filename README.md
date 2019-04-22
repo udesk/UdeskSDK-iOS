@@ -2,7 +2,9 @@
 
 ### SDK下载地址
 
-https://github.com/udesk/UdeskSDK-iOS
+<https://github.com/udesk/UdeskSDK-iOS/tree/5.x>
+
+5.x版本暂时还未支持pod导入！！！
 
 ## 目录
 - [一、集成SDK](#%E4%B8%80%e9%9b%86%e6%88%90sdk)
@@ -70,7 +72,7 @@ CoreText.framework
 - 搜索Other Linker Flags 加入 -lxml2 -ObjC
 - 搜索header search paths 加入/usr/include/libxml2
 
-#### 1.2 CocoaPods 导入
+#### 1.2 CocoaPods 导入（5.x版本暂时还未支持pod导入！！！）
 
 在 Podfile 中加入：
 
