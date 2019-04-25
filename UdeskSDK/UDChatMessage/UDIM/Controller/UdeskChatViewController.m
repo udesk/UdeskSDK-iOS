@@ -1263,21 +1263,6 @@ static CGFloat udInputBarHeight = 54.0f;
 - (void)dismissViewController {
     
     //离开页面
-    [self leaveChatViewController];
-    if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-        } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:self.sdkConfig.presentingAnimation] forKey:nil];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-}
-
-- (void)leaveChatViewController {
-    
     if (self.sdkConfig) {
         if (self.sdkConfig.actionConfig.leaveChatViewControllerBlock) {
             self.sdkConfig.actionConfig.leaveChatViewControllerBlock();
@@ -1290,6 +1275,9 @@ static CGFloat udInputBarHeight = 54.0f;
     }
     //取消所有请求
     [UdeskManager cancelAllOperations];
+    
+    //dismiss
+    [super dismissChatViewController];
 }
 
 #pragma mark - 监听键盘通知做出相应的操作

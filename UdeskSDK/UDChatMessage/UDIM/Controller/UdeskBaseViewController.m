@@ -53,17 +53,24 @@
     
     if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-            [self dismissViewControllerAnimated:YES completion:nil];
+            [self dismissViewControllerAnimated:YES];
         } else {
             [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:self.sdkConfig.presentingAnimation] forKey:nil];
-            [self dismissViewControllerAnimated:NO completion:nil];
+            [self dismissViewControllerAnimated:NO];
         }
     } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES];
     }
 }
 
-- (void)dealloc {
+- (void)dismissViewControllerAnimated:(BOOL)flag {
+    
+    [self dismissViewControllerAnimated:flag completion:^{
+        [self setConfigToDefault];
+    }];
+}
+
+- (void)setConfigToDefault {
     
     NSMutableArray *array = [NSMutableArray arrayWithArray:_sdkConfig.udViewControllers];
     if ([array containsObject:NSStringFromClass([self class])]) {
@@ -77,7 +84,9 @@
         }
         [[UdeskSDKConfig customConfig] setConfigToDefault];
     }
-    
+}
+
+- (void)dealloc {
     NSLog(@"UdeskSDK：%@释放了",[self class]);
 }
 

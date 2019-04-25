@@ -40,7 +40,10 @@
                      completion:(void (^)(void))completion {
 
     NSMutableArray *array = [NSMutableArray arrayWithArray:_sdkConfig.udViewControllers];
-    [array addObject:NSStringFromClass([udeskViewController class])];
+    NSString *vcStr = NSStringFromClass([udeskViewController class]);
+    if (vcStr && ![array containsObject:vcStr]) {
+        [array addObject:vcStr];
+    }
     _sdkConfig.udViewControllers = array;
     
     _sdkConfig.presentingAnimation = animation;
