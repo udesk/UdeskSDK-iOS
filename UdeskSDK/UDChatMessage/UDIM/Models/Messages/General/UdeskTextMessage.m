@@ -55,7 +55,7 @@ static CGFloat const kUDTextMendSpacing = 1.0;
                 CGFloat bubbleSpacing = [self getBubbleSpacing];
                 
                 //文本气泡frame
-                self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.dateFrame)+bubbleSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*2), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
+                self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+bubbleSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*2), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
                 //文本frame
                 self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+kUDTextMendSpacing, textSize.width, textSize.height);
                 //加载中frame
@@ -93,7 +93,7 @@ static CGFloat const kUDTextMendSpacing = 1.0;
 
 - (CGFloat)getBubbleSpacing {
     
-    CGFloat bubbleSpacing = self.message.messageFrom == UDMessageTypeReceiving?kUDAvatarToBubbleSpacing:kUDBubbleToVerticalEdgeSpacing;
+    CGFloat bubbleSpacing = kUDAvatarToBubbleSpacing;
     
     if (self.message.bubbleType &&
         ([self.message.bubbleType rangeOfString:@"Solid04"].location != NSNotFound ||

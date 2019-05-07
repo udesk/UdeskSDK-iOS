@@ -25,14 +25,8 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
 
 @interface UdeskGoodsMessage()
 
-/** id */
-@property (nonatomic, copy, readwrite) NSString *goodsId;
-/** 名称 */
-@property (nonatomic, copy, readwrite) NSString *name;
-/** 链接 */
-@property (nonatomic, copy, readwrite) NSString *url;
-/** 图片 */
-@property (nonatomic, copy, readwrite) NSString *imgUrl;
+/** model */
+@property (nonatomic, strong, readwrite) UdeskGoodsModel *goodsModel;
 /** 其他文本参数 */
 @property (nonatomic, strong, readwrite) NSAttributedString  *paramsAttributedString;
 
@@ -77,7 +71,7 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
         
         CGFloat bubbleHeight = MAX(kUDGoodsImageHeight+kUDGoodsImageVerticalSpacing, CGRectGetMaxY(self.paramsFrame));
         CGFloat bubbleX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-bubbleWidth;
-        self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.dateFrame)+kUDBubbleToVerticalEdgeSpacing, bubbleWidth, bubbleHeight+kUDGoodsParamsVerticalSpacing);
+        self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, bubbleWidth, bubbleHeight+kUDGoodsParamsVerticalSpacing);
         
         //加载中frame
         self.loadingFrame = CGRectMake(self.bubbleFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.bubbleFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
@@ -93,20 +87,24 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
 - (void)setupGoodsDataWithDictionary:(NSDictionary *)dictionary {
     
     if ([dictionary.allKeys containsObject:@"url"]) {
-        self.url = dictionary[@"url"];
+        self.goodsModel.url = dictionary[@"url"];
     }
     
     if ([dictionary.allKeys containsObject:@"imgUrl"]) {
-        self.imgUrl = dictionary[@"imgUrl"];
+        self.goodsModel.imgUrl = dictionary[@"imgUrl"];
     }
     
     if ([dictionary.allKeys containsObject:@"id"]) {
-        self.goodsId = dictionary[@"id"];
+        self.goodsModel.goodsId = dictionary[@"id"];
     }
     
     if ([dictionary.allKeys containsObject:@"name"]) {
-        self.name = dictionary[@"name"];
-        [self setGoodsNameAttributedStringWithName:self.name];
+        self.goodsModel.name = dictionary[@"name"];
+        [self setGoodsNameAttributedStringWithName:self.goodsModel.name];
+    }
+    
+    if ([dictionary.allKeys containsObject:@"customParameters"]) {
+        self.goodsModel.customParameters = dictionary[@"customParameters"];
     }
     
     if ([dictionary.allKeys containsObject:@"params"]) {
@@ -123,14 +121,8 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
     paragraphStyle.paragraphSpacing = 5;
     
     //名称
-    UIColor *color = [UdeskSDKConfig customConfig].sdkStyle.goodsNameTextColor;
-    if (![UdeskSDKUtil isBlankString:self.url]) {
-        color = [UdeskSDKConfig customConfig].sdkStyle.linkColor;
-    }
-    
-    //名称
     NSDictionary *dic = @{
-                          NSForegroundColorAttributeName:color,
+                          NSForegroundColorAttributeName:[UdeskSDKConfig customConfig].sdkStyle.goodsNameTextColor,
                           NSFontAttributeName:[UdeskSDKConfig customConfig].sdkStyle.goodsNameFont,
                           NSParagraphStyleAttributeName:paragraphStyle
                           };
@@ -142,10 +134,13 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
 }
 
 - (void)setupParamsWithArray:(NSArray *)array {
+    
+    NSMutableArray *paramArray = [NSMutableArray array];
         
     NSMutableAttributedString *mAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.paramsAttributedString];
     for (NSDictionary *param in array) {
         
+        UdeskGoodsParamModel *paramModel = [[UdeskGoodsParamModel alloc] init];
         NSMutableDictionary *attributed = [NSMutableDictionary dictionary];
         //字体颜色
         UIColor *defaultColor = [UIColor udColorWithHexString:@"#ffffff"];
@@ -161,6 +156,7 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
                     [attributed setObject:defaultColor forKey:NSForegroundColorAttributeName];
                 }
             }
+            paramModel.color = colorString;
         }
         else {
             if (defaultColor) {
@@ -174,6 +170,7 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
             NSNumber *size = param[@"size"];
             if (![size isKindOfClass:[NSNumber class]]) break;
             textSize = size.floatValue;
+            paramModel.size = size;
         }
         
         UIFont *textFont = [UIFont systemFontOfSize:textSize];
@@ -183,6 +180,7 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
             if (fold.boolValue) {
                 textFont = [UIFont boldSystemFontOfSize:textSize];
             }
+            paramModel.fold = fold;
         }
         
         [attributed setObject:textFont forKey:NSFontAttributeName];
@@ -193,6 +191,7 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
             NSString *text = param[@"text"];
             if (![text isKindOfClass:[NSString class]]) break;
             content = text;
+            paramModel.text = text;
         }
         
         //换行
@@ -202,6 +201,7 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
             if (udBreak.boolValue) {
                 content = [content stringByAppendingString:@"\n"];
             }
+            paramModel.udBreak = udBreak;
         }
         
         //处理间隙
@@ -220,11 +220,20 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
             }
         }
         
+        [paramArray addObject:paramModel];
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:content attributes:attributed];
         [mAttributedString appendAttributedString:attributedString];
     }
     
+    self.goodsModel.params = paramArray;
     self.paramsAttributedString = [mAttributedString copy];
+}
+
+- (UdeskGoodsModel *)goodsModel {
+    if (!_goodsModel) {
+        _goodsModel = [[UdeskGoodsModel alloc] init];
+    }
+    return _goodsModel;
 }
 
 - (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {

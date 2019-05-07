@@ -43,8 +43,6 @@
     _paramsLabel.userInteractionEnabled = true;
     _paramsLabel.delegate = self;
     _paramsLabel.backgroundColor = [UIColor clearColor];
-    _paramsLabel.activeLinkAttributes = @{(id)kCTForegroundColorAttributeName:[UdeskSDKConfig customConfig].sdkStyle.activeLinkColor};
-    _paramsLabel.linkAttributes = @{(id)kCTForegroundColorAttributeName:[UdeskSDKConfig customConfig].sdkStyle.linkColor};
     [self.bubbleImageView addSubview:_paramsLabel];
     
     //长按手势
@@ -58,8 +56,8 @@
     UdeskGoodsMessage *goodsMessage = (UdeskGoodsMessage *)self.baseMessage;
     if (!goodsMessage || ![goodsMessage isKindOfClass:[UdeskGoodsMessage class]]) return;
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didTapGoodsMessageWithURL:goodsId:)]) {
-        [self.delegate didTapGoodsMessageWithURL:goodsMessage.url goodsId:goodsMessage.goodsId];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didTapGoodsMessageWithModel:)]) {
+        [self.delegate didTapGoodsMessageWithModel:goodsMessage.goodsModel];
     }
 }
 
@@ -69,8 +67,8 @@
     UdeskGoodsMessage *goodsMessage = (UdeskGoodsMessage *)baseMessage;
     if (!goodsMessage || ![goodsMessage isKindOfClass:[UdeskGoodsMessage class]]) return;
     
-    if (![UdeskSDKUtil isBlankString:goodsMessage.imgUrl]) {
-        [self.goodsImageView yy_setImageWithURL:[NSURL URLWithString:[goodsMessage.imgUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:[UIImage udDefaultLoadingImage]];
+    if (![UdeskSDKUtil isBlankString:goodsMessage.goodsModel.imgUrl]) {
+        [self.goodsImageView yy_setImageWithURL:[NSURL URLWithString:[goodsMessage.goodsModel.imgUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:[UIImage udDefaultLoadingImage]];
     }
     
     self.paramsLabel.attributedText = goodsMessage.paramsAttributedString;

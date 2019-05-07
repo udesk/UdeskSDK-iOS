@@ -10,7 +10,6 @@
 #import "UdeskNewsMessage.h"
 #import "Udesk_YYWebImage.h"
 #import "UdeskSDKShow.h"
-#import "UdeskWebViewController.h"
 #import "UIView+UdeskSDK.h"
 #import "UdeskMessage+UdeskSDK.h"
 
@@ -131,9 +130,7 @@ static NSString *kUDNewsTopAskQuestionCellId = @"kUDNewsTopAskQuestionCellId";
 
 - (void)tapNewsMessageViewAction:(UITapGestureRecognizer *)tap {
     
-    UdeskWebViewController *web = [[UdeskWebViewController alloc] initWithURL:[NSURL URLWithString:self.baseMessage.message.newsAnswerUrl]];
-    UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:[UdeskSDKConfig customConfig]];
-    [show presentOnViewController:[UdeskSDKUtil currentViewController] udeskViewController:web transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+    [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:[NSURL URLWithString:self.baseMessage.message.newsAnswerUrl]];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

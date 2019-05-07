@@ -33,6 +33,8 @@
 @property (nonatomic, copy) NSString *url;
 /** 图片 */
 @property (nonatomic, copy) NSString *imgUrl;
+/** 自定义参数，会在点击商品消息时返回 */
+@property (nonatomic, strong) NSDictionary *customParameters;
 /** 其他文本参数 */
 @property (nonatomic, strong) NSArray<UdeskGoodsParamModel *>  *params;
 

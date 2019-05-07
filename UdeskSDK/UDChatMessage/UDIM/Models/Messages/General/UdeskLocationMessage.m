@@ -60,7 +60,7 @@ static CGFloat const kUDLocationSnapshotToVerticalEdgeSpacing = 7;
             
             //图片气泡位置
             CGFloat locationX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-kUDLocationMessageWidth;
-            self.locationFrame = CGRectMake(locationX, CGRectGetMaxY(self.dateFrame)+kUDBubbleToVerticalEdgeSpacing, kUDLocationMessageWidth, kUDLocationMessageHeight);
+            self.locationFrame = CGRectMake(locationX, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, kUDLocationMessageWidth, kUDLocationMessageHeight);
             //地图图片位置
             self.locationSnapshotFrame = CGRectMake(kUDLocationSnapshotToHorizontalEdgeSpacing, 0, kUDLocationSnapshotMessageWidth, kUDLocationSnapshotMessageHeight);
             //地图名称位置

@@ -97,6 +97,7 @@ static CGFloat udInputBarHeight = 54.0f;
         //是否需要下拉刷新
         [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
         [self.messageTableView reloadData];
+        [self.messageTableView scrollToBottomAnimated:NO];
     });
 }
 
@@ -202,7 +203,9 @@ static CGFloat udInputBarHeight = 54.0f;
 //网络断开链接
 - (void)didReceiveNetworkDisconnect {
     
-    //网络不可用提示
+    //网络不可用
+    self.chatInputToolBar.networkDisconnect = YES;
+    self.titleView.titleLabel.text = getUDLocalizedString(@"udesk_network_interrupt");
     [UdeskTopAlertView showAlertType:UDAlertTypeNetworkFailure withMessage:getUDLocalizedString(@"udesk_notwork_failure") parentView:self.view];
 }
 
@@ -225,6 +228,7 @@ static CGFloat udInputBarHeight = 54.0f;
     
     self.chatInputToolBar.isAgentSession = isAgentSession;
     self.moreView.isAgentSession = isAgentSession;
+    self.chatInputToolBar.networkDisconnect = NO;
 }
 
 //配置无消息对话过滤的UI
@@ -234,6 +238,7 @@ static CGFloat udInputBarHeight = 54.0f;
     
     self.chatInputToolBar.isPreSession = isPreSessionMessage;
     self.moreView.isPreSession = isPreSessionMessage;
+    self.chatInputToolBar.networkDisconnect = NO;
 }
 
 //配置机器人的UI
@@ -241,6 +246,7 @@ static CGFloat udInputBarHeight = 54.0f;
     
     self.chatInputToolBar.isRobotSession = isRobotSession;
     self.moreView.isRobotSession = isRobotSession;
+    self.chatInputToolBar.networkDisconnect = NO;
     
     //显示转人工按钮
     if (isRobotSession) {
@@ -301,6 +307,7 @@ static CGFloat udInputBarHeight = 54.0f;
     _messageTableView.dataSource = self;
     _messageTableView.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
     [self.view addSubview:_messageTableView];
+    [self.view sendSubviewToBack:_messageTableView];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapChatTableView:)];
     tap.cancelsTouchesInView = false;
@@ -802,10 +809,10 @@ static CGFloat udInputBarHeight = 54.0f;
 }
 
 //点击商品消息
-- (void)didTapGoodsMessageWithURL:(NSString *)goodsURL goodsId:(NSString *)goodsId {
+- (void)didTapGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel {
     
     if (self.sdkConfig.actionConfig.goodsMessageClickBlock) {
-        self.sdkConfig.actionConfig.goodsMessageClickBlock(self,goodsURL,goodsId);
+        self.sdkConfig.actionConfig.goodsMessageClickBlock(self,goodsModel);
     }
 }
 

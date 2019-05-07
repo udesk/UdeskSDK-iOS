@@ -11,7 +11,6 @@
 #import "Udesk_YYWebImage.h"
 #import "NSAttributedString+UdeskHTML.h"
 #import "UIColor+UdeskSDK.h"
-#import "UdeskWebViewController.h"
 #import "UdeskSDKShow.h"
 #import "UdeskMessage+UdeskSDK.h"
 
@@ -268,9 +267,7 @@ static NSString *kUDProductListProductCellId = @"kUDProductListProductCellId";
     UdeskMessageProduct *product = productListMessage.displayProductArray[indexPath.row];
     
     if (self.baseMessage.message.messageType == UDMessageContentTypeShowProduct) {
-        UdeskWebViewController *web = [[UdeskWebViewController alloc] initWithURL:[NSURL URLWithString:product.url]];
-        UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:[UdeskSDKConfig customConfig]];
-        [show presentOnViewController:[UdeskSDKUtil currentViewController] udeskViewController:web transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+        [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:[NSURL URLWithString:product.url]];
     }
     else if (self.baseMessage.message.messageType == UDMessageContentTypeSelectiveProduct) {
         

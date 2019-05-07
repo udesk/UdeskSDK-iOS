@@ -8,7 +8,6 @@
 
 #import "UdeskBaseViewController.h"
 #import "UdeskTransitioningAnimation.h"
-#import "UdeskBundleUtils.h"
 
 @interface UdeskBaseViewController ()
 

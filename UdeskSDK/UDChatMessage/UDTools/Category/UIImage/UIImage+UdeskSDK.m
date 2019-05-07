@@ -166,6 +166,11 @@
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udAgentAvatar.png")];
 }
 
++ (UIImage *)udDefaultCustomerAvatarImage {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udCustomerAvatar.png")];
+}
+
 + (UIImage *)udDefaultBackImage {
 
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udBack.png")];

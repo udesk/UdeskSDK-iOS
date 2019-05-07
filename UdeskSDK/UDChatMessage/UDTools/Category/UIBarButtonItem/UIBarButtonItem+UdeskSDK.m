@@ -37,6 +37,11 @@
     }
 }
 
++ (UIBarButtonItem *)udLeftItemWithTitle:(NSString *)title target:(id)target action:(SEL)action {
+    
+    return [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:target action:action];
+}
+
 + (UIBarButtonItem *)udItemWithTitle:(NSString *)title image:(UIImage *)image target:(id)target action:(SEL)action {
     
     @try {

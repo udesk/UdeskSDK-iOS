@@ -25,7 +25,7 @@
 
 - (instancetype)initWithURL:(NSURL *)URL
 {
-    self = [super init];
+    self = [super initWithSDKConfig:[UdeskSDKConfig customConfig] setting:nil];
     if (self) {
         _URL = URL;
     }
@@ -36,19 +36,26 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    CGFloat spacing = 64;
+    if (udIsIPhoneXSeries) {
+        spacing += 34;
+    }
+    
     NSURLRequest *request = [NSURLRequest requestWithURL:self.URL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:45];
     
     if (ud_isIOS8) {
         
         _robotWkWebView = [[WKWebView alloc] initWithFrame:self.view.bounds];
         _robotWkWebView.backgroundColor = [UIColor whiteColor];
+        _robotWkWebView.udHeight -= spacing;
         [_robotWkWebView loadRequest:request];
         [self.view addSubview:_robotWkWebView];
         
         //进度条
         _progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 10)];
         _progressView.progress = 0.1f;
-        _progressView.trackTintColor = [UIColor whiteColor];
+        _progressView.trackTintColor = [UdeskSDKConfig customConfig].sdkStyle.webViewProgressTrackTintColor;
+        _progressView.tintColor = [UdeskSDKConfig customConfig].sdkStyle.webViewProgressTintColor;
         [self.view addSubview:_progressView];
         
         [self.robotWkWebView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
@@ -57,6 +64,7 @@
         
         _robotWebView = [[UIWebView alloc] initWithFrame:self.view.bounds];
         _robotWebView.backgroundColor = [UIColor whiteColor];
+        _robotWebView.udHeight -= spacing;
         [_robotWebView loadRequest:request];
         [self.view addSubview:_robotWebView];
     }

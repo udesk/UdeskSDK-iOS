@@ -79,7 +79,7 @@ static CGFloat const kUDCellVoiceDurationWidth = 30;
             
             CGFloat bubbleX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-voiceSize.width-kUDBubbleToAnimationVoiceImageHorizontalSpacing;
             //语音气泡frame
-            self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.dateFrame)+kUDBubbleToVerticalEdgeSpacing, voiceSize.width+kUDBubbleToAnimationVoiceImageHorizontalSpacing, kUDCellBubbleVoiceHeight);
+            self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, voiceSize.width+kUDBubbleToAnimationVoiceImageHorizontalSpacing, kUDCellBubbleVoiceHeight);
             //发送的语音播放动画图片
             self.voiceAnimationFrame = CGRectMake(CGRectGetWidth(self.bubbleFrame)-kUDAnimationVoiceImageViewWidth-kUDBubbleToAnimationVoiceImageHorizontalSpacing, kUDBubbleToAnimationVoiceImageVerticalSpacing, kUDAnimationVoiceImageViewWidth, kUDAnimationVoiceImageViewHeight);
             //语音时长frame

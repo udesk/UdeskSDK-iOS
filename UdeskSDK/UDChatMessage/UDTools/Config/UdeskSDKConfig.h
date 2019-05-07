@@ -13,6 +13,7 @@
 #import "UdeskEmojiPanelModel.h"
 
 @class UdeskMessage;
+@class UdeskGoodsModel;
 @class UdeskChatViewController;
 @class UdeskLocationModel;
 
@@ -71,7 +72,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, copy) void(^linkClickBlock)(UIViewController *viewController,NSURL *URL);
 
 /** 商品消息回调 */
-@property (nonatomic, copy) void(^goodsMessageClickBlock)(UdeskChatViewController *viewController,NSString *goodsURL,NSString *goodsId);
+@property (nonatomic, copy) void(^goodsMessageClickBlock)(UdeskChatViewController *viewController,UdeskGoodsModel *goodsModel);
 
 /** 咨询对象发送按钮回调 */
 @property (nonatomic, copy) void(^productMessageSendLinkClickBlock)(UdeskChatViewController *viewController,NSDictionary *productMessage);
@@ -185,6 +186,8 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, copy) NSString *ticketTitle;
 /** 客服导航栏菜单标题 */
 @property (nonatomic, copy) NSString *agentMenuTitle;
+/** 导航栏返回按钮文字 */
+@property (nonatomic, copy) NSString *backText;
 /** 咨询对象按钮文字 */
 @property (nonatomic, copy) NSString *productSendText;
 /** 机器人会话欢迎语 */

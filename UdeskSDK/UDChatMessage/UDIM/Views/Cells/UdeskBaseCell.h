@@ -18,7 +18,7 @@
 /** 点击了地理位置消息 */
 - (void)didTapLocationMessage:(UdeskMessage *)message;
 /** 商品消息 */
-- (void)didTapGoodsMessageWithURL:(NSString *)goodsURL goodsId:(NSString *)goodsId;
+- (void)didTapGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel;
 /** 点击视频通话消息 */
 - (void)didTapUdeskVideoCallMessage:(UdeskMessage *)message;
 /** 重新发送消息 */

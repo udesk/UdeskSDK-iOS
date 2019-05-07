@@ -7,17 +7,12 @@
 //
 
 #import "UdeskBaseMessage.h"
+#import "UdeskGoodsModel.h"
 
 @interface UdeskGoodsMessage : UdeskBaseMessage
 
-/** id */
-@property (nonatomic, copy, readonly) NSString *goodsId;
-/** 名称 */
-@property (nonatomic, copy, readonly) NSString *name;
-/** 链接 */
-@property (nonatomic, copy, readonly) NSString *url;
-/** 图片 */
-@property (nonatomic, copy, readonly) NSString *imgUrl;
+/** model */
+@property (nonatomic, strong, readonly) UdeskGoodsModel *goodsModel;
 /** 其他文本参数 */
 @property (nonatomic, strong, readonly) NSAttributedString  *paramsAttributedString;
 

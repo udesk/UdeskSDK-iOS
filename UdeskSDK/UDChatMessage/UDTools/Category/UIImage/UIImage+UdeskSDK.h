@@ -31,6 +31,8 @@
 + (UIImage *)udDefaultSmileImage;
 /** 客服头像图片 */
 + (UIImage *)udDefaultAgentImage;
+/** 客户头像图片 */
++ (UIImage *)udDefaultCustomerAvatarImage;
 /** 导航栏左侧返回图片 */
 + (UIImage *)udDefaultBackImage;
 /** 导航栏左侧返回图片 */

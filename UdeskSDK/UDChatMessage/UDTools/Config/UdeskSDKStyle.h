@@ -16,12 +16,16 @@
 
 /** 用户的消息颜色 */
 @property (nonatomic, strong) UIColor  *customerTextColor;
-
 /** 客户的气泡颜色 */
 @property (nonatomic, strong) UIColor  *customerBubbleColor;
-
 /** 客户的气泡图片 */
 @property (nonatomic, strong) UIImage  *customerBubbleImage;
+/** 客户的头像图片 */
+@property (nonatomic, strong) UIImage  *customerAvatarImage;
+/** 客户的头像URL */
+@property (nonatomic, copy  ) NSString *customerAvatarURL;
+/** 客户昵称 */
+@property (nonatomic, copy  ) NSString *customerNickname;
 
 /** 客服的消息颜色 */
 @property (nonatomic, strong) UIColor  *agentTextColor;
@@ -127,6 +131,11 @@
 @property (nonatomic, strong) UIFont *goodsNameFont;
 /** 商品消息名称颜色 */
 @property (nonatomic, strong) UIColor *goodsNameTextColor;
+
+/** wkWebView进度条中未填充部分的颜色（仅支持iOS8以上） */
+@property (nonatomic, strong) UIColor *webViewProgressTrackTintColor;
+/** wkWebView进度条颜色（仅支持iOS8以上） */
+@property (nonatomic, strong) UIColor *webViewProgressTintColor;
 
 + (instancetype)customStyle;
 

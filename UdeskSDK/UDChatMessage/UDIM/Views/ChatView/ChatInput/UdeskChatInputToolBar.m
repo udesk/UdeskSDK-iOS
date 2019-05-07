@@ -470,6 +470,14 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
 
 - (BOOL)checkAgentStatusValid {
     
+    //网络断开
+    if (self.networkDisconnect) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didClickChatInputToolBar)]) {
+            [self.delegate didClickChatInputToolBar];
+        }
+        return NO;
+    }
+    
     //无消息对话过滤
     if (self.isPreSession) {
         return YES;
@@ -489,7 +497,7 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     if (self.agent.code != UDAgentStatusResultOnline &&
         self.agent.code != UDAgentStatusResultLeaveMessage) {
         
-        if ([self.delegate respondsToSelector:@selector(didClickChatInputToolBar)]) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didClickChatInputToolBar)]) {
             [self.delegate didClickChatInputToolBar];
         }
         return NO;

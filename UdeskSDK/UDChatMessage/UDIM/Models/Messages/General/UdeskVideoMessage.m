@@ -103,7 +103,7 @@ static CGFloat const kUDVideoUploadProgressHeight = 48;
         case UDMessageTypeSending:{
             
             CGFloat previewX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-previewSize.width;
-            self.previewFrame = CGRectMake(previewX, CGRectGetMaxY(self.dateFrame)+kUDBubbleToVerticalEdgeSpacing, previewSize.width, previewSize.height);
+            self.previewFrame = CGRectMake(previewX, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, previewSize.width, previewSize.height);
             //发送中
             self.loadingFrame = CGRectMake(self.videoFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.videoFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
             //发送失败

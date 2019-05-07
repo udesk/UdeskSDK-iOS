@@ -55,6 +55,7 @@
                                                      context:nil];
     
     stringRect.size.height = stringRect.size.height < 30 ? stringRect.size.height = 20 : stringRect.size.height;
+    stringRect.size.width = stringRect.size.width < 25 ? 25 : stringRect.size.width;
     
     return CGSizeMake(stringRect.size.width, stringRect.size.height+2);
 }

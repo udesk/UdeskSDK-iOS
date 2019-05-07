@@ -42,6 +42,7 @@
         self.agentNicknameColor = [UIColor udColorWithHexString:@"#8E8E93"];
         self.goodsNameFont = [UIFont boldSystemFontOfSize:14];
         self.goodsNameTextColor = [UIColor whiteColor];
+        self.customerAvatarImage = [UIImage udDefaultCustomerAvatarImage];
         
         //nav
         self.navBackButtonColor = [UIColor udColorWithHexString:@"#007AFF"];

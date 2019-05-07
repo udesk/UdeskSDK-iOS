@@ -77,7 +77,7 @@ static CGFloat const kUDCallTextMendSpacing = 2.0;
             case UDMessageTypeSending:{
                 
                 //文本气泡frame
-                self.bubbleFrame = CGRectMake(UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-textSize.width, CGRectGetMaxY(self.dateFrame)+kUDBubbleToVerticalEdgeSpacing, textSize.width+(kUDBubbleToCallTextHorizontalSpacing*3), textSize.height+(kUDBubbleToCallTextVerticalSpacing*2));
+                self.bubbleFrame = CGRectMake(UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-textSize.width, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, textSize.width+(kUDBubbleToCallTextHorizontalSpacing*3), textSize.height+(kUDBubbleToCallTextVerticalSpacing*2));
                 //文本frame
                 self.textFrame = CGRectMake(kUDBubbleToCallTextHorizontalSpacing, kUDBubbleToCallTextVerticalSpacing+kUDCallTextMendSpacing, textSize.width, textSize.height);
                 

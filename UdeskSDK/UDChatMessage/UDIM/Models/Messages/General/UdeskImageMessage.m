@@ -54,7 +54,7 @@ static CGFloat const kUDImageUploadProgressHeight = 15.0;
          
             //图片气泡位置
             CGFloat bubbleX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-imageSize.width;
-            self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.dateFrame)+kUDBubbleToVerticalEdgeSpacing, imageSize.width, imageSize.height);
+            self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, imageSize.width, imageSize.height);
             //图片位置
             self.imageFrame = CGRectMake(0, 0, imageSize.width, imageSize.height);
             //阴影

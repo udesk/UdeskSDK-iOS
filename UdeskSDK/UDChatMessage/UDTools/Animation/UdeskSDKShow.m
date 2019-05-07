@@ -16,6 +16,7 @@
 #import "UdeskStringSizeUtil.h"
 #import "UIBarButtonItem+UdeskSDK.h"
 #import "UdeskBaseNavigationViewController.h"
+#import "UdeskWebViewController.h"
 
 @interface UdeskSDKShow()
 
@@ -124,6 +125,12 @@
     
     //导航栏左键
     UIBarButtonItem *customizedBackItem = [UIBarButtonItem udLeftItemWithIcon:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] target:viewController action:@selector(dismissChatViewController)];
+    
+    //配置了文字
+    if (_sdkConfig.backText) {
+        customizedBackItem = [UIBarButtonItem udLeftItemWithTitle:_sdkConfig.backText target:viewController action:@selector(dismissChatViewController)];
+    }
+
     viewController.navigationItem.leftBarButtonItem = customizedBackItem;
     
     if ([viewController isKindOfClass:[UdeskFAQViewController class]]) {
@@ -144,6 +151,13 @@
         }
     }
     
+}
+
++ (void)pushWebViewOnViewController:(UIViewController *)viewController URL:(NSURL *)URL {
+    
+    UdeskWebViewController *webVC = [[UdeskWebViewController alloc] initWithURL:URL];
+    UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:[UdeskSDKConfig customConfig]];
+    [show presentOnViewController:viewController udeskViewController:webVC transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 }
 
 @end

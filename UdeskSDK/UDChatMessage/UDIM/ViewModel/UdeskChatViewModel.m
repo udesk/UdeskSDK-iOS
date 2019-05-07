@@ -130,10 +130,25 @@
         return;
     }
     
-    [self requestAgentDataWithPreSessionMessage:nil completion:nil];
+    [self fetchServersAgent:nil];
 }
 
 #pragma mark - 请求客服数据
+- (void)fetchServersAgent:(void(^)(UdeskAgent *agentModel))completion {
+    
+    //机器人
+    if (self.messageManager.isRobotSession) {
+        return;
+    }
+    
+    //无消息过滤状态下
+    if (self.preSessionId) {
+        return;
+    }
+    
+    [self requestAgentDataWithPreSessionMessage:nil completion:completion];
+}
+
 - (void)requestAgentDataWithPreSessionMessage:(UdeskMessage *)preSessionMessage completion:(void(^)(UdeskAgent *agentModel))completion {
     
     [self.agentManager fetchAgentWithPreSessionMessage:preSessionMessage completion:^(UdeskAgent *agentModel) {
@@ -157,15 +172,11 @@
     if ([UdeskSDKUtil isBlankString:message.content]) return;
     
     //收到消息时当前客服状态不在线 请求客服验证
-    if (self.agentManager.agentModel && self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
-        !self.messageManager.isRobotSession && message.sendType != UDMessageSendTypeRobot) {
-        
-        [self requestAgentDataWithPreSessionMessage:nil completion:nil];
+    if (self.agentManager.agentModel && self.agentManager.agentModel.code != UDAgentStatusResultOnline && message.sendType != UDMessageSendTypeRobot) {
+        [self fetchServersAgent:nil];
     }
     
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self.messageManager addMessageToArray:@[message]];
-    });
+    [self.messageManager addMessageToArray:@[message]];
 }
 
 //接受到转接
@@ -181,7 +192,9 @@
 - (void)didReceivePresence:(NSDictionary *)presence {
     
     //处理客服状态
-    [self.agentManager receivePresence:presence];
+    if (!self.preSessionId && !self.messageManager.isRobotSession) {
+        [self.agentManager receivePresence:presence];
+    }
 }
 
 //接收客服发送的满意度调查
@@ -730,15 +743,15 @@
         @udWeakify(self);
         _networkManager.connectBlock = ^{
             @udStrongify(self);
-            if (!self.preSessionId) {
-                [self requestAgentDataWithPreSessionMessage:nil completion:nil];
-            }
+            self.agentManager.networkDisconnect = NO;
+            [self fetchSDKSetting];
         };
         _networkManager.disconnectBlock = ^{
             @udStrongify(self);
             if (self.delegate && [self.delegate respondsToSelector:@selector(didReceiveNetworkDisconnect)]) {
                 [self.delegate didReceiveNetworkDisconnect];
             }
+            self.agentManager.networkDisconnect = YES;
         };
     }
     return _networkManager;

@@ -40,8 +40,9 @@
     config.customButtons = self.customButtons;
     
     UdeskSDKActionConfig *action = [UdeskSDKActionConfig new];
-    action.goodsMessageClickBlock = ^(UdeskChatViewController *viewController, NSString *goodsURL, NSString *goodsId) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:goodsURL]];
+    action.goodsMessageClickBlock = ^(UdeskChatViewController *viewController, UdeskGoodsModel *goodsModel) {
+        NSLog(@"%@",goodsModel.customParameters);
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:goodsModel.url]];
     };
     
     //初始化sdk

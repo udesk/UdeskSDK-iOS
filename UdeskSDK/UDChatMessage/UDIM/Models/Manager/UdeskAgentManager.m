@@ -152,9 +152,6 @@
     
     //移除排队事件
     [self removeQueueEvent];
-
-    //客服在线 关闭推送
-    [UdeskManager endUdeskPush];
 }
 
 //显示排队事件
@@ -209,6 +206,12 @@
 
 //根据客服code展示alertview
 - (void)showAlert {
+    
+    //网络断开链接
+    if (self.networkDisconnect) {
+        [UdeskSDKAlert showWithMessage:getUDLocalizedString(@"udesk_network_disconnect") handler:nil];
+        return;
+    }
     
     if (self.sdkSetting) {
         NSString *noReplyhint = self.sdkSetting.noReplyHint;

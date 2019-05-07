@@ -8,6 +8,8 @@
 
 #import "UdeskStructCell.h"
 #import "UdeskStructMessage.h"
+#import "UdeskSDKShow.h"
+#import "UdeskSDKUtil.h"
 
 @implementation UdeskStructCell{
     
@@ -59,7 +61,7 @@
         //点击链接
         if ([button.type isEqualToString:@"link"]) {
             
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:button.value]];
+            [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:[NSURL URLWithString:button.value]];
             return;
         }
         

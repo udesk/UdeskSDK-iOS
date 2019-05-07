@@ -166,6 +166,7 @@ customer.customField = @[textField,selectField];
 | domain              | 贵公司注册Udesk，Udesk分配的域名                             |
 | appKey、appId       | Udesk分配的APP key和ID                                       |
 | sdkToken            | 用户的唯一标识，用来识别身份,是**你们生成传入给我们**的。**传入的字符请使用 字母 / 数字 等常见字符集** 。就如同身份证一样，**不允许出现一个身份证号对应多个人，或者一个人有多个身份证号**；其次如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客 |
+| customerToken       | 可选主键: 唯一客户外部标识,用于处理 唯一标识冲突             |
 | nickName            | 用户昵称                                                     |
 | email               | 用户邮箱，**需要严格按照邮箱规则。没有则不填！不可以为空！不可以为固定值！不可以随便填！** |
 | cellphone           | 用户号码，**需要严格按照号码规则。没有则不填！不可以为空！不可以为固定值！不可以随便填！** |
@@ -611,7 +612,7 @@ App 进入后台后，Udesk推送给开发者服务端的消息数据格式中�
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 
     //上线操作，拉取离线消息
-    [UdeskManager setupCustomerOnline];
+    [UdeskManager endUdeskPush];
 }
 ```
 

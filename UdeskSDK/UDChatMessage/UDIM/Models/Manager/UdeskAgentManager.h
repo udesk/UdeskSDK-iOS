@@ -26,6 +26,8 @@
 
 /** 无消息会话ID */
 @property (nonatomic, strong) NSNumber *preSessionId;
+/** 网络断开 */
+@property (nonatomic, assign) BOOL      networkDisconnect;
 /** 客服信息 */
 @property (nonatomic, strong, readonly) UdeskAgent *agentModel;
 

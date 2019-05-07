@@ -71,7 +71,7 @@ static NSString *channel = @"AppStore";
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     
     //上线操作，拉取离线消息
-    [UdeskManager setupCustomerOnline];
+    [UdeskManager endUdeskPush];
     [application setApplicationIconBadgeNumber:0];
 }
 

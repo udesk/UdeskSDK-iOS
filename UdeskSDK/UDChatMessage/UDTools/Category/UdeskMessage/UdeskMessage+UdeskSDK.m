@@ -239,6 +239,9 @@
             if ([model.goodsId isKindOfClass:[NSString class]] && ![UdeskSDKUtil isBlankString:model.goodsId]) {
                 [dict setObject:model.goodsId forKey:@"id"];
             }
+            if (model.customParameters && [model.customParameters isKindOfClass:[NSDictionary class]] && model.customParameters.count) {
+                [dict setObject:model.customParameters forKey:@"customParameters"];
+            }
             
             NSMutableArray *array = [NSMutableArray array];
             for (UdeskGoodsParamModel *paramModel in model.params) {

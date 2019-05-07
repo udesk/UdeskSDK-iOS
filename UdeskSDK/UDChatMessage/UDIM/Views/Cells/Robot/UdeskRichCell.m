@@ -12,6 +12,7 @@
 #import "UdeskPhotoManeger.h"
 #import "UdeskAlertController.h"
 #import "UdeskMessage+UdeskSDK.h"
+#import "UdeskSDKShow.h"
 
 @interface UdeskRichCell()<UITextViewDelegate>
 
@@ -226,9 +227,9 @@
     }
     
     if ([URL.absoluteString rangeOfString:@"://"].location == NSNotFound) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URL.absoluteString]]];
+        [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URL.absoluteString]]];
     } else {
-        [[UIApplication sharedApplication] openURL:URL];
+        [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:URL];
     }
 }
 

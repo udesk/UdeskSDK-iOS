@@ -57,7 +57,7 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
                 CGFloat bubbleX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-bubbleWidth;
                 
                 //文本气泡frame
-                self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.dateFrame)+kUDBubbleToVerticalEdgeSpacing, richSize.width+(kUDBubbleToRichHorizontalSpacing*2), richSize.height+(kUDBubbleToRichHorizontalSpacing*2));
+                self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, richSize.width+(kUDBubbleToRichHorizontalSpacing*2), richSize.height+(kUDBubbleToRichHorizontalSpacing*2));
                 
                 //文本frame
                 self.richTextFrame = CGRectMake(kUDBubbleToRichHorizontalSpacing, kUDBubbleToRichVerticalSpacing+spacing, richSize.width, richSize.height);

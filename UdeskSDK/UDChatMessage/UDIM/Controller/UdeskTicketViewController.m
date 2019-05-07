@@ -14,6 +14,7 @@
 #import "UdeskCustomNavigation.h"
 #import "UIView+UdeskSDK.h"
 #import <WebKit/WebKit.h>
+#import "UdeskSDKShow.h"
 
 @interface UdeskTicketViewController ()<UIWebViewDelegate,WKUIDelegate,WKNavigationDelegate>
 
@@ -118,7 +119,7 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        [[UIApplication sharedApplication] openURL:request.URL];
+        [UdeskSDKShow pushWebViewOnViewController:self URL:request.URL];
         return NO;
     }
     return YES;
@@ -128,7 +129,7 @@
     
     decisionHandler(WKNavigationActionPolicyAllow);
     if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
-        [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+        [UdeskSDKShow pushWebViewOnViewController:self URL:navigationAction.request.URL];
     }
 }
 

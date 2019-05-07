@@ -134,20 +134,37 @@ const CGFloat kUDAnswerBubbleMinHeight = 75.0;
 - (void)layoutAvatar {
     
     //布局
-    if (self.message.messageFrom == UDMessageTypeReceiving) {
-        
-        BOOL showAvatar = [self checkAvatarDisplayWithBubbleType:self.message.bubbleType];
-        //文本消息的头像需要根据气泡的规则选择显示
-        if (self.message.messageType == UDMessageContentTypeText && !showAvatar) {
-            return;
-        }
-        //用户头像frame
-        self.avatarFrame = CGRectMake(kUDAvatarToHorizontalEdgeSpacing, CGRectGetMaxY(self.dateFrame)+kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
-        if (![UdeskSDKUtil isBlankString:self.message.nickName]) {
-            self.nicknameFrame = CGRectMake(CGRectGetMaxX(self.avatarFrame)+kUDAvatarToBubbleSpacing, CGRectGetMinY(self.avatarFrame)+(kUDAvatarDiameter-kUDAgentNicknameHeight)/2, UD_SCREEN_WIDTH>320?235:180, kUDAgentNicknameHeight);
-        }
-        self.avatarImage = [UIImage udDefaultAgentImage];
-        self.avatarURL = self.message.avatar;
+    BOOL showAvatar = [self checkAvatarDisplayWithBubbleType:self.message.bubbleType];
+    //文本消息的头像需要根据气泡的规则选择显示
+    if (self.message.messageType == UDMessageContentTypeText && !showAvatar) {
+        return;
+    }
+    
+    switch (self.message.messageFrom) {
+        case UDMessageTypeReceiving:
+            
+            //用户头像frame
+            self.avatarFrame = CGRectMake(kUDAvatarToHorizontalEdgeSpacing, CGRectGetMaxY(self.dateFrame)+kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
+            if (![UdeskSDKUtil isBlankString:self.message.nickName]) {
+                self.nicknameFrame = CGRectMake(CGRectGetMaxX(self.avatarFrame)+kUDAvatarToBubbleSpacing, CGRectGetMinY(self.avatarFrame)+(kUDAvatarDiameter-kUDAgentNicknameHeight)/2, UD_SCREEN_WIDTH>320?235:180, kUDAgentNicknameHeight);
+            }
+            self.avatarImage = [UIImage udDefaultAgentImage];
+            self.avatarURL = self.message.avatar;
+            break;
+        case UDMessageTypeSending:
+            
+            //用户头像frame
+            self.avatarFrame = CGRectMake(UD_SCREEN_WIDTH-kUDAvatarToHorizontalEdgeSpacing-kUDAvatarDiameter, CGRectGetMaxY(self.dateFrame)+kUDAvatarToVerticalEdgeSpacing, kUDAvatarDiameter, kUDAvatarDiameter);
+            if (![UdeskSDKUtil isBlankString:[UdeskSDKConfig customConfig].sdkStyle.customerNickname]) {
+                CGFloat nicknameWidth = UD_SCREEN_WIDTH>320?235:180;
+                self.nicknameFrame = CGRectMake(CGRectGetMinX(self.avatarFrame)-kUDAvatarToBubbleSpacing-nicknameWidth, CGRectGetMinY(self.avatarFrame)+(kUDAvatarDiameter-kUDAgentNicknameHeight)/2, nicknameWidth, kUDAgentNicknameHeight);
+            }
+            self.avatarImage = [UdeskSDKConfig customConfig].sdkStyle.customerAvatarImage;
+            self.avatarURL = [UdeskSDKConfig customConfig].sdkStyle.customerAvatarURL;
+            break;
+            
+        default:
+            break;
     }
 }
 

@@ -200,6 +200,7 @@
             //客服昵称
             self.nicknameLabel.frame = baseMessage.nicknameFrame;
             self.nicknameLabel.text = [UdeskSDKUtil isBlankString:baseMessage.message.nickName]?@"":baseMessage.message.nickName;
+            self.nicknameLabel.textAlignment = NSTextAlignmentLeft;
             
             break;
         }
@@ -216,8 +217,10 @@
             
             self.bubbleImageView.image = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width/3 topCapHeight:bubbleImage.size.height/2];
             
-            self.nicknameLabel.frame = CGRectZero;
-            self.nicknameLabel.text = @"";
+            //客户昵称
+            self.nicknameLabel.frame = baseMessage.nicknameFrame;
+            self.nicknameLabel.text = [UdeskSDKConfig customConfig].sdkStyle.customerNickname;
+            self.nicknameLabel.textAlignment = NSTextAlignmentRight;
             
             break;
         }

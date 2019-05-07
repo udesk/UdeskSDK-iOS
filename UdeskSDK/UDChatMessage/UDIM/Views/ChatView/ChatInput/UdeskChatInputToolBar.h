@@ -73,6 +73,7 @@ typedef NS_ENUM(NSUInteger, UdeskChatInputType) {
 @property (nonatomic, assign) BOOL isAgentSession;
 @property (nonatomic, assign) BOOL isPreSession;
 @property (nonatomic, assign) BOOL isRobotSession;
+@property (nonatomic, assign) BOOL networkDisconnect;
 
 - (instancetype)initWithFrame:(CGRect)frame tableView:(UdeskMessageTableView *)tabelView;
 
