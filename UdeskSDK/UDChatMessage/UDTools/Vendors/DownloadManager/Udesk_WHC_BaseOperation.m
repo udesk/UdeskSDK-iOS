@@ -214,7 +214,9 @@ NSString  * const  kUdeskWHCUploadCode = @"WHC";
 
 - (void)cancelledRequest{
     if (_urlConnection) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        });
         _requestStatus = Udesk_WHCHttpRequestFinished;
         [self willChangeValueForKey:@"isCancelled"];
         [self willChangeValueForKey:@"isFinished"];

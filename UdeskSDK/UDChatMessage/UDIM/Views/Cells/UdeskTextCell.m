@@ -12,6 +12,7 @@
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKConfig.h"
 #import "UDTTTAttributedLabel.h"
+#import "UdeskSDKShow.h"
 
 @interface UdeskTextCell()<UDTTTAttributedLabelDelegate,UIAlertViewDelegate,UIActionSheetDelegate>
 
@@ -167,9 +168,9 @@
     }
     
     if ([url.absoluteString rangeOfString:@"://"].location == NSNotFound) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", url.absoluteString]]];
+        [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", url.absoluteString]]];
     } else {
-        [[UIApplication sharedApplication] openURL:url];
+        [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:url];
     }
 }
 

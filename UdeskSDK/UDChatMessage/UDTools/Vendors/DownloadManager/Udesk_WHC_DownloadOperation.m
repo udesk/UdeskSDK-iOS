@@ -183,7 +183,7 @@
         }
     }else {
     WHC1:
-        [self cancelDownloadTaskAndDeleteFile:NO];
+        [self cancelDownloadTaskAndDeleteFile:YES];
         error = [NSError errorWithDomain:kUdeskWHCDomain code:code userInfo:@{NSLocalizedDescriptionKey:response.description}];
         
     WHC2:

@@ -70,24 +70,16 @@
         for (UdeskEmojiPanelModel *panelModel in customEmojis) {
             
             if (![panelModel isKindOfClass:[UdeskEmojiPanelModel class]]) return;
-            if (!panelModel.bundleURL || panelModel.bundleURL == (id)kCFNull) return ;
-            if (![panelModel.bundleURL isKindOfClass:[NSURL class]]) return ;
-            
-            NSURL *bundleURL = panelModel.bundleURL;
-            
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            NSArray *contents = [fileManager contentsOfDirectoryAtURL:bundleURL
-                                           includingPropertiesForKeys:@[]
-                                                              options:NSDirectoryEnumerationSkipsHiddenFiles
-                                                                error:nil];
+            if (!panelModel.stickerPaths || panelModel.stickerPaths == (id)kCFNull) return ;
+            if (![panelModel.stickerPaths.firstObject isKindOfClass:[NSString class]]) return ;
             
             NSMutableArray *emojiContent = [NSMutableArray new];
-            for (NSURL *path in contents) {
+            for (NSString *path in panelModel.stickerPaths) {
                 UdeskEmojiContentModel *model = [UdeskEmojiContentModel new];
-                model.resource = [path path];
+                model.resource = path;
                 model.stickerImage = [UdeskImageUtil imageResize:[UIImage imageWithContentsOfFile:model.resource] toSize:CGSizeMake(140, 140)];
                 model.emojiType = UdeskEmojiTypeSticker;
-                NSInteger index = [contents indexOfObject:path];
+                NSInteger index = [panelModel.stickerPaths indexOfObject:path];
                 model.stickerTitle = panelModel.stickerTitles[index];
                 [emojiContent addObject:model];
             }

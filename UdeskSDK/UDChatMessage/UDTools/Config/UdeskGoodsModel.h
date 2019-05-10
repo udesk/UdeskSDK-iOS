@@ -29,9 +29,9 @@
 @property (nonatomic, copy) NSString *goodsId;
 /** 名称（必传） */
 @property (nonatomic, copy) NSString *name;
-/** 链接（必传） */
+/** 链接 */
 @property (nonatomic, copy) NSString *url;
-/** 图片（必传） */
+/** 图片 */
 @property (nonatomic, copy) NSString *imgUrl;
 /** 其他文本参数 */
 @property (nonatomic, strong) NSArray<UdeskGoodsParamModel *>  *params;

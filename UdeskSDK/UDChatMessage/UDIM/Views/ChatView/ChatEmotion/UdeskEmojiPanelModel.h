@@ -19,8 +19,8 @@ typedef NS_ENUM(NSUInteger, UdeskEmojiType) {
 @property (nonatomic, assign) UdeskEmojiType emojiType;
 @property (nonatomic, strong) UIImage        *emojiIcon;
 @property (nonatomic, strong) NSArray        *contentArray;
-//表情资源文件路径（用户自定义表情时需要传入，图片大小最好在50-60左右）
-@property (nonatomic, strong) NSURL          *bundleURL;
+//表情资源文件路径（具体用法参考文档或者demo，注：图片大小最好在50-60左右）
+@property (nonatomic, strong) NSArray        *stickerPaths;
 //自定义表情标题（非必填）
 @property (nonatomic, strong) NSArray        *stickerTitles;
 

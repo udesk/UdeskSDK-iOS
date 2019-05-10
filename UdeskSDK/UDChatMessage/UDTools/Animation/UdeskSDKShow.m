@@ -17,6 +17,7 @@
 #import "UdeskStringSizeUtil.h"
 #import "UIBarButtonItem+UdeskSDK.h"
 #import "UdeskBaseNavigationViewController.h"
+#import "UdeskWebViewController.h"
 
 @interface UdeskSDKShow()
 
@@ -41,7 +42,10 @@
                      completion:(void (^)(void))completion {
 
     NSMutableArray *array = [NSMutableArray arrayWithArray:_sdkConfig.udViewControllers];
-    [array addObject:NSStringFromClass([udeskViewController class])];
+    NSString *vcStr = NSStringFromClass([udeskViewController class]);
+    if (vcStr && ![array containsObject:vcStr]) {
+        [array addObject:vcStr];
+    }
     _sdkConfig.udViewControllers = array;
     
     _sdkConfig.presentingAnimation = animation;
@@ -201,6 +205,17 @@
         }
     }
     
+}
+
++ (void)pushWebViewOnViewController:(UIViewController *)viewController URL:(NSURL *)URL {
+    
+    if (![URL.absoluteString hasPrefix:@"http://"] && ![URL.absoluteString hasPrefix:@"https://"]) {
+        return;
+    }
+    
+    UdeskWebViewController *webVC = [[UdeskWebViewController alloc] initWithURL:URL];
+    UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:[UdeskSDKConfig customConfig]];
+    [show presentOnViewController:viewController udeskViewController:webVC transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 }
 
 @end

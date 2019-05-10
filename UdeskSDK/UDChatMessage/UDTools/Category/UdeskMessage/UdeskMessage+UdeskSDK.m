@@ -236,7 +236,7 @@
             if (![UdeskSDKUtil isBlankString:model.imgUrl]) {
                 [dict setObject:model.imgUrl forKey:@"imgUrl"];
             }
-            if ([model.goodsId isKindOfClass:[NSString class]] && [UdeskSDKUtil isBlankString:model.goodsId]) {
+            if ([model.goodsId isKindOfClass:[NSString class]] && ![UdeskSDKUtil isBlankString:model.goodsId]) {
                 [dict setObject:model.goodsId forKey:@"id"];
             }
             

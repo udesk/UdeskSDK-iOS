@@ -14,6 +14,7 @@
 #import "UdeskCustomNavigation.h"
 #import "UIView+UdeskSDK.h"
 #import <WebKit/WebKit.h>
+#import "UdeskSDKShow.h"
 
 @interface UdeskTicketViewController ()<UIWebViewDelegate,WKUIDelegate,WKNavigationDelegate>
 
@@ -76,7 +77,13 @@
                 language = @"&language=en-us";
             }
             
-            ticketURL = [NSURL URLWithString:[ticketURL.absoluteString stringByAppendingString:language]];
+            if ([ticketURL isKindOfClass:[NSURL class]]) {
+                NSString *url = [ticketURL.absoluteString stringByAppendingString:language];
+                ticketURL = [NSURL URLWithString:url];
+            }
+            else {
+                ticketURL = [NSURL URLWithString:@"https://www.udesk.cn"];
+            }
             
             if (ud_isIOS8) {
                 WKWebView *ticketWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, customNav.udBottom, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-customNav.udBottom)];
@@ -112,7 +119,7 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        [[UIApplication sharedApplication] openURL:request.URL];
+        [UdeskSDKShow pushWebViewOnViewController:self URL:request.URL];
         return NO;
     }
     return YES;
@@ -122,7 +129,7 @@
     
     decisionHandler(WKNavigationActionPolicyAllow);
     if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
-        [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+        [UdeskSDKShow pushWebViewOnViewController:self URL:navigationAction.request.URL];
     }
 }
 

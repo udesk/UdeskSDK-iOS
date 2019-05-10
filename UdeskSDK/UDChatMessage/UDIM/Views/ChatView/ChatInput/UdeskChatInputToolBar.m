@@ -407,6 +407,19 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     self.moreButton.udTop += diff;
 }
 
+- (void)setAgent:(UdeskAgent *)agent {
+    _agent = agent;
+    
+    if (agent.code == UDAgentStatusResultOnline) {
+        [self resetAllButton];
+    }
+    else if(agent.code == UDAgentStatusResultLeaveMessage) {
+        [self updateInputBarForLeaveMessage];
+    }
+    
+    [self setNeedsLayout];
+}
+
 //离线留言不显示任何功能按钮
 - (void)updateInputBarForLeaveMessage {
 
@@ -418,10 +431,7 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
         self.customToolBar.hidden = YES;
         self.frame = CGRectMake(0, self.frame.origin.y + 44, self.frame.size.width, self.frame.size.height - 44);
         [self.messageTableView setTableViewInsetsWithBottomValue:self.udHeight];
-        return;
     }
-    self.chatTextView.udWidth = self.udWidth - (kChatTextViewToHorizontalEdgeSpacing*2);
-    self.chatTextView.udLeft = kChatTextViewToHorizontalEdgeSpacing;
 }
 
 //重置录音按钮
@@ -434,6 +444,22 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     self.voiceButton.selected = NO;
     self.emotionButton.selected = NO;
     self.moreButton.selected = NO;
+}
+
+//重制所有按钮
+- (void)resetAllButton {
+    
+    UdeskSDKConfig *config = [UdeskSDKConfig customConfig];
+    
+    self.voiceButton.hidden = !config.isShowVoiceEntry;
+    self.emotionButton.hidden = !config.isShowEmotionEntry;
+    self.moreButton.hidden = NO;
+    
+    if (self.customToolBar && self.customToolBar.hidden) {
+        self.customToolBar.hidden = NO;
+        self.frame = CGRectMake(0, self.frame.origin.y - 44, self.frame.size.width, self.frame.size.height + 44);
+        [self.messageTableView setTableViewInsetsWithBottomValue:self.udHeight];
+    }
 }
 
 - (BOOL)checkAgentStatusValid {

@@ -51,8 +51,6 @@
 @property (nonatomic, assign) BOOL isNotShowAlert;
 /** ViewModel代理 */
 @property (nonatomic, weak  ) id <UdeskChatViewModelDelegate> delegate;
-/** 更新输入框 */
-@property (nonatomic, copy  ) void(^updateInputBarBlock)(void);
 
 /** 消息数据 */
 @property (nonatomic, strong, readonly) NSArray *messagesArray;
@@ -65,9 +63,6 @@
 - (void)fetchNextPageDatebaseMessage;
 /** 点击底部功能栏坐相应操作 */
 - (void)clickInputViewShowAlertView;
-
-//结束无消息对话过滤
-- (void)endPreSessionMessage:(void(^)(void))completion delay:(CGFloat)delay;
 
 /** 发送文本消息 */
 - (void)sendTextMessage:(NSString *)text
@@ -88,8 +83,12 @@
 - (void)addResendMessageToArray:(UdeskMessage *)message;
 /** 移除发送失败的消息 */
 - (void)removeResendMessageInArray:(UdeskMessage *)message;
+/** 自动重发失败的消息 */
+- (void)autoResendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion;
 /** 重发失败的消息 */
-- (void)resendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion;
+- (void)resendMessageWithMessage:(UdeskMessage *)resendMessage progress:(void(^)(float percent))progress completion:(void(^)(UdeskMessage *message))completion;
+/** 留言 */
+- (void)clickLeaveMsgAlertButtonAction;
 
 //根据客服code展示alertview
 - (void)showAgentStatusAlert;

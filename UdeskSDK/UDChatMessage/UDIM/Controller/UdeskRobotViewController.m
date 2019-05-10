@@ -37,7 +37,9 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = self.sdkConfig.sdkStyle.tableViewBackGroundColor;
-
+    
+    //更新机器人名称
+    [self updateRobotName];
     //更新转人工
     [self updateTransferButton];
     //添加其他参数
@@ -87,6 +89,21 @@
             NSString *parameter = [NSString stringWithFormat:@"&%@",[UdeskSDKConfig customConfig].robotCustomerInfo];
             NSString *robotURL = [self.robotURL.absoluteString stringByAppendingString:parameter];
             self.robotURL = [NSURL URLWithString:[robotURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        }
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
+//更新机器人名称
+- (void)updateRobotName {
+    
+    @try {
+     
+        if (self.sdkSetting && self.sdkSetting.robotName && ![UdeskSDKUtil isBlankString:self.sdkSetting.robotName]) {
+            self.navigationItem.title = self.sdkSetting.robotName;
         }
         
     } @catch (NSException *exception) {
@@ -174,7 +191,7 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        [[UIApplication sharedApplication] openURL:request.URL];
+        [UdeskSDKShow pushWebViewOnViewController:self URL:request.URL];
         return NO;
     }
     else if (navigationType == UIWebViewNavigationTypeOther) {
@@ -186,6 +203,10 @@
             [self didSelectNavigationRightButton];
             return NO;
         }
+        else if ([request.URL.absoluteString rangeOfString:@"udesk_notice_type=auto_transfer"].location != NSNotFound) {
+            [self didSelectNavigationRightButton];
+            return NO;
+        }
     }
     return YES;
 }
@@ -193,7 +214,7 @@
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     
     if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
-        [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+        [UdeskSDKShow pushWebViewOnViewController:self URL:navigationAction.request.URL];
     }
     else if (navigationAction.navigationType == WKNavigationTypeOther) {
         //显示转人工
@@ -203,9 +224,13 @@
         else if ([navigationAction.request.URL.absoluteString rangeOfString:@"udesk_notice_type=go_chat"].location != NSNotFound) {
             [self didSelectNavigationRightButton];
         }
+        else if ([navigationAction.request.URL.absoluteString rangeOfString:@"udesk_notice_type=auto_transfer"].location != NSNotFound) {
+            [self didSelectNavigationRightButton];
+        }
     }
     
     if ([navigationAction.request.URL.absoluteString rangeOfString:@"udesk_notice_type=go_chat"].location != NSNotFound ||
+        [navigationAction.request.URL.absoluteString rangeOfString:@"udesk_notice_type=auto_transfer"].location != NSNotFound ||
         navigationAction.navigationType == WKNavigationTypeLinkActivated) {
         decisionHandler(WKNavigationActionPolicyCancel);
     }
@@ -314,21 +339,13 @@
     if (ud_isIOS8) {
         
         if (_robotWkWebView) {
-            if (keyboardF.origin.y > self.view.udHeight) {
-                _robotWkWebView.udTop = self.view.udHeight - _robotWkWebView.udHeight - (udIsIPhoneXSeries?34:0);
-            } else {
-                _robotWkWebView.udTop = keyboardF.origin.y - _robotWkWebView.udHeight - (udIsIPhoneXSeries?34:0);
-            }
+            _robotWkWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
         }
     }
     else {
         
         if (_robotWebView) {
-            if (keyboardF.origin.y > self.view.udHeight) {
-                _robotWebView.udTop = self.view.udHeight - _robotWebView.udHeight - (udIsIPhoneXSeries?34:0);
-            } else {
-                _robotWebView.udTop = keyboardF.origin.y - _robotWebView.udHeight - (udIsIPhoneXSeries?34:0);
-            }
+            _robotWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
         }
     }
 }

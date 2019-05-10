@@ -113,6 +113,7 @@
             agentMenuTableView.dataSource = self;
             agentMenuTableView.tag = 100+i;
             agentMenuTableView.backgroundColor = self.view.backgroundColor;
+            agentMenuTableView.estimatedRowHeight = 44;
             [self.agentMenuScrollView addSubview:agentMenuTableView];
             
             //删除多余的cell
@@ -152,6 +153,7 @@
     if (tableView.tag == self.menuPage+100) {
         UdeskAgentMenuModel *agentMenuModel = self.agentMenuData[indexPath.row];
         cell.textLabel.text = agentMenuModel.item_name;
+        cell.textLabel.numberOfLines = 0;
     }
     
     return cell;

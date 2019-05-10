@@ -76,6 +76,7 @@ _Pragma("clang diagnostic pop")
 // 是否iPad
 #define ud_isPad                   (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 
+//刘海系列
 #define udIsIPhoneXSeries ([UIScreen instancesRespondToSelector:@selector(currentMode)] ?\
 (\
 CGSizeEqualToSize(CGSizeMake(375, 812),[UIScreen mainScreen].bounds.size)\

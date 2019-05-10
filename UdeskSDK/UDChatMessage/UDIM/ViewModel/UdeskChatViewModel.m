@@ -48,6 +48,8 @@
 @property (nonatomic        ) UdeskReachability        *reachability;
 /** 网络切换 */
 @property (nonatomic, assign) BOOL                     netWorkChange;
+/** 是否关闭会话 */
+@property (nonatomic, assign) BOOL                     isOverConversion;
 /** 黑名单提示语 */
 @property (nonatomic, copy  ) NSString                 *blackedMessage;
 /** 是否显示客户留言事件 */
@@ -60,8 +62,6 @@
 @property (nonatomic, assign) BOOL                     leaveMsgGuideSendFlag;
 /** 无消息对话过滤时发送的消息 */
 @property (nonatomic, strong) NSMutableArray           *preSessionMessages;
-/** 上次消息时间戳 */
-@property (nonatomic, assign) UInt64                   preSessionMsgTimestamps;
 /** 无消息对话过滤发送消息状态回调 */
 @property (nonatomic, copy  ) void(^preSessionMessageSendStatusBlock)(UdeskMessage *message);
 
@@ -150,7 +150,7 @@
         
         if (customer) {
             //请求客服数据(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
-            [self requestAgentData:nil];
+            [self fetchServersAgent:nil];
         }
         else {
             
@@ -163,7 +163,12 @@
     } preSessionEnbaleCallback:^(UdeskCustomer *customer, NSString *preSessionTitle) {
         
         @udStrongify(self);
-        if (self.agentModel && self.agentModel.code != UDAgentConversationOver) {
+        if (self.preSessionId || self.isOverConversion) {
+            return ;
+        }
+        
+        if (self.agentModel && self.agentModel.code != UDAgentConversationOver && self.agentModel.code != UDAgentStatusResultNotNetWork) {
+            [self updateCurrentSessionAgent:self.agentModel completion:nil];
             return ;
         }
         
@@ -202,7 +207,22 @@
 }
 
 #pragma mark - 请求客服数据
-- (void)requestAgentData:(void(^)(UdeskAgent *agentModel))completion {
+- (void)fetchServersAgent:(void(^)(UdeskAgent *agentModel))completion {
+    
+    //会话已关闭
+    if (self.isOverConversion) {
+        return;
+    }
+    
+    //无消息过滤状态下
+    if (self.preSessionId) {
+        return;
+    }
+    
+    [self requestAgentDataWithPreSessionMessage:nil completion:completion];
+}
+
+- (void)requestAgentDataWithPreSessionMessage:(UdeskMessage *)preSessionMessage completion:(void(^)(UdeskAgent *agentModel))completion {
     
     NSString *agentId = [self udAgentId];
     NSString *groupId = [self udGroupId];
@@ -211,14 +231,14 @@
     //获取客服信息
     if (![UdeskSDKUtil isBlankString:agentId]) {
         //获取指定客服ID的客服信息
-        [UdeskAgentUtil fetchAgentWithAgentId:agentId preSessionId:self.preSessionId completion:^(UdeskAgent *agentModel, NSError *error) {
+        [UdeskAgentUtil fetchAgentWithAgentId:agentId preSessionId:self.preSessionId preSessionMessage:preSessionMessage completion:^(UdeskAgent *agentModel, NSError *error) {
             @udStrongify(self);
             [self updateCurrentSessionAgent:agentModel completion:completion];
         }];
     }
     else if (![UdeskSDKUtil isBlankString:groupId]) {
         //获取指定客服组ID的客服组信息
-        [UdeskAgentUtil fetchAgentWithGroupId:groupId preSessionId:self.preSessionId completion:^(UdeskAgent *agentModel, NSError *error) {
+        [UdeskAgentUtil fetchAgentWithGroupId:groupId preSessionId:self.preSessionId preSessionMessage:preSessionMessage completion:^(UdeskAgent *agentModel, NSError *error) {
             @udStrongify(self);
             [self updateCurrentSessionAgent:agentModel completion:completion];
         }];
@@ -226,7 +246,7 @@
     else {
         
         //根据管理员后台配置选择客服
-        [UdeskAgentUtil fetchAgentWithPreSessionId:self.preSessionId completion:^(UdeskAgent *agentModel, NSError *error) {
+        [UdeskAgentUtil fetchAgentWithPreSessionId:self.preSessionId preSessionMessage:preSessionMessage completion:^(UdeskAgent *agentModel, NSError *error) {
             @udStrongify(self);
             [self updateCurrentSessionAgent:agentModel completion:completion];
         }];
@@ -259,27 +279,25 @@
     //清空无消息会话ID
     self.preSessionId = nil;
     //获取会话记录
-    [self fetchSessionMessages:nil];
+    [self fetchSessionMessages:[NSString stringWithFormat:@"%ld",agentModel.imSubSessionId]];
     //回调客服信息到vc显示
     [self callbackAgentModel:agentModel];
     
     //客服离线
     if (agentModel.code != UDAgentStatusResultOnline) {
-        if (self.isNotShowAlert) return;
         
         //排队
         if (agentModel.code == UDAgentStatusResultQueue) {
             [self showAgentStatusAlert];
         }
         else {
-            [self agentOffline];
+            if (!self.isNotShowAlert) {
+                [self agentOffline];
+            }
         }
-        return;
     }
-    
-    //客服在线
-    if (agentModel.code == UDAgentStatusResultOnline) {
-        
+    else {
+        //客服在线
         [self agentOnline];
     }
     
@@ -290,6 +308,9 @@
 
 //客服离线
 - (void)agentOffline {
+    
+    //放弃排队
+    [self quitQueue];
     
     //开启留言
     if (self.sdkSetting.enableWebImFeedback.boolValue && [self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
@@ -459,10 +480,7 @@
                         return NSOrderedSame;
                     }];
                 }
-                
             }
-            
-            
             
             //添加留言文案
             [self appendLeaveMessageGuide];
@@ -497,7 +515,7 @@
 - (void)appendLeaveMessageGuide {
     
     @try {
-     
+        
         if (self.agentModel.code == UDAgentStatusResultLeaveMessage &&
             [self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
             
@@ -569,6 +587,11 @@
         if (!message || message == (id)kCFNull) return ;
         if ([UdeskSDKUtil isBlankString:message.content]) return;
         
+        //收到消息时当前客服状态不在线 请求客服验证
+        if (self.agentModel && self.agentModel.code != UDAgentStatusResultOnline) {
+            [self fetchServersAgent:nil];
+        }
+        
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [self addMessageToChatMessageArray:@[message]];
         });
@@ -596,7 +619,7 @@
         //客服上线
         NSString *statusType = [NSString stringWithFormat:@"%@",[presence objectForKey:@"type"]];
         if ([UdeskSDKUtil isBlankString:self.agentModel.jid] && [statusType isEqualToString:@"available"]) {
-            [self requestAgentData:nil];
+            [self fetchServersAgent:nil];
             return;
         }
         
@@ -617,6 +640,7 @@
             
             agentCode = UDAgentConversationOver;
             agentMessage = getUDLocalizedString(@"udesk_chat_end");
+            self.isOverConversion = YES;
         }
         else if ([statusType isEqualToString:@"available"]) {
             
@@ -696,6 +720,9 @@
 
 //需要重新拉下消息
 - (void)fetchSessionMessages:(NSString *)sessionId {
+    if (!sessionId || sessionId == (id)kCFNull) return ;
+    if (![sessionId isKindOfClass:[NSString class]]) return ;
+    if ([sessionId isEqualToString:@"0"]) return;
     
     @udWeakify(self);
     [UdeskManager fetchServersMessageWithSessionId:sessionId completion:^(NSError *error, NSArray *msgList){
@@ -708,14 +735,43 @@
     }];
 }
 
+//请求客服信息，创建会话
+- (void)fetchAgentAgainCreateSession {
+    
+    //客服已经关闭会话
+    if (!self.agentModel) {
+        self.agentModel = [[UdeskAgent alloc] init];
+    }
+    self.isOverConversion = YES;
+    self.agentModel.message = getUDLocalizedString(@"udesk_chat_end");
+    self.agentModel.code = UDAgentConversationOver;
+    [self callbackAgentModel:self.agentModel];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.isOverConversion = NO;
+        self.sdkSetting = nil;
+        [self checkSDKSetting];
+    });
+}
+
 #pragma mark - 发送文字消息
 - (void)sendTextMessage:(NSString *)text completion:(void(^)(UdeskMessage *message))completion {
     
     //无消息过滤
     if (self.preSessionId) {
-        [self endPreSessionMessage:^{
-            [self sendTextMessage:text completion:completion];
-        } delay:0];
+        UdeskMessage *textMessage = [[UdeskMessage alloc] initWithText:text];
+        if (textMessage) {
+            @udWeakify(self);
+            [self endPreSessionWithMessage:textMessage delay:0 completion:^{
+                @udStrongify(self);
+                [self addMessageToChatMessageArray:@[textMessage]];
+            }];
+        }
+        return;
+    }
+    
+    if ([UdeskSDKUtil isBlankString:text]) {
+        [UdeskSDKAlert showWithMsg:getUDLocalizedString(@"udesk_no_send_empty")];
         return;
     }
     
@@ -723,11 +779,6 @@
         _agentModel.code != UDAgentStatusResultLeaveMessage) {
         
         [self showAgentStatusAlert];
-        return;
-    }
-    
-    if ([UdeskSDKUtil isBlankString:text]) {
-        [UdeskSDKAlert showWithMsg:getUDLocalizedString(@"udesk_no_send_empty")];
         return;
     }
     
@@ -775,16 +826,23 @@
     
     //无消息过滤
     if (self.preSessionId) {
-        UInt64 currentTimeInterval = [[NSDate date] timeIntervalSince1970]*1000;
-        if (currentTimeInterval-self.preSessionMsgTimestamps < 1500 || self.preSessionMsgTimestamps == 0) {
-            [self.preSessionMessages addObject:image];
-        }
-        self.preSessionMsgTimestamps = [[NSDate date] timeIntervalSince1970]*1000;
-        [self endPreSessionMessage:^{
-            for (UIImage *preImage in self.preSessionMessages) {
-                [self sendImageMessage:preImage progress:progress completion:completion];
+        [self.preSessionMessages addObject:image];
+        ud_dispatch_throttle(0.5f, ^{
+            UIImage *preImage = self.preSessionMessages.firstObject;
+            UdeskMessage *imageMessage = [[UdeskMessage alloc] initWithImage:preImage];
+            if (imageMessage) {
+                @udWeakify(self);
+                [[Udesk_YYWebImageManager sharedManager].cache setImage:imageMessage.image forKey:imageMessage.messageId];
+                [self endPreSessionWithMessage:imageMessage delay:0.8f completion:^{
+                    @udStrongify(self);
+                    [self addMessageToChatMessageArray:@[imageMessage]];
+                    for (int i = 1; i<self.preSessionMessages.count; i++) {
+                        UIImage *otherPreImage = self.preSessionMessages[i];
+                        [self sendImageMessage:otherPreImage progress:progress completion:completion];
+                    }
+                }];
             }
-        } delay:0.8f];
+        });
         return;
     }
     
@@ -800,11 +858,9 @@
         [self addMessageToChatMessageArray:@[imageMessage]];
         [UdeskManager sendMessage:imageMessage progress:^(float percent) {
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (progress) {
-                    progress(imageMessage.messageId,percent);
-                }
-            });
+            if (progress) {
+                progress(imageMessage.messageId,percent);
+            }
             
         } completion:^(UdeskMessage *message) {
             //先移除缓存图片
@@ -825,16 +881,22 @@
     
     //无消息过滤
     if (self.preSessionId) {
-        UInt64 currentTimeInterval = [[NSDate date] timeIntervalSince1970]*1000;
-        if (currentTimeInterval-self.preSessionMsgTimestamps < 1500 || self.preSessionMsgTimestamps == 0) {
-            [self.preSessionMessages addObject:gifData];
-        }
-        self.preSessionMsgTimestamps = [[NSDate date] timeIntervalSince1970]*1000;
-        [self endPreSessionMessage:^{
-            for (NSData *preGIFData in self.preSessionMessages) {
-                [self sendGIFImageMessage:preGIFData progress:progress completion:completion];
+        [self.preSessionMessages addObject:gifData];
+        ud_dispatch_throttle(0.5f, ^{
+            NSData *preGifData = self.preSessionMessages.firstObject;
+            UdeskMessage *gifMessage = [self gifMessageWithData:preGifData];
+            if (gifMessage) {
+                @udWeakify(self);
+                [self endPreSessionWithMessage:gifMessage delay:0.8f completion:^{
+                    @udStrongify(self);
+                    [self addMessageToChatMessageArray:@[gifMessage]];
+                    for (int i = 1; i<self.preSessionMessages.count; i++) {
+                        NSData *preGifData = self.preSessionMessages[i];
+                        [self sendGIFImageMessage:preGifData progress:progress completion:completion];
+                    }
+                }];
             }
-        } delay:0.8f];
+        });
         return;
     }
     
@@ -843,28 +905,32 @@
         return;
     }
     
-    Udesk_YYImage *image = [[Udesk_YYImage alloc] initWithData:gifData];
-    UdeskMessage *gifMessage = [[UdeskMessage alloc] initWithGIF:gifData];
+    UdeskMessage *gifMessage = [self gifMessageWithData:gifData];
     if (gifMessage) {
-        gifMessage.image = image;
-        CGSize size = [UdeskImageUtil udImageSize:image];
-        gifMessage.width = size.width;
-        gifMessage.height = size.height;
-        
-        //缓存图片
-        [[Udesk_YYWebImageManager sharedManager].cache setImage:image forKey:gifMessage.messageId];
-        
         [self addMessageToChatMessageArray:@[gifMessage]];
         [UdeskManager sendMessage:gifMessage progress:^(float percent) {
-
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (progress) {
-                    progress(gifMessage.messageId,percent);
-                }
-            });
+            
+            if (progress) {
+                progress(gifMessage.messageId,percent);
+            }
             
         } completion:completion];
     }
+}
+
+- (UdeskMessage *)gifMessageWithData:(NSData *)gifData {
+    
+    Udesk_YYImage *image = [[Udesk_YYImage alloc] initWithData:gifData];
+    UdeskMessage *gifMessage = [[UdeskMessage alloc] initWithGIF:gifData];
+    gifMessage.image = image;
+    CGSize size = [UdeskImageUtil udImageSize:image];
+    gifMessage.width = size.width;
+    gifMessage.height = size.height;
+    
+    //缓存图片
+    [[Udesk_YYWebImageManager sharedManager].cache setImage:image forKey:gifMessage.messageId];
+    
+    return gifMessage;
 }
 
 #pragma mark - 发送视频消息
@@ -875,25 +941,19 @@
     
     //无消息过滤
     if (self.preSessionId) {
-        [self endPreSessionMessage:^{
-            [self sendVideoMessage:videoData progress:progress completion:completion];
-        } delay:0.8f];
+        UdeskMessage *videoMessage = [self videoMessageWithVideoData:videoData];
+        if (videoMessage) {
+            @udWeakify(self);
+            [self endPreSessionWithMessage:videoMessage delay:0.8f completion:^{
+                @udStrongify(self);
+                [self addMessageToChatMessageArray:@[videoMessage]];
+            }];
+        }
         return;
     }
     
     if (_agentModel.code != UDAgentStatusResultOnline) {
         [self showAgentStatusAlert];
-        return;
-    }
-    
-    //超过发送限制
-    CGFloat size = videoData.length/1024.f/1024.f;
-    if (size > 31.f) {
-        
-        dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0/*延迟执行时间*/ * NSEC_PER_SEC));
-        dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-            [UdeskSDKAlert showBigVideoPoint];
-        });
         return;
     }
     
@@ -913,21 +973,39 @@
 
 - (void)readySendVideoMessage:(NSData *)videoData progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *message))completion {
     
-    UdeskMessage *videoMessage = [[UdeskMessage alloc] initWithVideo:videoData];
-    
-    //缓存视频
-    [[UdeskCacheUtil sharedManager] storeVideo:videoData videoId:videoMessage.messageId];
+    UdeskMessage *videoMessage = [self videoMessageWithVideoData:videoData];
+    if (!videoMessage) {
+        return;
+    }
     [self addMessageToChatMessageArray:@[videoMessage]];
     
     [UdeskManager sendMessage:videoMessage progress:^(float percent) {
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (progress) {
-                progress(videoMessage.messageId,percent);
-            }
-        });
+        
+        if (progress) {
+            progress(videoMessage.messageId,percent);
+        }
         
     } completion:completion];
+}
+
+- (UdeskMessage *)videoMessageWithVideoData:(NSData *)videoData {
+    
+    //超过发送限制
+    CGFloat size = videoData.length/1024.f/1024.f;
+    if (size > 31.f) {
+        
+        dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0/*延迟执行时间*/ * NSEC_PER_SEC));
+        dispatch_after(delayTime, dispatch_get_main_queue(), ^{
+            [UdeskSDKAlert showBigVideoPoint];
+        });
+        return nil;
+    }
+    
+    UdeskMessage *videoMessage = [[UdeskMessage alloc] initWithVideo:videoData];
+    //缓存视频
+    [[UdeskCacheUtil sharedManager] storeVideo:videoData videoId:videoMessage.messageId];
+    
+    return videoMessage;
 }
 
 #pragma mark - 发送语音消息
@@ -938,9 +1016,14 @@
     
     //无消息过滤
     if (self.preSessionId) {
-        [self endPreSessionMessage:^{
-            [self sendVoiceMessage:voicePath voiceDuration:voiceDuration completion:completion];
-        } delay:0];
+        UdeskMessage *voiceMessage = [self voiceMessageWithPath:voicePath duration:voiceDuration];
+        if (voiceMessage) {
+            @udWeakify(self);
+            [self endPreSessionWithMessage:voiceMessage delay:0 completion:^{
+                @udStrongify(self);
+                [self addMessageToChatMessageArray:@[voiceMessage]];
+            }];
+        }
         return;
     }
     
@@ -951,14 +1034,23 @@
     
     if (![UdeskSDKUtil isBlankString:voicePath]) {
         
-        NSData *voiceData = [NSData dataWithContentsOfFile:voicePath];
-        if (!voiceData || voiceData == (id)kCFNull) return ;
-        
-        UdeskMessage *voiceMessage = [[UdeskMessage alloc] initWithVoice:voiceData duration:voiceDuration];
-        [[UdeskCacheUtil sharedManager] setObject:[NSData dataWithContentsOfFile:voicePath] forKey:voiceMessage.messageId];
-        [self addMessageToChatMessageArray:@[voiceMessage]];
-        [UdeskManager sendMessage:voiceMessage progress:nil completion:completion];
+        UdeskMessage *voiceMessage = [self voiceMessageWithPath:voicePath duration:voiceDuration];
+        if (voiceMessage) {
+            [self addMessageToChatMessageArray:@[voiceMessage]];
+            [UdeskManager sendMessage:voiceMessage progress:nil completion:completion];
+        }
     }
+}
+
+- (UdeskMessage *)voiceMessageWithPath:(NSString *)voicePath duration:(NSString *)duration {
+    
+    NSData *voiceData = [NSData dataWithContentsOfFile:voicePath];
+    if (!voiceData || voiceData == (id)kCFNull) return nil;
+    
+    UdeskMessage *voiceMessage = [[UdeskMessage alloc] initWithVoice:voiceData duration:duration];
+    [[UdeskCacheUtil sharedManager] setObject:[NSData dataWithContentsOfFile:voicePath] forKey:voiceMessage.messageId];
+    
+    return voiceMessage;
 }
 
 #pragma mark - 发送地理位置
@@ -966,9 +1058,14 @@
     
     //无消息过滤
     if (self.preSessionId) {
-        [self endPreSessionMessage:^{
-            [self sendLocationMessage:model completion:completion];
-        } delay:0.8f];
+        UdeskMessage *locationMsg = [self locationMessageWithModel:model];
+        if (locationMsg) {
+            @udWeakify(self);
+            [self endPreSessionWithMessage:locationMsg delay:0.8f completion:^{
+                @udStrongify(self);
+                [self addMessageToChatMessageArray:@[locationMsg]];
+            }];
+        }
         return;
     }
     
@@ -980,12 +1077,19 @@
     if (!model || model == (id)kCFNull) return ;
     if (![model isKindOfClass:[UdeskLocationModel class]]) return ;
     
-    UdeskMessage *locationMsg = [[UdeskMessage alloc] initWithLocation:model];
+    UdeskMessage *locationMsg = [self locationMessageWithModel:model];
     if (locationMsg) {
-        [[Udesk_YYWebImageManager sharedManager].cache setImage:model.image forKey:locationMsg.messageId];
         [self addMessageToChatMessageArray:@[locationMsg]];
         [UdeskManager sendMessage:locationMsg progress:nil completion:completion];
     }
+}
+
+- (UdeskMessage *)locationMessageWithModel:(UdeskLocationModel *)locationModel {
+    
+    UdeskMessage *locationMsg = [[UdeskMessage alloc] initWithLocation:locationModel];
+    [[Udesk_YYWebImageManager sharedManager].cache setImage:locationModel.image forKey:locationMsg.messageId];
+    
+    return locationMsg;
 }
 
 #pragma mark - 发送商品消息
@@ -993,9 +1097,14 @@
     
     //无消息过滤
     if (self.preSessionId) {
-        [self endPreSessionMessage:^{
-            [self sendGoodsMessage:model completion:completion];
-        } delay:0.8f];
+        UdeskMessage *goodsMsg = [[UdeskMessage alloc] initWithGoods:model];
+        if (goodsMsg) {
+            @udWeakify(self);
+            [self endPreSessionWithMessage:goodsMsg delay:0.8f completion:^{
+                @udStrongify(self);
+                [self addMessageToChatMessageArray:@[goodsMsg]];
+            }];
+        }
         return;
     }
     
@@ -1015,22 +1124,18 @@
 }
 
 //结束无消息对话过滤
-- (void)endPreSessionMessage:(void(^)(void))completion delay:(CGFloat)delay {
+- (void)endPreSessionWithMessage:(UdeskMessage *)message delay:(CGFloat)delay completion:(void(^)(void))completion {
     
-    //处理在0.5s内连续发的消息（图片可以一次发送多张）
-    ud_dispatch_throttle(0.5f, ^{
-        //这里延迟的原因是发送图片和视频会先离开chat页面发送时才重新进入，这里处理了那个时间差。
-        dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay/*延迟执行时间*/ * NSEC_PER_SEC));
-        dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-            [UdeskSDKAlert showWithMsg:getUDLocalizedString(@"udesk_connecting_agent")];
-            [self requestAgentData:^(UdeskAgent *agentModel) {
-                if (agentModel.code == UDAgentStatusResultOnline) {
-                    if (completion) {
-                        completion();
-                    }
-                }
-            }];
-        });
+    //这里延迟的原因是发送图片和视频会先离开chat页面发送时才重新进入，这里处理了那个时间差。
+    dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay/*延迟执行时间*/ * NSEC_PER_SEC));
+    dispatch_after(delayTime, dispatch_get_main_queue(), ^{
+        [UdeskSDKAlert showWithMsg:getUDLocalizedString(@"udesk_connecting_agent")];
+        [self requestAgentDataWithPreSessionMessage:message completion:^(UdeskAgent *agentModel) {
+            message.messageStatus = UDMessageSendStatusSuccess;
+            if (completion) {
+                completion();
+            }
+        }];
     });
 }
 
@@ -1041,7 +1146,7 @@
     if (![messageArray isKindOfClass:[NSArray class]]) return;
     
     @try {
-     
+        
         NSArray *array = [UdeskMessageUtil chatMessageWithMsgModel:messageArray agentNick:self.agentModel.nick lastMessage:[self getLastMessage]];
         NSMutableArray *mArray = [NSMutableArray arrayWithArray:self.messagesArray];
         if (array) {
@@ -1060,7 +1165,7 @@
 - (UdeskMessage *)getLastMessage {
     
     @try {
-     
+        
         UdeskMessage *lastMessage;
         if (self.messagesArray.count && [self.messagesArray.lastObject isKindOfClass:[UdeskBaseMessage class]]) {
             UdeskBaseMessage *baseMessage = (UdeskBaseMessage *)self.messagesArray.lastObject;
@@ -1080,8 +1185,10 @@
     
     if (self.agentModel.code == UDAgentConversationOver) {
         //新会话
+        self.isOverConversion = NO;
         [self showAgentStatusAlert];
-        [self createServerCustomer];
+        self.sdkSetting = nil;
+        [self checkSDKSetting];
         return;
     }
     
@@ -1175,9 +1282,7 @@
 //放弃排队
 - (void)quitQueue {
     
-    //取消所有网络请求
     [UdeskManager cancelAllOperations];
-    //放弃排队
     [UdeskManager quitQueueWithType:[[UdeskSDKConfig customConfig] quitQueueString]];
 }
 
@@ -1196,10 +1301,6 @@
     self.agentModel.message = getUDLocalizedString(@"udesk_leave_msg");
     //回调客服信息到vc显示
     [self callbackAgentModel:self.agentModel];
-    //更新输入框
-    if (self.updateInputBarBlock) {
-        self.updateInputBarBlock();
-    }
     
     if (!self.leaveMsgGuideSendFlag) {
         [self appendLeaveMessageGuide];
@@ -1221,10 +1322,37 @@
 }
 
 #pragma mark - 重发失败的消息
-- (void)resendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress
-                             completion:(void(^)(UdeskMessage *failedMessage))completion {
+- (void)autoResendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress
+                                 completion:(void(^)(UdeskMessage *failedMessage))completion {
     
+    if (!self.resendArray || self.resendArray == (id)kCFNull || self.resendArray.count == 0) return ;
     [UdeskMessageUtil resendFailedMessage:self.resendArray progress:progress completion:completion];
+}
+
+- (void)resendMessageWithMessage:(UdeskMessage *)resendMessage
+                        progress:(void(^)(float percent))progress
+                      completion:(void(^)(UdeskMessage *message))completion {
+    
+    if (self.preSessionId) {
+        [self endPreSessionWithMessage:resendMessage delay:0.8f completion:^{
+            if (completion) {
+                completion(resendMessage);
+            }
+        }];
+        return;
+    }
+    
+    if (self.agentModel.code != UDAgentStatusResultOnline && self.agentModel.code != UDAgentStatusResultLeaveMessage) {
+        [self showAgentStatusAlert];
+        if (completion) {
+            completion(resendMessage);
+        }
+    }
+    else {
+        
+        //重发
+        [UdeskManager sendMessage:resendMessage progress:progress completion:completion];
+    }
 }
 
 //添加失败的消息
@@ -1305,8 +1433,11 @@
             @udStrongify(self);
             if (self.netWorkChange) {
                 self.netWorkChange = NO;
-                //请求客服数据
-                [self requestAgentData:nil];
+                self.isOverConversion = NO;
+                //重新请求数据
+                self.preSessionId = nil;
+                self.sdkSetting = nil;
+                [self checkSDKSetting];
             }
             break;
         }
@@ -1315,6 +1446,9 @@
             
             @udStrongify(self);
             self.netWorkChange = YES;
+            if (!self.agentModel) {
+                self.agentModel = [[UdeskAgent alloc] init];
+            }
             self.agentModel.message = getUDLocalizedString(@"udesk_network_interrupt");
             self.agentModel.code = UDAgentStatusResultNotNetWork;
             

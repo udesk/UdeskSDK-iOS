@@ -88,14 +88,6 @@
     
     self.chatViewModel = [[UdeskChatViewModel alloc] initWithSDKSetting:self.sdkSetting];
     self.chatViewModel.delegate = self;
-    
-    @udWeakify(self);
-    self.chatViewModel.updateInputBarBlock = ^{
-        @udStrongify(self);
-        if (self.chatInputToolBar) {
-            [self.chatInputToolBar updateInputBarForLeaveMessage];
-        }
-    };
 }
 
 #pragma mark - UdeskChatViewModelDelegate
@@ -527,8 +519,6 @@
 
 //点击商品消息
 - (void)didTapGoodsMessageWithURL:(NSString *)goodsURL goodsId:(NSString *)goodsId {
-    if (!goodsURL || goodsURL == (id)kCFNull) return ;
-    if (![goodsURL isKindOfClass:[NSString class]]) return ;
     
     if (self.sdkConfig.actionConfig.goodsMessageClickBlock) {
         self.sdkConfig.actionConfig.goodsMessageClickBlock(self,goodsURL,goodsId);
@@ -554,26 +544,17 @@
 - (void)didResendMessage:(UdeskMessage *)resendMessage {
 
     @udWeakify(self);
-    if (self.chatInputToolBar.agent.code != UDAgentStatusResultOnline &&
-        self.chatInputToolBar.agent.code != UDAgentStatusResultLeaveMessage) {
-        [self.chatViewModel showAgentStatusAlert];
-    }
-    else {
+    [self.chatViewModel resendMessageWithMessage:resendMessage progress:^(float percent) {
         
-        //重发
-        [UdeskManager sendMessage:resendMessage progress:^(float percent) {
-            
-            //更新进度
-            @udStrongify(self);
-            [self updateVideoPercentButtonTitle:resendMessage.messageId progress:percent sendStatus:UDMessageSendStatusSending];
-            
-        } completion:^(UdeskMessage *message) {
-            
-            //处理发送结果UI
-            @udStrongify(self);
-            [self updateMessageStatus:message];
-        }];
-    }
+        //更新进度
+        @udStrongify(self);
+        [self updateVideoPercentButtonTitle:resendMessage.messageId progress:percent sendStatus:UDMessageSendStatusSending];
+        
+    } completion:^(UdeskMessage *message) {
+        //处理发送结果UI
+        @udStrongify(self);
+        [self updateChatMessageUI:message];
+    }];
 }
 
 #pragma mark - UDChatTableViewDelegate
@@ -894,7 +875,7 @@
     }];
 }
 
-//更新视频上传进度
+//更新图片上传进度
 - (void)updateImageUploadProgress:(float)progress
                         messageId:(NSString *)messageId
                        sendStatus:(UDMessageSendStatus)sendStatus {
@@ -1036,7 +1017,8 @@
         case UDMessageSendStatusFailed:
         case UDMessageSendStatusOffSending:
             
-            if (self.chatInputToolBar.agent.code == UDAgentStatusResultLeaveMessage) {
+            if (self.chatInputToolBar.agent.code == UDAgentStatusResultLeaveMessage ||
+                self.chatInputToolBar.agent.code == UDAgentConversationOver) {
                 [self updateChatMessageUI:message];
                 break;
             }
@@ -1056,20 +1038,21 @@
     
     @try {
         
-        NSArray *messageArray = self.chatViewModel.messagesArray;
-        
-        for (UdeskBaseMessage *baseMessage in messageArray) {
-            if (![baseMessage isKindOfClass:[UdeskBaseMessage class]]) return ;
-            
-            if ([baseMessage.message.messageId isEqualToString:message.messageId]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSArray *messageArray = self.chatViewModel.messagesArray;
+            for (UdeskBaseMessage *baseMessage in messageArray) {
+                if (![baseMessage isKindOfClass:[UdeskBaseMessage class]]) return ;
                 
-                baseMessage.message.messageStatus = message.messageStatus;
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.chatViewModel.messagesArray indexOfObject:baseMessage] inSection:0];
-                
-                UdeskBaseCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
-                [cell updateMessageSendStatus:baseMessage.message.messageStatus];
+                if ([baseMessage.message.messageId isEqualToString:message.messageId]) {
+                    
+                    baseMessage.message.messageStatus = message.messageStatus;
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.chatViewModel.messagesArray indexOfObject:baseMessage] inSection:0];
+                    
+                    UdeskBaseCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
+                    [cell updateMessageSendStatus:baseMessage.message.messageStatus];
+                }
             }
-        }
+        });
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -1082,7 +1065,7 @@
     [self.chatViewModel addResendMessageToArray:message];
     //开启重发
     @udWeakify(self);
-    [self.chatViewModel resendFailedMessageWithProgress:^(NSString *key, float percent) {
+    [self.chatViewModel autoResendFailedMessageWithProgress:^(NSString *key, float percent) {
         
         //更新进度
         @udStrongify(self);
@@ -1120,7 +1103,14 @@
 - (void)emojiViewDidPressStickerWithResource:(NSString *)resource {
     if (!resource || resource == (id)kCFNull) return ;
     
-    [self sendGIFMessageWithGIFData:[NSData dataWithContentsOfURL:[NSURL fileURLWithPath:resource]]];
+    NSData *imageData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:resource]];
+    NSString *imageType = [UdeskImageUtil contentTypeForImageData:imageData];
+    if ([imageType isEqualToString:@"gif"]) {
+        [self sendGIFMessageWithGIFData:imageData];
+    }
+    else {
+        [self sendImageMessageWithImage:[UIImage imageWithData:imageData]];
+    }
 }
 
 - (void)emojiViewDidPressDelete {
@@ -1225,16 +1215,24 @@
 
 //评价客服
 - (void)servicesFeedbackSurveyWithAgentId:(NSString *)agentId {
+    if (!agentId || agentId == (id)kCFNull) return ;
     
     [UdeskManager checkHasSurveyWithAgentId:agentId completion:^(NSString *hasSurvey, NSError *error) {
         if ([hasSurvey boolValue]) {
             [UdeskTopAlertView showAlertType:UDAlertTypeOrange withMessage:getUDLocalizedString(@"udesk_has_survey") parentView:self.view];
         }
         else {
-            UdeskSurveyView *surveyView = [[UdeskSurveyView alloc] initWithAgentId:agentId imSubSessionId:[NSString stringWithFormat:@"%ld",self.chatInputToolBar.agent.imSubSessionId]];
-            [surveyView show];
+            [self showSurveyViewWithAgentId:agentId];
         }
     }];
+}
+
+//显示满意度评价
+- (void)showSurveyViewWithAgentId:(NSString *)agentId {
+    if (!agentId || agentId == (id)kCFNull) return ;
+    
+    UdeskSurveyView *surveyView = [[UdeskSurveyView alloc] initWithAgentId:agentId imSubSessionId:[NSString stringWithFormat:@"%ld",self.chatInputToolBar.agent.imSubSessionId]];
+    [surveyView show];
 }
 
 //开启用户相册
@@ -1417,7 +1415,7 @@
         if (![hasSurvey boolValue]) {
             //标记满意度只显示一次
             self.backAlreadyDisplayedSurvey = YES;
-            [self servicesFeedbackSurveyWithAgentId:self.chatInputToolBar.agent.agentId];
+            [self showSurveyViewWithAgentId:self.chatInputToolBar.agent.agentId];
         }
         else {
             [self dismissViewController];
@@ -1428,26 +1426,22 @@
 - (void)dismissViewController {
     
     //离开页面
-    [self leaveChatViewController];
-    if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-        } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:self.sdkConfig.presentingAnimation] forKey:nil];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-}
-
-- (void)leaveChatViewController {
-    
     if (self.sdkConfig) {
         if (self.sdkConfig.actionConfig.leaveChatViewControllerBlock) {
             self.sdkConfig.actionConfig.leaveChatViewControllerBlock();
         }
     }
+    
+    self.chatViewModel.isNotShowAlert = YES;
+    
+    //离开页面放弃排队
+    if (self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
+        [UdeskManager quitQueueWithType:[self.sdkConfig quitQueueString]];
+    }
+    //取消所有请求
+    [UdeskManager cancelAllOperations];
+    //dismiss
+    [super dismissChatViewController];
 }
 
 #pragma mark - 设置背景颜色
@@ -1539,20 +1533,6 @@
     [self udUnsubscribeKeyboard];
     // 停止播放语音
     [[UdeskAudioPlayer shared] stopAudio];
-    
-    self.chatViewModel.isNotShowAlert = YES;
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    
-    //离开页面放弃排队
-    if (self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
-        [UdeskManager quitQueueWithType:[self.sdkConfig quitQueueString]];
-    }
-    //取消所有请求
-    [UdeskManager cancelAllOperations];
 }
 
 - (void)dealloc {

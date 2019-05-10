@@ -141,6 +141,11 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 /** 商品消息名称颜色 */
 @property (nonatomic, strong) UIColor *goodsNameTextColor;
 
+/** wkWebView进度条中未填充部分的颜色（仅支持iOS8以上） */
+@property (nonatomic, strong) UIColor *webViewProgressTrackTintColor;
+/** wkWebView进度条颜色（仅支持iOS8以上） */
+@property (nonatomic, strong) UIColor *webViewProgressTintColor;
+
 + (instancetype)defaultStyle;
 + (instancetype)blueStyle;
 + (instancetype)customStyle;

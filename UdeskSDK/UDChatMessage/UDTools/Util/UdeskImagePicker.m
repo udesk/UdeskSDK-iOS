@@ -12,6 +12,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "UdeskSDKUtil.h"
 #import "UdeskSDKConfig.h"
+#import "UdeskImageUtil.h"
 
 @interface UdeskImagePicker () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -111,7 +112,7 @@
                     NSUInteger bufferSize = [rep getBytes:imageBuffer fromOffset:0.0 length:rep.size error:nil];
                     NSData *imageData = [NSData dataWithBytesNoCopy:imageBuffer length:bufferSize freeWhenDone:YES];
                     
-                    NSString *type = [self contentTypeForImageData:imageData];
+                    NSString *type = [UdeskImageUtil contentTypeForImageData:imageData];
                     
                     if ([type isEqualToString:@"gif"]) {
                         
@@ -159,33 +160,6 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [self dismissPickerViewController:picker];
-}
-
-//通过图片Data数据第一个字节 来获取图片扩展名
-- (NSString *)contentTypeForImageData:(NSData *)data {
-    uint8_t c;
-    [data getBytes:&c length:1];
-    switch (c) {
-        case 0xFF:
-            return @"jpeg";
-        case 0x89:
-            return @"png";
-        case 0x47:
-            return @"gif";
-        case 0x49:
-        case 0x4D:
-            return @"tiff";
-        case 0x52:
-            if ([data length] < 12) {
-                return nil;
-            }
-            NSString *testString = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(0, 12)] encoding:NSASCIIStringEncoding];
-            if ([testString hasPrefix:@"RIFF"] && [testString hasSuffix:@"WEBP"]) {
-                return @"webp";
-            }
-            return nil;
-    }
-    return nil;
 }
 
 @end

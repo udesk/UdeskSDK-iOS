@@ -94,7 +94,7 @@
     UdeskVideoMessage *videoMessage = (UdeskVideoMessage *)self.baseMessage;
     if (!videoMessage || ![videoMessage isKindOfClass:[UdeskVideoMessage class]]) return;
     
-    [self openVideo:videoMessage.message.messageId];
+    [self openVideoWithMessageId:videoMessage.message.messageId contentURL:videoMessage.message.content];
 }
 
 - (void)readyDownloadVideo {
@@ -138,6 +138,8 @@
                                   
                                   dispatch_async(dispatch_get_main_queue(), ^{
                                       @udStrongify(self);
+                                      self.uploadProgressLabel.hidden = NO;
+                                      self.playButton.hidden = YES;
                                       double progress = (double)recvLength / ((double)totalLength == 0 ? 1 : totalLength);
                                       self.uploadProgressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
                                   });
@@ -151,33 +153,39 @@
                                           self.uploadProgressLabel.hidden = YES;
                                           self.playButton.hidden = NO;
                                       });
-                                      //  下载成功后保存装载
                                       [self saveDownloadStateOperation:(Udesk_WHC_DownloadOperation *)operation];
-                                  }else {
+                                  }
+                                  else {
                                       [self errorHandle:(Udesk_WHC_DownloadOperation *)operation error:error];
-                                      if (error != nil &&error.code == Udesk_WHCCancelDownloadError) {
-                                          [self saveDownloadStateOperation:(Udesk_WHC_DownloadOperation *)operation];
-                                      }
                                   }
                               }];
 }
 
 - (void)errorHandle:(Udesk_WHC_DownloadOperation *)operation error:(NSError *)error {
     NSString * errInfo = error.userInfo[NSLocalizedDescriptionKey];
+    if (!errInfo || errInfo == (id)kCFNull) return ;
+    if (![errInfo isKindOfClass:[NSString class]]) return ;
     
     if ([errInfo containsString:@"404"]) {
         [UdeskToast showToast:getUDLocalizedString(@"udesk_file_not_exist") duration:1.0f window:[UIApplication sharedApplication].keyWindow];
-        Udesk_WHC_DownloadObject * downloadObject = [Udesk_WHC_DownloadObject readDiskCache:operation.strUrl];
-        if (downloadObject != nil) {
-            [downloadObject removeFromDisk];
-        }
-    }else if([errInfo isEqualToString:@"下载失败"]){
+    }
+    else if([errInfo isEqualToString:@"下载失败"]){
         [UdeskToast showToast:getUDLocalizedString(@"udesk_download_failed") duration:1.0f window:[UIApplication sharedApplication].keyWindow];
     }
+    else {
+        [UdeskToast showToast:errInfo duration:1.0f window:[UIApplication sharedApplication].keyWindow];
+    }
+    
+    _uploadProgressLabel.hidden = YES;
+    _downloadButton.hidden = NO;
+    _playButton.hidden = YES;
+    
+    [[UdeskCacheUtil sharedManager] udRemoveObjectForKey:self.baseMessage.messageId];
+    [self removeDownloadStateOperation:operation];
 }
 
 - (void)saveDownloadStateOperation:(Udesk_WHC_DownloadOperation *)operation {
-    Udesk_WHC_DownloadObject * downloadObject = [Udesk_WHC_DownloadObject readDiskCache:operation.strUrl];
+    Udesk_WHC_DownloadObject * downloadObject = [Udesk_WHC_DownloadObject readDiskCache:operation.saveFileName];
     if (downloadObject != nil) {
         downloadObject.currentDownloadLenght = operation.recvDataLenght;
         downloadObject.totalLenght = operation.fileTotalLenght;
@@ -185,10 +193,23 @@
     }
 }
 
-- (void)openVideo:(NSString *)messageId {
+- (void)removeDownloadStateOperation:(Udesk_WHC_DownloadOperation *)operation {
+    Udesk_WHC_DownloadObject * downloadObject = [Udesk_WHC_DownloadObject readDiskCache:operation.saveFileName];
+    if (downloadObject != nil) {
+        [downloadObject removeFromDisk];
+    }
+}
+
+- (void)openVideoWithMessageId:(NSString *)messageId contentURL:(NSString *)contentURL {
     
-    NSString *path = [[UdeskCacheUtil sharedManager] filePathForkey:messageId];
-    NSURL *url = [NSURL fileURLWithPath:path];
+    NSURL *url = [NSURL URLWithString:@"https://www.udesk.cn"];
+    if ([[UdeskCacheUtil sharedManager] containsObjectForKey:messageId]) {
+        NSString *path = [[UdeskCacheUtil sharedManager] filePathForkey:messageId];
+        url = [NSURL fileURLWithPath:path];
+    }
+    else {
+        url = [NSURL URLWithString:contentURL];
+    }
     
     MPMoviePlayerViewController *playerViewController = [[MPMoviePlayerViewController alloc] initWithContentURL:url];
     playerViewController.moviePlayer.movieSourceType = MPMovieSourceTypeFile;
@@ -235,6 +256,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:MPMoviePlayerPlaybackDidFinishNotification
                                                   object:nil];
+    
+    [[Udesk_WHC_HttpManager shared] cancelAllDownloadTaskAndDelFile:YES];
 }
 
 - (void)updateCellWithMessage:(UdeskBaseMessage *)baseMessage {
@@ -265,6 +288,12 @@
         else {
             _uploadProgressLabel.hidden = YES;
             _playButton.hidden = NO;
+        }
+        
+        //检查是否有缓存
+        if (![[UdeskCacheUtil sharedManager] containsObjectForKey:videoMessage.message.messageId]) {
+            _downloadButton.hidden = NO;
+            _playButton.hidden = YES;
         }
     }
     else {

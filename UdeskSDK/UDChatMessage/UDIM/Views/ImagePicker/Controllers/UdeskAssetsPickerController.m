@@ -16,12 +16,17 @@
 #import "UdeskSDKUtil.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKMacro.h"
+#import "UdeskAlbumsViewManager.h"
+#import "UIBarButtonItem+UdeskSDK.h"
+#import "UIImage+UdeskSDK.h"
+#import "UdeskPopAnimation.h"
+#import "UdeskAlbumsViewController.h"
 
 static CGFloat udItemMargin = 5;
 static CGFloat udColumnNumber = 4;
 static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
 
-@interface UdeskAssetsPickerController ()<UICollectionViewDelegate,UICollectionViewDataSource,UdeskPhotoToolBarDelegate,UdeskAssetCellDelegate>
+@interface UdeskAssetsPickerController ()<UICollectionViewDelegate,UICollectionViewDataSource,UdeskPhotoToolBarDelegate,UdeskAssetCellDelegate,UINavigationControllerDelegate>
 
 @property (nonatomic, strong) UdeskAssetsPickerManager *viewManager;
 @property (nonatomic, strong) UICollectionViewFlowLayout *assetFlowLayout;
@@ -43,8 +48,19 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
 
 - (void)setupUI {
     
-    self.title = self.alumModel.name;
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    UIBarButtonItem *leftBarButtonItem = [UIBarButtonItem udItemWithTitle:getUDLocalizedString(@"udesk_back") image:[UIImage udDefaultWhiteBackImage] target:self action:@selector(backSelectImageAction)];
+    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    
+    if((FUDSystemVersion>=7.0)){
+        negativeSpacer.width = -13;
+        self.navigationItem.leftBarButtonItems = @[negativeSpacer,leftBarButtonItem];
+    }
+    else {
+        self.navigationItem.leftBarButtonItem = leftBarButtonItem;
+    }
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:getUDLocalizedString(@"udesk_cancel") style:UIBarButtonItemStylePlain target:self action:@selector(cancelSelectImageAction)];
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     
@@ -55,7 +71,6 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     _assetCollectionView.delegate = self;
     _assetCollectionView.alwaysBounceHorizontal = NO;
     _assetCollectionView.contentInset = UIEdgeInsetsMake(udItemMargin, udItemMargin, udItemMargin, udItemMargin);
-    _assetCollectionView.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame), ((self.alumModel.count + udColumnNumber - 1) / udColumnNumber) * CGRectGetWidth(self.view.frame));
     [_assetCollectionView registerClass:[UdeskAssetCell class] forCellWithReuseIdentifier:kUdeskAssetCellIdentifier];
     [self.view addSubview:_assetCollectionView];
     
@@ -63,6 +78,12 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     _toolBar.delegate = self;
     _toolBar.toolBarCollectionView.hidden = YES;
     [self.view addSubview:_toolBar];
+}
+
+- (void)backSelectImageAction {
+    
+    UdeskAlbumsViewController *albums = [[UdeskAlbumsViewController alloc] init];
+    [self.navigationController pushViewController:albums animated:YES];
 }
 
 - (void)cancelSelectImageAction {
@@ -73,13 +94,25 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     
     UdeskImagePickerController *imagePicker = (UdeskImagePickerController *)self.navigationController;
     @udWeakify(self);
-    [self.viewManager assetsFromFetchResult:self.alumModel.result allowPickingVideo:imagePicker.allowPickingVideo completion:^(NSArray<UdeskAssetModel *> *assetArray) {
+    [UdeskAlbumsViewManager allAlbumsWithAllowPickingVideo:imagePicker.allowPickingVideo completion:^(NSArray<UdeskAlbumModel *> *albumArray) {
         @udStrongify(self);
-        [self.assetCollectionView reloadData];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.assetCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.viewManager.assetArray.count-1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
-        });
+        if (self.albumIndex >= albumArray.count || self.albumIndex<0) {
+            self.albumIndex = 0;
+        }
+        UdeskAlbumModel *alumModel = albumArray[self.albumIndex];
+        [self updateWithAlbumModel:alumModel];
+        
+        [self.viewManager assetsFromFetchResult:alumModel.result allowPickingVideo:imagePicker.allowPickingVideo completion:^(NSArray<UdeskAssetModel *> *assetArray) {
+            [self.assetCollectionView reloadData];
+            [self.assetCollectionView setContentOffset:CGPointMake(0, self.assetCollectionView.contentSize.height - self.assetCollectionView.frame.size.height) animated:NO];
+        }];
     }];
+}
+
+- (void)updateWithAlbumModel:(UdeskAlbumModel *)alumModel {
+    
+    self.title = alumModel.name;
+    self.assetCollectionView.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame), ((alumModel.count + udColumnNumber - 1) / udColumnNumber) * CGRectGetWidth(self.view.frame));
 }
 
 #pragma mark - @protocol UICollectionViewDataSource && UICollectionViewDelegate
@@ -366,16 +399,6 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     return _viewManager;
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
-        
-        UdeskImagePickerController *udImagePicker = (UdeskImagePickerController *)self.navigationController;
-        [udImagePicker.selectedModels removeAllObjects];
-        udImagePicker.selectedModels = nil;
-    }
-}
-
 - (UIActivityIndicatorView *)loadingView {
     if (!_loadingView) {
         
@@ -391,6 +414,35 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
         [view addSubview:_loadingView];
     }
     return _loadingView;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
+        
+        UdeskImagePickerController *udImagePicker = (UdeskImagePickerController *)self.navigationController;
+        [udImagePicker.selectedModels removeAllObjects];
+        udImagePicker.selectedModels = nil;
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    self.navigationController.delegate = self;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC{
+    
+    //预览图
+    if ([toVC isKindOfClass:[UdeskAssetPreviewController class]]) {
+        return nil;
+    }
+    
+    if (operation == UINavigationControllerOperationPush) {
+        return [[UdeskPopAnimation alloc] init];
+    }
+    
+    return nil;
 }
 
 /*

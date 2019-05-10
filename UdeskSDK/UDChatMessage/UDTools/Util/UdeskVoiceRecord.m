@@ -75,9 +75,9 @@
 //获取地址
 - (NSString *)getRecorderPath {
     
-    NSString *indetAAC = [NSString stringWithFormat:@"%@.aac",[UdeskSDKUtil soleString]];
+    NSString *indetWAV = [NSString stringWithFormat:@"%@.wav",[UdeskSDKUtil soleString]];
     
-    NSString *recorderPath = [NSTemporaryDirectory() stringByAppendingPathComponent:indetAAC];
+    NSString *recorderPath = [NSTemporaryDirectory() stringByAppendingPathComponent:indetWAV];
     
     return recorderPath;
 }
@@ -105,7 +105,7 @@
             }
             
             NSMutableDictionary * recordSetting = [NSMutableDictionary dictionary];
-            [recordSetting setValue:[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
+            [recordSetting setValue:[NSNumber numberWithInt:kAudioFormatLinearPCM] forKey:AVFormatIDKey];
             [recordSetting setValue:[NSNumber numberWithFloat:16000.0] forKey:AVSampleRateKey];
             [recordSetting setValue:[NSNumber numberWithInt:1] forKey:AVNumberOfChannelsKey];
             

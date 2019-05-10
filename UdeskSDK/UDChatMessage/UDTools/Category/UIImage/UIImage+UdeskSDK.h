@@ -12,8 +12,6 @@
 
 /** GIF */
 + (UIImage *)udAnimatedGIFWithData:(NSData *)data;
-/** 修改图片颜色 */
-- (UIImage *)udConvertImageColor:(UIColor *)toColor;
 
 /** 发送消息气泡图片 */
 + (UIImage *)udBubbleSendImage;

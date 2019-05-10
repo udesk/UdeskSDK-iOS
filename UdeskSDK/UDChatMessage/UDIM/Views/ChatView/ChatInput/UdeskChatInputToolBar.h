@@ -73,9 +73,6 @@ typedef NS_ENUM(NSUInteger, UdeskChatInputType) {
 
 - (instancetype)initWithFrame:(CGRect)frame tableView:(UdeskMessageTableView *)tabelView;
 
-//离线留言不显示任何功能按钮
-- (void)updateInputBarForLeaveMessage;
-
 //重置录音按钮
 - (void)resetRecordButton;
 

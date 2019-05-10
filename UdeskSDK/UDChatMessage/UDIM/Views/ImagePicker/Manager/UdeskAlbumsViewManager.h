@@ -12,10 +12,8 @@
 
 @interface UdeskAlbumsViewManager : NSObject
 
-@property (nonatomic, strong, readonly) NSArray<UdeskAlbumModel *> *albumArray;
-
 //所有相册
-- (void)allAlbumsWithAllowPickingVideo:(BOOL)allowPickingVideo completion:(void (^)(NSArray<UdeskAlbumModel *> *albumArray))completion;
++ (void)allAlbumsWithAllowPickingVideo:(BOOL)allowPickingVideo completion:(void (^)(NSArray<UdeskAlbumModel *> *albumArray))completion;
 //相册的第一个图像
 + (void)fetchAlbumPosterImageWithAsset:(PHAsset *)asset completion:(void (^)(UIImage *image))completion;
 

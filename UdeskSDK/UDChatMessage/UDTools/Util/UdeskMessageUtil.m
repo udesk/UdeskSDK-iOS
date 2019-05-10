@@ -235,54 +235,53 @@
 }
 
 #pragma mark - 重发失败的消息
-+ (void)resendFailedMessage:(NSMutableArray *)resendMessageArray progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion {
++ (NSTimer *)resendFailedMessage:(NSMutableArray *)resendMessageArray progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion {
     
-    if (resendMessageArray.count) {
+    NSTimer *timer = [NSTimer udScheduleTimerWithTimeInterval:6.0f repeats:YES usingBlock:^(NSTimer *timer) {
         
-        [NSTimer udScheduleTimerWithTimeInterval:6.0f repeats:YES usingBlock:^(NSTimer *timer) {
-            
-            @try {
-                if (resendMessageArray.count==0) {
+        @try {
+            if (resendMessageArray.count==0) {
+                
+                [timer invalidate];
+                timer = nil;
+            }
+            else {
+                
+                for (UdeskMessage *resendMessage in resendMessageArray) {
                     
-                    [timer invalidate];
-                    timer = nil;
-                }
-                else {
+                    NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:resendMessage.timestamp];
                     
-                    for (UdeskMessage *resendMessage in resendMessageArray) {
+                    if (fabs (timeInterval) > 60) {
                         
-                        NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:resendMessage.timestamp];
+                        resendMessage.messageStatus = UDMessageSendStatusFailed;
+                        if (completion) {
+                            completion(resendMessage);
+                        }
                         
-                        if (fabs (timeInterval) > 60) {
+                        [resendMessageArray removeObject:resendMessage];
+                        
+                    } else {
+                        
+                        [UdeskManager sendMessage:resendMessage progress:^(float percent) {
                             
-                            resendMessage.messageStatus = UDMessageSendStatusFailed;
-                            if (completion) {
-                                completion(resendMessage);
+                            if ([resendMessageArray containsObject:resendMessage]) {
+                                [resendMessageArray removeObject:resendMessage];
                             }
                             
-                            [resendMessageArray removeObject:resendMessage];
+                            if (progress) {
+                                progress(resendMessage.messageId,percent);
+                            }
                             
-                        } else {
-                            
-                            [UdeskManager sendMessage:resendMessage progress:^(float percent) {
-                                
-                                if ([resendMessageArray containsObject:resendMessage]) {
-                                    [resendMessageArray removeObject:resendMessage];
-                                }
-                                
-                                if (progress) {
-                                    progress(resendMessage.messageId,percent);
-                                }
-                                
-                            } completion:completion];
-                        }
+                        } completion:completion];
                     }
                 }
-            } @catch (NSException *exception) {
-            } @finally {
             }
-        }];
-    }
+        } @catch (NSException *exception) {
+        } @finally {
+        }
+    }];
+    
+    return timer;
 }
 
 #pragma mark - location

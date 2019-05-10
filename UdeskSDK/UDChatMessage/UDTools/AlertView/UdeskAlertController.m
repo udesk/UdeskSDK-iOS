@@ -9,6 +9,7 @@
 #import "UdeskAlertController.h"
 #import "UDTTTAttributedLabel.h"
 #import "UdeskOverlayTransitioningDelegate.h"
+#import "UdeskSDKShow.h"
 
 #define ActionDefaultColor [UIColor colorWithRed:0.08 green:0.49 blue:0.98 alpha:1.00]
 #define ActionDestructiveColor [UIColor colorWithRed:0.99 green:0.26 blue:0.24 alpha:1.00]
@@ -602,9 +603,9 @@ static CGRect menuScrollViewRect;
 - (void)attributedLabel:(UDTTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
     
     if ([url.absoluteString rangeOfString:@"://"].location == NSNotFound) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", url.absoluteString]]];
+        [UdeskSDKShow pushWebViewOnViewController:self URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", url.absoluteString]]];
     } else {
-        [[UIApplication sharedApplication] openURL:url];
+        [UdeskSDKShow pushWebViewOnViewController:self URL:url];
     }
 }
 

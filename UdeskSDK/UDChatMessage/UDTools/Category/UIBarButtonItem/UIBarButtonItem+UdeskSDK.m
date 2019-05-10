@@ -68,6 +68,35 @@
     }
 }
 
++ (UIBarButtonItem *)udItemWithTitle:(NSString *)title image:(UIImage *)image target:(id)target action:(SEL)action {
+    
+    @try {
+        
+        UIImage *backImage = image;
+        CGSize backTextSize = [UdeskStringSizeUtil textSize:title withFont:[UIFont systemFontOfSize:17] withSize:CGSizeMake(70, 30)];
+        
+        UIButton *leftBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        leftBarButton.frame = CGRectMake(0, 0, backTextSize.width+backImage.size.width+20, backTextSize.height);
+        [leftBarButton setTitle:title forState:UIControlStateNormal];
+        backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        [leftBarButton setImage:backImage forState:UIControlStateNormal];
+        [leftBarButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
+        
+        [leftBarButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
+        
+        if (ud_isIOS11) {
+            leftBarButton.contentHorizontalAlignment =UIControlContentHorizontalAlignmentLeft;
+            [leftBarButton setImageEdgeInsets:UIEdgeInsetsMake(0, -8 * UD_SCREEN_WIDTH/375.0,0,0)];
+            [leftBarButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -6 * UD_SCREEN_WIDTH/375.0,0,0)];
+        }
+        
+        return [[UIBarButtonItem alloc] initWithCustomView:leftBarButton];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
 + (UIBarButtonItem *)udRightItemWithTitle:(NSString *)title target:(id)target action:(SEL)action {
     
     @try {

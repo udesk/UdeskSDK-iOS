@@ -52,6 +52,10 @@
     }
 }
 
+- (void)setLanguage:(NSString *)language {
+    [UdeskLanguageConfig sharedConfig].language = language;
+}
+
 - (void)setConfigToDefault {
     
     self.agentId = nil;
@@ -88,7 +92,6 @@
     self.smallVideoResolution = UDSmallVideoResolutionTypePhoto;
     self.smallVideoDuration = 15;
     self.orientationMask = UIInterfaceOrientationMaskPortrait;
-    self.languageType = UDLanguageTypeCN;
 }
 
 - (NSString *)quitQueueString {

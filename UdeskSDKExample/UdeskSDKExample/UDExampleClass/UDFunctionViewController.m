@@ -210,11 +210,13 @@
 - (void)contactUs:(id)sender {
 
     UdeskSDKStyle *style = [UdeskSDKStyle customStyle];
+    style.navBackButtonColor = [UIColor grayColor];
+    
     UdeskSDKConfig *config = [UdeskSDKConfig customConfig];
     
     //初始化sdk
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:style sdkConfig:config sdkActionConfig:nil];
-    [chatViewManager pushUdeskInViewController:self completion:nil];
+    [chatViewManager presentUdeskInViewController:self completion:nil];
 }
 
 - (void)ticket:(id)sender {

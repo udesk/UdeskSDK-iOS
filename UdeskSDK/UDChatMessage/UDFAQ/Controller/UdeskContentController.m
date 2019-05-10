@@ -13,6 +13,7 @@
 #import "UdeskManager.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskTransitioningAnimation.h"
+#import "UdeskSDKShow.h"
 
 @interface UdeskContentController (){
     
@@ -191,7 +192,7 @@
     
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         
-        [[UIApplication sharedApplication] openURL:request.URL];
+        [UdeskSDKShow pushWebViewOnViewController:self URL:request.URL];
         
         return NO;
     }

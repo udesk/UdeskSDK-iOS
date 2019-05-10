@@ -71,7 +71,10 @@
     UdeskGoodsMessage *goodsMessage = (UdeskGoodsMessage *)baseMessage;
     if (!goodsMessage || ![goodsMessage isKindOfClass:[UdeskGoodsMessage class]]) return;
     
-    [self.goodsImageView yy_setImageWithURL:[NSURL URLWithString:[goodsMessage.imgUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:[UIImage udDefaultLoadingImage]];
+    if (![UdeskSDKUtil isBlankString:goodsMessage.imgUrl]) {
+        [self.goodsImageView yy_setImageWithURL:[NSURL URLWithString:[goodsMessage.imgUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:[UIImage udDefaultLoadingImage]];
+    }
+    
     self.paramsLabel.attributedText = goodsMessage.paramsAttributedString;
     
     self.goodsImageView.frame = goodsMessage.imgFrame;

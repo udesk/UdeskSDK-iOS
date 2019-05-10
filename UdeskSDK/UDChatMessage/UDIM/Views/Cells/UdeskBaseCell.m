@@ -155,9 +155,11 @@
             
             //气泡
             UIImage *bubbleImage = [UdeskSDKConfig customConfig].sdkStyle.agentBubbleImage;
+            UIColor *bubbleColor = [UdeskSDKConfig customConfig].sdkStyle.agentBubbleColor;
             
-            if ([UdeskSDKConfig customConfig].sdkStyle.agentBubbleColor) {
-                bubbleImage = [bubbleImage udConvertImageColor:[UdeskSDKConfig customConfig].sdkStyle.agentBubbleColor];
+            if (bubbleColor && [bubbleColor isKindOfClass:[UIColor class]]) {
+                bubbleImage = [bubbleImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                self.bubbleImageView.tintColor = bubbleColor;
             }
             
             self.bubbleImageView.image = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width*0.5f topCapHeight:bubbleImage.size.height*0.8f];
@@ -172,9 +174,13 @@
          
             //气泡
             UIImage *bubbleImage = [UdeskSDKConfig customConfig].sdkStyle.customerBubbleImage;
-            if ([UdeskSDKConfig customConfig].sdkStyle.customerBubbleColor) {
-                bubbleImage = [bubbleImage udConvertImageColor:[UdeskSDKConfig customConfig].sdkStyle.customerBubbleColor];
+            UIColor *bubbleColor = [UdeskSDKConfig customConfig].sdkStyle.customerBubbleColor;
+            
+            if (bubbleColor && [bubbleColor isKindOfClass:[UIColor class]]) {
+                bubbleImage = [bubbleImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                self.bubbleImageView.tintColor = bubbleColor;
             }
+            
             self.bubbleImageView.image = [bubbleImage stretchableImageWithLeftCapWidth:bubbleImage.size.width*0.5f topCapHeight:bubbleImage.size.height*0.8f];
             
             self.nicknameLabel.frame = CGRectZero;
@@ -188,6 +194,7 @@
     }
     
     if (baseMessage.message.messageType == UDMessageContentTypeText ||
+        baseMessage.message.messageType == UDMessageContentTypeImage ||
         baseMessage.message.messageType == UDMessageContentTypeLeaveMsg ||
         baseMessage.message.messageType == UDMessageContentTypeVoice ||
         baseMessage.message.messageType == UDMessageContentTypeVideo ||

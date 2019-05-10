@@ -54,8 +54,6 @@
         _progressLayer.lineWidth = _width;
         _progressLayer.strokeColor = [UIColor colorWithRed:0.165f  green:0.576f  blue:0.98f alpha:1].CGColor;
         [self setProgress];
-        
-        self.duration = 10;
     }
     return self;
 }
