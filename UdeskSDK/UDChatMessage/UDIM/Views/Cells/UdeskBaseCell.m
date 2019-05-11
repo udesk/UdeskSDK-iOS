@@ -230,6 +230,7 @@
     }
     
     if (baseMessage.message.messageType == UDMessageContentTypeText ||
+        baseMessage.message.messageType == UDMessageContentTypeImage ||
         baseMessage.message.messageType == UDMessageContentTypeVoice ||
         baseMessage.message.messageType == UDMessageContentTypeVideo ||
         baseMessage.message.messageType == UDMessageContentTypeGoods) {

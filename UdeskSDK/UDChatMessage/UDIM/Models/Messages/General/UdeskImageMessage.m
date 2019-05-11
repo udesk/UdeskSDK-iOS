@@ -35,6 +35,9 @@ static CGFloat const kUDImageUploadProgressHeight = 15.0;
             if ([[Udesk_YYWebImageManager sharedManager].cache containsImageForKey:message.messageId]) {
                 self.message.image = [[Udesk_YYWebImageManager sharedManager].cache getImageForKey:message.messageId];
             }
+            else if ([[Udesk_YYWebImageManager sharedManager].cache containsImageForKey:message.content]) {
+                self.message.image = [[Udesk_YYWebImageManager sharedManager].cache getImageForKey:message.content];
+            }
         }
         
         [self layoutImageMessage];

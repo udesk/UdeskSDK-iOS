@@ -364,6 +364,17 @@
     }
 }
 
+//会话已关闭
+- (void)sessionClosed {
+    
+    self.agentModel.message = getUDLocalizedString(@"udesk_chat_end");
+    self.agentModel.code = UDAgentConversationOver;
+
+    if (self.didUpdateAgentBlock) {
+        self.didUpdateAgentBlock(self.agentModel);
+    }
+}
+
 //客服组ID
 + (NSString *)udGroupId {
     

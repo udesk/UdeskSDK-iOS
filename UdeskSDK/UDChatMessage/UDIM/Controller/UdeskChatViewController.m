@@ -1018,7 +1018,8 @@ static CGFloat udInputBarHeight = 54.0f;
         case UDMessageSendStatusOffSending:
             
             if (self.chatInputToolBar.agent.code == UDAgentStatusResultLeaveMessage ||
-                self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
+                self.chatInputToolBar.agent.code == UDAgentStatusResultQueue ||
+                self.chatInputToolBar.agent.code == UDAgentConversationOver) {
                 [self updateChatMessageUI:message];
                 break;
             }

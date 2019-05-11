@@ -36,8 +36,6 @@
 @property (nonatomic, strong, readwrite) NSNumber      *preSessionId;
 /** 无消息对话过滤时发送的消息 */
 @property (nonatomic, strong) NSMutableArray           *preSessionMessages;
-/** 重发消息Timer */
-@property (nonatomic, strong) NSTimer *resendTimer;
 /** 视频通话管理类 */
 @property (nonatomic, strong) UdeskCallManager *callManager;
 /** 网络管理类 */
@@ -224,12 +222,8 @@
 //请求客服信息，创建会话
 - (void)needfetchAgentCreateSession {
     
-    [self requestAgentDataWithPreSessionMessage:nil completion:^(UdeskAgent *agentModel) {
-        if (agentModel.code == UDAgentStatusResultOffline && self.resendTimer) {
-            [self.resendTimer invalidate];
-            self.resendTimer = nil;
-        }
-    }];
+    [self.agentManager sessionClosed];
+    [self fetchSDKSetting];
 }
 
 //用户在黑名单中
@@ -673,12 +667,21 @@
                                  completion:(void(^)(UdeskMessage *failedMessage))completion {
     
     if (!self.resendArray || self.resendArray == (id)kCFNull || self.resendArray.count == 0) return ;
-    self.resendTimer = [UdeskMessageUtil resendFailedMessage:self.resendArray progress:progress completion:completion];
+    [UdeskMessageUtil resendFailedMessage:self.resendArray progress:progress completion:completion];
 }
 
 - (void)resendMessageWithMessage:(UdeskMessage *)resendMessage
                         progress:(void(^)(float percent))progress
                       completion:(void(^)(UdeskMessage *message))completion {
+    
+    if (self.preSessionId) {
+        [self endPreSessionWithMessage:resendMessage progress:^(NSString *key, float percent) {
+            if (progress) {
+                progress(percent);
+            }
+        } completion:completion];
+        return;
+    }
     
     if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
         self.agentManager.agentModel.code != UDAgentStatusResultLeaveMessage) {

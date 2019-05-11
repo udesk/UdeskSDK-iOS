@@ -49,5 +49,7 @@
 - (void)receiveRedirect:(UdeskAgent *)agent;
 //收到状态
 - (void)receivePresence:(NSDictionary *)presence;
+//会话已关闭
+- (void)sessionClosed;
 
 @end
