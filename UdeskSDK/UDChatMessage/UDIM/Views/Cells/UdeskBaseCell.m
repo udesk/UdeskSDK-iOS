@@ -194,6 +194,7 @@
     }
     
     if (baseMessage.message.messageType == UDMessageContentTypeText ||
+        baseMessage.message.messageType == UDMessageContentTypeImage ||
         baseMessage.message.messageType == UDMessageContentTypeLeaveMsg ||
         baseMessage.message.messageType == UDMessageContentTypeVoice ||
         baseMessage.message.messageType == UDMessageContentTypeVideo ||

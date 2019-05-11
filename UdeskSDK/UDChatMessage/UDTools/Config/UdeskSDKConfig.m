@@ -52,7 +52,7 @@
     }
 }
 
--(void)setLanguage:(NSString *)language{
+- (void)setLanguage:(NSString *)language {
     [UdeskLanguageConfig sharedConfig].language = language;
 }
 

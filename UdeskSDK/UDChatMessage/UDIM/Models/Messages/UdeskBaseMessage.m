@@ -13,11 +13,11 @@
 #import "UdeskSDKUtil.h"
 
 /** 头像距离屏幕水平边沿距离 */
-const CGFloat kUDAvatarToHorizontalEdgeSpacing = 15.0;
+const CGFloat kUDAvatarToHorizontalEdgeSpacing = 8.0;
 /** 头像距离屏幕垂直边沿距离 */
-const CGFloat kUDAvatarToVerticalEdgeSpacing = 15.0;
+const CGFloat kUDAvatarToVerticalEdgeSpacing = 8.0;
 /** 头像与聊天气泡之间的距离 */
-const CGFloat kUDAvatarToBubbleSpacing = 8.0;
+const CGFloat kUDAvatarToBubbleSpacing = 6.0;
 /** 聊天气泡和Indicator的间距 */
 const CGFloat kUDCellBubbleToIndicatorSpacing = 5.0;
 /** 聊天头像大小 */

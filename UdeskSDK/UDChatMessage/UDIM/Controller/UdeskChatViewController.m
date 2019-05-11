@@ -888,12 +888,12 @@
     
     @try {
         
-        NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
-        UdeskImageCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
-        
-        if ([cell isKindOfClass:[UdeskImageCell class]]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
+            UdeskImageCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
+            
+            if ([cell isKindOfClass:[UdeskImageCell class]]) {
                 
                 if (progress == 1.0f || sendStatus == UDMessageSendStatusSuccess) {
                     [cell uploadImageSuccess];
@@ -902,8 +902,8 @@
                     [cell imageUploading];
                     cell.progressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
                 }
-            });
-        }
+            }
+        });
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -949,13 +949,13 @@
 
     @try {
         
-        NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
-        UdeskVideoCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
-        [cell updateMessageSendStatus:UDMessageSendStatusSending];
-        
-        if ([cell isKindOfClass:[UdeskVideoCell class]]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSArray *array = [self.chatViewModel.messagesArray valueForKey:@"messageId"];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[array indexOfObject:messageId] inSection:0];
+            UdeskVideoCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
+            [cell updateMessageSendStatus:UDMessageSendStatusSending];
+            
+            if ([cell isKindOfClass:[UdeskVideoCell class]]) {
                 
                 if (progress == 1.0f || sendStatus == UDMessageSendStatusSuccess) {
                     cell.uploadProgressLabel.hidden = YES;
@@ -965,8 +965,8 @@
                 else {
                     cell.uploadProgressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
                 }
-            });
-        }
+            }
+        });
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -1024,7 +1024,8 @@
         case UDMessageSendStatusOffSending:
             
             if (self.chatInputToolBar.agent.code == UDAgentStatusResultLeaveMessage ||
-                self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
+                self.chatInputToolBar.agent.code == UDAgentStatusResultQueue ||
+                self.chatInputToolBar.agent.code == UDAgentConversationOver) {
                 [self updateChatMessageUI:message];
                 break;
             }
@@ -1044,20 +1045,22 @@
     
     @try {
         
-        NSArray *messageArray = self.chatViewModel.messagesArray;
-        
-        for (UdeskBaseMessage *baseMessage in messageArray) {
-            if (![baseMessage isKindOfClass:[UdeskBaseMessage class]]) return ;
-            
-            if ([baseMessage.message.messageId isEqualToString:message.messageId]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+           
+            NSArray *messageArray = self.chatViewModel.messagesArray;
+            for (UdeskBaseMessage *baseMessage in messageArray) {
+                if (![baseMessage isKindOfClass:[UdeskBaseMessage class]]) return ;
                 
-                baseMessage.message.messageStatus = message.messageStatus;
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.chatViewModel.messagesArray indexOfObject:baseMessage] inSection:0];
-                
-                UdeskBaseCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
-                [cell updateMessageSendStatus:baseMessage.message.messageStatus];
+                if ([baseMessage.message.messageId isEqualToString:message.messageId]) {
+                    
+                    baseMessage.message.messageStatus = message.messageStatus;
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.chatViewModel.messagesArray indexOfObject:baseMessage] inSection:0];
+                    
+                    UdeskBaseCell *cell = [self.messageTableView cellForRowAtIndexPath:indexPath];
+                    [cell updateMessageSendStatus:baseMessage.message.messageStatus];
+                }
             }
-        }
+        });
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
@@ -1108,7 +1111,14 @@
 - (void)emojiViewDidPressStickerWithResource:(NSString *)resource {
     if (!resource || resource == (id)kCFNull) return ;
     
-    [self sendGIFMessageWithGIFData:[NSData dataWithContentsOfURL:[NSURL fileURLWithPath:resource]]];
+    NSData *imageData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:resource]];
+    NSString *imageType = [UdeskImageUtil contentTypeForImageData:imageData];
+    if ([imageType isEqualToString:@"gif"]) {
+        [self sendGIFMessageWithGIFData:imageData];
+    }
+    else {
+        [self sendImageMessageWithImage:[UIImage imageWithData:imageData]];
+    }
 }
 
 - (void)emojiViewDidPressDelete {
@@ -1424,21 +1434,6 @@
 - (void)dismissViewController {
     
     //离开页面
-    [self leaveChatViewController];
-    if (self.sdkConfig.presentingAnimation == UDTransiteAnimationTypePush) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-        } else {
-            [self.view.window.layer addAnimation:[UdeskTransitioningAnimation createDismissingTransiteAnimation:self.sdkConfig.presentingAnimation] forKey:nil];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-}
-
-- (void)leaveChatViewController {
-    
     if (self.sdkConfig) {
         if (self.sdkConfig.actionConfig.leaveChatViewControllerBlock) {
             self.sdkConfig.actionConfig.leaveChatViewControllerBlock();
@@ -1453,6 +1448,8 @@
     }
     //取消所有请求
     [UdeskManager cancelAllOperations];
+    //dismiss
+    [super dismissChatViewController];
 }
 
 #pragma mark - 设置背景颜色

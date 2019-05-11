@@ -21,5 +21,7 @@
 + (UIImage *)imageWithOriginalImage:(UIImage *)image quality:(CGFloat)quality;
 // 计算图片实际大小
 + (CGSize)udImageSize:(UIImage *)image;
+//通过图片Data数据第一个字节 来获取图片扩展名
++ (NSString *)contentTypeForImageData:(NSData *)data;
 
 @end

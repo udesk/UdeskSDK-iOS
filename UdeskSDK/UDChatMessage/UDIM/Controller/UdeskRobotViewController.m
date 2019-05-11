@@ -339,21 +339,13 @@
     if (ud_isIOS8) {
         
         if (_robotWkWebView) {
-            if (keyboardF.origin.y > self.view.udHeight) {
-                _robotWkWebView.udTop = self.view.udHeight - _robotWkWebView.udHeight - (udIsIPhoneXSeries?34:0);
-            } else {
-                _robotWkWebView.udTop = keyboardF.origin.y - _robotWkWebView.udHeight - (udIsIPhoneXSeries?34:0);
-            }
+            _robotWkWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
         }
     }
     else {
         
         if (_robotWebView) {
-            if (keyboardF.origin.y > self.view.udHeight) {
-                _robotWebView.udTop = self.view.udHeight - _robotWebView.udHeight - (udIsIPhoneXSeries?34:0);
-            } else {
-                _robotWebView.udTop = keyboardF.origin.y - _robotWebView.udHeight - (udIsIPhoneXSeries?34:0);
-            }
+            _robotWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
         }
     }
 }

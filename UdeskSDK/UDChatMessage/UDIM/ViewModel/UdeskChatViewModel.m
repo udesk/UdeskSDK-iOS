@@ -49,6 +49,8 @@
 @property (nonatomic        ) UdeskReachability        *reachability;
 /** 网络切换 */
 @property (nonatomic, assign) BOOL                     netWorkChange;
+/** 是否关闭会话 */
+@property (nonatomic, assign) BOOL                     isOverConversion;
 /** 黑名单提示语 */
 @property (nonatomic, copy  ) NSString                 *blackedMessage;
 /** 是否显示客户留言事件 */
@@ -68,8 +70,6 @@
 @property (nonatomic, strong) UdeskQueueMessage *queueMessage;
 /** 排队消息最大 */
 @property (nonatomic, copy  ) NSString          *queueMessageMaxTips;
-/** 重发消息Timer */
-@property (nonatomic, strong) NSTimer *chatMsgTimer;
 
 #if __has_include(<UdeskCall/UdeskCall.h>)
 /** 用户ID */
@@ -156,7 +156,7 @@
         
         if (customer) {
             //请求客服数据(为了保证sdk正常使用请不要删除使用UdeskManager的方法)
-            [self requestAgentDataWithPreSessionMessage:nil completion:nil];
+            [self fetchServersAgent:nil];
         }
         else {
             
@@ -169,7 +169,12 @@
     } preSessionEnbaleCallback:^(UdeskCustomer *customer, NSString *preSessionTitle) {
         
         @udStrongify(self);
-        if (self.agentModel && self.agentModel.code != UDAgentConversationOver) {
+        if (self.preSessionId || self.isOverConversion) {
+            return ;
+        }
+        
+        if (self.agentModel && self.agentModel.code != UDAgentConversationOver && self.agentModel.code != UDAgentStatusResultNotNetWork) {
+            [self updateCurrentSessionAgent:self.agentModel completion:nil];
             return ;
         }
         
@@ -208,6 +213,21 @@
 }
 
 #pragma mark - 请求客服数据
+- (void)fetchServersAgent:(void(^)(UdeskAgent *agentModel))completion {
+    
+    //会话已关闭
+    if (self.isOverConversion) {
+        return;
+    }
+    
+    //无消息过滤状态下
+    if (self.preSessionId) {
+        return;
+    }
+    
+    [self requestAgentDataWithPreSessionMessage:nil completion:completion];
+}
+
 - (void)requestAgentDataWithPreSessionMessage:(UdeskMessage *)preSessionMessage completion:(void(^)(UdeskAgent *agentModel))completion {
     
     NSString *agentId = [self udAgentId];
@@ -600,7 +620,7 @@
         
         //收到消息时当前客服状态不在线 请求客服验证
         if (self.agentModel && self.agentModel.code != UDAgentStatusResultOnline) {
-            [self requestAgentDataWithPreSessionMessage:nil completion:nil];
+            [self fetchServersAgent:nil];
         }
         
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -630,7 +650,7 @@
         //客服上线
         NSString *statusType = [NSString stringWithFormat:@"%@",[presence objectForKey:@"type"]];
         if ([UdeskSDKUtil isBlankString:self.agentModel.jid] && [statusType isEqualToString:@"available"]) {
-            [self requestAgentDataWithPreSessionMessage:nil completion:nil];
+            [self fetchServersAgent:nil];
             return;
         }
         
@@ -651,6 +671,7 @@
             
             agentCode = UDAgentConversationOver;
             agentMessage = getUDLocalizedString(@"udesk_chat_end");
+            self.isOverConversion = YES;
         }
         else if ([statusType isEqualToString:@"available"]) {
             
@@ -748,14 +769,20 @@
 //请求客服信息，创建会话
 - (void)fetchAgentAgainCreateSession {
     
-    [self requestAgentDataWithPreSessionMessage:nil completion:^(UdeskAgent *agentModel) {
-        if (agentModel.code == UDAgentStatusResultOffline) {
-            if (self.chatMsgTimer) {
-                [self.chatMsgTimer invalidate];
-                self.chatMsgTimer = nil;
-            }
-        }
-    }];
+    //客服已经关闭会话
+    if (!self.agentModel) {
+        self.agentModel = [[UdeskAgent alloc] init];
+    }
+    self.isOverConversion = YES;
+    self.agentModel.message = getUDLocalizedString(@"udesk_chat_end");
+    self.agentModel.code = UDAgentConversationOver;
+    [self callbackAgentModel:self.agentModel];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.isOverConversion = NO;
+        self.sdkSetting = nil;
+        [self checkSDKSetting];
+    });
 }
 
 #pragma mark - 发送文字消息
@@ -1270,8 +1297,10 @@
     
     if (self.agentModel.code == UDAgentConversationOver) {
         //新会话
+        self.isOverConversion = NO;
         [self showAgentStatusAlert];
-        [self createServerCustomer];
+        self.sdkSetting = nil;
+        [self checkSDKSetting];
         return;
     }
     
@@ -1440,12 +1469,21 @@
                                  completion:(void(^)(UdeskMessage *failedMessage))completion {
     
     if (!self.resendArray || self.resendArray == (id)kCFNull || self.resendArray.count == 0) return ;
-    self.chatMsgTimer = [UdeskMessageUtil resendFailedMessage:self.resendArray progress:progress completion:completion];
+    [UdeskMessageUtil resendFailedMessage:self.resendArray progress:progress completion:completion];
 }
 
 - (void)resendMessageWithMessage:(UdeskMessage *)resendMessage
                         progress:(void(^)(NSString *messageId,float percent))progress
                       completion:(void(^)(UdeskMessage *message))completion {
+    
+    if (self.preSessionId) {
+        [self endPreSessionWithMessage:resendMessage delay:0.8f completion:^{
+            if (completion) {
+                completion(resendMessage);
+            }
+        }];
+        return;
+    }
     
     if (self.agentModel.code == UDAgentStatusResultQueue) {
         [UdeskManager sendQueueMessage:resendMessage progress:progress completion:^(UdeskMessage *message,NSString *resultMsg) {
@@ -1558,10 +1596,11 @@
             @udStrongify(self);
             if (self.netWorkChange) {
                 self.netWorkChange = NO;
-                //请求客服数据
-                if (!self.preSessionId) {
-                    [self requestAgentDataWithPreSessionMessage:nil completion:nil];
-                }
+                self.isOverConversion = NO;
+                //重新请求数据
+                self.preSessionId = nil;
+                self.sdkSetting = nil;
+                [self checkSDKSetting];
             }
             break;
         }
@@ -1570,6 +1609,9 @@
             
             @udStrongify(self);
             self.netWorkChange = YES;
+            if (!self.agentModel) {
+                self.agentModel = [[UdeskAgent alloc] init];
+            }
             self.agentModel.message = getUDLocalizedString(@"udesk_network_interrupt");
             self.agentModel.code = UDAgentStatusResultNotNetWork;
             

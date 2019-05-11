@@ -134,6 +134,8 @@ UdeskOrganization *organization = [[UdeskOrganization alloc] initWithDomain:"dom
 UdeskCustomer *customer = [UdeskCustomer new];
 //必填（请不要使用特殊字符）
 customer.sdkToken = @"sdkToken";
+//非必填可选主键，唯一客户外部标识，用于处理 唯一标识冲突 （请不要随意传值）
+customer.customerToken = @"customerToken";
 //非必填
 customer.nickName = @"测试名字";
 //需要严格按照邮箱规则（没有则不填，不可以为空）
@@ -953,6 +955,14 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+
+sdk v4.1.5版本更新功能:
+
+1.修复了无消息对话过滤在某些场景下失效的问题
+
+2.修复了使用sdk指定客服/客服组在某些场景下失效的问题
+
+------
 
 sdk v4.1.4版本更新功能:
 
