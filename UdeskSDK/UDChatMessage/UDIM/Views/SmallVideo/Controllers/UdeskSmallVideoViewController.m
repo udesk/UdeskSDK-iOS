@@ -212,15 +212,15 @@
     
     _savingImage = YES;
     AVCaptureConnection *conntion = [self.videoManager.imageDataOutput connectionWithMediaType:AVMediaTypeVideo];
+    if (!conntion || !conntion.enabled || !conntion.active) {
+        _savingImage = NO;
+        return;
+    }
+    
     UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
     AVCaptureVideoOrientation avcaptureOrientation = [UdeskVideoUtil avOrientationForDeviceOrientation:curDeviceOrientation];
     [conntion setVideoOrientation:avcaptureOrientation];
     [conntion setVideoScaleAndCropFactor:1];
-    if (!conntion) {
-        NSLog(@"UdeskSDK：拍照失败");
-        _savingImage = NO;
-        return;
-    }
     
     __weak typeof(self) weakSelf = self;
     [self.videoManager.imageDataOutput captureStillImageAsynchronouslyFromConnection:conntion
@@ -318,9 +318,9 @@
 }
 
 - (void)dealloc {
-    self.previewView = nil;
-    self.bottomView.delegate = nil;
-    self.bottomView = nil;
+    _previewView = nil;
+    _bottomView.delegate = nil;
+    _bottomView = nil;
 }
 
 /*

@@ -103,7 +103,10 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
         [self updateWithAlbumModel:alumModel];
         
         [self.viewManager assetsFromFetchResult:alumModel.result allowPickingVideo:imagePicker.allowPickingVideo completion:^(NSArray<UdeskAssetModel *> *assetArray) {
-            [self.assetCollectionView reloadData];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.assetCollectionView reloadData];
+            });
             [self.assetCollectionView setContentOffset:CGPointMake(0, self.assetCollectionView.contentSize.height - self.assetCollectionView.frame.size.height) animated:NO];
         }];
     }];

@@ -956,6 +956,16 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v4.1.6版本更新功能:
+
+1.修复了图片选择器错乱问题
+
+2.空消息优化
+
+3.修复了已知问题
+
+------
+
 sdk v4.1.5版本更新功能:
 
 1.修复了无消息对话过滤在某些场景下失效的问题
