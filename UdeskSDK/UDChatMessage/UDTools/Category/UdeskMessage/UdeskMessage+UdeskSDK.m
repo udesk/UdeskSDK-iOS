@@ -127,6 +127,16 @@
         self.messageId = [[NSUUID UUID] UUIDString];
         self.messageType = UDMessageContentTypeProduct;
         self.productMessage = productMessage;
+        if ([productMessage.allKeys containsObject:@"productTitle"]) {
+            self.content = productMessage[@"productTitle"];
+        }
+        else if ([productMessage.allKeys containsObject:@"productURL"]) {
+            self.content = productMessage[@"productURL"];
+        }
+        else {
+            self.content = @"productTitle";
+        }
+
     }
     return self;
 }

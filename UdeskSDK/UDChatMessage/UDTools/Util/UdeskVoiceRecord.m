@@ -42,7 +42,7 @@
 
 - (void)dealloc {
     [self stopRecord];
-    self.recordPath = nil;
+    _recordPath = nil;
 }
 
 - (void)resetTimer {
@@ -60,11 +60,11 @@
     if (!_recorder)
         return;
     
-    if (self.recorder.isRecording) {
-        [self.recorder stop];
+    if (_recorder.isRecording) {
+        [_recorder stop];
     }
     
-    self.recorder = nil;
+    _recorder = nil;
 }
 //停止录音
 - (void)stopRecord {

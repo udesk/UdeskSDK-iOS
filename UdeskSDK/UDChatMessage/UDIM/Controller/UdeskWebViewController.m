@@ -11,7 +11,7 @@
 #import "UdeskSDKMacro.h"
 #import "UIView+UdeskSDK.h"
 
-@interface UdeskWebViewController ()
+@interface UdeskWebViewController ()<WKUIDelegate,WKNavigationDelegate,UIWebViewDelegate>
 
 @property (nonatomic, strong) WKWebView *robotWkWebView;
 @property (nonatomic, strong) UIWebView *robotWebView;
@@ -47,6 +47,8 @@
         _robotWkWebView = [[WKWebView alloc] initWithFrame:self.view.bounds];
         _robotWkWebView.backgroundColor = [UIColor whiteColor];
         _robotWkWebView.udHeight -= spacing;
+        _robotWkWebView.UIDelegate = self;
+        _robotWkWebView.navigationDelegate = self;
         [_robotWkWebView loadRequest:request];
         [self.view addSubview:_robotWkWebView];
         
@@ -64,10 +66,14 @@
         _robotWebView = [[UIWebView alloc] initWithFrame:self.view.bounds];
         _robotWebView.backgroundColor = [UIColor whiteColor];
         _robotWebView.udHeight -= spacing;
+        _robotWebView.delegate = self;
         [_robotWebView loadRequest:request];
         [self.view addSubview:_robotWebView];
     }
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     
     if ([keyPath isEqualToString:@"estimatedProgress"]) {
@@ -82,6 +88,54 @@
         }
     }
 }
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        [[UIApplication sharedApplication] openURL:request.URL];
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+        [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+    }
+    
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+#pragma mark - 如果使用第三键盘，会导致键盘把输入框遮挡，使用此方法解决
+- (void)keyboardWillShow:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    
+    double duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    CGRect keyboardF = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [UIView animateWithDuration:duration animations:^{
+        [self updateWebViewFrameWithKeyboardF:keyboardF];
+    }];
+}
+
+- (void)updateWebViewFrameWithKeyboardF:(CGRect)keyboardF {
+    
+    if (ud_isIOS8) {
+        
+        if (_robotWkWebView) {
+            _robotWkWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
+        }
+    }
+    else {
+        
+        if (_robotWebView) {
+            _robotWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
+        }
+    }
+}
+
 - (void)dealloc {
     
     if (ud_isIOS8 && self.robotWkWebView) {

@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 4.1.5
+//  Version: 4.2.0
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -388,7 +388,7 @@
  @param failure 失败回调
  */
 + (void)fetchAgentTicketReply:(NSString *)lastDate
-                      success:(void(^)(NSArray *dataSource,NSString *lastDate))success
+                      success:(void(^)(NSArray *dataSource))success
                       failure:(void(^)(NSError *error))failure;
 
 /**
@@ -408,5 +408,13 @@
 + (void)createPreSessionWithAgentId:(NSString *)agentId
                             groupId:(NSString *)groupId
                          completion:(void(^)(NSNumber *preSessionId,NSError *error))completion;
+
+/**
+ URL签名
+ 
+ @param url url
+ @return url
+ */
++ (NSURL *)udeskURLSignature:(NSString *)url;
 
 @end

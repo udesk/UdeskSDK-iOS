@@ -54,8 +54,6 @@
 @property (nonatomic, copy  ) NSString                 *blackedMessage;
 /** 是否显示客户留言事件 */
 @property (nonatomic, assign) BOOL                     leaveMsgFlag;
-/** 最后一条离线消息时间 */
-@property (nonatomic, copy  ) NSString                 *lastLeaveMsgDate;
 /** 无消息会话ID */
 @property (nonatomic, strong, readwrite) NSNumber      *preSessionId;
 /** 直接留言引导语 */
@@ -382,49 +380,12 @@
     }];
 }
 
-//上一次的留言
-- (void)fetchOldAgentTickeReply:(void(^)(NSInteger count))completion {
-    
-    @udWeakify(self);
-    [self fetchAgentTicketReply:self.lastLeaveMsgDate completion:^(NSArray *dataSource) {
-        
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            
-            @try {
-                
-                if (dataSource.count) {
-                    
-                    NSArray *moreMessageArray = [UdeskMessageUtil udeskMsgModelWithleaveMsg:dataSource messagesArray:self.messagesArray];
-                    NSRange range = NSMakeRange(0, [moreMessageArray count]);
-                    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
-                    
-                    @udStrongify(self);
-                    if (moreMessageArray.count) {
-                        NSMutableArray *array = [NSMutableArray arrayWithArray:self.messagesArray];
-                        [array insertObjects:moreMessageArray atIndexes:indexSet];
-                        self.messagesArray = array;
-                        //更新UI
-                        [self updateContent];
-                    }
-                }
-                if (completion) {
-                    completion(dataSource.count);
-                }
-            } @catch (NSException *exception) {
-                NSLog(@"%@",exception);
-            } @finally {
-            }
-        });
-    }];
-}
-
 - (void)fetchAgentTicketReply:(NSString *)date completion:(void(^)(NSArray *dataSource))completion {
     
     @udWeakify(self);
-    [UdeskManager fetchAgentTicketReply:date success:^(NSArray *dataSource,NSString *lastDate) {
+    [UdeskManager fetchAgentTicketReply:date success:^(NSArray *dataSource) {
         
         @udStrongify(self);
-        self.lastLeaveMsgDate = lastDate;
         if (dataSource.count==20) {
             self.isShowRefresh = YES;
         }
@@ -534,47 +495,39 @@
 #pragma mark - 加载更多DB消息
 - (void)fetchNextPageDatebaseMessage {
     
-    @udWeakify(self);
-    [self fetchOldAgentTickeReply:^(NSInteger count) {
+    UdeskBaseMessage *lastMessage = self.messagesArray.firstObject;
+    //根据最后列表最后一条消息的时间获取历史记录
+    [UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:lastMessage.message.timestamp messagesNumber:20 result:^(NSArray *messagesArray) {
         
-        if (count == 0) {
-            
-            @udStrongify(self);
-            UdeskBaseMessage *lastMessage = self.messagesArray.firstObject;
-            //根据最后列表最后一条消息的时间获取历史记录
-            [UdeskManager getHistoryMessagesFromDatabaseWithMessageDate:lastMessage.message.timestamp messagesNumber:20 result:^(NSArray *messagesArray) {
+        if (messagesArray.count) {
+            self.isShowRefresh = messagesArray.count>19 ? YES : NO;
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 
-                if (messagesArray.count) {
-                    self.isShowRefresh = messagesArray.count>19 ? YES : NO;
-                    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                @try {
+                    
+                    if (messagesArray.count) {
                         
-                        @try {
-                            
-                            if (messagesArray.count) {
-                                
-                                NSRange range = NSMakeRange(0, [messagesArray count]);
-                                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
-                                
-                                NSArray *moreMessageArray = [UdeskMessageUtil chatMessageWithMsgModel:messagesArray agentNick:self.agentModel.nick lastMessage:nil];
-                                if (moreMessageArray.count) {
-                                    NSMutableArray *array = [NSMutableArray arrayWithArray:self.messagesArray];
-                                    [array insertObjects:moreMessageArray atIndexes:indexSet];
-                                    self.messagesArray = array;
-                                    //更新UI
-                                    [self updateContent];
-                                }
-                            }
-                        } @catch (NSException *exception) {
-                            NSLog(@"%@",exception);
-                        } @finally {
+                        NSRange range = NSMakeRange(0, [messagesArray count]);
+                        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+                        
+                        NSArray *moreMessageArray = [UdeskMessageUtil chatMessageWithMsgModel:messagesArray agentNick:self.agentModel.nick lastMessage:nil];
+                        if (moreMessageArray.count) {
+                            NSMutableArray *array = [NSMutableArray arrayWithArray:self.messagesArray];
+                            [array insertObjects:moreMessageArray atIndexes:indexSet];
+                            self.messagesArray = array;
+                            //更新UI
+                            [self updateContent];
                         }
-                    });
+                    }
+                } @catch (NSException *exception) {
+                    NSLog(@"%@",exception);
+                } @finally {
                 }
-                else {
-                    //没有数据不展示下拉刷新按钮
-                    self.isShowRefresh = NO;
-                }
-            }];
+            });
+        }
+        else {
+            //没有数据不展示下拉刷新按钮
+            self.isShowRefresh = NO;
         }
     }];
 }

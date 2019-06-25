@@ -25,6 +25,7 @@
 #import "UdeskBaseMessage.h"
 #import "Udesk_YYWebImage.h"
 #import "UdeskCacheUtil.h"
+#import "UdeskTemplateMessage.h"
 
 @implementation UdeskMessageUtil
 
@@ -53,6 +54,13 @@
                     UdeskEventMessage *eventMessage = [[UdeskEventMessage alloc] initWithMessage:message displayTimestamp:YES];
                     if (eventMessage) {
                         [messages addObject:eventMessage];
+                    }
+                }
+                else if (message.messageType == UDMessageContentTypeTemplate) {
+                    
+                    UdeskTemplateMessage *templateMessage = [[UdeskTemplateMessage alloc] initWithMessage:message displayTimestamp:NO];
+                    if (templateMessage) {
+                        [messages addObject:templateMessage];
                     }
                 }
             }
@@ -168,6 +176,12 @@
                     
                     UdeskGoodsMessage *goodsMessage = [[UdeskGoodsMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:goodsMessage];
+                    break;
+                }
+                case UDMessageContentTypeTemplate: {
+                    
+                    UdeskTemplateMessage *templateMessage = [[UdeskTemplateMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:templateMessage];
                     break;
                 }
                     
