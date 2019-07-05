@@ -76,6 +76,11 @@
     _pageControl.pageIndicatorTintColor = [UIColor colorWithRed:0.733f  green:0.733f  blue:0.733f alpha:1];
     [self addSubview:_pageControl];
     
+    [self setupButtons];
+}
+
+- (void)setupButtons {
+    
     UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
     
     if (sdkConfig.isShowAlbumEntry) {
@@ -107,6 +112,18 @@
         [self appendVideoCallButton];
     }
     
+    self.customMenuItems = [UdeskSDKConfig customConfig].customButtons;
+}
+
+//移除所有按钮
+- (void)removeAllAreaButtons {
+    
+    for (UIView *view in [self.scrollview subviews]) {
+        if ([view isKindOfClass:[UdeskButton class]]) {
+            [view removeFromSuperview];
+        }
+    }
+    [self.allItems removeAllObjects];
 }
 
 - (UdeskButton *)buttonWithImage:(UIImage *)image title:(NSString *)title {
@@ -207,19 +224,6 @@
         if (_enableVideoCall) {
             [self removeVideoCallButton];
         }
-        //移除自定义按钮
-        if (self.customMenuItems.count) {
-            NSArray *array = [self.allItems copy];
-            for (UdeskButton *button in array) {
-                //自定义按钮
-                if (button.tag >= (9347 + 5)) {
-                    [button removeFromSuperview];
-                    if ([self.allItems containsObject:button]) {
-                        [self.allItems removeObject:button];
-                    }
-                }
-            }
-        }
         
         [self setNeedsLayout];
         
@@ -232,22 +236,10 @@
 - (void)appendPreSessionSupportButton {
     
     @try {
-     
-        //添加评价按钮
-        if (_enableSurvey && ![self.allItems containsObject:self.surveyButton]) {
-            [self appendSurveyButton];
-        }
-        //添加视频直播按钮
-        if (_enableVideoCall && ![self.allItems containsObject:self.videoCallButton]) {
-            [self appendVideoCallButton];
-        }
         
-        //检查是否有自定义按钮
-        NSArray *array = [self.allItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"tag >= %d",(9347 + 5)]];
-        //重新赋值
-        if (self.customMenuItems.count && !array.count) {
-            self.customMenuItems = self.customMenuItems;
-        }
+        [self removeAllAreaButtons];
+        [self setupButtons];
+        
         [self setNeedsLayout];
         
     } @catch (NSException *exception) {

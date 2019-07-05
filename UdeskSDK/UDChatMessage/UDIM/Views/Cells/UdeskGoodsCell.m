@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) UIImageView              *goodsImageView;
 @property (nonatomic, strong) UDTTTAttributedLabel     *paramsLabel;
+@property (nonatomic, strong) UDTTTAttributedLabel     *titleLabel;
 
 @end
 
@@ -39,14 +40,19 @@
     _goodsImageView.userInteractionEnabled = true;
     [self.bubbleImageView addSubview:_goodsImageView];
     
+    _titleLabel = [[UDTTTAttributedLabel alloc] initWithFrame:CGRectZero];
+    _titleLabel.textAlignment = NSTextAlignmentLeft;
+    _titleLabel.userInteractionEnabled = true;
+    _titleLabel.delegate = self;
+    _titleLabel.backgroundColor = [UIColor clearColor];
+    [self.bubbleImageView addSubview:_titleLabel];
+    
     _paramsLabel = [[UDTTTAttributedLabel alloc] initWithFrame:CGRectZero];
     _paramsLabel.numberOfLines = 0;
     _paramsLabel.textAlignment = NSTextAlignmentLeft;
     _paramsLabel.userInteractionEnabled = true;
     _paramsLabel.delegate = self;
     _paramsLabel.backgroundColor = [UIColor clearColor];
-    _paramsLabel.activeLinkAttributes = @{(id)kCTForegroundColorAttributeName:[UdeskSDKConfig customConfig].sdkStyle.activeLinkColor};
-    _paramsLabel.linkAttributes = @{(id)kCTForegroundColorAttributeName:[UdeskSDKConfig customConfig].sdkStyle.linkColor};
     [self.bubbleImageView addSubview:_paramsLabel];
     
     //长按手势
@@ -75,9 +81,12 @@
         [self.goodsImageView yy_setImageWithURL:[NSURL URLWithString:[goodsMessage.imgUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:[UIImage udDefaultLoadingImage]];
     }
     
+    self.titleLabel.numberOfLines = goodsMessage.numberOfLines;
+    self.titleLabel.attributedText = goodsMessage.titleAttributedString;
     self.paramsLabel.attributedText = goodsMessage.paramsAttributedString;
     
     self.goodsImageView.frame = goodsMessage.imgFrame;
+    self.titleLabel.frame = goodsMessage.titleFrame;
     self.paramsLabel.frame = goodsMessage.paramsFrame;
 }
 

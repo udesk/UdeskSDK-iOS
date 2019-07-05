@@ -44,8 +44,12 @@
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:goodsURL]];
     };
     
+    UdeskSDKStyle *style = [UdeskSDKStyle defaultStyle];
+    //设置标题行数
+    style.goodsNameNumberOfLines = 2;
+    
     //初始化sdk
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:config sdkActionConfig:action];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:style sdkConfig:config sdkActionConfig:action];
     [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 
@@ -125,7 +129,7 @@
         }
         case UdeskOrderSendTypeGoods:{
             
-            [viewController sendGoodsMessageWithModel:goodsModel];
+            [viewController sendGoodsMessageWithModel:[self getGoodsModel]];
             break;
         }
         default:
@@ -133,7 +137,7 @@
     }
 }
 
-- (UdeskGoodsModel *)getGoodsModel {
++ (UdeskGoodsModel *)getGoodsModel {
     
     UdeskGoodsModel *goodsModel = [[UdeskGoodsModel alloc] init];
     goodsModel.name = @"Apple iPhone X (A1903) 64GB 深空灰色 移动联通4G手机";

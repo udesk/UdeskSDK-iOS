@@ -661,7 +661,6 @@
     
     if (!_moreView) {
         _moreView = [[UdeskChatToolBarMoreView alloc] initWithEnableSurvey:self.sdkSetting.enableImSurvey.boolValue enableVideoCall:self.sdkSetting.sdkVCall.boolValue];
-        _moreView.customMenuItems = self.sdkConfig.customButtons;
         _moreView.backgroundColor = [UIColor colorWithWhite:0.961 alpha:1.000];
         _moreView.alpha = 0.0;
         _moreView.delegate = self;

@@ -18,10 +18,15 @@
 @property (nonatomic, copy, readonly) NSString *url;
 /** 图片 */
 @property (nonatomic, copy, readonly) NSString *imgUrl;
+/** 行数 */
+@property (nonatomic, assign, readonly) NSInteger numberOfLines;
+/** 其他文本参数 */
+@property (nonatomic, strong, readonly) NSAttributedString  *titleAttributedString;
 /** 其他文本参数 */
 @property (nonatomic, strong, readonly) NSAttributedString  *paramsAttributedString;
 
 @property (nonatomic, assign, readonly) CGRect imgFrame;
+@property (nonatomic, assign, readonly) CGRect titleFrame;
 @property (nonatomic, assign, readonly) CGRect paramsFrame;
 
 @end

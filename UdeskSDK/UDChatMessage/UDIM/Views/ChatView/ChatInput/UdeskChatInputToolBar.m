@@ -502,24 +502,6 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     [self.messageTableView setTableViewInsetsWithBottomValue:self.udHeight];
 }
 
-- (void)setIsPreSessionMessage:(BOOL)isPreSessionMessage {
-    _isPreSessionMessage = isPreSessionMessage;
-    
-    if (isPreSessionMessage) {
-        if (self.customToolBar) {
-            [self.customToolBar removeFromSuperview];
-            self.customToolBar = nil;
-            self.frame = CGRectMake(0, self.frame.origin.y + 44, self.frame.size.width, self.frame.size.height - 44);
-            [self.messageTableView setTableViewInsetsWithBottomValue:self.udHeight];
-        }
-    }
-    else {
-        if (!self.customToolBar) {
-            self.customButtonConfigs = self.customButtonConfigs;
-        }
-    }
-}
-
 #pragma mark - @protocol UdeskCustomToolBarDelegate
 - (void)didSelectCustomToolBar:(UdeskCustomToolBar *)toolBar atIndex:(NSInteger)index {
     

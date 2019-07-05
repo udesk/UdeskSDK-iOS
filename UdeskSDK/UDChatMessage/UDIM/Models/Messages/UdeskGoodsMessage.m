@@ -38,10 +38,15 @@ const CGFloat kUDGoodsParamsVerticalSpacing = 10.0;
 @property (nonatomic, copy, readwrite) NSString *url;
 /** 图片 */
 @property (nonatomic, copy, readwrite) NSString *imgUrl;
+/** 行数 */
+@property (nonatomic, assign, readwrite) NSInteger numberOfLines;
+/** 其他文本参数 */
+@property (nonatomic, strong, readwrite) NSAttributedString  *titleAttributedString;
 /** 其他文本参数 */
 @property (nonatomic, strong, readwrite) NSAttributedString  *paramsAttributedString;
 
 @property (nonatomic, assign, readwrite) CGRect imgFrame;
+@property (nonatomic, assign, readwrite) CGRect titleFrame;
 @property (nonatomic, assign, readwrite) CGRect paramsFrame;
 
 @end
@@ -72,13 +77,21 @@ const CGFloat kUDGoodsParamsVerticalSpacing = 10.0;
     CGFloat labelWidth = UD_SCREEN_WIDTH>320?170:140;
     CGFloat bubbleWidth = UD_SCREEN_WIDTH>320?280:230;
     
+    CGFloat titleHeight = [UdeskSDKConfig customConfig].sdkStyle.goodsNameFont.lineHeight * self.numberOfLines;
+    CGSize titleSize = [UdeskStringSizeUtil getSizeForAttributedText:self.titleAttributedString textWidth:labelWidth];
+    if (titleHeight == 0 || titleSize.height < titleHeight) {
+        titleHeight = titleSize.height;
+    }
+    
+    CGSize paramsSize = [UdeskStringSizeUtil getSizeForAttributedText:self.paramsAttributedString textWidth:labelWidth];
+    
     if (self.message.messageFrom == UDMessageTypeSending) {
         
         //图片
         self.imgFrame = CGRectMake(kUDGoodsImageHorizontalSpacing, kUDGoodsImageVerticalSpacing, kUDGoodsImageWidth, kUDGoodsImageHeight);
         //名称+参数
-        CGSize paramsSize = [UdeskStringSizeUtil getSizeForAttributedText:self.paramsAttributedString textWidth:labelWidth];
-        self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, kUDGoodsParamsVerticalSpacing, paramsSize.width, paramsSize.height+5);
+        self.titleFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, kUDGoodsParamsVerticalSpacing, labelWidth, titleHeight);
+        self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, CGRectGetMaxY(self.titleFrame) + kUDGoodsParamsVerticalSpacing, paramsSize.width, paramsSize.height+5);
         
         CGFloat bubbleHeight = MAX(kUDGoodsImageHeight+kUDGoodsImageVerticalSpacing, CGRectGetMaxY(self.paramsFrame));
         self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x-kUDArrowMarginWidth-bubbleWidth, self.avatarFrame.origin.y, bubbleWidth, bubbleHeight+kUDGoodsParamsVerticalSpacing);
@@ -95,6 +108,8 @@ const CGFloat kUDGoodsParamsVerticalSpacing = 10.0;
 }
 
 - (void)setupGoodsDataWithDictionary:(NSDictionary *)dictionary {
+    
+    self.numberOfLines = [UdeskSDKConfig customConfig].sdkStyle.goodsNameNumberOfLines;
     
     if ([dictionary.allKeys containsObject:@"url"]) {
         self.url = dictionary[@"url"];
@@ -122,20 +137,15 @@ const CGFloat kUDGoodsParamsVerticalSpacing = 10.0;
 }
 
 - (void)setGoodsNameAttributedStringWithName:(NSString *)name {
-    
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.paragraphSpacing = 5;
-    
+
+    //名称
     NSDictionary *dic = @{
                           NSForegroundColorAttributeName:[UdeskSDKConfig customConfig].sdkStyle.goodsNameTextColor,
                           NSFontAttributeName:[UdeskSDKConfig customConfig].sdkStyle.goodsNameFont,
-                          NSParagraphStyleAttributeName:paragraphStyle
                           };
     
-    NSMutableAttributedString *mAttributedString = [[NSMutableAttributedString alloc] init];
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[name stringByAppendingString:@"\n"] attributes:dic];
-    [mAttributedString appendAttributedString:attributedString];
-    self.paramsAttributedString = attributedString;
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:name attributes:dic];
+    self.titleAttributedString = attributedString;
 }
 
 - (void)setupParamsWithArray:(NSArray *)array {
