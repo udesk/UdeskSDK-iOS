@@ -83,7 +83,7 @@ const CGFloat kUDGoodsParamsVerticalSpacing = 10.0;
         titleHeight = titleSize.height;
     }
     
-    CGSize paramsSize = [UdeskStringSizeUtil getSizeForAttributedText:self.paramsAttributedString textWidth:labelWidth];
+    CGFloat paramsHeight = [UdeskStringSizeUtil getHeightForAttributedText:self.paramsAttributedString textWidth:labelWidth];
     
     if (self.message.messageFrom == UDMessageTypeSending) {
         
@@ -91,7 +91,7 @@ const CGFloat kUDGoodsParamsVerticalSpacing = 10.0;
         self.imgFrame = CGRectMake(kUDGoodsImageHorizontalSpacing, kUDGoodsImageVerticalSpacing, kUDGoodsImageWidth, kUDGoodsImageHeight);
         //名称+参数
         self.titleFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, kUDGoodsParamsVerticalSpacing, labelWidth, titleHeight);
-        self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, CGRectGetMaxY(self.titleFrame) + kUDGoodsParamsVerticalSpacing, paramsSize.width, paramsSize.height+5);
+        self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, CGRectGetMaxY(self.titleFrame) + kUDGoodsParamsVerticalSpacing, labelWidth, paramsHeight);
         
         CGFloat bubbleHeight = MAX(kUDGoodsImageHeight+kUDGoodsImageVerticalSpacing, CGRectGetMaxY(self.paramsFrame));
         self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x-kUDArrowMarginWidth-bubbleWidth, self.avatarFrame.origin.y, bubbleWidth, bubbleHeight+kUDGoodsParamsVerticalSpacing);
