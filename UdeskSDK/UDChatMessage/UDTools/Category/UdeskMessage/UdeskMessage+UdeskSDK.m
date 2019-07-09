@@ -253,10 +253,10 @@
             NSMutableArray *array = [NSMutableArray array];
             for (UdeskGoodsParamModel *paramModel in model.params) {
                 NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-                if (![UdeskSDKUtil isBlankString:paramModel.text]) {
+                if (paramModel.text) {
                     [dict setObject:paramModel.text forKey:@"text"];
                 }
-                if (![UdeskSDKUtil isBlankString:paramModel.color]) {
+                if (paramModel.color) {
                     [dict setObject:paramModel.color forKey:@"color"];
                 }
                 if (paramModel.fold) {
