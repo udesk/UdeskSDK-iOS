@@ -23,9 +23,9 @@
 #endif
 
 //#error "请在官网新建应用，配置包名，并在此填写应用的 api key, secret key, appid(即appcode)"
-const NSString* API_KEY = @"ESomnKOLskqGespGtvIBD7jm";
-const NSString* SECRET_KEY = @"RAA2u215ynjzoNE78kLOmZDfhTGcZQ73";
-const NSString* APP_ID = @"15212039";
+const NSString *UD_API_KEY = @"ESomnKOLskqGespGtvIBD7jm";
+const NSString *UD_SECRET_KEY = @"RAA2u215ynjzoNE78kLOmZDfhTGcZQ73";
+const NSString *UD_APP_ID = @"15212039";
 
 const CGFloat udRecognizerContentViewHeight = 320;
 const CGFloat udRecognizerTextViewHeight = 120;
@@ -76,9 +76,9 @@ const CGFloat udRecognizerTextViewEditHeight = 250;
     // 设置语音识别代理
     [self.asrEventManager setDelegate:self];
     // 参数配置：在线身份验证
-    [self.asrEventManager setParameter:@[API_KEY, SECRET_KEY] forKey:BDS_ASR_API_SECRET_KEYS];
+    [self.asrEventManager setParameter:@[UD_API_KEY, UD_SECRET_KEY] forKey:BDS_ASR_API_SECRET_KEYS];
     // 设置 APPID
-    [self.asrEventManager setParameter:APP_ID forKey:BDS_ASR_OFFLINE_APP_CODE];
+    [self.asrEventManager setParameter:UD_APP_ID forKey:BDS_ASR_OFFLINE_APP_CODE];
     // 开启长语音
     [self.asrEventManager setParameter:@(YES) forKey:BDS_ASR_ENABLE_LONG_SPEECH];
     

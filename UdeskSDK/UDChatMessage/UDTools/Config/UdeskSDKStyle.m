@@ -41,12 +41,11 @@
         self.agentNicknameFont = [UIFont systemFontOfSize:12];
         self.agentNicknameColor = [UIColor udColorWithHexString:@"#8E8E93"];
         self.goodsNameFont = [UIFont boldSystemFontOfSize:14];
-        self.goodsNameTextColor = [UIColor whiteColor];
+        self.customerGoodsNameTextColor = [UIColor whiteColor];
+        self.agentGoodsNameTextColor = [UIColor blackColor];
         self.customerAvatarImage = [UIImage udDefaultCustomerAvatarImage];
         
         //nav
-        self.navBackButtonColor = [UIColor udColorWithHexString:@"#007AFF"];
-        self.navRightButtonColor = [UIColor udColorWithHexString:@"#007AFF"];
         self.navBackButtonImage = [UIImage udDefaultBackImage];
         self.navigationColor = [UIColor colorWithRed:0.976f  green:0.976f  blue:0.976f alpha:1];
         self.navBarBackgroundImage = nil;

@@ -10,6 +10,7 @@
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKMacro.h"
 #import "UIView+UdeskSDK.h"
+#import "UIColor+UdeskSDK.h"
 
 @implementation UdeskCustomNavigation
 
@@ -38,7 +39,7 @@
     _closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _closeButton.frame = CGRectMake(10, 20 + (udIsIPhoneXSeries?24:0), 50, 44);
     _closeButton.titleLabel.font = [UIFont systemFontOfSize:16];
-    [_closeButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [_closeButton setTitleColor:[UIColor udColorWithHexString:@"#007AFF"] forState:UIControlStateNormal];
     [_closeButton setTitle:getUDLocalizedString(@"udesk_close") forState:UIControlStateNormal];
     [_closeButton addTarget:self action:@selector(closeViewControllerAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_closeButton];
@@ -50,7 +51,7 @@
     _rightButton.frame = CGRectMake(self.udRight-50-10, 20 + (udIsIPhoneXSeries?24:0), 50, 44);
     _rightButton.titleLabel.font = [UIFont systemFontOfSize:16];
     _rightButton.hidden = YES;
-    [_rightButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [_rightButton setTitleColor:[UIColor udColorWithHexString:@"#007AFF"] forState:UIControlStateNormal];
     [_rightButton addTarget:self action:@selector(rightButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_rightButton];
 }

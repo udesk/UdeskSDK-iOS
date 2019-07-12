@@ -128,6 +128,15 @@
         self.messageType = UDMessageContentTypeProduct;
         self.productMessage = productMessage;
         self.timestamp = [NSDate date];
+        if ([productMessage.allKeys containsObject:@"productTitle"]) {
+            self.content = productMessage[@"productTitle"];
+        }
+        else if ([productMessage.allKeys containsObject:@"productURL"]) {
+            self.content = productMessage[@"productURL"];
+        }
+        else {
+            self.content = @"productTitle";
+        }
     }
     return self;
 }
@@ -246,10 +255,10 @@
             NSMutableArray *array = [NSMutableArray array];
             for (UdeskGoodsParamModel *paramModel in model.params) {
                 NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-                if (![UdeskSDKUtil isBlankString:paramModel.text]) {
+                if (paramModel.text) {
                     [dict setObject:paramModel.text forKey:@"text"];
                 }
-                if (![UdeskSDKUtil isBlankString:paramModel.color]) {
+                if (paramModel.color) {
                     [dict setObject:paramModel.color forKey:@"color"];
                 }
                 if (paramModel.fold) {

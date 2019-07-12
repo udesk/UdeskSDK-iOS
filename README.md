@@ -424,8 +424,13 @@ action.goodsMessageClickBlock = ^(UdeskChatViewController *viewController, NSStr
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:goodsURL]];
 };
     
+UdeskSDKStyle *style = [UdeskSDKStyle customStyle];
+style.customerGoodsNameTextColor = [UIColor orangeColor];
+//标题最大显示行，默认全部显示
+style.goodsNameNumberOfLines = 2;
+
 //初始化sdk
-UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:config sdkActionConfig:action];
+UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:style sdkConfig:config sdkActionConfig:action];
 [chatViewManager pushUdeskInViewController:self completion:nil];
 
 - (UdeskGoodsModel *)getGoodsModel {
@@ -434,6 +439,10 @@ UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[Ud
     goodsModel.name = @"Apple iPhone X (A1903) 64GB 深空灰色 移动联通4G手机";
     goodsModel.url = @"https://item.jd.com/6748052.html";
     goodsModel.imgUrl = @"http://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg";
+    goodsModel.customParameters = @{
+      													    @"type":@"测试啦",
+                                    @"order":@"123"
+                                    };
     
     UdeskGoodsParamModel *paramModel1 = [UdeskGoodsParamModel new];
     paramModel1.text = @"￥6999.00";
@@ -793,6 +802,58 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
+### 5.10 发送订单消息
+
+你可以在你需要的地方调用，前提是SDK用户已创建，发送之后可在后台查看订单。
+
+```objective-c
+UdeskOrder *order = [[UdeskOrder alloc] init];
+order.number = @"1111";
+order.name = @"商品订单";
+order.url = @"http://www.qq.com";
+order.price = 166.66;
+order.orderAt = [dateFormatter stringFromDate:[NSDate date]];
+order.payAt = [dateFormatter stringFromDate:[NSDate date]];
+order.status = @"wait_pay";
+order.remark = @"测试订单";
+    
+[UdeskManager sendOrder:order];
+```
+
+### 5.11 发送轨迹消息
+
+你可以在你需要的地方调用，前提是SDK用户已创建，发送之后可在IM客服工作台、对话记录查看。
+
+```objective-c
+UdeskTrack *track = [[UdeskTrack alloc] init];
+track.type = @"product";
+track.name = @"商品名称";
+track.url = @"http://www.baidu.com";
+track.imageUrl = @"https://qn-im.udesk.cn/image_1559120464_721.png";
+
+NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+track.date = [dateFormatter stringFromDate:[NSDate date]];
+
+UdeskTrackParams *params1 = [[UdeskTrackParams alloc] init];
+params1.text = @"商品参数1";
+params1.color = @"#FF0000";
+params1.udBreak = @(1);
+params1.size = @"20";
+params1.fold = @(1);
+
+UdeskTrackParams *params2 = [[UdeskTrackParams alloc] init];
+params2.text = @"商品参数2";
+params2.color = @"#FF0111";
+params2.udBreak = @(0);
+params2.size = @"10";
+params2.fold = @(0);
+
+track.params = @[params1,params2];
+
+[UdeskManager sendTrack:track];
+```
+
 
 
 # 六、常见问题
@@ -891,6 +952,16 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+
+sdk v5.1.0版本更新功能:
+
+1.支持模版消息
+
+2.支持发送订单、轨迹消息
+
+3.已知bug修改
+
+------
 
 sdk v5.0.0版本更新功能:
 

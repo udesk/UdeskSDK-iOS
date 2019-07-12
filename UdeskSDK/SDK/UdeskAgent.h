@@ -16,6 +16,7 @@ typedef enum : NSUInteger {
     UDAgentStatusResultNoExist      = 5050,//客服不存在
     UDAgentGroupStatusResultNoExist = 5060,//客服组不存在
     UDAgentStatusResultLeaveMessage = 3001,//直接留言
+    UDAgentStatusResultBoardMessage = 3002,//工作台留言
     UDAgentStatusResultUnKnown      = 4444,//其他错误
 } UDAgentStatusType;
 

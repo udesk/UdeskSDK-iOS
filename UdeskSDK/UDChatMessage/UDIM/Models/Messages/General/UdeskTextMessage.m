@@ -51,11 +51,12 @@ static CGFloat const kUDTextMendSpacing = 1.0;
             case UDMessageTypeSending:{
                 
                 CGFloat bubbleWidth = textSize.width+(kUDBubbleToTextHorizontalSpacing*2);
+                CGFloat bubbleHeight = textSize.height+(kUDBubbleToTextVerticalSpacing*2);
                 CGFloat bubbleX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-bubbleWidth;
                 CGFloat bubbleSpacing = [self getBubbleSpacing];
                 
                 //文本气泡frame
-                self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+bubbleSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*2), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
+                self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+bubbleSpacing, bubbleWidth, bubbleHeight);
                 //文本frame
                 self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+kUDTextMendSpacing, textSize.width, textSize.height);
                 //加载中frame

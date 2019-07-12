@@ -48,10 +48,10 @@
 /** 消息内容（时间）字体大小 */
 @property (nonatomic, strong) UIFont   *messageTimeFont;
 
-/** 导航栏返回按钮颜色（默认蓝色）*/
+/** 导航栏返回按钮颜色 */
 @property (nonatomic, strong) UIColor  *navBackButtonColor;
 
-/** 导航栏右侧按钮颜色（默认蓝色）*/
+/** 导航栏右侧按钮颜色 */
 @property (nonatomic, strong) UIColor  *navRightButtonColor;
 
 /** 导航栏返回按钮图片 */
@@ -129,8 +129,12 @@
 
 /** 商品消息名称字体 */
 @property (nonatomic, strong) UIFont *goodsNameFont;
-/** 商品消息名称颜色 */
-@property (nonatomic, strong) UIColor *goodsNameTextColor;
+/** 客户商品消息名称颜色 */
+@property (nonatomic, strong) UIColor *customerGoodsNameTextColor;
+/** 客服商品消息名称颜色 */
+@property (nonatomic, strong) UIColor *agentGoodsNameTextColor;
+/** 商品消息名称行数 */
+@property (nonatomic, assign) NSInteger goodsNameNumberOfLines;
 
 /** wkWebView进度条中未填充部分的颜色（仅支持iOS8以上） */
 @property (nonatomic, strong) UIColor *webViewProgressTrackTintColor;

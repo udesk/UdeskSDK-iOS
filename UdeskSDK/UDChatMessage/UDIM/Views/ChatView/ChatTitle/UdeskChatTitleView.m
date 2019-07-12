@@ -65,6 +65,7 @@
             break;
         case UDAgentStatusResultOffline:
         case UDAgentStatusResultLeaveMessage:
+        case UDAgentStatusResultBoardMessage:
             titleImage = [UIImage udDefaultAgentOfflineImage];
             break;
         default:

@@ -31,6 +31,7 @@
 #import "UdeskTableMessage.h"
 #import "UdeskProductMessage.h"
 #import "UdeskProductListMessage.h"
+#import "UdeskTemplateMessage.h"
 
 @implementation UdeskMessageUtil
 
@@ -185,6 +186,12 @@
                     
                     UdeskProductMessage *productMessage = [[UdeskProductMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:productMessage];
+                    break;
+                }
+                case UDMessageContentTypeTemplate: {
+                    
+                    UdeskTemplateMessage *templateMessage = [[UdeskTemplateMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:templateMessage];
                     break;
                 }
                     

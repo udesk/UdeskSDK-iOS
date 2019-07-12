@@ -22,7 +22,7 @@ static CGFloat const kUDNewsDescMaxHeight = 35.0;
 /** 聊天气泡和其中的文字水平间距 */
 const CGFloat kUDBubbleToNewsHorizontalSpacing = 12.0;
 /** 聊天气泡和其中的文字垂直间距 */
-const CGFloat kUDBubbleToNewsVerticalSpacing = 10.0;
+const CGFloat kUDBubbleToNewsVerticalSpacing = 5.0;
 /** 项目列表标签Width */
 const CGFloat kUDNewsTopAskQuestionVerticalSpacing = 3.0;
 /** 项目列表标签Width */

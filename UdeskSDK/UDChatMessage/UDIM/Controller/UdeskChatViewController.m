@@ -1018,6 +1018,7 @@ static CGFloat udInputBarHeight = 54.0f;
         case UDMessageSendStatusOffSending:
             
             if (self.chatInputToolBar.agent.code == UDAgentStatusResultLeaveMessage ||
+                self.chatInputToolBar.agent.code == UDAgentStatusResultBoardMessage ||
                 self.chatInputToolBar.agent.code == UDAgentStatusResultQueue ||
                 self.chatInputToolBar.agent.code == UDAgentConversationOver) {
                 [self updateChatMessageUI:message];
@@ -1282,7 +1283,7 @@ static CGFloat udInputBarHeight = 54.0f;
         [UdeskManager quitQueueWithType:[self.sdkConfig quitQueueString]];
     }
     //取消所有请求
-    [UdeskManager cancelAllOperations];
+    [UdeskManager LeaveSDKPage];
     
     //dismiss
     [super dismissChatViewController];
@@ -1574,7 +1575,7 @@ static CGFloat udInputBarHeight = 54.0f;
     //监听键盘
     [self subscribeToKeyboard];
     //设置客户在线
-    [UdeskManager enterTheSDKPage];
+    [UdeskManager enterSDKPage];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

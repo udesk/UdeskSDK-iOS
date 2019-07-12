@@ -131,6 +131,10 @@
         [self showLeaveMessage];
         return;
     }
+    else if (_sdkSetting.enableWebImFeedback.boolValue && [_sdkSetting.leaveMessageType isEqualToString:@"im"]) {
+        [self showBoardMessage];
+        return;
+    }
     
     [self showAlert];
 }
@@ -145,10 +149,12 @@
     }
     
     //咨询对象
-    if (sdkConfig.productDictionary) {
-        UdeskMessage *productMessage = [[UdeskMessage alloc] initWithProduct:sdkConfig.productDictionary];
-        [UdeskManager sendMessage:productMessage progress:nil completion:nil];
-    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (sdkConfig.productDictionary) {
+            UdeskMessage *productMessage = [[UdeskMessage alloc] initWithProduct:sdkConfig.productDictionary];
+            [UdeskManager sendMessage:productMessage progress:nil completion:nil];
+        }
+    });
     
     //移除排队事件
     [self removeQueueEvent];
@@ -179,13 +185,24 @@
     [UdeskManager quitQueueWithType:[[UdeskSDKConfig customConfig] quitQueueString]];
 }
 
+//工作台留言
+- (void)showBoardMessage {
+    
+    [self agentOfflineWithStatus:UDAgentStatusResultBoardMessage];
+}
+
 //直接留言
 - (void)showLeaveMessage {
     
+    [self agentOfflineWithStatus:UDAgentStatusResultLeaveMessage];
+}
+
+- (void)agentOfflineWithStatus:(UDAgentStatusType)status {
+ 
     //移除排队事件
     [self removeQueueEvent];
     
-    self.agentModel.code = UDAgentStatusResultLeaveMessage;
+    self.agentModel.code = status;
     self.agentModel.message = getUDLocalizedString(@"udesk_leave_msg");
     
     if (self.didUpdateAgentBlock) {
@@ -194,7 +211,7 @@
     
     if (!_leaveMessageGuideFlag) {
         
-        if (self.agentModel.code == UDAgentStatusResultLeaveMessage) {
+        if (self.agentModel.code == status) {
             if (self.didAddLeaveMessageGuideBlock) {
                 self.didAddLeaveMessageGuideBlock();
             }
@@ -319,7 +336,8 @@
         }
         
         //直接留言 不切换客服的状态
-        if (self.agentModel.code == UDAgentStatusResultLeaveMessage) {
+        if (self.agentModel.code == UDAgentStatusResultLeaveMessage ||
+            self.agentModel.code == UDAgentStatusResultBoardMessage) {
             return;
         }
         

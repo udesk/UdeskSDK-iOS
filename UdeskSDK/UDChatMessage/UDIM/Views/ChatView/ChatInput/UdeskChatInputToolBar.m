@@ -353,7 +353,8 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
         [UdeskManager sendClientInputtingWithContent:growingTextView.text];
     }
     //输入预知
-    if (self.agent.code != UDAgentStatusResultLeaveMessage) {
+    if (self.agent.code != UDAgentStatusResultLeaveMessage ||
+        self.agent.code != UDAgentStatusResultBoardMessage) {
         if ([UdeskSDKUtil isBlankString:growingTextView.text]) {
             [UdeskManager sendClientInputtingWithContent:growingTextView.text];
         }
@@ -429,7 +430,8 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     if (agent.code == UDAgentStatusResultOnline) {
         [self resetAllButton];
     }
-    else if(agent.code == UDAgentStatusResultLeaveMessage) {
+    else if(agent.code == UDAgentStatusResultLeaveMessage ||
+            agent.code == UDAgentStatusResultBoardMessage) {
         [self updateInputBarForLeaveMessage];
     }
     
@@ -495,7 +497,8 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     if (!self.agent || self.agent == (id)kCFNull) return YES;
     
     if (self.agent.code != UDAgentStatusResultOnline &&
-        self.agent.code != UDAgentStatusResultLeaveMessage) {
+        self.agent.code != UDAgentStatusResultLeaveMessage &&
+        self.agent.code != UDAgentStatusResultBoardMessage) {
         
         if (self.delegate && [self.delegate respondsToSelector:@selector(didClickChatInputToolBar)]) {
             [self.delegate didClickChatInputToolBar];

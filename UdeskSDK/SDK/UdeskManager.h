@@ -14,6 +14,7 @@
 #import "UdeskSetting.h"
 #import "UdeskCustomer.h"
 #import "UdeskOrganization.h"
+#import "UdeskTrack.h"
 
 /**
  *  Udesk客服系统当前有新消息，开发者可注册该通知接受未读消息，显示小红点未读标识
@@ -62,9 +63,9 @@
 - (void)needFetchServersMessages;
 
 /**
- 请求客服信息，创建会话
+ 请求配置信息
  */
-- (void)needfetchAgentCreateSession;
+- (void)needFetchServersSetting;
 
 /**
  排队消息已到最大值
@@ -75,6 +76,11 @@
  自动转人工
  */
 - (void)didReceiveAutoTransferAgentServer;
+
+/**
+ 请求客服信息
+ */
+- (void)needFetchAgentServers;
 
 @end
 
@@ -305,6 +311,24 @@
 + (void)registerDeviceToken:(id)deviceToken;
 
 
+/*-----------------电商-------------------*/
+
+
+/**
+ 发送轨迹，此接口只有在“initWithOrganization:customer:”接口调用过之后才会生效，调用此接口请保证管理员后台开启了轨迹功能
+ 
+ @param track 轨迹
+ */
++ (void)sendTrack:(UdeskTrack *)track;
+
+/**
+ 发送订单，此接口只有在“initWithOrganization:customer:”接口调用过之后才生效，调用此接口请保证管理员后台开启了订单功能
+ 
+ @param order 订单
+ */
++ (void)sendOrder:(UdeskOrder *)order;
+
+
 /*-----------------帮助中心-------------------*/
 
 
@@ -349,7 +373,12 @@
 /**
  用户进入sdk页面（开发者不需要调用）
  */
-+ (void)enterTheSDKPage;
++ (void)enterSDKPage;
+
+/**
+ 用户离开sdk页面（开发者不需要调用）
+ */
++ (void)LeaveSDKPage;
 
 /**
  *  获取提交工单URL
@@ -396,5 +425,13 @@
  */
 
 + (void)cancelAllOperations;
+
+/**
+ URL签名
+
+ @param url url
+ @return url
+ */
++ (NSURL *)udeskURLSignature:(NSString *)url;
 
 @end

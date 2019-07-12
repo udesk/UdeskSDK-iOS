@@ -15,6 +15,7 @@
 @interface UdeskGoodsCell ()<UDTTTAttributedLabelDelegate>
 
 @property (nonatomic, strong) UIImageView              *goodsImageView;
+@property (nonatomic, strong) UDTTTAttributedLabel     *titleLabel;
 @property (nonatomic, strong) UDTTTAttributedLabel     *paramsLabel;
 
 @end
@@ -36,6 +37,13 @@
     _goodsImageView = [[UIImageView alloc] init];
     _goodsImageView.userInteractionEnabled = true;
     [self.bubbleImageView addSubview:_goodsImageView];
+    
+    _titleLabel = [[UDTTTAttributedLabel alloc] initWithFrame:CGRectZero];
+    _titleLabel.textAlignment = NSTextAlignmentLeft;
+    _titleLabel.userInteractionEnabled = true;
+    _titleLabel.delegate = self;
+    _titleLabel.backgroundColor = [UIColor clearColor];
+    [self.bubbleImageView addSubview:_titleLabel];
     
     _paramsLabel = [[UDTTTAttributedLabel alloc] initWithFrame:CGRectZero];
     _paramsLabel.numberOfLines = 0;
@@ -71,9 +79,12 @@
         [self.goodsImageView yy_setImageWithURL:[NSURL URLWithString:[goodsMessage.goodsModel.imgUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:[UIImage udDefaultLoadingImage]];
     }
     
+    self.titleLabel.numberOfLines = [UdeskSDKConfig customConfig].sdkStyle.goodsNameNumberOfLines;
+    self.titleLabel.attributedText = goodsMessage.titleAttributedString;
     self.paramsLabel.attributedText = goodsMessage.paramsAttributedString;
     
     self.goodsImageView.frame = goodsMessage.imgFrame;
+    self.titleLabel.frame = goodsMessage.titleFrame;
     self.paramsLabel.frame = goodsMessage.paramsFrame;
 }
 

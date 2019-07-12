@@ -20,6 +20,8 @@
 @property (nonatomic, copy) void(^didUpdateMessagesBlock)(NSArray *messages);
 /** 更新单个消息 */
 @property (nonatomic, copy) void(^didUpdateMessageAtIndexPathBlock)(NSIndexPath *indexPath);
+/** 更新客服信息 */
+@property (nonatomic, copy) void(^updateAgentInfo)(UdeskMessage *message);
 
 /** 是否需要显示下拉加载 */
 @property (nonatomic, assign) BOOL isShowRefresh;

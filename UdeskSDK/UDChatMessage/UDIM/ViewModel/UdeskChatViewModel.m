@@ -219,11 +219,19 @@
     [self.messageManager fetchServersMessages];
 }
 
-//请求客服信息，创建会话
-- (void)needfetchAgentCreateSession {
+//请求配置信息
+- (void)needFetchServersSetting {
     
     [self.agentManager sessionClosed];
     [self fetchSDKSetting];
+}
+
+//请求客服信息
+- (void)needFetchAgentServers {
+    
+    if (self.agentManager.agentModel.code == UDAgentStatusResultBoardMessage) {
+        [self.agentManager fetchAgent:nil];
+    }
 }
 
 //用户在黑名单中
@@ -400,6 +408,11 @@
             @udStrongify(self);
             [self reloadChatAtIndexPath:indexPath];
         };
+        
+        _messageManager.updateAgentInfo = ^(UdeskMessage *message) {
+            @udStrongify(self);
+            [self updateAgentServerWithMessage:message];
+        };
     }
     return _messageManager;
 }
@@ -420,6 +433,16 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateCellModelWithIndexPath:)]) {
         [self.delegate didUpdateCellModelWithIndexPath:indexPath];
     }
+}
+
+- (void)updateAgentServerWithMessage:(UdeskMessage *)message {
+    
+    [self fetchServersAgent:^(UdeskAgent *agentModel) {
+        
+        if (agentModel.code == UDAgentStatusResultOnline) {
+            [self sendTextMessage:message.content completion:nil];
+        }
+    }];
 }
 
 //获取下一页数据
@@ -469,6 +492,7 @@
     
     if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
         self.agentManager.agentModel.code != UDAgentStatusResultLeaveMessage &&
+        self.agentManager.agentModel.code != UDAgentStatusResultBoardMessage &&
         self.agentManager.agentModel.code != UDAgentStatusResultQueue &&
         !self.messageManager.isRobotSession) {
         
@@ -633,7 +657,8 @@
                 if (agentModel.code == UDAgentStatusResultOffline) {
                     return ;
                 }
-                else if (agentModel.code == UDAgentStatusResultLeaveMessage) {
+                else if (agentModel.code == UDAgentStatusResultLeaveMessage ||
+                         agentModel.code == UDAgentStatusResultBoardMessage) {
                     if (message.messageType == UDMessageContentTypeText) {
                         [self.messageManager sendTextMessage:message.content completion:completion];
                     }
@@ -684,7 +709,8 @@
     }
     
     if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
-        self.agentManager.agentModel.code != UDAgentStatusResultLeaveMessage) {
+        self.agentManager.agentModel.code != UDAgentStatusResultLeaveMessage &&
+        self.agentManager.agentModel.code != UDAgentStatusResultBoardMessage) {
         
         [self requestAgentDataWithPreSessionMessage:nil completion:^(UdeskAgent *agentModel) {
             if (agentModel.code == UDAgentStatusResultOnline) {

@@ -28,9 +28,12 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
 /** model */
 @property (nonatomic, strong, readwrite) UdeskGoodsModel *goodsModel;
 /** 其他文本参数 */
+@property (nonatomic, strong, readwrite) NSAttributedString  *titleAttributedString;
+/** 其他文本参数 */
 @property (nonatomic, strong, readwrite) NSAttributedString  *paramsAttributedString;
 
 @property (nonatomic, assign, readwrite) CGRect imgFrame;
+@property (nonatomic, assign, readwrite) CGRect titleFrame;
 @property (nonatomic, assign, readwrite) CGRect paramsFrame;
 
 @end
@@ -61,15 +64,22 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
     CGFloat labelWidth = UD_SCREEN_WIDTH>320?170:140;
     CGFloat bubbleWidth = UD_SCREEN_WIDTH>320?280:230;
     
+    CGFloat titleHeight = [UdeskSDKConfig customConfig].sdkStyle.goodsNameFont.lineHeight * [UdeskSDKConfig customConfig].sdkStyle.goodsNameNumberOfLines;
+    CGSize titleSize = [UdeskStringSizeUtil sizeWithAttributedText:self.titleAttributedString size:CGSizeMake(labelWidth, CGFLOAT_MAX)];
+    if (titleHeight == 0 || titleSize.height < titleHeight) {
+        titleHeight = titleSize.height;
+    }
+    
+    CGSize paramsSize = [UdeskStringSizeUtil sizeWithAttributedText:self.paramsAttributedString size:CGSizeMake(labelWidth, CGFLOAT_MAX)];
+    
+    //参数
+    self.imgFrame = CGRectMake(kUDGoodsImageHorizontalSpacing, kUDGoodsImageVerticalSpacing, kUDGoodsImageWidth, kUDGoodsImageHeight);
+    self.titleFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, kUDGoodsParamsVerticalSpacing, labelWidth, titleHeight);
+    self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, CGRectGetMaxY(self.titleFrame) + kUDGoodsParamsVerticalSpacing, paramsSize.width, paramsSize.height+5);
+    CGFloat bubbleHeight = MAX(kUDGoodsImageHeight+kUDGoodsImageVerticalSpacing, CGRectGetMaxY(self.paramsFrame));
+    
     if (self.message.messageFrom == UDMessageTypeSending) {
         
-        //图片
-        self.imgFrame = CGRectMake(kUDGoodsImageHorizontalSpacing, kUDGoodsImageVerticalSpacing, kUDGoodsImageWidth, kUDGoodsImageHeight);
-        //名称+参数
-        CGSize paramsSize = [UdeskStringSizeUtil sizeWithAttributedText:self.paramsAttributedString size:CGSizeMake(labelWidth, CGFLOAT_MAX)];
-        self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, kUDGoodsParamsVerticalSpacing, paramsSize.width, paramsSize.height+5);
-        
-        CGFloat bubbleHeight = MAX(kUDGoodsImageHeight+kUDGoodsImageVerticalSpacing, CGRectGetMaxY(self.paramsFrame));
         CGFloat bubbleX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-bubbleWidth;
         self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, bubbleWidth, bubbleHeight+kUDGoodsParamsVerticalSpacing);
         
@@ -78,10 +88,14 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
         
         //加载失败frame
         self.failureFrame = self.loadingFrame;
-        
-        //cell高度
-        self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
     }
+    else if (self.message.messageFrom == UDMessageTypeReceiving) {
+        
+        self.bubbleFrame = CGRectMake(kUDBubbleToHorizontalEdgeSpacing, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, bubbleWidth, bubbleHeight+kUDGoodsParamsVerticalSpacing);
+    }
+    
+    //cell高度
+    self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
 }
 
 - (void)setupGoodsDataWithDictionary:(NSDictionary *)dictionary {
@@ -117,20 +131,20 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
 
 - (void)setGoodsNameAttributedStringWithName:(NSString *)name {
     
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.paragraphSpacing = 5;
+    //颜色
+    UIColor *goodsNameTextColor = [UdeskSDKConfig customConfig].sdkStyle.customerGoodsNameTextColor;
+    if (self.message.messageFrom == UDMessageTypeReceiving) {
+        goodsNameTextColor = [UdeskSDKConfig customConfig].sdkStyle.agentGoodsNameTextColor;
+    }
     
     //名称
     NSDictionary *dic = @{
-                          NSForegroundColorAttributeName:[UdeskSDKConfig customConfig].sdkStyle.goodsNameTextColor,
+                          NSForegroundColorAttributeName:goodsNameTextColor,
                           NSFontAttributeName:[UdeskSDKConfig customConfig].sdkStyle.goodsNameFont,
-                          NSParagraphStyleAttributeName:paragraphStyle
                           };
     
-    NSMutableAttributedString *mAttributedString = [[NSMutableAttributedString alloc] init];
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[name stringByAppendingString:@"\n"] attributes:dic];
-    [mAttributedString appendAttributedString:attributedString];
-    self.paramsAttributedString = attributedString;
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:name attributes:dic];
+    self.titleAttributedString = attributedString;
 }
 
 - (void)setupParamsWithArray:(NSArray *)array {
@@ -143,7 +157,10 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
         UdeskGoodsParamModel *paramModel = [[UdeskGoodsParamModel alloc] init];
         NSMutableDictionary *attributed = [NSMutableDictionary dictionary];
         //字体颜色
-        UIColor *defaultColor = [UIColor udColorWithHexString:@"#ffffff"];
+        UIColor *defaultColor = [UIColor whiteColor];
+        if (self.message.messageFrom == UDMessageTypeReceiving) {
+            defaultColor = [UIColor blackColor];
+        }
         if ([param.allKeys containsObject:@"color"]) {
             NSString *colorString = param[@"color"];
             if (![colorString isKindOfClass:[NSString class]]) break;

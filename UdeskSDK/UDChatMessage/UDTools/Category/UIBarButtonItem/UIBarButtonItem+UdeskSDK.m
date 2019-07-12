@@ -24,6 +24,10 @@
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.titleLabel.font = [UIFont systemFontOfSize:16.0];
         if (icon) {
+            if ([UdeskSDKConfig customConfig].sdkStyle.navBackButtonColor) {
+                icon = [icon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                btn.tintColor = [UdeskSDKConfig customConfig].sdkStyle.navBackButtonColor;
+            }
             [btn setBackgroundImage:icon forState:UIControlStateNormal];
         }
         btn.frame = CGRectMake(0, 0, btn.currentBackgroundImage.size.width, btn.currentBackgroundImage.size.height);

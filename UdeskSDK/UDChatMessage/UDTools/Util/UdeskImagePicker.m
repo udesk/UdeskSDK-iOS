@@ -31,7 +31,7 @@
 }
 
 - (void)dealloc {
-    self.didFinishTakeMediaCompled = nil;
+    _didFinishTakeMediaCompled = nil;
 }
 
 - (void)showImagePickerControllerSourceType:(UIImagePickerControllerSourceType)sourceType

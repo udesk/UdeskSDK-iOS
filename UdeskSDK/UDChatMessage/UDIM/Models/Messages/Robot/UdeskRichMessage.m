@@ -15,6 +15,8 @@ static CGFloat const kUDBubbleToRichHorizontalSpacing = 14.0;
 /** 聊天气泡和其中的文字垂直间距 */
 static CGFloat const kUDBubbleToRichVerticalSpacing = 9.0;
 /** 聊天气泡和其中的文字垂直间距 */
+static CGFloat const kUDBubbleToRichVerticalMinSpacing = 6.0;
+/** 聊天气泡和其中的文字垂直间距 */
 static CGFloat const kUDRichMendSpacingOne = 1.0;
 /** 聊天气泡和其中的文字垂直间距 */
 static CGFloat const kUDRichMendSpacingTwo = 5.0;
@@ -73,7 +75,7 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
                 
                 CGFloat bubbleWidth = richSize.width+(kUDBubbleToRichHorizontalSpacing*2);
                 CGFloat bubbleHeight = richSize.height+(kUDBubbleToRichVerticalSpacing*2);
-                CGFloat richTextY = kUDBubbleToRichVerticalSpacing+kUDRichMendSpacingOne;
+                CGFloat richTextY = kUDBubbleToRichVerticalMinSpacing;
                 
                 if (self.message.showUseful) {
                     bubbleHeight = bubbleHeight > kUDAnswerBubbleMinHeight ? bubbleHeight : kUDAnswerBubbleMinHeight;
@@ -137,7 +139,15 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
             textSize.width += kUDRichMendSpacingTwo;
         }
         
-        textSize.height += kUDRichMendSpacingTwo * 2;
+        __block CGFloat space = 0;
+        [attributedString enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, attributedString.length) options:NSAttributedStringEnumerationReverse usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop) {
+            
+            if (value && [value isKindOfClass:[NSTextAttachment class]]){
+                space = kUDRichMendSpacingTwo * 2;
+            }
+        }];
+        
+        textSize.height += space;
         
         return textSize;
         

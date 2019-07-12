@@ -174,9 +174,9 @@
     
     @try {
      
-        if (self.agentModel.code == UDAgentStatusResultLeaveMessage &&
-            [self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
-            
+        if ((self.agentModel.code == UDAgentStatusResultLeaveMessage && [self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) ||
+            (self.agentModel.code == UDAgentStatusResultBoardMessage && [self.sdkSetting.leaveMessageType isEqualToString:@"im"])) {
+        
             if (![UdeskSDKUtil isBlankString:self.sdkSetting.leaveMessageGuide]) {
                 UdeskMessage *guideMsg = [[UdeskMessage alloc] initWithRich:self.sdkSetting.leaveMessageGuide];
                 [self addMessageToArray:@[guideMsg]];
@@ -435,6 +435,13 @@
     else if (self.agentModel.code == UDAgentStatusResultLeaveMessage) {
         textMessage.sendType = UDMessageSendTypeLeave;
     }
+    //客户发送对话留言
+    else if (self.agentModel.code == UDAgentStatusResultBoardMessage) {
+        textMessage.sendType = UDMessageSendTypeBoard;
+        //检查消息时间
+        BOOL result = [self checkBoardMessageSendTime:textMessage];
+        if (result) return;
+    }
 
     if (!textMessage || textMessage == (id)kCFNull) return ;
     [self addMessageToArray:@[textMessage]];
@@ -657,6 +664,26 @@
     if (self.didUpdateMessagesBlock) {
         self.didUpdateMessagesBlock(self.messagesArray);
     }
+}
+
+//检查工作台留言消息时间
+- (BOOL)checkBoardMessageSendTime:(UdeskMessage *)message {
+    
+    UdeskBaseMessage *baseMessage = self.messagesArray.lastObject;
+    if (baseMessage.message.sendType == UDMessageSendTypeBoard) {
+        
+        //检查与上条消息是否超过两分钟
+        NSInteger timeInterval = [message.timestamp timeIntervalSinceDate:baseMessage.message.timestamp];
+        if (timeInterval > (60 * 2)) {
+        
+            if (self.updateAgentInfo) {
+                self.updateAgentInfo(message);
+            }
+            return YES;
+        }
+    }
+    
+    return NO;
 }
 
 - (NSMutableArray *)robotTempArray {

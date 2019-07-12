@@ -13,7 +13,7 @@
 /** 聊天气泡和其中的文字水平间距 */
 const CGFloat kUDBubbleToTopAskHorizontalSpacing = 14.0;
 /** 聊天气泡和其中的文字垂直间距 */
-const CGFloat kUDBubbleToTopAskVerticalSpacing = 10.0;
+const CGFloat kUDBubbleToTopAskVerticalSpacing = 5.0;
 /** 聊天气泡和其中的文字垂直间距 */
 const CGFloat kUDCellToTopAskQuestionVerticalSpacing = 5.0;
 /** 聊天气泡和其中的文字水平间距 */
