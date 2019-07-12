@@ -164,7 +164,7 @@
             self.menuPage ++;
             for (UdeskAgentMenuModel *allAgentMenuModel in self.allAgentMenuData) {
                 
-                if ([menuModel.parentId isEqualToString:menuModel.menuId]) {
+                if ([allAgentMenuModel.parentId isEqualToString:menuModel.menuId]) {
                     [menuArray addObject:allAgentMenuModel];
                 }
             }
