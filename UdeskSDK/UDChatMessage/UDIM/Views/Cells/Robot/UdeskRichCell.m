@@ -10,9 +10,6 @@
 #import "UdeskRichMessage.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskPhotoManeger.h"
-#import "UdeskAlertController.h"
-#import "UdeskMessage+UdeskSDK.h"
-#import "UdeskSDKShow.h"
 
 @interface UdeskRichCell()<UITextViewDelegate>
 
@@ -157,80 +154,15 @@
                 url = URL;
             }
             
-            [self openURL:url];
+            [self udOpenURL:url];
         }
         else {
-            [self openURL:URL];
+            [self udOpenURL:URL];
         }
         return NO;
     }
     
     return YES;
-}
-
-- (void)callPhoneNumber:(NSString *)phoneNumber {
-    
-    UdeskAlertController *alert = [UdeskAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@\n%@",phoneNumber,getUDLocalizedString(@"udesk_phone_number_tip")] message:nil preferredStyle:UdeskAlertControllerStyleActionSheet];
-    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_cancel") style:UdeskAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_call") style:UdeskAlertActionStyleDefault handler:^(UdeskAlertAction *action) {
-        
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@", phoneNumber]]];
-    }]];
-    
-    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_copy") style:UdeskAlertActionStyleDefault handler:^(UdeskAlertAction *action) {
-        
-        [UIPasteboard generalPasteboard].string = phoneNumber;
-    }]];
-    
-    [[UdeskSDKUtil currentViewController] presentViewController:alert animated:YES completion:nil];
-}
-
-- (void)flowMessageWithText:(NSString *)text flowContent:(NSString *)flowContent {
-    if (!flowContent || flowContent == (id)kCFNull) return ;
-    
-    @try {
-     
-        NSArray *array = [flowContent componentsSeparatedByString:@";"];
-        NSString *dataType = [array.firstObject componentsSeparatedByString:@":"].lastObject;
-        NSString *dataId = [array.lastObject componentsSeparatedByString:@":"].lastObject;
-        
-        UdeskMessage *flowMessage = [[UdeskMessage alloc] initWithText:text];
-        flowMessage.logId = self.baseMessage.message.logId;
-        flowMessage.sendType = UDMessageSendTypeHit;
-        
-        if ([dataType isEqualToString:@"1"]) {
-            flowMessage.robotType = @"1";
-            flowMessage.robotQuestionId = dataId;
-            flowMessage.robotQueryType = @"8";
-        }
-        else if ([dataType isEqualToString:@"2"]) {
-            flowMessage.robotType = @"2";
-            flowMessage.flowId = dataId;
-        }
-        
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didSendRobotMessage:)]) {
-            [self.delegate didSendRobotMessage:flowMessage];
-        }
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
-}
-
-- (void)openURL:(NSURL *)URL {
-    
-    //用户设置了点击链接回调
-    if ([UdeskSDKConfig customConfig].actionConfig.linkClickBlock) {
-        [UdeskSDKConfig customConfig].actionConfig.linkClickBlock([UdeskSDKUtil currentViewController],URL);
-        return ;
-    }
-    
-    if ([URL.absoluteString rangeOfString:@"://"].location == NSNotFound) {
-        [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URL.absoluteString]]];
-    } else {
-        [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:URL];
-    }
 }
 
 - (void)awakeFromNib {

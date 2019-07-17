@@ -68,4 +68,8 @@
 //更新消息状态
 - (void)updateMessageSendStatus:(UDMessageSendStatus)sendStatus;
 
+- (void)callPhoneNumber:(NSString *)phoneNumber;
+- (void)flowMessageWithText:(NSString *)text flowContent:(NSString *)flowContent;
+- (void)udOpenURL:(NSURL *)URL;
+
 @end

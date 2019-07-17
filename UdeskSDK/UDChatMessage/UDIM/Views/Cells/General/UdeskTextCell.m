@@ -176,33 +176,12 @@
 - (void)attributedLabel:(UDTTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
     
     //用户设置了点击链接回调
-    if ([UdeskSDKConfig customConfig].actionConfig.linkClickBlock) {
-        [UdeskSDKConfig customConfig].actionConfig.linkClickBlock([UdeskSDKUtil currentViewController],url);
-        return;
-    }
-    
-    if ([url.absoluteString rangeOfString:@"://"].location == NSNotFound) {
-        [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", url.absoluteString]]];
-    } else {
-        [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:url];
-    }
+    [self udOpenURL:url];
 }
 
 - (void)attributedLabel:(UDTTTAttributedLabel *)label didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
     
-    UdeskAlertController *alert = [UdeskAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@\n%@",phoneNumber,getUDLocalizedString(@"udesk_phone_number_tip")] message:nil preferredStyle:UdeskAlertControllerStyleActionSheet];
-    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_cancel") style:UdeskAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_call") style:UdeskAlertActionStyleDefault handler:^(UdeskAlertAction *action) {
-        
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@", phoneNumber]]];
-    }]];
-    
-    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_copy") style:UdeskAlertActionStyleDefault handler:^(UdeskAlertAction *action) {
-        
-        [UIPasteboard generalPasteboard].string = phoneNumber;
-    }]];
-    
-    [[UdeskSDKUtil currentViewController] presentViewController:alert animated:YES completion:nil];
+    [self callPhoneNumber:phoneNumber];
 }
 
 @end

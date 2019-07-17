@@ -11,6 +11,7 @@
 #import "UdeskTopAskMessage.h"
 #import "NSAttributedString+UdeskHTML.h"
 #import "UdeskMessage+UdeskSDK.h"
+#import "UdeskPhotoManeger.h"
 
 static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
 
@@ -56,9 +57,9 @@ static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
 
 @end
 
-@interface UdeskTopAskCell()<UITableViewDelegate,UITableViewDataSource>
+@interface UdeskTopAskCell()<UITableViewDelegate,UITableViewDataSource,UITextViewDelegate>
 
-@property (nonatomic, strong) UILabel *leadWordLabel;
+@property (nonatomic, strong) UITextView *leadWordTextView;
 @property (nonatomic, strong) UIView *lineView;
 @property (nonatomic, strong) UITableView *topAskTableView;
 
@@ -78,11 +79,16 @@ static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
 
 - (void)setupUI {
     
-    _leadWordLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    _leadWordLabel.font = [UIFont systemFontOfSize:15];
-    _leadWordLabel.numberOfLines = 0;
-    _leadWordLabel.backgroundColor = [UIColor clearColor];
-    [self.bubbleImageView addSubview:_leadWordLabel];
+    _leadWordTextView = [[UITextView alloc] initWithFrame:CGRectZero];
+    _leadWordTextView.delegate = self;
+    _leadWordTextView.editable = NO;
+    _leadWordTextView.dataDetectorTypes = UIDataDetectorTypeAll;
+    _leadWordTextView.showsVerticalScrollIndicator = NO;
+    _leadWordTextView.showsHorizontalScrollIndicator = NO;
+    _leadWordTextView.textContainer.lineFragmentPadding = 0;
+    _leadWordTextView.textContainerInset = UIEdgeInsetsMake(5, 0, 0, 0);
+    _leadWordTextView.backgroundColor = [UIColor clearColor];
+    [self.bubbleImageView addSubview:_leadWordTextView];
     
     _lineView = [[UIView alloc] initWithFrame:CGRectZero];
     _lineView.backgroundColor = [UIColor colorWithRed:0.953f  green:0.961f  blue:0.965f alpha:1];
@@ -98,6 +104,54 @@ static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
     [self.bubbleImageView addSubview:_topAskTableView];
     
     [_topAskTableView registerClass:[UdeskTopAskOptionsCell class] forCellReuseIdentifier:kUDTopAskQuestionCellId];
+}
+
+- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
+    
+    if ([URL.absoluteString hasPrefix:@"sms:"] || [URL.absoluteString hasPrefix:@"tel:"]) {
+        
+        NSString *phoneNumber = [URL.absoluteString componentsSeparatedByString:@":"].lastObject;
+        [self callPhoneNumber:phoneNumber];
+        return NO;
+    }
+    else if ([URL.absoluteString hasPrefix:@"img:"]) {
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didTapChatImageView)]) {
+            [self.delegate didTapChatImageView];
+        }
+        
+        NSString *url = [URL.absoluteString componentsSeparatedByString:@"img:"].lastObject;
+        url = [url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+        UdeskPhotoManeger *photoManeger = [UdeskPhotoManeger maneger];
+        [photoManeger showLocalPhoto:(UIImageView *)self.bubbleImageView withMessageURL:url];
+        return NO;
+    }
+    else if ([URL.absoluteString hasPrefix:@"data-type:"]) {
+        
+        if (textView.text.length >= (characterRange.location+characterRange.length)) {
+            NSString *content = [[textView.text substringWithRange:characterRange] stringByReplacingOccurrencesOfString:@"\n" withString:@""];;
+            [self flowMessageWithText:content flowContent:URL.absoluteString];
+        }
+        return NO;
+    }
+    else {
+        
+        if (textView.text.length >= (characterRange.location+characterRange.length)) {
+            NSURL *url = [NSURL URLWithString:[textView.text substringWithRange:characterRange]];
+            if (!url) {
+                url = URL;
+            }
+            
+            [self udOpenURL:url];
+        }
+        else {
+            [self udOpenURL:URL];
+        }
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -262,8 +316,8 @@ static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
     UdeskTopAskMessage *topAskMessage = (UdeskTopAskMessage *)baseMessage;
     if (!topAskMessage || ![topAskMessage isKindOfClass:[UdeskTopAskMessage class]]) return;
     
-    self.leadWordLabel.frame = topAskMessage.leadingWordFrame;
-    self.leadWordLabel.attributedText = topAskMessage.leadingAttributedString;
+    self.leadWordTextView.frame = topAskMessage.leadingWordFrame;
+    self.leadWordTextView.attributedText = topAskMessage.leadingAttributedString;
     
     self.lineView.frame = topAskMessage.lineFrame;
     

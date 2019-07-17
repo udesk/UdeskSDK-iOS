@@ -147,7 +147,7 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
             }
         }];
         
-        textSize.height += space;
+        textSize.height = ceil(textSize.height+space) + kUDRichMendSpacingOne;
         
         return textSize;
         

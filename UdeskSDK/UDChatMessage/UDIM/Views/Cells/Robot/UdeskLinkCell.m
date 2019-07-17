@@ -47,17 +47,7 @@
     if (range.location != NSNotFound) {
         
         NSURL *url = [NSURL URLWithString: self.baseMessage.message.linkAnswerUrl];
-        //用户设置了点击链接回调
-        if ([UdeskSDKConfig customConfig].actionConfig.linkClickBlock) {
-            [UdeskSDKConfig customConfig].actionConfig.linkClickBlock([UdeskSDKUtil currentViewController], url);
-            return;
-        }
-        
-        if ([url.absoluteString rangeOfString:@"://"].location == NSNotFound) {
-            [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", url.absoluteString]]];
-        } else {
-            [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:url];
-        }
+        [self udOpenURL:url];
     }
 }
 

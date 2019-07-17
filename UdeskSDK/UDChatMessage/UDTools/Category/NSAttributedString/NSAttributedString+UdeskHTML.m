@@ -270,6 +270,8 @@
             
             NSString *link = attributeDictionary[@"href"];
             if (link) {
+                link = [link stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"=`#%^{}\"[]|\\<> "].invertedSet];
+                
                 [nodeAttributedString addAttribute:NSLinkAttributeName value:link range:nodeAttributedStringRange];
             }
         }
