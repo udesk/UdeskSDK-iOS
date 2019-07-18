@@ -75,7 +75,7 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
                 
                 CGFloat bubbleWidth = richSize.width+(kUDBubbleToRichHorizontalSpacing*2);
                 CGFloat bubbleHeight = richSize.height+(kUDBubbleToRichVerticalSpacing*2);
-                CGFloat richTextY = kUDBubbleToRichVerticalMinSpacing;
+                CGFloat richTextY = ud_isIOS13 ? (kUDBubbleToRichVerticalMinSpacing+kUDRichMendSpacingOne) : kUDBubbleToRichVerticalMinSpacing;
                 
                 if (self.message.showUseful) {
                     bubbleHeight = bubbleHeight > kUDAnswerBubbleMinHeight ? bubbleHeight : kUDAnswerBubbleMinHeight;

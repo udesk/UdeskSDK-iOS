@@ -46,6 +46,7 @@ static CGFloat const kUDTextMendSpacing = 1.0;
         if (!self.message.content || [NSNull isEqual:self.message.content]) return;
         if ([UdeskSDKUtil isBlankString:self.message.content]) return;
         
+        CGFloat spacing = ud_isIOS13 ? (kUDTextMendSpacing*2) : kUDTextMendSpacing;
         CGSize textSize = [self setAttributedCellText:self.message.content messageFrom:self.message.messageFrom];
         switch (self.message.messageFrom) {
             case UDMessageTypeSending:{
@@ -58,7 +59,7 @@ static CGFloat const kUDTextMendSpacing = 1.0;
                 //文本气泡frame
                 self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+bubbleSpacing, bubbleWidth, bubbleHeight);
                 //文本frame
-                self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+kUDTextMendSpacing, textSize.width, textSize.height);
+                self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+spacing, textSize.width, textSize.height);
                 //加载中frame
                 self.loadingFrame = CGRectMake(self.bubbleFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.bubbleFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
                 
@@ -74,7 +75,7 @@ static CGFloat const kUDTextMendSpacing = 1.0;
                 //接收文字气泡frame
                 self.bubbleFrame = CGRectMake(kUDBubbleToHorizontalEdgeSpacing, CGRectGetMaxY(self.avatarFrame)+bubbleSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*2), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
                 //接收文字frame
-                self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+kUDTextMendSpacing, textSize.width, textSize.height);
+                self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+spacing, textSize.width, textSize.height);
                 
                 break;
             }

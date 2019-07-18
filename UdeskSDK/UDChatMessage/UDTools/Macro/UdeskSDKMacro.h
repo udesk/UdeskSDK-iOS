@@ -57,6 +57,10 @@ _Pragma("clang diagnostic pop")
 #define UD_SCREEN_WIDTH  [[UIScreen mainScreen] bounds].size.width
 #define UD_SCREEN_HEIGHT [[UIScreen mainScreen] bounds].size.height
 
+// 是否IOS13
+#define ud_isIOS13                 ([[[UIDevice currentDevice]systemVersion]floatValue] >= 13.0)
+// 是否IOS12
+#define ud_isIOS12                 ([[[UIDevice currentDevice]systemVersion]floatValue] >= 12.0)
 // 是否IOS11
 #define ud_isIOS11                 ([[[UIDevice currentDevice]systemVersion]floatValue] >= 11.0)
 // 是否IOS10

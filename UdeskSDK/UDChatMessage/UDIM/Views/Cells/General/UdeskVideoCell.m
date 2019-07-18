@@ -8,7 +8,6 @@
 
 #import "UdeskVideoCell.h"
 #import "UdeskVideoMessage.h"
-#import <MediaPlayer/MediaPlayer.h>
 #import "UdeskBundleUtils.h"
 #import "UdeskCacheUtil.h"
 #import "Udesk_WHC_HttpManager.h"
@@ -16,6 +15,7 @@
 #import "UdeskToast.h"
 #import "UIView+UdeskSDK.h"
 #import "UdeskSDKAlert.h"
+#import <AVKit/AVKit.h>
 
 @interface UdeskVideoCell ()
 
@@ -206,55 +206,28 @@
     }
     
     if (!url) {
-        url = [NSURL URLWithString:@"https://www.udesk.cn"];
+        url = [NSURL URLWithString:[contentURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     }
     
-    MPMoviePlayerViewController *playerViewController = [[MPMoviePlayerViewController alloc] initWithContentURL:url];
-    playerViewController.moviePlayer.movieSourceType = MPMovieSourceTypeFile;
-    [playerViewController.moviePlayer prepareToPlay];
-    
-    if (self.udViewController) {
-        [self.udViewController presentMoviePlayerViewControllerAnimated:playerViewController];
+    AVPlayerViewController *playerVC = [[AVPlayerViewController alloc] init];
+    playerVC.player = [AVPlayer playerWithURL:url];
+    playerVC.showsPlaybackControls = YES;
+    playerVC.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    if (@available(iOS 11.0, *)) {
+        playerVC.entersFullScreenWhenPlaybackBegins = YES;
     }
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:playerViewController name:MPMoviePlayerPlaybackDidFinishNotification object:playerViewController.moviePlayer];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerPlaybackDidFinish:) name:MPMoviePlayerPlaybackDidFinishNotification object:nil];
-}
-
-- (void)moviePlayerPlaybackDidFinish:(NSNotification *)notif {
-    
-    NSDictionary *userInfo = notif.userInfo;
-    
-    if ([[userInfo allKeys] containsObject:@"error"]) {
-        
-        dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC));
-
-        dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            [[[UIAlertView alloc] initWithTitle:nil
-                                        message:getUDLocalizedString(@"udesk_failed_video")
-                                       delegate:nil
-                              cancelButtonTitle:getUDLocalizedString(@"udesk_close")
-                              otherButtonTitles:nil] show];
-#pragma clang diagnostic pop
-        });
+    if (@available(iOS 11.0, *)) {
+        playerVC.exitsFullScreenWhenPlaybackEnds = YES;
     }
-    
-    int value = [[notif.userInfo valueForKey:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey] intValue];
-    if (value == MPMovieFinishReasonUserExited) {
-        if (self.udViewController) {
-            [self.udViewController dismissMoviePlayerViewControllerAnimated];
+    [[UdeskSDKUtil currentViewController] presentViewController:playerVC animated:YES completion:^{
+        if (playerVC.readyForDisplay) {
+            [playerVC.player play];
         }
-    }
+    }];
 }
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:MPMoviePlayerPlaybackDidFinishNotification
-                                                  object:nil];
-    
     [[Udesk_WHC_HttpManager shared] cancelAllDownloadTaskAndDelFile:YES];
 }
 

@@ -99,6 +99,10 @@
                 _thoroughfareLabel.text = [NSString stringWithFormat:@"%@",array[4]];
                 _thoroughfareLabel.frame = locationMessage.locationThoroughfareFrame;
             }
+            else {
+                _thoroughfareLabel.text = @"";
+                _thoroughfareLabel.frame = CGRectZero;
+            }
             
             name = array[3];
         }
