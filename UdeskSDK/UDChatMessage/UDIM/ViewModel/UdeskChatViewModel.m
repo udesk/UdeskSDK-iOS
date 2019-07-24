@@ -338,8 +338,10 @@
     
     //咨询对象
     if (sdkConfig.productDictionary) {
-        UdeskMessage *productMessage = [[UdeskMessage alloc] initWithProduct:sdkConfig.productDictionary];
-        [UdeskManager sendMessage:productMessage progress:nil completion:nil];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            UdeskMessage *productMessage = [[UdeskMessage alloc] initWithProduct:sdkConfig.productDictionary];
+            [UdeskManager sendMessage:productMessage progress:nil completion:nil];
+        });
     }
     
     //移除排队事件

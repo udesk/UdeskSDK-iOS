@@ -166,6 +166,9 @@ static CGFloat kUdeskNearbySpan = 50;
             self.locationName = @"";
         }
         model.name = self.locationName;
+        if ([UdeskSDKUtil isBlankString:self.thoroughfare]) {
+            self.thoroughfare = @"";
+        }
         model.thoroughfare = self.thoroughfare;
         model.image = image;
         model.longitude = coordinate.longitude;

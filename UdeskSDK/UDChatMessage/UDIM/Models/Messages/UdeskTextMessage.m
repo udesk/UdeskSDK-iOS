@@ -53,6 +53,9 @@ const CGFloat kUDTextMendSpacing = 2.0;
         
         CGSize textSize = CGSizeMake(100, 50);
         CGFloat spacing = ud_isIOS11 ? 0 : kUDTextMendSpacing;
+        if (ud_isIOS13) {
+            spacing = kUDTextMendSpacing;
+        }
         
         if (self.message.messageType == UDMessageContentTypeText ||
             self.message.messageType == UDMessageContentTypeLeaveMsg) {
@@ -116,7 +119,8 @@ const CGFloat kUDTextMendSpacing = 2.0;
     CGFloat bubbleY = [UdeskSDKUtil isBlankString:self.message.nickName] ? CGRectGetMinY(self.avatarFrame) : CGRectGetMaxY(self.nicknameFrame)+kUDCellBubbleToIndicatorSpacing;
     self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, bubbleY, richTextSize.width+(kUDBubbleToTextHorizontalSpacing*3), richTextSize.height+(kUDBubbleToTextVerticalSpacing*2));
     //接收文字frame
-    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing, richTextSize.width, richTextSize.height);
+    CGFloat spacing = ud_isIOS13 ? kUDTextMendSpacing : 0;
+    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing+spacing, richTextSize.width, richTextSize.height);
     
     //cell高度
     self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;

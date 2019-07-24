@@ -956,6 +956,14 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v4.1.7版本更新功能:
+
+1.适配iOS13
+
+2.修复了已知问题
+
+------
+
 sdk v4.1.6版本更新功能:
 
 1.修复了图片选择器错乱问题

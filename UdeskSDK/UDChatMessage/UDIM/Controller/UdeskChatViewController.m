@@ -222,6 +222,7 @@
     }
     
     UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] initWithSDKConfig:self.sdkConfig setting:self.sdkSetting];
+    offLineTicket.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:offLineTicket animated:YES completion:nil];
 }
 
@@ -537,6 +538,7 @@
     }
     
     UdeskLocationViewController *location = [[UdeskLocationViewController alloc] initWithSDKConfig:self.sdkConfig hasSend:YES];
+    location.modalPresentationStyle = UIModalPresentationFullScreen;
     location.locationModel = model;
     [self presentViewController:location animated:YES completion:nil];
 }
@@ -1212,6 +1214,7 @@
     }
     
     UdeskLocationViewController *location = [[UdeskLocationViewController alloc] initWithSDKConfig:self.sdkConfig hasSend:NO];
+    location.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:location animated:YES completion:nil];
     @udWeakify(self);
     location.sendLocationBlock = ^(UdeskLocationModel *model) {
@@ -1252,6 +1255,7 @@
         if (ud_isIOS8 && sdkConfig.isImagePickerEnabled) {
             
             UdeskImagePickerController *imagePicker = [[UdeskImagePickerController alloc] init];
+            imagePicker.modalPresentationStyle = UIModalPresentationFullScreen;
             imagePicker.maxImagesCount = sdkConfig.maxImagesCount;
             imagePicker.allowPickingVideo = sdkConfig.allowPickingVideo;
             imagePicker.quality = sdkConfig.quality;
@@ -1307,6 +1311,7 @@
                 smallVideoVC.delegate = self;
                 
                 UdeskSmallVideoNavigationController *nav = [[UdeskSmallVideoNavigationController alloc] initWithRootViewController:smallVideoVC];
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
                 [self presentViewController:nav animated:YES completion:nil];
             }];
             
