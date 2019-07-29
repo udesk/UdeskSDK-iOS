@@ -10,7 +10,7 @@
 #import "UdeskDateUtil.h"
 
 /** 头像距离屏幕水平边沿距离 */
-const CGFloat kUDAvatarToHorizontalEdgeSpacing = 8.0;
+const CGFloat kUDAvatarToHorizontalEdgeSpacing = 12.0;
 /** 头像距离屏幕垂直边沿距离 */
 const CGFloat kUDAvatarToVerticalEdgeSpacing = 12.0;
 /** 头像与聊天气泡之间的距离 */
@@ -18,7 +18,7 @@ const CGFloat kUDAvatarToBubbleSpacing = 4.0;
 /** 头像与聊天气泡之间的距离 */
 const CGFloat kUDNOAvatarToBubbleSpacing = 1;
 /** 气泡距离屏幕水平边沿距离 */
-const CGFloat kUDBubbleToHorizontalEdgeSpacing = 8.0;
+const CGFloat kUDBubbleToHorizontalEdgeSpacing = 12.0;
 /** 气泡距离屏幕垂直边沿距离 */
 const CGFloat kUDBubbleToVerticalEdgeSpacing = 13.0;
 /** 聊天气泡和Indicator的间距 */
