@@ -15,9 +15,9 @@
 + (CGFloat)getHeightForAttributedText:(NSAttributedString *)attributedText
                             textWidth:(CGFloat)textWidth
 {
-    if ([UdeskSDKUtil isBlankString:attributedText.string]) {
-        return 50;
-    }
+//    if ([UdeskSDKUtil isBlankString:attributedText.string]) {
+//        return 50;
+//    }
     
     CGSize constraint = CGSizeMake(textWidth , CGFLOAT_MAX);
     CGSize title_size;

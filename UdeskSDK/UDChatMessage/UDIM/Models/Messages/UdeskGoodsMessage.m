@@ -77,13 +77,14 @@ const CGFloat kUDGoodsParamsVerticalSpacing = 10.0;
     CGFloat labelWidth = UD_SCREEN_WIDTH>320?170:140;
     CGFloat bubbleWidth = UD_SCREEN_WIDTH>320?280:230;
     
-    CGFloat titleHeight = [UdeskSDKConfig customConfig].sdkStyle.goodsNameFont.lineHeight * self.numberOfLines;
-    CGSize titleSize = [UdeskStringSizeUtil getSizeForAttributedText:self.titleAttributedString textWidth:labelWidth];
-    if (titleHeight == 0 || titleSize.height < titleHeight) {
-        titleHeight = titleSize.height;
-    }
-    
+    CGFloat titleHeight = [UdeskStringSizeUtil getHeightForAttributedText:self.titleAttributedString textWidth:labelWidth];
     CGFloat paramsHeight = [UdeskStringSizeUtil getHeightForAttributedText:self.paramsAttributedString textWidth:labelWidth];
+    
+    //这里是因为设置了行数，如果文本内容高度超过了行数高度 会有空白
+    //判断 titleHeight != 0 是因为标题可能会为空，空则不需要计算设置的行数高度
+    if (titleHeight != 0 && self.numberOfLines != 0) {
+        titleHeight = [UdeskSDKConfig customConfig].sdkStyle.goodsNameFont.lineHeight * self.numberOfLines;
+    }
     
     if (self.message.messageFrom == UDMessageTypeSending) {
         
@@ -91,7 +92,9 @@ const CGFloat kUDGoodsParamsVerticalSpacing = 10.0;
         self.imgFrame = CGRectMake(kUDGoodsImageHorizontalSpacing, kUDGoodsImageVerticalSpacing, kUDGoodsImageWidth, kUDGoodsImageHeight);
         //名称+参数
         self.titleFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, kUDGoodsParamsVerticalSpacing, labelWidth, titleHeight);
-        self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, CGRectGetMaxY(self.titleFrame) + kUDGoodsParamsVerticalSpacing, labelWidth, paramsHeight);
+        
+        CGFloat paramsY = (titleHeight==0)? kUDGoodsParamsVerticalSpacing : (CGRectGetMaxY(self.titleFrame) + kUDGoodsParamsVerticalSpacing);
+        self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, paramsY, labelWidth, paramsHeight);
         
         CGFloat bubbleHeight = MAX(kUDGoodsImageHeight+kUDGoodsImageVerticalSpacing, CGRectGetMaxY(self.paramsFrame));
         self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x-kUDArrowMarginWidth-bubbleWidth, self.avatarFrame.origin.y, bubbleWidth, bubbleHeight+kUDGoodsParamsVerticalSpacing);
