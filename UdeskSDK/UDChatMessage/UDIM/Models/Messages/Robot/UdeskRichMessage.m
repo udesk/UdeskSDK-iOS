@@ -133,7 +133,7 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
         
         self.attributedString = mAtt;
         
-        CGSize textSize = [UdeskStringSizeUtil sizeWithAttributedText:mAtt size:CGSizeMake([self richMaxWidth], CGFLOAT_MAX)];
+        CGSize textSize = [UdeskStringSizeUtil sizeWithAttributedText:mAtt size:CGSizeMake(self.textMaxWidth, CGFLOAT_MAX)];
         
         if ([UdeskSDKUtil stringContainsEmoji:[mAtt string]]) {
             textSize.width += kUDRichMendSpacingTwo;
@@ -155,10 +155,6 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
         NSLog(@"%@",exception);
     } @finally {
     }
-}
-
-- (CGFloat)richMaxWidth {
-    return ((310.0/375.0) * UD_SCREEN_WIDTH)-(kUDBubbleToRichHorizontalSpacing*2);
 }
 
 - (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {

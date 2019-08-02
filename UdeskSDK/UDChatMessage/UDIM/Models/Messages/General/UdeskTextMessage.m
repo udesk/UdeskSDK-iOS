@@ -8,6 +8,7 @@
 
 #import "UdeskTextMessage.h"
 #import "UdeskTextCell.h"
+#import "UDTTTAttributedLabel.h"
 
 /** 聊天气泡和其中的文字水平间距 */
 static CGFloat const kUDBubbleToTextHorizontalSpacing = 14.0;
@@ -24,6 +25,8 @@ static CGFloat const kUDTextMendSpacing = 1.0;
 @property (nonatomic, strong, readwrite) NSDictionary *cellTextAttributes;
 /** 消息的文字 */
 @property (nonatomic, copy  , readwrite) NSAttributedString *cellText;
+/** 计算高度用的label */
+@property (nonatomic, strong) UDTTTAttributedLabel *textLabelForHeightCalculation;
 
 @end
 
@@ -51,46 +54,67 @@ static CGFloat const kUDTextMendSpacing = 1.0;
         switch (self.message.messageFrom) {
             case UDMessageTypeSending:{
                 
-                CGFloat bubbleWidth = textSize.width+(kUDBubbleToTextHorizontalSpacing*2);
-                CGFloat bubbleHeight = textSize.height+(kUDBubbleToTextVerticalSpacing*2);
-                CGFloat bubbleX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-bubbleWidth;
-                CGFloat bubbleSpacing = [self getBubbleSpacing];
-                
-                //文本气泡frame
-                self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+bubbleSpacing, bubbleWidth, bubbleHeight);
-                //文本frame
-                self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+spacing, textSize.width, textSize.height);
-                //加载中frame
-                self.loadingFrame = CGRectMake(self.bubbleFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.bubbleFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
-                
-                //加载失败frame
-                self.failureFrame = self.loadingFrame;
-                
+                [self setSendFrameWithSize:textSize spacing:spacing];
                 break;
             }
             case UDMessageTypeReceiving:{
                 
-                CGFloat bubbleSpacing = [self getBubbleSpacing];
-                
-                //接收文字气泡frame
-                self.bubbleFrame = CGRectMake(kUDBubbleToHorizontalEdgeSpacing, CGRectGetMaxY(self.avatarFrame)+bubbleSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*2), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
-                //接收文字frame
-                self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+spacing, textSize.width, textSize.height);
-                
+                [self setReceiveFrameWithSize:textSize spacing:spacing];
                 break;
             }
-                
             default:
                 break;
         }
-        
-        //cell高度
-        self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+(!self.message.bubbleType ? kUDCellBottomMargin : kUDParticularCellBottomMargin);
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            self.textLabelForHeightCalculation.attributedText = self.cellText;
+            CGSize labelSize = [self.textLabelForHeightCalculation sizeThatFits:CGSizeMake(self.textMaxWidth, MAXFLOAT)];
+
+            if (CGRectGetHeight(self.textFrame) < labelSize.height) {
+                if (self.message.messageFrom == UDMessageTypeSending) {
+                    [self setSendFrameWithSize:labelSize spacing:spacing];
+                }
+                else if (self.message.messageFrom == UDMessageTypeReceiving) {
+                    [self setReceiveFrameWithSize:labelSize spacing:spacing];
+                }
+            }
+        });
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
     }
+}
+
+- (void)setReceiveFrameWithSize:(CGSize)textSize spacing:(CGFloat)spacing {
+    
+    CGFloat bubbleSpacing = [self getBubbleSpacing];
+    //接收文字气泡frame
+    self.bubbleFrame = CGRectMake(kUDBubbleToHorizontalEdgeSpacing, CGRectGetMaxY(self.avatarFrame)+bubbleSpacing, textSize.width+(kUDBubbleToTextHorizontalSpacing*2), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
+    //接收文字frame
+    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+spacing, textSize.width, textSize.height);
+    //cell高度
+    self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+(!self.message.bubbleType ? kUDCellBottomMargin : kUDParticularCellBottomMargin);
+}
+
+- (void)setSendFrameWithSize:(CGSize)textSize spacing:(CGFloat)spacing {
+    
+    CGFloat bubbleWidth = textSize.width+(kUDBubbleToTextHorizontalSpacing*2);
+    CGFloat bubbleHeight = textSize.height+(kUDBubbleToTextVerticalSpacing*2);
+    CGFloat bubbleX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-bubbleWidth;
+    CGFloat bubbleSpacing = [self getBubbleSpacing];
+    
+    //文本气泡frame
+    self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+bubbleSpacing, bubbleWidth, bubbleHeight);
+    //文本frame
+    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+spacing, textSize.width, textSize.height);
+    //加载中frame
+    self.loadingFrame = CGRectMake(self.bubbleFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.bubbleFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
+    //加载失败frame
+    self.failureFrame = self.loadingFrame;
+    //cell高度
+    self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+(!self.message.bubbleType ? kUDCellBottomMargin : kUDParticularCellBottomMargin);
 }
 
 - (CGFloat)getBubbleSpacing {
@@ -177,7 +201,7 @@ static CGFloat const kUDTextMendSpacing = 1.0;
         NSDictionary *cellTextAttributes = [[NSDictionary alloc] initWithDictionary:contentAttributes];
         self.cellText = [[NSAttributedString alloc] initWithString:text attributes:cellTextAttributes];
         
-        CGSize textSize = [UdeskStringSizeUtil sizeWithAttributedText:self.cellText size:CGSizeMake([self textMaxWidth], CGFLOAT_MAX)];
+        CGSize textSize = [UdeskStringSizeUtil sizeWithAttributedText:self.cellText size:CGSizeMake(self.textMaxWidth, CGFLOAT_MAX)];
         
         if ([UdeskSDKUtil stringContainsEmoji:[self.cellText string]]) {
             NSAttributedString *oneLineText = [[NSAttributedString alloc] initWithString:@"haha" attributes:cellTextAttributes];
@@ -194,8 +218,12 @@ static CGFloat const kUDTextMendSpacing = 1.0;
     
 }
 
-- (CGFloat)textMaxWidth {
-    return ((310.0/375.0) * UD_SCREEN_WIDTH)-(kUDBubbleToTextHorizontalSpacing*2);
+- (UDTTTAttributedLabel *)textLabelForHeightCalculation {
+    if (!_textLabelForHeightCalculation) {
+        _textLabelForHeightCalculation = [UDTTTAttributedLabel new];
+        _textLabelForHeightCalculation.numberOfLines = 0;
+    }
+    return _textLabelForHeightCalculation;
 }
 
 - (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {

@@ -87,6 +87,8 @@ extern const CGFloat kUDAnswerBubbleMinHeight;
 @property (nonatomic, assign) CGFloat  cellHeight;
 /** 转人工高度 */
 @property (nonatomic, assign) CGFloat  transferHeight;
+/** 文本最大宽度 */
+@property (nonatomic, assign) CGFloat  textMaxWidth;
 /** 消息model */
 @property (nonatomic, strong) UdeskMessage *message;
 

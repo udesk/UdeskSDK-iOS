@@ -13,5 +13,6 @@
 
 + (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font size:(CGSize)size;
 + (CGSize)sizeWithAttributedText:(NSAttributedString *)attributedText size:(CGSize)size;
++ (CGFloat)getHeightForAttributedText:(NSAttributedString *)attributedText textWidth:(CGFloat)textWidth;
 
 @end

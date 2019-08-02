@@ -1353,6 +1353,7 @@ static CGFloat udInputBarHeight = 54.0f;
             otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
             self.emojiKeyboard.alpha = !hide;
             self.emojiKeyboard.frame = otherMenuViewFrame;
+            [self.view bringSubviewToFront:self.emojiKeyboard];
         };
         
         void (^MoreViewAnimation)(BOOL hide) = ^(BOOL hide) {
@@ -1360,6 +1361,7 @@ static CGFloat udInputBarHeight = 54.0f;
             otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
             self.moreView.alpha = !hide;
             self.moreView.frame = otherMenuViewFrame;
+            [self.view bringSubviewToFront:self.moreView];
         };
         
         if (hide) {

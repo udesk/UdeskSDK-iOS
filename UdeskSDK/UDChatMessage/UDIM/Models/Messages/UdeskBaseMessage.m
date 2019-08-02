@@ -104,6 +104,7 @@ const CGFloat kUDAnswerBubbleMinHeight = 75.0;
     //重发按钮图片
     self.failureImage = [UIImage udDefaultRefreshImage];
     
+    _textMaxWidth = (UD_SCREEN_WIDTH>320)?300:200;
     _cellHeight += _dateHeight;
     _cellHeight += kUDCellBottomMargin;
 }

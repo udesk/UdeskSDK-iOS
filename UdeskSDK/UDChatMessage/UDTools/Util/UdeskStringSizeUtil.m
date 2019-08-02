@@ -60,4 +60,18 @@
     return CGSizeMake(stringRect.size.width, stringRect.size.height+2);
 }
 
++ (CGFloat)getHeightForAttributedText:(NSAttributedString *)attributedText textWidth:(CGFloat)textWidth {
+    
+    CGSize constraint = CGSizeMake(textWidth , CGFLOAT_MAX);
+    CGSize title_size;
+    CGFloat totalHeight;
+    title_size = [attributedText boundingRectWithSize:constraint
+                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                              context:nil].size;
+    
+    totalHeight = ceil(title_size.height);
+    
+    return totalHeight;
+}
+
 @end
