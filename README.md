@@ -956,6 +956,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v4.1.8版本更新功能:
+
+1.修复了泰文消息显示不全的问题
+
+------
+
 sdk v4.1.7版本更新功能:
 
 1.适配iOS13

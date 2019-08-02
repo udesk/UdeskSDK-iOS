@@ -13,6 +13,7 @@
 #import <CoreText/CoreText.h>
 #import "UdeskTextCell.h"
 #import "UdeskBundleUtils.h"
+#import "UDTTTAttributedLabel.h"
 
 /** 聊天气泡和其中的文字水平间距 */
 const CGFloat kUDBubbleToTextHorizontalSpacing = 10.0;
@@ -29,6 +30,8 @@ const CGFloat kUDTextMendSpacing = 2.0;
 @property (nonatomic, strong, readwrite) NSDictionary *cellTextAttributes;
 /** 消息的文字 */
 @property (nonatomic, copy  , readwrite) NSAttributedString *cellText;
+
+@property (nonatomic, strong) UDTTTAttributedLabel *textLabelForHeightCalculation;
 
 @end
 
@@ -64,35 +67,17 @@ const CGFloat kUDTextMendSpacing = 2.0;
             switch (self.message.messageFrom) {
                 case UDMessageTypeSending:{
                     
-                    //文本气泡frame
-                    self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x-kUDArrowMarginWidth-kUDBubbleToTextHorizontalSpacing*2-kUDAvatarToBubbleSpacing-textSize.width, self.avatarFrame.origin.y, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
-                    //文本frame
-                    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+spacing, textSize.width, textSize.height);
-                    //加载中frame
-                    self.loadingFrame = CGRectMake(self.bubbleFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.bubbleFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
-                    
-                    //加载失败frame
-                    self.failureFrame = self.loadingFrame;
-                    
+                    [self setSendFrameWithSize:textSize spacing:spacing];
                     break;
                 }
                 case UDMessageTypeReceiving:{
                     
-                    //接收文字气泡frame
-                    CGFloat bubbleY = [UdeskSDKUtil isBlankString:self.message.nickName] ? CGRectGetMinY(self.avatarFrame) : CGRectGetMaxY(self.nicknameFrame)+kUDCellBubbleToIndicatorSpacing;
-                    self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, bubbleY, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
-                    //接收文字frame
-                    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing+spacing, textSize.width, textSize.height);
-                    
+                    [self setReceiveFrameWithSize:textSize spacing:spacing];
                     break;
                 }
-                    
                 default:
                     break;
             }
-            
-            //cell高度
-            self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
         }
         else if (self.message.messageType == UDMessageContentTypeRich) {
             
@@ -106,10 +91,49 @@ const CGFloat kUDTextMendSpacing = 2.0;
             }
         }
         
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            self.textLabelForHeightCalculation.attributedText = self.cellText;
+            CGSize labelSize = [self.textLabelForHeightCalculation sizeThatFits:CGSizeMake(UD_SCREEN_WIDTH>320?235:180, MAXFLOAT)];
+            
+            if (CGRectGetHeight(self.textFrame) < labelSize.height) {
+                if (self.message.messageFrom == UDMessageTypeSending) {
+                    [self setSendFrameWithSize:labelSize spacing:spacing];
+                }
+                else if (self.message.messageFrom == UDMessageTypeReceiving) {
+                    [self setReceiveFrameWithSize:labelSize spacing:spacing];
+                }
+            }
+        });
+        
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
     }
+}
+
+- (void)setReceiveFrameWithSize:(CGSize)textSize spacing:(CGFloat)spacing {
+    
+    //接收文字气泡frame
+    CGFloat bubbleY = [UdeskSDKUtil isBlankString:self.message.nickName] ? CGRectGetMinY(self.avatarFrame) : CGRectGetMaxY(self.nicknameFrame)+kUDCellBubbleToIndicatorSpacing;
+    self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x+kUDAvatarDiameter+kUDAvatarToBubbleSpacing, bubbleY, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
+    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToTextVerticalSpacing+spacing, textSize.width, textSize.height);
+    //cell高度
+    self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
+}
+
+- (void)setSendFrameWithSize:(CGSize)textSize spacing:(CGFloat)spacing {
+    
+    //文本气泡frame
+    self.bubbleFrame = CGRectMake(self.avatarFrame.origin.x-kUDArrowMarginWidth-kUDBubbleToTextHorizontalSpacing*2-kUDAvatarToBubbleSpacing-textSize.width, self.avatarFrame.origin.y, textSize.width+(kUDBubbleToTextHorizontalSpacing*3), textSize.height+(kUDBubbleToTextVerticalSpacing*2));
+    //文本frame
+    self.textFrame = CGRectMake(kUDBubbleToTextHorizontalSpacing, kUDBubbleToTextVerticalSpacing+spacing, textSize.width, textSize.height);
+    //加载中frame
+    self.loadingFrame = CGRectMake(self.bubbleFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.bubbleFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
+    //加载失败frame
+    self.failureFrame = self.loadingFrame;
+    //cell高度
+    self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin;
 }
 
 - (void)setupRichText {
@@ -261,6 +285,14 @@ const CGFloat kUDTextMendSpacing = 2.0;
         NSLog(@"%@",exception);
     } @finally {
     }
+}
+
+- (UDTTTAttributedLabel *)textLabelForHeightCalculation {
+    if (!_textLabelForHeightCalculation) {
+        _textLabelForHeightCalculation = [UDTTTAttributedLabel new];
+        _textLabelForHeightCalculation.numberOfLines = 0;
+    }
+    return _textLabelForHeightCalculation;
 }
 
 - (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {
