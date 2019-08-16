@@ -76,7 +76,7 @@
     if (!goodsMessage || ![goodsMessage isKindOfClass:[UdeskGoodsMessage class]]) return;
     
     if (![UdeskSDKUtil isBlankString:goodsMessage.goodsModel.imgUrl]) {
-        [self.goodsImageView yy_setImageWithURL:[NSURL URLWithString:[goodsMessage.goodsModel.imgUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:[UIImage udDefaultLoadingImage]];
+        [self.goodsImageView udesk_yy_setImageWithURL:[NSURL URLWithString:[goodsMessage.goodsModel.imgUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:[UIImage udDefaultLoadingImage]];
     }
     
     self.titleLabel.numberOfLines = [UdeskSDKConfig customConfig].sdkStyle.goodsNameNumberOfLines;

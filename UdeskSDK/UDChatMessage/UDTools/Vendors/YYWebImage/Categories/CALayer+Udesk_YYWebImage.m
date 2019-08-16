@@ -23,13 +23,13 @@ static int Udesk_YYWebImageSetterKey;
 
 @implementation CALayer (Udesk_YYWebImage)
 
-- (NSURL *)yy_imageURL {
+- (NSURL *)udesk_yy_imageURL {
     Udesk_YYWebImageSetter *setter = objc_getAssociatedObject(self, &Udesk_YYWebImageSetterKey);
     return setter.imageURL;
 }
 
-- (void)setYy_imageURL:(NSURL *)imageURL {
-    [self yy_setImageWithURL:imageURL
+- (void)setUdesk_yy_imageURL:(NSURL *)imageURL {
+    [self udesk_yy_setImageWithURL:imageURL
               placeholder:nil
                   options:kNilOptions
                   manager:nil
@@ -38,8 +38,8 @@ static int Udesk_YYWebImageSetterKey;
                completion:nil];
 }
 
-- (void)yy_setImageWithURL:(NSURL *)imageURL placeholder:(UIImage *)placeholder {
-    [self yy_setImageWithURL:imageURL
+- (void)udesk_yy_setImageWithURL:(NSURL *)imageURL placeholder:(UIImage *)placeholder {
+    [self udesk_yy_setImageWithURL:imageURL
                  placeholder:placeholder
                      options:kNilOptions
                      manager:nil
@@ -48,8 +48,8 @@ static int Udesk_YYWebImageSetterKey;
                   completion:nil];
 }
 
-- (void)yy_setImageWithURL:(NSURL *)imageURL options:(Udesk_YYWebImageOptions)options {
-    [self yy_setImageWithURL:imageURL
+- (void)udesk_yy_setImageWithURL:(NSURL *)imageURL options:(Udesk_YYWebImageOptions)options {
+    [self udesk_yy_setImageWithURL:imageURL
                  placeholder:nil
                      options:options
                      manager:nil
@@ -58,11 +58,11 @@ static int Udesk_YYWebImageSetterKey;
                   completion:nil];
 }
 
-- (void)yy_setImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setImageWithURL:(NSURL *)imageURL
                placeholder:(UIImage *)placeholder
                    options:(Udesk_YYWebImageOptions)options
                 completion:(Udesk_YYWebImageCompletionBlock)completion {
-    [self yy_setImageWithURL:imageURL
+    [self udesk_yy_setImageWithURL:imageURL
                  placeholder:placeholder
                      options:options
                      manager:nil
@@ -71,13 +71,13 @@ static int Udesk_YYWebImageSetterKey;
                   completion:completion];
 }
 
-- (void)yy_setImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setImageWithURL:(NSURL *)imageURL
                placeholder:(UIImage *)placeholder
                    options:(Udesk_YYWebImageOptions)options
                   progress:(Udesk_YYWebImageProgressBlock)progress
                  transform:(Udesk_YYWebImageTransformBlock)transform
                 completion:(Udesk_YYWebImageCompletionBlock)completion {
-    [self yy_setImageWithURL:imageURL
+    [self udesk_yy_setImageWithURL:imageURL
                  placeholder:placeholder
                      options:options
                      manager:nil
@@ -86,7 +86,7 @@ static int Udesk_YYWebImageSetterKey;
                   completion:completion];
 }
 
-- (void)yy_setImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setImageWithURL:(NSURL *)imageURL
                placeholder:(UIImage *)placeholder
                    options:(Udesk_YYWebImageOptions)options
                    manager:(Udesk_YYWebImageManager *)manager
@@ -181,7 +181,7 @@ static int Udesk_YYWebImageSetterKey;
     });
 }
 
-- (void)yy_cancelCurrentImageRequest {
+- (void)udesk_yy_cancelCurrentImageRequest {
     Udesk_YYWebImageSetter *setter = objc_getAssociatedObject(self, &Udesk_YYWebImageSetterKey);
     if (setter) [setter cancel];
 }

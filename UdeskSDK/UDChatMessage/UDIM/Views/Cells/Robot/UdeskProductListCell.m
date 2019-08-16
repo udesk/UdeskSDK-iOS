@@ -82,7 +82,7 @@ static NSString *kUDProductListProductCellId = @"kUDProductListProductCellId";
     [self resetProduct];
     
     self.productImageView.frame = CGRectMake(kUDBubbleToProductListHorizontalSpacing, kUDBubbleToProductListVerticalSpacing, kUDProductListImageWidth, kUDProductListImageHeight);
-    [self.productImageView yy_setImageWithURL:[NSURL URLWithString:productModel.imageURL] placeholder:[UIImage udDefaultLoadingImage]];
+    [self.productImageView udesk_yy_setImageWithURL:[NSURL URLWithString:productModel.imageURL] placeholder:[UIImage udDefaultLoadingImage]];
     
     CGFloat textMaxWidth = [self productListMaxWidth]-kUDProductListImageWidth-kUDBubbleToProductListHorizontalSpacing;
     

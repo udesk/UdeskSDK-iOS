@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
  operation and create a new request operation to fetch image. Set nil to clear
  the image and image URL.
  */
-@property (nullable, nonatomic, strong) NSURL *yy_imageURL;
+@property (nullable, nonatomic, strong) NSURL *udesk_yy_imageURL;
 
 /**
  Set the view's `image` with a specified URL.
@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param imageURL    The image url (remote or local file path).
  @param placeholder The image to be set initially, until the image request finishes.
  */
-- (void)yy_setImageWithURL:(nullable NSURL *)imageURL placeholder:(nullable UIImage *)placeholder;
+- (void)udesk_yy_setImageWithURL:(nullable NSURL *)imageURL placeholder:(nullable UIImage *)placeholder;
 
 /**
  Set the view's `image` with a specified URL.
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param imageURL The image url (remote or local file path).
  @param options  The options to use when request the image.
  */
-- (void)yy_setImageWithURL:(nullable NSURL *)imageURL options:(Udesk_YYWebImageOptions)options;
+- (void)udesk_yy_setImageWithURL:(nullable NSURL *)imageURL options:(Udesk_YYWebImageOptions)options;
 
 /**
  Set the view's `image` with a specified URL.
@@ -53,10 +53,10 @@ NS_ASSUME_NONNULL_BEGIN
  @param options     The options to use when request the image.
  @param completion  The block invoked (on main thread) when image request completed.
  */
-- (void)yy_setImageWithURL:(nullable NSURL *)imageURL
-               placeholder:(nullable UIImage *)placeholder
-                   options:(Udesk_YYWebImageOptions)options
-                completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
+- (void)udesk_yy_setImageWithURL:(nullable NSURL *)imageURL
+                     placeholder:(nullable UIImage *)placeholder
+                         options:(Udesk_YYWebImageOptions)options
+                      completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Set the view's `image` with a specified URL.
@@ -68,12 +68,12 @@ NS_ASSUME_NONNULL_BEGIN
  @param transform   The block invoked (on background thread) to do additional image process.
  @param completion  The block invoked (on main thread) when image request completed.
  */
-- (void)yy_setImageWithURL:(nullable NSURL *)imageURL
-               placeholder:(nullable UIImage *)placeholder
-                   options:(Udesk_YYWebImageOptions)options
-                  progress:(nullable Udesk_YYWebImageProgressBlock)progress
-                 transform:(nullable Udesk_YYWebImageTransformBlock)transform
-                completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
+- (void)udesk_yy_setImageWithURL:(nullable NSURL *)imageURL
+                     placeholder:(nullable UIImage *)placeholder
+                         options:(Udesk_YYWebImageOptions)options
+                        progress:(nullable Udesk_YYWebImageProgressBlock)progress
+                       transform:(nullable Udesk_YYWebImageTransformBlock)transform
+                      completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Set the view's `image` with a specified URL.
@@ -86,13 +86,13 @@ NS_ASSUME_NONNULL_BEGIN
  @param transform   The block invoked (on background thread) to do additional image process.
  @param completion  The block invoked (on main thread) when image request completed.
  */
-- (void)yy_setImageWithURL:(nullable NSURL *)imageURL
-               placeholder:(nullable UIImage *)placeholder
-                   options:(Udesk_YYWebImageOptions)options
-                   manager:(nullable Udesk_YYWebImageManager *)manager
-                  progress:(nullable Udesk_YYWebImageProgressBlock)progress
-                 transform:(nullable Udesk_YYWebImageTransformBlock)transform
-                completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
+- (void)udesk_yy_setImageWithURL:(nullable NSURL *)imageURL
+                     placeholder:(nullable UIImage *)placeholder
+                         options:(Udesk_YYWebImageOptions)options
+                         manager:(nullable Udesk_YYWebImageManager *)manager
+                        progress:(nullable Udesk_YYWebImageProgressBlock)progress
+                       transform:(nullable Udesk_YYWebImageTransformBlock)transform
+                      completion:(nullable Udesk_YYWebImageCompletionBlock)completion;
 
 /**
  Cancel the current image request.

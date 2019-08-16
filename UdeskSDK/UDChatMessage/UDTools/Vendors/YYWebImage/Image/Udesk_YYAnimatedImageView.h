@@ -94,7 +94,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  See `YYImage` and `YYFrameImage` for example.
  */
-@protocol YYAnimatedImage <NSObject>
+@protocol UdeskYYAnimatedImage <NSObject>
 @required
 /// Total animated frame count.
 /// It the frame count is less than 1, then the methods below will be ignored.

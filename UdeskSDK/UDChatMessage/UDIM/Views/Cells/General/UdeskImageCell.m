@@ -93,7 +93,7 @@
     else {
         NSRange range = [UdeskSDKUtil linkRegexsMatch:imageUrl];
         if (range.location != NSNotFound) {
-            [self.chatImageView yy_setImageWithURL:[NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:imageMessage.message.image];
+            [self.chatImageView udesk_yy_setImageWithURL:[NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:imageMessage.message.image];
         }
     }
     

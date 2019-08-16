@@ -108,7 +108,7 @@
         self.mainImageView.image = [UIImage imageNamed:@"none"];
         
         if (url && url != (id)kCFNull && url.length > 0) {
-            [self.mainImageView yy_setImageWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:imageView.image];
+            [self.mainImageView udesk_yy_setImageWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:imageView.image];
         }
     }
     else {
@@ -117,7 +117,7 @@
         imageH = imageView.image.size.height;
         //放大的图片 显示原图片 不缩小
         self.mainImageView.image = imageView.image;
-        [self.mainImageView yy_setImageWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:imageView.image options:Udesk_YYWebImageOptionShowNetworkActivity completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, Udesk_YYWebImageFromType from, Udesk_YYWebImageStage stage, NSError * _Nullable error) {
+        [self.mainImageView udesk_yy_setImageWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:imageView.image options:Udesk_YYWebImageOptionShowNetworkActivity completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, Udesk_YYWebImageFromType from, Udesk_YYWebImageStage stage, NSError * _Nullable error) {
             
             if (!image) {
                 return ;

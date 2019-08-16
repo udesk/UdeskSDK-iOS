@@ -21,7 +21,7 @@
 
 
 /// Convert degrees to radians.
-static inline CGFloat _DegreesToRadians(CGFloat degrees) {
+static inline CGFloat _UdeskDegreesToRadians(CGFloat degrees) {
     return degrees * M_PI / 180;
 }
 
@@ -35,7 +35,7 @@ static inline CGFloat _DegreesToRadians(CGFloat degrees) {
  @return A resized rect for the given content mode.
  @discussion UIViewContentModeRedraw is same as UIViewContentModeScaleToFill.
  */
-static CGRect _YYCGRectFitWithContentMode(CGRect rect, CGSize size, UIViewContentMode mode) {
+static CGRect _UdeskYYCGRectFitWithContentMode(CGRect rect, CGSize size, UIViewContentMode mode) {
     rect = CGRectStandardize(rect);
     size.width = size.width < 0 ? -size.width : size.width;
     size.height = size.height < 0 ? -size.height : size.height;
@@ -118,7 +118,7 @@ static CGRect _YYCGRectFitWithContentMode(CGRect rect, CGSize size, UIViewConten
 
 
 
-static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef source, size_t index) {
+static NSTimeInterval _udesk_yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef source, size_t index) {
     NSTimeInterval delay = 0;
     CFDictionaryRef dic = CGImageSourceCopyPropertiesAtIndex(source, index, NULL);
     if (dic) {
@@ -142,7 +142,7 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
 
 @implementation UIImage (Udesk_YYWebImage)
 
-+ (UIImage *)yy_imageWithSmallGIFData:(NSData *)data scale:(CGFloat)scale {
++ (UIImage *)udesk_yy_imageWithSmallGIFData:(NSData *)data scale:(CGFloat)scale {
     CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFTypeRef)(data), NULL);
     if (!source) return nil;
     
@@ -158,7 +158,7 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     NSUInteger totalFrame = 0;
     NSUInteger gcdFrame = 0;
     for (size_t i = 0; i < count; i++) {
-        NSTimeInterval delay = _yy_CGImageSourceGetGIFFrameDelayAtIndex(source, i);
+        NSTimeInterval delay = _udesk_yy_CGImageSourceGetGIFFrameDelayAtIndex(source, i);
         totalTime += delay;
         NSInteger frame = lrint(delay / oneFrameTime);
         if (frame < 1) frame = 1;
@@ -237,11 +237,11 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     return image;
 }
 
-+ (UIImage *)yy_imageWithColor:(UIColor *)color {
-    return [self yy_imageWithColor:color size:CGSizeMake(1, 1)];
++ (UIImage *)udesk_yy_imageWithColor:(UIColor *)color {
+    return [self udesk_yy_imageWithColor:color size:CGSizeMake(1, 1)];
 }
 
-+ (UIImage *)yy_imageWithColor:(UIColor *)color size:(CGSize)size {
++ (UIImage *)udesk_yy_imageWithColor:(UIColor *)color size:(CGSize)size {
     if (!color || size.width <= 0 || size.height <= 0) return nil;
     CGRect rect = CGRectMake(0.0f, 0.0f, size.width, size.height);
     UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
@@ -253,7 +253,7 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     return image;
 }
 
-+ (UIImage *)yy_imageWithSize:(CGSize)size drawBlock:(void (^)(CGContextRef context))drawBlock {
++ (UIImage *)udesk_yy_imageWithSize:(CGSize)size drawBlock:(void (^)(CGContextRef context))drawBlock {
     if (!drawBlock) return nil;
     UIGraphicsBeginImageContextWithOptions(size, NO, 0);
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -264,7 +264,7 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     return image;
 }
 
-- (BOOL)yy_hasAlphaChannel {
+- (BOOL)udesk_yy_hasAlphaChannel {
     if (self.CGImage == NULL) return NO;
     CGImageAlphaInfo alpha = CGImageGetAlphaInfo(self.CGImage) & kCGBitmapAlphaInfoMask;
     return (alpha == kCGImageAlphaFirst ||
@@ -273,8 +273,8 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
             alpha == kCGImageAlphaPremultipliedLast);
 }
 
-- (void)yy_drawInRect:(CGRect)rect withContentMode:(UIViewContentMode)contentMode clipsToBounds:(BOOL)clips{
-    CGRect drawRect = _YYCGRectFitWithContentMode(rect, self.size, contentMode);
+- (void)udesk_yy_drawInRect:(CGRect)rect withContentMode:(UIViewContentMode)contentMode clipsToBounds:(BOOL)clips{
+    CGRect drawRect = _UdeskYYCGRectFitWithContentMode(rect, self.size, contentMode);
     if (drawRect.size.width == 0 || drawRect.size.height == 0) return;
     if (clips) {
         CGContextRef context = UIGraphicsGetCurrentContext();
@@ -290,7 +290,7 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     }
 }
 
-- (UIImage *)yy_imageByResizeToSize:(CGSize)size {
+- (UIImage *)udesk_yy_imageByResizeToSize:(CGSize)size {
     if (size.width <= 0 || size.height <= 0) return nil;
     UIGraphicsBeginImageContextWithOptions(size, NO, self.scale);
     [self drawInRect:CGRectMake(0, 0, size.width, size.height)];
@@ -299,16 +299,16 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     return image;
 }
 
-- (UIImage *)yy_imageByResizeToSize:(CGSize)size contentMode:(UIViewContentMode)contentMode {
+- (UIImage *)udesk_yy_imageByResizeToSize:(CGSize)size contentMode:(UIViewContentMode)contentMode {
     if (size.width <= 0 || size.height <= 0) return nil;
     UIGraphicsBeginImageContextWithOptions(size, NO, self.scale);
-    [self yy_drawInRect:CGRectMake(0, 0, size.width, size.height) withContentMode:contentMode clipsToBounds:NO];
+    [self udesk_yy_drawInRect:CGRectMake(0, 0, size.width, size.height) withContentMode:contentMode clipsToBounds:NO];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return image;
 }
 
-- (UIImage *)yy_imageByCropToRect:(CGRect)rect {
+- (UIImage *)udesk_yy_imageByCropToRect:(CGRect)rect {
     rect.origin.x *= self.scale;
     rect.origin.y *= self.scale;
     rect.size.width *= self.scale;
@@ -320,7 +320,7 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     return image;
 }
 
-- (UIImage *)yy_imageByInsetEdge:(UIEdgeInsets)insets withColor:(UIColor *)color {
+- (UIImage *)udesk_yy_imageByInsetEdge:(UIEdgeInsets)insets withColor:(UIColor *)color {
     CGSize size = self.size;
     size.width -= insets.left + insets.right;
     size.height -= insets.top + insets.bottom;
@@ -343,17 +343,17 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     return image;
 }
 
-- (UIImage *)yy_imageByRoundCornerRadius:(CGFloat)radius {
-    return [self yy_imageByRoundCornerRadius:radius borderWidth:0 borderColor:nil];
+- (UIImage *)udesk_yy_imageByRoundCornerRadius:(CGFloat)radius {
+    return [self udesk_yy_imageByRoundCornerRadius:radius borderWidth:0 borderColor:nil];
 }
 
-- (UIImage *)yy_imageByRoundCornerRadius:(CGFloat)radius
+- (UIImage *)udesk_yy_imageByRoundCornerRadius:(CGFloat)radius
                              borderWidth:(CGFloat)borderWidth
                              borderColor:(UIColor *)borderColor {
-    return [self yy_imageByRoundCornerRadius:radius corners:UIRectCornerAllCorners borderWidth:borderWidth borderColor:borderColor borderLineJoin:kCGLineJoinMiter];
+    return [self udesk_yy_imageByRoundCornerRadius:radius corners:UIRectCornerAllCorners borderWidth:borderWidth borderColor:borderColor borderLineJoin:kCGLineJoinMiter];
 }
 
-- (UIImage *)yy_imageByRoundCornerRadius:(CGFloat)radius
+- (UIImage *)udesk_yy_imageByRoundCornerRadius:(CGFloat)radius
                                  corners:(UIRectCorner)corners
                              borderWidth:(CGFloat)borderWidth
                              borderColor:(UIColor *)borderColor
@@ -403,7 +403,7 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     return image;
 }
 
-- (UIImage *)yy_imageByRotate:(CGFloat)radians fitSize:(BOOL)fitSize {
+- (UIImage *)udesk_yy_imageByRotate:(CGFloat)radians fitSize:(BOOL)fitSize {
     size_t width = (size_t)CGImageGetWidth(self.CGImage);
     size_t height = (size_t)CGImageGetHeight(self.CGImage);
     CGRect newRect = CGRectApplyAffineTransform(CGRectMake(0., 0., width, height),
@@ -435,7 +435,7 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     return img;
 }
 
-- (UIImage *)_yy_flipHorizontal:(BOOL)horizontal vertical:(BOOL)vertical {
+- (UIImage *)_udesk_yy_flipHorizontal:(BOOL)horizontal vertical:(BOOL)vertical {
     if (!self.CGImage) return nil;
     size_t width = (size_t)CGImageGetWidth(self.CGImage);
     size_t height = (size_t)CGImageGetHeight(self.CGImage);
@@ -466,27 +466,27 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     return img;
 }
 
-- (UIImage *)yy_imageByRotateLeft90 {
-    return [self yy_imageByRotate:_DegreesToRadians(90) fitSize:YES];
+- (UIImage *)udesk_yy_imageByRotateLeft90 {
+    return [self udesk_yy_imageByRotate:_UdeskDegreesToRadians(90) fitSize:YES];
 }
 
-- (UIImage *)yy_imageByRotateRight90 {
-    return [self yy_imageByRotate:_DegreesToRadians(-90) fitSize:YES];
+- (UIImage *)udesk_yy_imageByRotateRight90 {
+    return [self udesk_yy_imageByRotate:_UdeskDegreesToRadians(-90) fitSize:YES];
 }
 
-- (UIImage *)yy_imageByRotate180 {
-    return [self _yy_flipHorizontal:YES vertical:YES];
+- (UIImage *)udesk_yy_imageByRotate180 {
+    return [self _udesk_yy_flipHorizontal:YES vertical:YES];
 }
 
-- (UIImage *)yy_imageByFlipVertical {
-    return [self _yy_flipHorizontal:NO vertical:YES];
+- (UIImage *)udesk_yy_imageByFlipVertical {
+    return [self _udesk_yy_flipHorizontal:NO vertical:YES];
 }
 
-- (UIImage *)yy_imageByFlipHorizontal {
-    return [self _yy_flipHorizontal:YES vertical:NO];
+- (UIImage *)udesk_yy_imageByFlipHorizontal {
+    return [self _udesk_yy_flipHorizontal:YES vertical:NO];
 }
 
-- (UIImage *)yy_imageByTintColor:(UIColor *)color {
+- (UIImage *)udesk_yy_imageByTintColor:(UIColor *)color {
     UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
     CGRect rect = CGRectMake(0, 0, self.size.width, self.size.height);
     [color set];
@@ -497,27 +497,27 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     return newImage;
 }
 
-- (UIImage *)yy_imageByGrayscale {
-    return [self yy_imageByBlurRadius:0 tintColor:nil tintMode:0 saturation:0 maskImage:nil];
+- (UIImage *)udesk_yy_imageByGrayscale {
+    return [self udesk_yy_imageByBlurRadius:0 tintColor:nil tintMode:0 saturation:0 maskImage:nil];
 }
 
-- (UIImage *)yy_imageByBlurSoft {
-    return [self yy_imageByBlurRadius:60 tintColor:[UIColor colorWithWhite:0.84 alpha:0.36] tintMode:kCGBlendModeNormal saturation:1.8 maskImage:nil];
+- (UIImage *)udesk_yy_imageByBlurSoft {
+    return [self udesk_yy_imageByBlurRadius:60 tintColor:[UIColor colorWithWhite:0.84 alpha:0.36] tintMode:kCGBlendModeNormal saturation:1.8 maskImage:nil];
 }
 
-- (UIImage *)yy_imageByBlurLight {
-    return [self yy_imageByBlurRadius:60 tintColor:[UIColor colorWithWhite:1.0 alpha:0.3] tintMode:kCGBlendModeNormal saturation:1.8 maskImage:nil];
+- (UIImage *)udesk_yy_imageByBlurLight {
+    return [self udesk_yy_imageByBlurRadius:60 tintColor:[UIColor colorWithWhite:1.0 alpha:0.3] tintMode:kCGBlendModeNormal saturation:1.8 maskImage:nil];
 }
 
-- (UIImage *)yy_imageByBlurExtraLight {
-    return [self yy_imageByBlurRadius:40 tintColor:[UIColor colorWithWhite:0.97 alpha:0.82] tintMode:kCGBlendModeNormal saturation:1.8 maskImage:nil];
+- (UIImage *)udesk_yy_imageByBlurExtraLight {
+    return [self udesk_yy_imageByBlurRadius:40 tintColor:[UIColor colorWithWhite:0.97 alpha:0.82] tintMode:kCGBlendModeNormal saturation:1.8 maskImage:nil];
 }
 
-- (UIImage *)yy_imageByBlurDark {
-    return [self yy_imageByBlurRadius:40 tintColor:[UIColor colorWithWhite:0.11 alpha:0.73] tintMode:kCGBlendModeNormal saturation:1.8 maskImage:nil];
+- (UIImage *)udesk_yy_imageByBlurDark {
+    return [self udesk_yy_imageByBlurRadius:40 tintColor:[UIColor colorWithWhite:0.11 alpha:0.73] tintMode:kCGBlendModeNormal saturation:1.8 maskImage:nil];
 }
 
-- (UIImage *)yy_imageByBlurWithTint:(UIColor *)tintColor {
+- (UIImage *)udesk_yy_imageByBlurWithTint:(UIColor *)tintColor {
     const CGFloat EffectColorAlpha = 0.6;
     UIColor *effectColor = tintColor;
     size_t componentCount = CGColorGetNumberOfComponents(tintColor.CGColor);
@@ -532,10 +532,10 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
             effectColor = [UIColor colorWithRed:r green:g blue:b alpha:EffectColorAlpha];
         }
     }
-    return [self yy_imageByBlurRadius:20 tintColor:effectColor tintMode:kCGBlendModeNormal saturation:-1.0 maskImage:nil];
+    return [self udesk_yy_imageByBlurRadius:20 tintColor:effectColor tintMode:kCGBlendModeNormal saturation:-1.0 maskImage:nil];
 }
 
-- (UIImage *)yy_imageByBlurRadius:(CGFloat)blurRadius
+- (UIImage *)udesk_yy_imageByBlurRadius:(CGFloat)blurRadius
                         tintColor:(UIColor *)tintColor
                          tintMode:(CGBlendMode)tintBlendMode
                        saturation:(CGFloat)saturation
@@ -565,7 +565,7 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     BOOL opaque = NO;
     
     if (!hasBlur && !hasSaturation) {
-        return [self _yy_mergeImageRef:imageRef tintColor:tintColor tintBlendMode:tintBlendMode maskImage:maskImage opaque:opaque];
+        return [self _udesk_yy_mergeImageRef:imageRef tintColor:tintColor tintBlendMode:tintBlendMode maskImage:maskImage opaque:opaque];
     }
     
     vImage_Buffer effect = { 0 }, scratch = { 0 };
@@ -675,13 +675,13 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
     UIImage *outputImage = nil;
     if (hasNewFunc) {
         CGImageRef effectCGImage = NULL;
-        effectCGImage = vImageCreateCGImageFromBuffer(input, &format, &_yy_cleanupBuffer, NULL, kvImageNoAllocate, NULL);
+        effectCGImage = vImageCreateCGImageFromBuffer(input, &format, &_udesk_yy_cleanupBuffer, NULL, kvImageNoAllocate, NULL);
         if (effectCGImage == NULL) {
             effectCGImage = vImageCreateCGImageFromBuffer(input, &format, NULL, NULL, kvImageNoFlags, NULL);
             free(input->data);
         }
         free(output->data);
-        outputImage = [self _yy_mergeImageRef:effectCGImage tintColor:tintColor tintBlendMode:tintBlendMode maskImage:maskImage opaque:opaque];
+        outputImage = [self _udesk_yy_mergeImageRef:effectCGImage tintColor:tintColor tintBlendMode:tintBlendMode maskImage:maskImage opaque:opaque];
         CGImageRelease(effectCGImage);
     } else {
         CGImageRef effectCGImage;
@@ -691,18 +691,18 @@ static NSTimeInterval _yy_CGImageSourceGetGIFFrameDelayAtIndex(CGImageSourceRef 
         if (input == &effect) effectImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         effectCGImage = effectImage.CGImage;
-        outputImage = [self _yy_mergeImageRef:effectCGImage tintColor:tintColor tintBlendMode:tintBlendMode maskImage:maskImage opaque:opaque];
+        outputImage = [self _udesk_yy_mergeImageRef:effectCGImage tintColor:tintColor tintBlendMode:tintBlendMode maskImage:maskImage opaque:opaque];
     }
     return outputImage;
 }
 
 // Helper function to handle deferred cleanup of a buffer.
-static void _yy_cleanupBuffer(void *userData, void *buf_data) {
+static void _udesk_yy_cleanupBuffer(void *userData, void *buf_data) {
     free(buf_data);
 }
 
 // Helper function to add tint and mask.
-- (UIImage *)_yy_mergeImageRef:(CGImageRef)effectCGImage
+- (UIImage *)_udesk_yy_mergeImageRef:(CGImageRef)effectCGImage
                      tintColor:(UIColor *)tintColor
                  tintBlendMode:(CGBlendMode)tintBlendMode
                      maskImage:(UIImage *)maskImage

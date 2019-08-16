@@ -26,13 +26,13 @@ __VA_ARGS__; \
 dispatch_semaphore_signal(view->_lock);
 
 
-static int64_t _YYDeviceMemoryTotal() {
+static int64_t _UdeskYYDeviceMemoryTotal() {
     int64_t mem = [[NSProcessInfo processInfo] physicalMemory];
     if (mem < -1) mem = -1;
         return mem;
 }
 
-static int64_t _YYDeviceMemoryFree() {
+static int64_t _UdeskYYDeviceMemoryFree() {
     mach_port_t host_port = mach_host_self();
     mach_msg_type_number_t host_size = sizeof(vm_statistics_data_t) / sizeof(integer_t);
     vm_size_t page_size;
@@ -112,17 +112,17 @@ static int64_t _YYDeviceMemoryFree() {
 
 
 
-typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
-    YYAnimatedImageTypeNone = 0,
-    YYAnimatedImageTypeImage,
-    YYAnimatedImageTypeHighlightedImage,
-    YYAnimatedImageTypeImages,
-    YYAnimatedImageTypeHighlightedImages,
+typedef NS_ENUM(NSUInteger, UdeskYYAnimatedImageType) {
+    UdeskYYAnimatedImageTypeNone = 0,
+    UdeskYYAnimatedImageTypeImage,
+    UdeskYYAnimatedImageTypeHighlightedImage,
+    UdeskYYAnimatedImageTypeImages,
+    UdeskYYAnimatedImageTypeHighlightedImages,
 };
 
 @interface Udesk_YYAnimatedImageView() {
     @package
-    UIImage <YYAnimatedImage> *_curAnimatedImage;
+    UIImage <UdeskYYAnimatedImage> *_curAnimatedImage;
     
     dispatch_once_t _onceToken;
     dispatch_semaphore_t _lock; ///< lock for _buffer
@@ -155,7 +155,7 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
 @interface Udesk_YYAnimatedImageViewFetchOperation : NSOperation
 @property (nonatomic, weak) Udesk_YYAnimatedImageView *view;
 @property (nonatomic, assign) NSUInteger nextIndex;
-@property (nonatomic, strong) UIImage <YYAnimatedImage> *curImage;
+@property (nonatomic, strong) UIImage <UdeskYYAnimatedImage> *curImage;
 @end
 
 @implementation Udesk_YYAnimatedImageViewFetchOperation
@@ -277,22 +277,22 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
 
 - (void)setImage:(UIImage *)image {
     if (self.image == image) return;
-    [self setImage:image withType:YYAnimatedImageTypeImage];
+    [self setImage:image withType:UdeskYYAnimatedImageTypeImage];
 }
 
 - (void)setHighlightedImage:(UIImage *)highlightedImage {
     if (self.highlightedImage == highlightedImage) return;
-    [self setImage:highlightedImage withType:YYAnimatedImageTypeHighlightedImage];
+    [self setImage:highlightedImage withType:UdeskYYAnimatedImageTypeHighlightedImage];
 }
 
 - (void)setAnimationImages:(NSArray *)animationImages {
     if (self.animationImages == animationImages) return;
-    [self setImage:animationImages withType:YYAnimatedImageTypeImages];
+    [self setImage:animationImages withType:UdeskYYAnimatedImageTypeImages];
 }
 
 - (void)setHighlightedAnimationImages:(NSArray *)highlightedAnimationImages {
     if (self.highlightedAnimationImages == highlightedAnimationImages) return;
-    [self setImage:highlightedAnimationImages withType:YYAnimatedImageTypeHighlightedImages];
+    [self setImage:highlightedAnimationImages withType:UdeskYYAnimatedImageTypeHighlightedImages];
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
@@ -301,54 +301,54 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
     [self imageChanged];
 }
 
-- (id)imageForType:(YYAnimatedImageType)type {
+- (id)imageForType:(UdeskYYAnimatedImageType)type {
     switch (type) {
-        case YYAnimatedImageTypeNone: return nil;
-        case YYAnimatedImageTypeImage: return self.image;
-        case YYAnimatedImageTypeHighlightedImage: return self.highlightedImage;
-        case YYAnimatedImageTypeImages: return self.animationImages;
-        case YYAnimatedImageTypeHighlightedImages: return self.highlightedAnimationImages;
+        case UdeskYYAnimatedImageTypeNone: return nil;
+        case UdeskYYAnimatedImageTypeImage: return self.image;
+        case UdeskYYAnimatedImageTypeHighlightedImage: return self.highlightedImage;
+        case UdeskYYAnimatedImageTypeImages: return self.animationImages;
+        case UdeskYYAnimatedImageTypeHighlightedImages: return self.highlightedAnimationImages;
     }
     return nil;
 }
 
-- (YYAnimatedImageType)currentImageType {
-    YYAnimatedImageType curType = YYAnimatedImageTypeNone;
+- (UdeskYYAnimatedImageType)currentImageType {
+    UdeskYYAnimatedImageType curType = UdeskYYAnimatedImageTypeNone;
     if (self.highlighted) {
-        if (self.highlightedAnimationImages.count) curType = YYAnimatedImageTypeHighlightedImages;
-        else if (self.highlightedImage) curType = YYAnimatedImageTypeHighlightedImage;
+        if (self.highlightedAnimationImages.count) curType = UdeskYYAnimatedImageTypeHighlightedImages;
+        else if (self.highlightedImage) curType = UdeskYYAnimatedImageTypeHighlightedImage;
     }
-    if (curType == YYAnimatedImageTypeNone) {
-        if (self.animationImages.count) curType = YYAnimatedImageTypeImages;
-        else if (self.image) curType = YYAnimatedImageTypeImage;
+    if (curType == UdeskYYAnimatedImageTypeNone) {
+        if (self.animationImages.count) curType = UdeskYYAnimatedImageTypeImages;
+        else if (self.image) curType = UdeskYYAnimatedImageTypeImage;
     }
     return curType;
 }
 
-- (void)setImage:(id)image withType:(YYAnimatedImageType)type {
+- (void)setImage:(id)image withType:(UdeskYYAnimatedImageType)type {
     [self stopAnimating];
     if (_link) [self resetAnimated];
     _curFrame = nil;
     switch (type) {
-        case YYAnimatedImageTypeNone: break;
-        case YYAnimatedImageTypeImage: super.image = image; break;
-        case YYAnimatedImageTypeHighlightedImage: super.highlightedImage = image; break;
-        case YYAnimatedImageTypeImages: super.animationImages = image; break;
-        case YYAnimatedImageTypeHighlightedImages: super.highlightedAnimationImages = image; break;
+        case UdeskYYAnimatedImageTypeNone: break;
+        case UdeskYYAnimatedImageTypeImage: super.image = image; break;
+        case UdeskYYAnimatedImageTypeHighlightedImage: super.highlightedImage = image; break;
+        case UdeskYYAnimatedImageTypeImages: super.animationImages = image; break;
+        case UdeskYYAnimatedImageTypeHighlightedImages: super.highlightedAnimationImages = image; break;
     }
     [self imageChanged];
 }
 
 - (void)imageChanged {
-    YYAnimatedImageType newType = [self currentImageType];
+    UdeskYYAnimatedImageType newType = [self currentImageType];
     id newVisibleImage = [self imageForType:newType];
     NSUInteger newImageFrameCount = 0;
     BOOL hasContentsRect = NO;
     if ([newVisibleImage isKindOfClass:[UIImage class]] &&
-        [newVisibleImage conformsToProtocol:@protocol(YYAnimatedImage)]) {
-        newImageFrameCount = ((UIImage<YYAnimatedImage> *) newVisibleImage).animatedImageFrameCount;
+        [newVisibleImage conformsToProtocol:@protocol(UdeskYYAnimatedImage)]) {
+        newImageFrameCount = ((UIImage<UdeskYYAnimatedImage> *) newVisibleImage).animatedImageFrameCount;
         if (newImageFrameCount > 1) {
-            hasContentsRect = [((UIImage<YYAnimatedImage> *) newVisibleImage) respondsToSelector:@selector(animatedImageContentsRectAtIndex:)];
+            hasContentsRect = [((UIImage<UdeskYYAnimatedImage> *) newVisibleImage) respondsToSelector:@selector(animatedImageContentsRectAtIndex:)];
         }
     }
     if (!hasContentsRect && _curImageHasContentsRect) {
@@ -361,7 +361,7 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
     }
     _curImageHasContentsRect = hasContentsRect;
     if (hasContentsRect) {
-        CGRect rect = [((UIImage<YYAnimatedImage> *) newVisibleImage) animatedImageContentsRectAtIndex:0];
+        CGRect rect = [((UIImage<UdeskYYAnimatedImage> *) newVisibleImage) animatedImageContentsRectAtIndex:0];
         [self setContentsRect:rect forImage:newVisibleImage];
     }
     
@@ -382,8 +382,8 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
     int64_t bytes = (int64_t)_curAnimatedImage.animatedImageBytesPerFrame;
     if (bytes == 0) bytes = 1024;
     
-    int64_t total = _YYDeviceMemoryTotal();
-    int64_t free = _YYDeviceMemoryFree();
+    int64_t total = _UdeskYYDeviceMemoryTotal();
+    int64_t free = _UdeskYYDeviceMemoryFree();
     int64_t max = MIN(total * 0.2, free * 0.6);
     max = MAX(max, BUFFER_SIZE);
     if (_maxBufferSize) max = max > _maxBufferSize ? _maxBufferSize : max;
@@ -412,8 +412,8 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
 }
 
 - (void)startAnimating {
-    YYAnimatedImageType type = [self currentImageType];
-    if (type == YYAnimatedImageTypeImages || type == YYAnimatedImageTypeHighlightedImages) {
+    UdeskYYAnimatedImageType type = [self currentImageType];
+    if (type == UdeskYYAnimatedImageTypeImages || type == UdeskYYAnimatedImageTypeHighlightedImages) {
         NSArray *images = [self imageForType:type];
         if (images.count > 0) {
             [super startAnimating];
@@ -459,7 +459,7 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
 }
 
 - (void)step:(CADisplayLink *)link {
-    UIImage <YYAnimatedImage> *image = _curAnimatedImage;
+    UIImage <UdeskYYAnimatedImage> *image = _curAnimatedImage;
     NSMutableDictionary *buffer = _buffer;
     UIImage *bufferedImage = nil;
     NSUInteger nextIndex = (_curIndex + 1) % _totalFrameCount;
@@ -645,11 +645,11 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
     UIImage *highlightedImage = [aDecoder decodeObjectForKey:@"YYHighlightedAnimatedImage"];
     if (image) {
         self.image = image;
-        [self setImage:image withType:YYAnimatedImageTypeImage];
+        [self setImage:image withType:UdeskYYAnimatedImageTypeImage];
     }
     if (highlightedImage) {
         self.highlightedImage = highlightedImage;
-        [self setImage:highlightedImage withType:YYAnimatedImageTypeHighlightedImage];
+        [self setImage:highlightedImage withType:UdeskYYAnimatedImageTypeHighlightedImage];
     }
     return self;
 }
@@ -660,12 +660,12 @@ typedef NS_ENUM(NSUInteger, YYAnimatedImageType) {
     [aCoder encodeBool:_autoPlayAnimatedImage forKey:@"autoPlayAnimatedImage"];
     
     BOOL ani, multi;
-    ani = [self.image conformsToProtocol:@protocol(YYAnimatedImage)];
-    multi = (ani && ((UIImage <YYAnimatedImage> *)self.image).animatedImageFrameCount > 1);
+    ani = [self.image conformsToProtocol:@protocol(UdeskYYAnimatedImage)];
+    multi = (ani && ((UIImage <UdeskYYAnimatedImage> *)self.image).animatedImageFrameCount > 1);
     if (multi) [aCoder encodeObject:self.image forKey:@"YYAnimatedImage"];
     
-    ani = [self.highlightedImage conformsToProtocol:@protocol(YYAnimatedImage)];
-    multi = (ani && ((UIImage <YYAnimatedImage> *)self.highlightedImage).animatedImageFrameCount > 1);
+    ani = [self.highlightedImage conformsToProtocol:@protocol(UdeskYYAnimatedImage)];
+    multi = (ani && ((UIImage <UdeskYYAnimatedImage> *)self.highlightedImage).animatedImageFrameCount > 1);
     if (multi) [aCoder encodeObject:self.highlightedImage forKey:@"YYHighlightedAnimatedImage"];
 }
 

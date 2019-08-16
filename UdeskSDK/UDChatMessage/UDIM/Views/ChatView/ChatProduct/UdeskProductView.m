@@ -63,7 +63,7 @@ static CGFloat const kUDProductSendButtonHeight = 25.0;
     if (![UdeskSDKUtil isBlankString:productImageURL]) {
         
         self.productImageView.frame = CGRectMake(kUDProductImageToHorizontalEdgeSpacing, kUDProductImageToVerticalEdgeSpacing, kUDProductImageDiameter, kUDProductImageDiameter);
-        [self.productImageView yy_setImageWithURL:[NSURL URLWithString:productImageURL] placeholder:[UIImage udDefaultLoadingImage]];
+        [self.productImageView udesk_yy_setImageWithURL:[NSURL URLWithString:productImageURL] placeholder:[UIImage udDefaultLoadingImage]];
     }
     
     //咨询对象标题

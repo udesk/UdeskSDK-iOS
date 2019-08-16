@@ -64,7 +64,7 @@
     if (!productMessage || ![productMessage isKindOfClass:[UdeskProductMessage class]]) return;
     
     self.productImageView.frame = productMessage.imageFrame;
-    [self.productImageView yy_setImageWithURL:productMessage.imgURL placeholder:[UIImage udDefaultLoadingImage]];
+    [self.productImageView udesk_yy_setImageWithURL:productMessage.imgURL placeholder:[UIImage udDefaultLoadingImage]];
     
     self.productTitleLabel.frame = productMessage.titleFrame;
     self.productTitleLabel.attributedText = productMessage.titleAttributedString;

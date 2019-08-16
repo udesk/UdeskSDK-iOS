@@ -14,11 +14,11 @@
 #import "UIImage+Udesk_YYWebImage.h"
 #import "Udesk_YYCache.h"
 
-static inline dispatch_queue_t YYImageCacheIOQueue() {
+static inline dispatch_queue_t UdeskYYImageCacheIOQueue() {
     return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 }
 
-static inline dispatch_queue_t YYImageCacheDecodeQueue() {
+static inline dispatch_queue_t UdeskYYImageCacheDecodeQueue() {
     return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
 }
 
@@ -67,7 +67,7 @@ static inline dispatch_queue_t YYImageCacheDecodeQueue() {
     dispatch_once(&onceToken, ^{
         NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,
                                                                    NSUserDomainMask, YES) firstObject];
-        cachePath = [cachePath stringByAppendingPathComponent:@"com.ibireme.yykit"];
+        cachePath = [cachePath stringByAppendingPathComponent:@"com.udesk.yykit"];
         cachePath = [cachePath stringByAppendingPathComponent:@"images"];
         cache = [[self alloc] initWithPath:cachePath];
     });
@@ -113,14 +113,14 @@ static inline dispatch_queue_t YYImageCacheDecodeQueue() {
             if (image.yy_isDecodedForDisplay) {
                 [_memoryCache setObject:image forKey:key withCost:[_self imageCost:image]];
             } else {
-                dispatch_async(YYImageCacheDecodeQueue(), ^{
+                dispatch_async(UdeskYYImageCacheDecodeQueue(), ^{
                     __strong typeof(_self) self = _self;
                     if (!self) return;
                     [self.memoryCache setObject:[image yy_imageByDecoded] forKey:key withCost:[self imageCost:image]];
                 });
             }
         } else if (imageData) {
-            dispatch_async(YYImageCacheDecodeQueue(), ^{
+            dispatch_async(UdeskYYImageCacheDecodeQueue(), ^{
                 __strong typeof(_self) self = _self;
                 if (!self) return;
                 UIImage *newImage = [self imageFromData:imageData];
@@ -135,7 +135,7 @@ static inline dispatch_queue_t YYImageCacheDecodeQueue() {
             }
             [_diskCache setObject:imageData forKey:key];
         } else if (image) {
-            dispatch_async(YYImageCacheIOQueue(), ^{
+            dispatch_async(UdeskYYImageCacheIOQueue(), ^{
                 __strong typeof(_self) self = _self;
                 if (!self) return;
                 NSData *data = [image yy_imageDataRepresentation];

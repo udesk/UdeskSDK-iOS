@@ -40,14 +40,14 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return A new image created from GIF, or nil when an error occurs.
  */
-+ (nullable UIImage *)yy_imageWithSmallGIFData:(NSData *)data scale:(CGFloat)scale;
++ (nullable UIImage *)udesk_yy_imageWithSmallGIFData:(NSData *)data scale:(CGFloat)scale;
 
 /**
  Create and return a 1x1 point size image with the given color.
  
  @param color  The color.
  */
-+ (nullable UIImage *)yy_imageWithColor:(UIColor *)color;
++ (nullable UIImage *)udesk_yy_imageWithColor:(UIColor *)color;
 
 /**
  Create and return a pure color image with the given color and size.
@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param color  The color.
  @param size   New image's type.
  */
-+ (nullable UIImage *)yy_imageWithColor:(UIColor *)color size:(CGSize)size;
++ (nullable UIImage *)udesk_yy_imageWithColor:(UIColor *)color size:(CGSize)size;
 
 /**
  Create and return an image with custom draw code.
@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return The new image.
  */
-+ (nullable UIImage *)yy_imageWithSize:(CGSize)size drawBlock:(void (^)(CGContextRef context))drawBlock;
++ (nullable UIImage *)udesk_yy_imageWithSize:(CGSize)size drawBlock:(void (^)(CGContextRef context))drawBlock;
 
 #pragma mark - Image Info
 ///=============================================================================
@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Whether this image has alpha channel.
  */
-- (BOOL)yy_hasAlphaChannel;
+- (BOOL)udesk_yy_hasAlphaChannel;
 
 
 #pragma mark - Modify Image
@@ -99,7 +99,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param clips       A Boolean value that determines whether content are confined to the rect.
  */
-- (void)yy_drawInRect:(CGRect)rect withContentMode:(UIViewContentMode)contentMode clipsToBounds:(BOOL)clips;
+- (void)udesk_yy_drawInRect:(CGRect)rect withContentMode:(UIViewContentMode)contentMode clipsToBounds:(BOOL)clips;
 
 /**
  Returns a new image which is scaled from this image.
@@ -109,7 +109,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return      The new image with the given size.
  */
-- (nullable UIImage *)yy_imageByResizeToSize:(CGSize)size;
+- (nullable UIImage *)udesk_yy_imageByResizeToSize:(CGSize)size;
 
 /**
  Returns a new image which is scaled from this image.
@@ -121,7 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return The new image with the given size.
  */
-- (nullable UIImage *)yy_imageByResizeToSize:(CGSize)size contentMode:(UIViewContentMode)contentMode;
+- (nullable UIImage *)udesk_yy_imageByResizeToSize:(CGSize)size contentMode:(UIViewContentMode)contentMode;
 
 /**
  Returns a new image which is cropped from this image.
@@ -130,7 +130,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return      The new image, or nil if an error occurs.
  */
-- (nullable UIImage *)yy_imageByCropToRect:(CGRect)rect;
+- (nullable UIImage *)udesk_yy_imageByCropToRect:(CGRect)rect;
 
 /**
  Returns a new image which is edge inset from this image.
@@ -141,7 +141,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return        The new image, or nil if an error occurs.
  */
-- (nullable UIImage *)yy_imageByInsetEdge:(UIEdgeInsets)insets withColor:(nullable UIColor *)color;
+- (nullable UIImage *)udesk_yy_imageByInsetEdge:(UIEdgeInsets)insets withColor:(nullable UIColor *)color;
 
 /**
  Rounds a new image with a given corner size.
@@ -150,7 +150,7 @@ NS_ASSUME_NONNULL_BEGIN
                 rectangle's width or height are clamped appropriately to half
                 the width or height.
  */
-- (nullable UIImage *)yy_imageByRoundCornerRadius:(CGFloat)radius;
+- (nullable UIImage *)udesk_yy_imageByRoundCornerRadius:(CGFloat)radius;
 
 /**
  Rounds a new image with a given corner size.
@@ -165,7 +165,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param borderColor  The border stroke color. nil means clear color.
  */
-- (nullable UIImage *)yy_imageByRoundCornerRadius:(CGFloat)radius
+- (nullable UIImage *)udesk_yy_imageByRoundCornerRadius:(CGFloat)radius
                              borderWidth:(CGFloat)borderWidth
                              borderColor:(nullable UIColor *)borderColor;
 
@@ -188,7 +188,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param borderLineJoin The border line join.
  */
-- (nullable UIImage *)yy_imageByRoundCornerRadius:(CGFloat)radius
+- (nullable UIImage *)udesk_yy_imageByRoundCornerRadius:(CGFloat)radius
                                           corners:(UIRectCorner)corners
                                       borderWidth:(CGFloat)borderWidth
                                       borderColor:(nullable UIColor *)borderColor
@@ -202,34 +202,34 @@ NS_ASSUME_NONNULL_BEGIN
  @param fitSize   YES: new image's size is extend to fit all content.
                   NO: image's size will not change, content may be clipped.
  */
-- (nullable UIImage *)yy_imageByRotate:(CGFloat)radians fitSize:(BOOL)fitSize;
+- (nullable UIImage *)udesk_yy_imageByRotate:(CGFloat)radians fitSize:(BOOL)fitSize;
 
 /**
  Returns a new image rotated counterclockwise by a quarter‑turn (90°). ⤺
  The width and height will be exchanged.
  */
-- (nullable UIImage *)yy_imageByRotateLeft90;
+- (nullable UIImage *)udesk_yy_imageByRotateLeft90;
 
 /**
  Returns a new image rotated clockwise by a quarter‑turn (90°). ⤼
  The width and height will be exchanged.
  */
-- (nullable UIImage *)yy_imageByRotateRight90;
+- (nullable UIImage *)udesk_yy_imageByRotateRight90;
 
 /**
  Returns a new image rotated 180° . ↻
  */
-- (nullable UIImage *)yy_imageByRotate180;
+- (nullable UIImage *)udesk_yy_imageByRotate180;
 
 /**
  Returns a vertically flipped image. ⥯
  */
-- (nullable UIImage *)yy_imageByFlipVertical;
+- (nullable UIImage *)udesk_yy_imageByFlipVertical;
 
 /**
  Returns a horizontally flipped image. ⇋
  */
-- (nullable UIImage *)yy_imageByFlipHorizontal;
+- (nullable UIImage *)udesk_yy_imageByFlipHorizontal;
 
 
 #pragma mark - Image Effect
@@ -242,42 +242,42 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param color  The color.
  */
-- (nullable UIImage *)yy_imageByTintColor:(UIColor *)color;
+- (nullable UIImage *)udesk_yy_imageByTintColor:(UIColor *)color;
 
 /**
  Returns a grayscaled image.
  */
-- (nullable UIImage *)yy_imageByGrayscale;
+- (nullable UIImage *)udesk_yy_imageByGrayscale;
 
 /**
  Applies a blur effect to this image. Suitable for blur any content.
  */
-- (nullable UIImage *)yy_imageByBlurSoft;
+- (nullable UIImage *)udesk_yy_imageByBlurSoft;
 
 /**
  Applies a blur effect to this image. Suitable for blur any content except pure white.
  (same as iOS Control Panel)
  */
-- (nullable UIImage *)yy_imageByBlurLight;
+- (nullable UIImage *)udesk_yy_imageByBlurLight;
 
 /**
  Applies a blur effect to this image. Suitable for displaying black text.
  (same as iOS Navigation Bar White)
  */
-- (nullable UIImage *)yy_imageByBlurExtraLight;
+- (nullable UIImage *)udesk_yy_imageByBlurExtraLight;
 
 /**
  Applies a blur effect to this image. Suitable for displaying white text.
  (same as iOS Notification Center)
  */
-- (nullable UIImage *)yy_imageByBlurDark;
+- (nullable UIImage *)udesk_yy_imageByBlurDark;
 
 /**
  Applies a blur and tint color to this image.
  
  @param tintColor  The tint color.
  */
-- (nullable UIImage *)yy_imageByBlurWithTint:(UIColor *)tintColor;
+- (nullable UIImage *)udesk_yy_imageByBlurWithTint:(UIColor *)tintColor;
 
 /**
  Applies a blur, tint color, and saturation adjustment to this image,
@@ -305,7 +305,7 @@ NS_ASSUME_NONNULL_BEGIN
  @return               image with effect, or nil if an error occurs (e.g. no
                        enough memory).
  */
-- (nullable UIImage *)yy_imageByBlurRadius:(CGFloat)blurRadius
+- (nullable UIImage *)udesk_yy_imageByBlurRadius:(CGFloat)blurRadius
                                  tintColor:(nullable UIColor *)tintColor
                                   tintMode:(CGBlendMode)tintBlendMode
                                 saturation:(CGFloat)saturation
