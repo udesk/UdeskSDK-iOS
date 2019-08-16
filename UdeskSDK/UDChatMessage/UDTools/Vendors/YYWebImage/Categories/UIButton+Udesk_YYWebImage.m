@@ -18,14 +18,14 @@
 @interface Udesk_UIButton_YYWebImage : NSObject @end
 @implementation Udesk_UIButton_YYWebImage @end
 
-static inline NSNumber *UIControlStateSingle(UIControlState state) {
+static inline NSNumber *UdeskUIControlStateSingle(UIControlState state) {
     if (state & UIControlStateHighlighted) return @(UIControlStateHighlighted);
     if (state & UIControlStateDisabled) return @(UIControlStateDisabled);
     if (state & UIControlStateSelected) return @(UIControlStateSelected);
     return @(UIControlStateNormal);
 }
 
-static inline NSArray *UIControlStateMulti(UIControlState state) {
+static inline NSArray *UdeskUIControlStateMulti(UIControlState state) {
     NSMutableArray *array = [NSMutableArray new];
     if (state & UIControlStateHighlighted) [array addObject:@(UIControlStateHighlighted)];
     if (state & UIControlStateDisabled) [array addObject:@(UIControlStateDisabled)];
@@ -77,7 +77,7 @@ static int _YYWebImageBackgroundSetterKey;
 
 #pragma mark - image
 
-- (void)_yy_setImageWithURL:(NSURL *)imageURL
+- (void)_udesk_yy_setImageWithURL:(NSURL *)imageURL
              forSingleState:(NSNumber *)state
                 placeholder:(UIImage *)placeholder
                     options:(Udesk_YYWebImageOptions)options
@@ -159,22 +159,22 @@ static int _YYWebImageBackgroundSetterKey;
     });
 }
 
-- (void)_yy_cancelImageRequestForSingleState:(NSNumber *)state {
+- (void)_udesk_yy_cancelImageRequestForSingleState:(NSNumber *)state {
     Udesk_YYWebImageSetterDicForButton *dic = objc_getAssociatedObject(self, &Udesk_YYWebImageSetterKey);
     Udesk_YYWebImageSetter *setter = [dic setterForState:state];
     if (setter) [setter cancel];
 }
 
-- (NSURL *)yy_imageURLForState:(UIControlState)state {
+- (NSURL *)udesk_yy_imageURLForState:(UIControlState)state {
     Udesk_YYWebImageSetterDicForButton *dic = objc_getAssociatedObject(self, &Udesk_YYWebImageSetterKey);
-    Udesk_YYWebImageSetter *setter = [dic setterForState:UIControlStateSingle(state)];
+    Udesk_YYWebImageSetter *setter = [dic setterForState:UdeskUIControlStateSingle(state)];
     return setter.imageURL;
 }
 
-- (void)yy_setImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setImageWithURL:(NSURL *)imageURL
                   forState:(UIControlState)state
                placeholder:(UIImage *)placeholder {
-    [self yy_setImageWithURL:imageURL
+    [self udesk_yy_setImageWithURL:imageURL
                  forState:state
               placeholder:placeholder
                   options:kNilOptions
@@ -184,10 +184,10 @@ static int _YYWebImageBackgroundSetterKey;
                completion:nil];
 }
 
-- (void)yy_setImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setImageWithURL:(NSURL *)imageURL
                   forState:(UIControlState)state
                    options:(Udesk_YYWebImageOptions)options {
-    [self yy_setImageWithURL:imageURL
+    [self udesk_yy_setImageWithURL:imageURL
                     forState:state
                  placeholder:nil
                      options:options
@@ -197,12 +197,12 @@ static int _YYWebImageBackgroundSetterKey;
                   completion:nil];
 }
 
-- (void)yy_setImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setImageWithURL:(NSURL *)imageURL
                   forState:(UIControlState)state
                placeholder:(UIImage *)placeholder
                    options:(Udesk_YYWebImageOptions)options
                 completion:(Udesk_YYWebImageCompletionBlock)completion {
-    [self yy_setImageWithURL:imageURL
+    [self udesk_yy_setImageWithURL:imageURL
                     forState:state
                  placeholder:placeholder
                      options:options
@@ -212,14 +212,14 @@ static int _YYWebImageBackgroundSetterKey;
                   completion:completion];
 }
 
-- (void)yy_setImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setImageWithURL:(NSURL *)imageURL
                   forState:(UIControlState)state
                placeholder:(UIImage *)placeholder
                    options:(Udesk_YYWebImageOptions)options
                   progress:(Udesk_YYWebImageProgressBlock)progress
                  transform:(Udesk_YYWebImageTransformBlock)transform
                 completion:(Udesk_YYWebImageCompletionBlock)completion {
-    [self yy_setImageWithURL:imageURL
+    [self udesk_yy_setImageWithURL:imageURL
                     forState:state
                  placeholder:placeholder
                      options:options
@@ -229,7 +229,7 @@ static int _YYWebImageBackgroundSetterKey;
                   completion:completion];
 }
 
-- (void)yy_setImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setImageWithURL:(NSURL *)imageURL
                   forState:(UIControlState)state
                placeholder:(UIImage *)placeholder
                    options:(Udesk_YYWebImageOptions)options
@@ -237,8 +237,8 @@ static int _YYWebImageBackgroundSetterKey;
                   progress:(Udesk_YYWebImageProgressBlock)progress
                  transform:(Udesk_YYWebImageTransformBlock)transform
                 completion:(Udesk_YYWebImageCompletionBlock)completion {
-    for (NSNumber *num in UIControlStateMulti(state)) {
-        [self _yy_setImageWithURL:imageURL
+    for (NSNumber *num in UdeskUIControlStateMulti(state)) {
+        [self _udesk_yy_setImageWithURL:imageURL
                    forSingleState:num
                       placeholder:placeholder
                           options:options
@@ -249,16 +249,16 @@ static int _YYWebImageBackgroundSetterKey;
     }
 }
 
-- (void)yy_cancelImageRequestForState:(UIControlState)state {
-    for (NSNumber *num in UIControlStateMulti(state)) {
-        [self _yy_cancelImageRequestForSingleState:num];
+- (void)udesk_yy_cancelImageRequestForState:(UIControlState)state {
+    for (NSNumber *num in UdeskUIControlStateMulti(state)) {
+        [self _udesk_yy_cancelImageRequestForSingleState:num];
     }
 }
 
 
 #pragma mark - background image
 
-- (void)_yy_setBackgroundImageWithURL:(NSURL *)imageURL
+- (void)_udesk_yy_setBackgroundImageWithURL:(NSURL *)imageURL
                        forSingleState:(NSNumber *)state
                           placeholder:(UIImage *)placeholder
                               options:(Udesk_YYWebImageOptions)options
@@ -340,22 +340,22 @@ static int _YYWebImageBackgroundSetterKey;
     });
 }
 
-- (void)_yy_cancelBackgroundImageRequestForSingleState:(NSNumber *)state {
+- (void)_udesk_yy_cancelBackgroundImageRequestForSingleState:(NSNumber *)state {
     Udesk_YYWebImageSetterDicForButton *dic = objc_getAssociatedObject(self, &_YYWebImageBackgroundSetterKey);
     Udesk_YYWebImageSetter *setter = [dic setterForState:state];
     if (setter) [setter cancel];
 }
 
-- (NSURL *)yy_backgroundImageURLForState:(UIControlState)state {
+- (NSURL *)udesk_yy_backgroundImageURLForState:(UIControlState)state {
     Udesk_YYWebImageSetterDicForButton *dic = objc_getAssociatedObject(self, &_YYWebImageBackgroundSetterKey);
-    Udesk_YYWebImageSetter *setter = [dic setterForState:UIControlStateSingle(state)];
+    Udesk_YYWebImageSetter *setter = [dic setterForState:UdeskUIControlStateSingle(state)];
     return setter.imageURL;
 }
 
-- (void)yy_setBackgroundImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setBackgroundImageWithURL:(NSURL *)imageURL
                             forState:(UIControlState)state
                          placeholder:(UIImage *)placeholder {
-    [self yy_setBackgroundImageWithURL:imageURL
+    [self udesk_yy_setBackgroundImageWithURL:imageURL
                               forState:state
                            placeholder:placeholder
                                options:kNilOptions
@@ -365,10 +365,10 @@ static int _YYWebImageBackgroundSetterKey;
                             completion:nil];
 }
 
-- (void)yy_setBackgroundImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setBackgroundImageWithURL:(NSURL *)imageURL
                             forState:(UIControlState)state
                              options:(Udesk_YYWebImageOptions)options {
-    [self yy_setBackgroundImageWithURL:imageURL
+    [self udesk_yy_setBackgroundImageWithURL:imageURL
                               forState:state
                            placeholder:nil
                                options:options
@@ -378,12 +378,12 @@ static int _YYWebImageBackgroundSetterKey;
                             completion:nil];
 }
 
-- (void)yy_setBackgroundImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setBackgroundImageWithURL:(NSURL *)imageURL
                             forState:(UIControlState)state
                          placeholder:(UIImage *)placeholder
                              options:(Udesk_YYWebImageOptions)options
                           completion:(Udesk_YYWebImageCompletionBlock)completion {
-    [self yy_setBackgroundImageWithURL:imageURL
+    [self udesk_yy_setBackgroundImageWithURL:imageURL
                               forState:state
                            placeholder:placeholder
                                options:options
@@ -393,14 +393,14 @@ static int _YYWebImageBackgroundSetterKey;
                             completion:completion];
 }
 
-- (void)yy_setBackgroundImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setBackgroundImageWithURL:(NSURL *)imageURL
                             forState:(UIControlState)state
                          placeholder:(UIImage *)placeholder
                              options:(Udesk_YYWebImageOptions)options
                             progress:(Udesk_YYWebImageProgressBlock)progress
                            transform:(Udesk_YYWebImageTransformBlock)transform
                           completion:(Udesk_YYWebImageCompletionBlock)completion {
-    [self yy_setBackgroundImageWithURL:imageURL
+    [self udesk_yy_setBackgroundImageWithURL:imageURL
                               forState:state
                            placeholder:placeholder
                                options:options
@@ -410,7 +410,7 @@ static int _YYWebImageBackgroundSetterKey;
                             completion:completion];
 }
 
-- (void)yy_setBackgroundImageWithURL:(NSURL *)imageURL
+- (void)udesk_yy_setBackgroundImageWithURL:(NSURL *)imageURL
                             forState:(UIControlState)state
                          placeholder:(UIImage *)placeholder
                              options:(Udesk_YYWebImageOptions)options
@@ -418,8 +418,8 @@ static int _YYWebImageBackgroundSetterKey;
                             progress:(Udesk_YYWebImageProgressBlock)progress
                            transform:(Udesk_YYWebImageTransformBlock)transform
                           completion:(Udesk_YYWebImageCompletionBlock)completion {
-    for (NSNumber *num in UIControlStateMulti(state)) {
-        [self _yy_setBackgroundImageWithURL:imageURL
+    for (NSNumber *num in UdeskUIControlStateMulti(state)) {
+        [self _udesk_yy_setBackgroundImageWithURL:imageURL
                              forSingleState:num
                                 placeholder:placeholder
                                     options:options
@@ -430,9 +430,9 @@ static int _YYWebImageBackgroundSetterKey;
     }
 }
 
-- (void)yy_cancelBackgroundImageRequestForState:(UIControlState)state {
-    for (NSNumber *num in UIControlStateMulti(state)) {
-        [self _yy_cancelBackgroundImageRequestForSingleState:num];
+- (void)udesk_yy_cancelBackgroundImageRequestForState:(UIControlState)state {
+    for (NSNumber *num in UdeskUIControlStateMulti(state)) {
+        [self _udesk_yy_cancelBackgroundImageRequestForSingleState:num];
     }
 }
 

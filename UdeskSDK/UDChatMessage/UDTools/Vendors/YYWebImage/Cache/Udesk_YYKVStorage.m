@@ -20,14 +20,14 @@
 #endif
 
 
-static const NSUInteger kMaxErrorRetryCount = 8;
-static const NSTimeInterval kMinRetryTimeInterval = 2.0;
-static const int kPathLengthMax = PATH_MAX - 64;
-static NSString *const kDBFileName = @"manifest.sqlite";
-static NSString *const kDBShmFileName = @"manifest.sqlite-shm";
-static NSString *const kDBWalFileName = @"manifest.sqlite-wal";
-static NSString *const kDataDirectoryName = @"data";
-static NSString *const kTrashDirectoryName = @"trash";
+static const NSUInteger kUdeskMaxErrorRetryCount = 8;
+static const NSTimeInterval kUdeskMinRetryTimeInterval = 2.0;
+static const int kUdeskPathLengthMax = PATH_MAX - 64;
+static NSString *const kUdeskDBFileName = @"manifest.sqlite";
+static NSString *const kUdeskDBShmFileName = @"manifest.sqlite-shm";
+static NSString *const kUdeskDBWalFileName = @"manifest.sqlite-wal";
+static NSString *const kUdeskDataDirectoryName = @"data";
+static NSString *const kUdeskTrashDirectoryName = @"trash";
 
 
 /*
@@ -57,7 +57,7 @@ static NSString *const kTrashDirectoryName = @"trash";
  */
 
 /// Returns nil in App Extension.
-static UIApplication *_YYSharedApplication() {
+static UIApplication *_UdeskYYSharedApplication() {
     static BOOL isAppExtension = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -151,8 +151,8 @@ static UIApplication *_YYSharedApplication() {
 
 - (BOOL)_dbCheck {
     if (!_db) {
-        if (_dbOpenErrorCount < kMaxErrorRetryCount &&
-            CACurrentMediaTime() - _dbLastOpenErrorTime > kMinRetryTimeInterval) {
+        if (_dbOpenErrorCount < kUdeskMaxErrorRetryCount &&
+            CACurrentMediaTime() - _dbLastOpenErrorTime > kUdeskMinRetryTimeInterval) {
             return [self _dbOpen] && [self _dbInitialize];
         } else {
             return NO;
@@ -663,9 +663,9 @@ static UIApplication *_YYSharedApplication() {
  Make sure the db is closed.
  */
 - (void)_reset {
-    [[NSFileManager defaultManager] removeItemAtPath:[_path stringByAppendingPathComponent:kDBFileName] error:nil];
-    [[NSFileManager defaultManager] removeItemAtPath:[_path stringByAppendingPathComponent:kDBShmFileName] error:nil];
-    [[NSFileManager defaultManager] removeItemAtPath:[_path stringByAppendingPathComponent:kDBWalFileName] error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:[_path stringByAppendingPathComponent:kUdeskDBFileName] error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:[_path stringByAppendingPathComponent:kUdeskDBShmFileName] error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:[_path stringByAppendingPathComponent:kUdeskDBWalFileName] error:nil];
     [self _fileMoveAllToTrash];
     [self _fileEmptyTrashInBackground];
 }
@@ -678,7 +678,7 @@ static UIApplication *_YYSharedApplication() {
 }
 
 - (instancetype)initWithPath:(NSString *)path type:(Udesk_YYKVStorageType)type {
-    if (path.length == 0 || path.length > kPathLengthMax) {
+    if (path.length == 0 || path.length > kUdeskPathLengthMax) {
         NSLog(@"YYKVStorage init error: invalid path: [%@].", path);
         return nil;
     }
@@ -690,21 +690,21 @@ static UIApplication *_YYSharedApplication() {
     self = [super init];
     _path = path.copy;
     _type = type;
-    _dataPath = [path stringByAppendingPathComponent:kDataDirectoryName];
-    _trashPath = [path stringByAppendingPathComponent:kTrashDirectoryName];
+    _dataPath = [path stringByAppendingPathComponent:kUdeskDataDirectoryName];
+    _trashPath = [path stringByAppendingPathComponent:kUdeskTrashDirectoryName];
     _trashQueue = dispatch_queue_create("com.ibireme.cache.disk.trash", DISPATCH_QUEUE_SERIAL);
-    _dbPath = [path stringByAppendingPathComponent:kDBFileName];
+    _dbPath = [path stringByAppendingPathComponent:kUdeskDBFileName];
     _errorLogsEnabled = YES;
     NSError *error = nil;
     if (![[NSFileManager defaultManager] createDirectoryAtPath:path
                                    withIntermediateDirectories:YES
                                                     attributes:nil
                                                          error:&error] ||
-        ![[NSFileManager defaultManager] createDirectoryAtPath:[path stringByAppendingPathComponent:kDataDirectoryName]
+        ![[NSFileManager defaultManager] createDirectoryAtPath:[path stringByAppendingPathComponent:kUdeskDataDirectoryName]
                                    withIntermediateDirectories:YES
                                                     attributes:nil
                                                          error:&error] ||
-        ![[NSFileManager defaultManager] createDirectoryAtPath:[path stringByAppendingPathComponent:kTrashDirectoryName]
+        ![[NSFileManager defaultManager] createDirectoryAtPath:[path stringByAppendingPathComponent:kUdeskTrashDirectoryName]
                                    withIntermediateDirectories:YES
                                                     attributes:nil
                                                          error:&error]) {
@@ -727,10 +727,10 @@ static UIApplication *_YYSharedApplication() {
 }
 
 - (void)dealloc {
-    UIBackgroundTaskIdentifier taskID = [_YYSharedApplication() beginBackgroundTaskWithExpirationHandler:^{}];
+    UIBackgroundTaskIdentifier taskID = [_UdeskYYSharedApplication() beginBackgroundTaskWithExpirationHandler:^{}];
     [self _dbClose];
     if (taskID != UIBackgroundTaskInvalid) {
-        [_YYSharedApplication() endBackgroundTask:taskID];
+        [_UdeskYYSharedApplication() endBackgroundTask:taskID];
     }
 }
 

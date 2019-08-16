@@ -139,7 +139,7 @@
     
     //头像图片
     if (![UdeskSDKUtil isBlankString:baseMessage.avatarURL]) {
-        [self.avatarImageView yy_setImageWithURL:[NSURL URLWithString:[baseMessage.avatarURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:baseMessage.avatarImage];
+        [self.avatarImageView udesk_yy_setImageWithURL:[NSURL URLWithString:[baseMessage.avatarURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:baseMessage.avatarImage];
     }
     else {
         self.avatarImageView.image = baseMessage.avatarImage;

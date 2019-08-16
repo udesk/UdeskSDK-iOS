@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
      [view addSubView:imageView];
     
  */
-@interface Udesk_YYImage : UIImage <YYAnimatedImage>
+@interface Udesk_YYImage : UIImage <UdeskYYAnimatedImage>
 
 + (nullable Udesk_YYImage *)imageNamed:(NSString *)name; // no cache!
 + (nullable Udesk_YYImage *)imageWithContentsOfFile:(NSString *)path;

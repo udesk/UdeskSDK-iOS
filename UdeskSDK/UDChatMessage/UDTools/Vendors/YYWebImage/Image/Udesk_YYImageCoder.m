@@ -53,13 +53,13 @@ __has_include("webp/demux.h")  && __has_include("webp/mux.h")
 #define YY_FOUR_CC(c1,c2,c3,c4) ((uint32_t)(((c4) << 24) | ((c3) << 16) | ((c2) << 8) | (c1)))
 #define YY_TWO_CC(c1,c2) ((uint16_t)(((c2) << 8) | (c1)))
 
-static inline uint16_t yy_swap_endian_uint16(uint16_t value) {
+static inline uint16_t udesk_yy_swap_endian_uint16(uint16_t value) {
     return
     (uint16_t) ((value & 0x00FF) << 8) |
     (uint16_t) ((value & 0xFF00) >> 8) ;
 }
 
-static inline uint32_t yy_swap_endian_uint32(uint32_t value) {
+static inline uint32_t udesk_yy_swap_endian_uint32(uint32_t value) {
     return
     (uint32_t)((value & 0x000000FFU) << 24) |
     (uint32_t)((value & 0x0000FF00U) <<  8) |
@@ -146,21 +146,21 @@ static inline uint32_t yy_swap_endian_uint32(uint32_t value) {
  */
 
 typedef enum {
-    YY_PNG_ALPHA_TYPE_PALEETE = 1 << 0,
-    YY_PNG_ALPHA_TYPE_COLOR = 1 << 1,
-    YY_PNG_ALPHA_TYPE_ALPHA = 1 << 2,
-} yy_png_alpha_type;
+    UDESK_YY_PNG_ALPHA_TYPE_PALEETE = 1 << 0,
+    UDESK_YY_PNG_ALPHA_TYPE_COLOR = 1 << 1,
+    UDESK_YY_PNG_ALPHA_TYPE_ALPHA = 1 << 2,
+} udesk_yy_png_alpha_type;
 
 typedef enum {
-    YY_PNG_DISPOSE_OP_NONE = 0,
-    YY_PNG_DISPOSE_OP_BACKGROUND = 1,
-    YY_PNG_DISPOSE_OP_PREVIOUS = 2,
-} yy_png_dispose_op;
+    UDESK_YY_PNG_DISPOSE_OP_NONE = 0,
+    UDESK_YY_PNG_DISPOSE_OP_BACKGROUND = 1,
+    UDESK_YY_PNG_DISPOSE_OP_PREVIOUS = 2,
+} udesk_yy_png_dispose_op;
 
 typedef enum {
-    YY_PNG_BLEND_OP_SOURCE = 0,
-    YY_PNG_BLEND_OP_OVER = 1,
-} yy_png_blend_op;
+    UDESK_YY_PNG_BLEND_OP_SOURCE = 0,
+    UDESK_YY_PNG_BLEND_OP_OVER = 1,
+} udesk_yy_png_blend_op;
 
 typedef struct {
     uint32_t width;             ///< pixel count, should not be zero
@@ -170,7 +170,7 @@ typedef struct {
     uint8_t compression_method; ///< 0 (deflate/inflate)
     uint8_t filter_method;      ///< 0 (adaptive filtering with five basic filter types)
     uint8_t interlace_method;   ///< 0 (no interlace) or 1 (Adam7 interlace)
-} yy_png_chunk_IHDR;
+} udesk_yy_png_chunk_IHDR;
 
 typedef struct {
     uint32_t sequence_number;  ///< sequence number of the animation chunk, starting from 0
@@ -182,28 +182,28 @@ typedef struct {
     uint16_t delay_den;        ///< frame delay fraction denominator
     uint8_t dispose_op;        ///< see yy_png_dispose_op
     uint8_t blend_op;          ///< see yy_png_blend_op
-} yy_png_chunk_fcTL;
+} udesk_yy_png_chunk_fcTL;
 
 typedef struct {
     uint32_t offset; ///< chunk offset in PNG data
     uint32_t fourcc; ///< chunk fourcc
     uint32_t length; ///< chunk data length
     uint32_t crc32;  ///< chunk crc32
-} yy_png_chunk_info;
+} udesk_yy_png_chunk_info;
 
 typedef struct {
     uint32_t chunk_index; ///< the first `fdAT`/`IDAT` chunk index
     uint32_t chunk_num;   ///< the `fdAT`/`IDAT` chunk count
     uint32_t chunk_size;  ///< the `fdAT`/`IDAT` chunk bytes
-    yy_png_chunk_fcTL frame_control;
-} yy_png_frame_info;
+    udesk_yy_png_chunk_fcTL frame_control;
+} udesk_yy_png_frame_info;
 
 typedef struct {
-    yy_png_chunk_IHDR header;   ///< png header
-    yy_png_chunk_info *chunks;      ///< chunks
+    udesk_yy_png_chunk_IHDR header;   ///< png header
+    udesk_yy_png_chunk_info *chunks;      ///< chunks
     uint32_t chunk_num;          ///< count of chunks
     
-    yy_png_frame_info *apng_frames; ///< frame info, NULL if not apng
+    udesk_yy_png_frame_info *apng_frames; ///< frame info, NULL if not apng
     uint32_t apng_frame_num;     ///< 0 if not apng
     uint32_t apng_loop_num;      ///< 0 indicates infinite looping
     
@@ -212,11 +212,11 @@ typedef struct {
     uint32_t apng_shared_chunk_size;    ///< shared chunk bytes
     uint32_t apng_shared_insert_index;  ///< shared chunk insert index
     bool apng_first_frame_is_cover;     ///< the first frame is same as png (cover)
-} yy_png_info;
+} udesk_yy_png_info;
 
-static void yy_png_chunk_IHDR_read(yy_png_chunk_IHDR *IHDR, const uint8_t *data) {
-    IHDR->width = yy_swap_endian_uint32(*((uint32_t *)(data)));
-    IHDR->height = yy_swap_endian_uint32(*((uint32_t *)(data + 4)));
+static void udesk_yy_png_chunk_IHDR_read(udesk_yy_png_chunk_IHDR *IHDR, const uint8_t *data) {
+    IHDR->width = udesk_yy_swap_endian_uint32(*((uint32_t *)(data)));
+    IHDR->height = udesk_yy_swap_endian_uint32(*((uint32_t *)(data + 4)));
     IHDR->bit_depth = data[8];
     IHDR->color_type = data[9];
     IHDR->compression_method = data[10];
@@ -224,9 +224,9 @@ static void yy_png_chunk_IHDR_read(yy_png_chunk_IHDR *IHDR, const uint8_t *data)
     IHDR->interlace_method = data[12];
 }
 
-static void yy_png_chunk_IHDR_write(yy_png_chunk_IHDR *IHDR, uint8_t *data) {
-    *((uint32_t *)(data)) = yy_swap_endian_uint32(IHDR->width);
-    *((uint32_t *)(data + 4)) = yy_swap_endian_uint32(IHDR->height);
+static void udesk_yy_png_chunk_IHDR_write(udesk_yy_png_chunk_IHDR *IHDR, uint8_t *data) {
+    *((uint32_t *)(data)) = udesk_yy_swap_endian_uint32(IHDR->width);
+    *((uint32_t *)(data + 4)) = udesk_yy_swap_endian_uint32(IHDR->height);
     data[8] = IHDR->bit_depth;
     data[9] = IHDR->color_type;
     data[10] = IHDR->compression_method;
@@ -234,32 +234,32 @@ static void yy_png_chunk_IHDR_write(yy_png_chunk_IHDR *IHDR, uint8_t *data) {
     data[12] = IHDR->interlace_method;
 }
 
-static void yy_png_chunk_fcTL_read(yy_png_chunk_fcTL *fcTL, const uint8_t *data) {
-    fcTL->sequence_number = yy_swap_endian_uint32(*((uint32_t *)(data)));
-    fcTL->width = yy_swap_endian_uint32(*((uint32_t *)(data + 4)));
-    fcTL->height = yy_swap_endian_uint32(*((uint32_t *)(data + 8)));
-    fcTL->x_offset = yy_swap_endian_uint32(*((uint32_t *)(data + 12)));
-    fcTL->y_offset = yy_swap_endian_uint32(*((uint32_t *)(data + 16)));
-    fcTL->delay_num = yy_swap_endian_uint16(*((uint16_t *)(data + 20)));
-    fcTL->delay_den = yy_swap_endian_uint16(*((uint16_t *)(data + 22)));
+static void udesk_yy_png_chunk_fcTL_read(udesk_yy_png_chunk_fcTL *fcTL, const uint8_t *data) {
+    fcTL->sequence_number = udesk_yy_swap_endian_uint32(*((uint32_t *)(data)));
+    fcTL->width = udesk_yy_swap_endian_uint32(*((uint32_t *)(data + 4)));
+    fcTL->height = udesk_yy_swap_endian_uint32(*((uint32_t *)(data + 8)));
+    fcTL->x_offset = udesk_yy_swap_endian_uint32(*((uint32_t *)(data + 12)));
+    fcTL->y_offset = udesk_yy_swap_endian_uint32(*((uint32_t *)(data + 16)));
+    fcTL->delay_num = udesk_yy_swap_endian_uint16(*((uint16_t *)(data + 20)));
+    fcTL->delay_den = udesk_yy_swap_endian_uint16(*((uint16_t *)(data + 22)));
     fcTL->dispose_op = data[24];
     fcTL->blend_op = data[25];
 }
 
-static void yy_png_chunk_fcTL_write(yy_png_chunk_fcTL *fcTL, uint8_t *data) {
-    *((uint32_t *)(data)) = yy_swap_endian_uint32(fcTL->sequence_number);
-    *((uint32_t *)(data + 4)) = yy_swap_endian_uint32(fcTL->width);
-    *((uint32_t *)(data + 8)) = yy_swap_endian_uint32(fcTL->height);
-    *((uint32_t *)(data + 12)) = yy_swap_endian_uint32(fcTL->x_offset);
-    *((uint32_t *)(data + 16)) = yy_swap_endian_uint32(fcTL->y_offset);
-    *((uint16_t *)(data + 20)) = yy_swap_endian_uint16(fcTL->delay_num);
-    *((uint16_t *)(data + 22)) = yy_swap_endian_uint16(fcTL->delay_den);
+static void udesk_yy_png_chunk_fcTL_write(udesk_yy_png_chunk_fcTL *fcTL, uint8_t *data) {
+    *((uint32_t *)(data)) = udesk_yy_swap_endian_uint32(fcTL->sequence_number);
+    *((uint32_t *)(data + 4)) = udesk_yy_swap_endian_uint32(fcTL->width);
+    *((uint32_t *)(data + 8)) = udesk_yy_swap_endian_uint32(fcTL->height);
+    *((uint32_t *)(data + 12)) = udesk_yy_swap_endian_uint32(fcTL->x_offset);
+    *((uint32_t *)(data + 16)) = udesk_yy_swap_endian_uint32(fcTL->y_offset);
+    *((uint16_t *)(data + 20)) = udesk_yy_swap_endian_uint16(fcTL->delay_num);
+    *((uint16_t *)(data + 22)) = udesk_yy_swap_endian_uint16(fcTL->delay_den);
     data[24] = fcTL->dispose_op;
     data[25] = fcTL->blend_op;
 }
 
 // convert double value to fraction
-static void yy_png_delay_to_fraction(double duration, uint16_t *num, uint16_t *den) {
+static void udesk_yy_png_delay_to_fraction(double duration, uint16_t *num, uint16_t *den) {
     if (duration >= 0xFF) {
         *num = 0xFF;
         *den = 1;
@@ -298,7 +298,7 @@ static void yy_png_delay_to_fraction(double duration, uint16_t *num, uint16_t *d
 }
 
 // convert fraction to double value
-static double yy_png_delay_to_seconds(uint16_t num, uint16_t den) {
+static double udesk_yy_png_delay_to_seconds(uint16_t num, uint16_t den) {
     if (den == 0) {
         return num / 100.0;
     } else {
@@ -306,7 +306,7 @@ static double yy_png_delay_to_seconds(uint16_t num, uint16_t den) {
     }
 }
 
-static bool yy_png_validate_animation_chunk_order(yy_png_chunk_info *chunks,  /* input */
+static bool udesk_yy_png_validate_animation_chunk_order(udesk_yy_png_chunk_info *chunks,  /* input */
                                                   uint32_t chunk_num,         /* input */
                                                   uint32_t *first_idat_index, /* output */
                                                   bool *first_frame_is_cover  /* output */) {
@@ -332,7 +332,7 @@ static bool yy_png_validate_animation_chunk_order(yy_png_chunk_info *chunks,  /*
     uint32_t first_IDAT = 0;
     bool first_frame_cover = false;
     for (uint32_t i = 0; i < chunk_num; i++) {
-        yy_png_chunk_info *chunk = chunks + i;
+        udesk_yy_png_chunk_info *chunk = chunks + i;
         switch (chunk->fourcc) {
             case YY_FOUR_CC('I', 'H', 'D', 'R'): {  // png header
                 if (i != 0) return false;
@@ -382,7 +382,7 @@ static bool yy_png_validate_animation_chunk_order(yy_png_chunk_info *chunks,  /*
     return true;
 }
 
-static void yy_png_info_release(yy_png_info *info) {
+static void udesk_yy_png_info_release(udesk_yy_png_info *info) {
     if (info) {
         if (info->chunks) free(info->chunks);
         if (info->apng_frames) free(info->apng_frames);
@@ -399,13 +399,13 @@ static void yy_png_info_release(yy_png_info *info) {
  @return A png info object, you may call yy_png_info_release() to release it.
  Returns NULL if an error occurs.
  */
-static yy_png_info *yy_png_info_create(const uint8_t *data, uint32_t length) {
+static udesk_yy_png_info *yy_png_info_create(const uint8_t *data, uint32_t length) {
     if (length < 32) return NULL;
     if (*((uint32_t *)data) != YY_FOUR_CC(0x89, 0x50, 0x4E, 0x47)) return NULL;
     if (*((uint32_t *)(data + 4)) != YY_FOUR_CC(0x0D, 0x0A, 0x1A, 0x0A)) return NULL;
     
     uint32_t chunk_realloc_num = 16;
-    yy_png_chunk_info *chunks = malloc(sizeof(yy_png_chunk_info) * chunk_realloc_num);
+    udesk_yy_png_chunk_info *chunks = malloc(sizeof(udesk_yy_png_chunk_info) * chunk_realloc_num);
     if (!chunks) return NULL;
     
     // parse png chunks
@@ -419,7 +419,7 @@ static yy_png_info *yy_png_info_create(const uint8_t *data, uint32_t length) {
     bool apng_chunk_error = false;
     do {
         if (chunk_num >= chunk_capacity) {
-            yy_png_chunk_info *new_chunks = realloc(chunks, sizeof(yy_png_chunk_info) * (chunk_capacity + chunk_realloc_num));
+            udesk_yy_png_chunk_info *new_chunks = realloc(chunks, sizeof(udesk_yy_png_chunk_info) * (chunk_capacity + chunk_realloc_num));
             if (!new_chunks) {
                 free(chunks);
                 return NULL;
@@ -427,10 +427,10 @@ static yy_png_info *yy_png_info_create(const uint8_t *data, uint32_t length) {
             chunks = new_chunks;
             chunk_capacity += chunk_realloc_num;
         }
-        yy_png_chunk_info *chunk = chunks + chunk_num;
+        udesk_yy_png_chunk_info *chunk = chunks + chunk_num;
         const uint8_t *chunk_data = data + offset;
         chunk->offset = offset;
-        chunk->length = yy_swap_endian_uint32(*((uint32_t *)chunk_data));
+        chunk->length = udesk_yy_swap_endian_uint32(*((uint32_t *)chunk_data));
         if ((uint64_t)chunk->offset + (uint64_t)chunk->length + 12 > length) {
             free(chunks);
             return NULL;
@@ -438,15 +438,15 @@ static yy_png_info *yy_png_info_create(const uint8_t *data, uint32_t length) {
         
         chunk->fourcc = *((uint32_t *)(chunk_data + 4));
         if ((uint64_t)chunk->offset + 4 + chunk->length + 4 > (uint64_t)length) break;
-        chunk->crc32 = yy_swap_endian_uint32(*((uint32_t *)(chunk_data + 8 + chunk->length)));
+        chunk->crc32 = udesk_yy_swap_endian_uint32(*((uint32_t *)(chunk_data + 8 + chunk->length)));
         chunk_num++;
         offset += 12 + chunk->length;
         
         switch (chunk->fourcc) {
             case YY_FOUR_CC('a', 'c', 'T', 'L') : {
                 if (chunk->length == 8) {
-                    apng_frame_number = yy_swap_endian_uint32(*((uint32_t *)(chunk_data + 8)));
-                    apng_loop_num = yy_swap_endian_uint32(*((uint32_t *)(chunk_data + 12)));
+                    apng_frame_number = udesk_yy_swap_endian_uint32(*((uint32_t *)(chunk_data + 8)));
+                    apng_loop_num = udesk_yy_swap_endian_uint32(*((uint32_t *)(chunk_data + 12)));
                 } else {
                     apng_chunk_error = true;
                 }
@@ -461,7 +461,7 @@ static yy_png_info *yy_png_info_create(const uint8_t *data, uint32_t length) {
                     }
                 }
                 if (chunk->length > 4) {
-                    uint32_t sequence = yy_swap_endian_uint32(*((uint32_t *)(chunk_data + 8)));
+                    uint32_t sequence = udesk_yy_swap_endian_uint32(*((uint32_t *)(chunk_data + 8)));
                     if (apng_sequence_index + 1 == sequence) {
                         apng_sequence_index++;
                     } else {
@@ -485,20 +485,20 @@ static yy_png_info *yy_png_info_create(const uint8_t *data, uint32_t length) {
     }
     
     // png info
-    yy_png_info *info = calloc(1, sizeof(yy_png_info));
+    udesk_yy_png_info *info = calloc(1, sizeof(udesk_yy_png_info));
     if (!info) {
         free(chunks);
         return NULL;
     }
     info->chunks = chunks;
     info->chunk_num = chunk_num;
-    yy_png_chunk_IHDR_read(&info->header, data + chunks->offset + 8);
+    udesk_yy_png_chunk_IHDR_read(&info->header, data + chunks->offset + 8);
     
     // apng info
     if (!apng_chunk_error && apng_frame_number == apng_frame_index && apng_frame_number >= 1) {
         bool first_frame_is_cover = false;
         uint32_t first_IDAT_index = 0;
-        if (!yy_png_validate_animation_chunk_order(info->chunks, info->chunk_num, &first_IDAT_index, &first_frame_is_cover)) {
+        if (!udesk_yy_png_validate_animation_chunk_order(info->chunks, info->chunk_num, &first_IDAT_index, &first_frame_is_cover)) {
             return info; // ignore apng chunk
         }
         
@@ -506,28 +506,28 @@ static yy_png_info *yy_png_info_create(const uint8_t *data, uint32_t length) {
         info->apng_frame_num = apng_frame_number;
         info->apng_first_frame_is_cover = first_frame_is_cover;
         info->apng_shared_insert_index = first_IDAT_index;
-        info->apng_frames = calloc(apng_frame_number, sizeof(yy_png_frame_info));
+        info->apng_frames = calloc(apng_frame_number, sizeof(udesk_yy_png_frame_info));
         if (!info->apng_frames) {
-            yy_png_info_release(info);
+            udesk_yy_png_info_release(info);
             return NULL;
         }
         info->apng_shared_chunk_indexs = calloc(info->chunk_num, sizeof(uint32_t));
         if (!info->apng_shared_chunk_indexs) {
-            yy_png_info_release(info);
+            udesk_yy_png_info_release(info);
             return NULL;
         }
         
         int32_t frame_index = -1;
         uint32_t *shared_chunk_index = info->apng_shared_chunk_indexs;
         for (int32_t i = 0; i < info->chunk_num; i++) {
-            yy_png_chunk_info *chunk = info->chunks + i;
+            udesk_yy_png_chunk_info *chunk = info->chunks + i;
             switch (chunk->fourcc) {
                 case YY_FOUR_CC('I', 'D', 'A', 'T'): {
                     if (info->apng_shared_insert_index == 0) {
                         info->apng_shared_insert_index = i;
                     }
                     if (first_frame_is_cover) {
-                        yy_png_frame_info *frame = info->apng_frames + frame_index;
+                        udesk_yy_png_frame_info *frame = info->apng_frames + frame_index;
                         frame->chunk_num++;
                         frame->chunk_size += chunk->length + 12;
                     }
@@ -536,12 +536,12 @@ static yy_png_info *yy_png_info_create(const uint8_t *data, uint32_t length) {
                 } break;
                 case YY_FOUR_CC('f', 'c', 'T', 'L'): {
                     frame_index++;
-                    yy_png_frame_info *frame = info->apng_frames + frame_index;
+                    udesk_yy_png_frame_info *frame = info->apng_frames + frame_index;
                     frame->chunk_index = i + 1;
-                    yy_png_chunk_fcTL_read(&frame->frame_control, data + chunk->offset + 8);
+                    udesk_yy_png_chunk_fcTL_read(&frame->frame_control, data + chunk->offset + 8);
                 } break;
                 case YY_FOUR_CC('f', 'd', 'A', 'T'): {
-                    yy_png_frame_info *frame = info->apng_frames + frame_index;
+                    udesk_yy_png_frame_info *frame = info->apng_frames + frame_index;
                     frame->chunk_num++;
                     frame->chunk_size += chunk->length + 12;
                 } break;
@@ -567,13 +567,13 @@ static yy_png_info *yy_png_info_create(const uint8_t *data, uint32_t length) {
  @return A frame data (single-frame png file), call free() to release the data.
  Returns NULL if an error occurs.
  */
-static uint8_t *yy_png_copy_frame_data_at_index(const uint8_t *data,
-                                                const yy_png_info *info,
+static uint8_t *udesk_yy_png_copy_frame_data_at_index(const uint8_t *data,
+                                                const udesk_yy_png_info *info,
                                                 const uint32_t index,
                                                 uint32_t *size) {
     if (index >= info->apng_frame_num) return NULL;
     
-    yy_png_frame_info *frame_info = info->apng_frames + index;
+    udesk_yy_png_frame_info *frame_info = info->apng_frames + index;
     uint32_t frame_remux_size = 8 /* PNG Header */ + info->apng_shared_chunk_size + frame_info->chunk_size;
     if (!(info->apng_first_frame_is_cover && index == 0)) {
         frame_remux_size -= frame_info->chunk_num * 4; // remove fdAT sequence number
@@ -588,18 +588,18 @@ static uint8_t *yy_png_copy_frame_data_at_index(const uint8_t *data,
     data_offset += 8;
     for (uint32_t i = 0; i < info->apng_shared_chunk_num; i++) {
         uint32_t shared_chunk_index = info->apng_shared_chunk_indexs[i];
-        yy_png_chunk_info *shared_chunk_info = info->chunks + shared_chunk_index;
+        udesk_yy_png_chunk_info *shared_chunk_info = info->chunks + shared_chunk_index;
         
         if (shared_chunk_index >= info->apng_shared_insert_index && !inserted) { // replace IDAT with fdAT
             inserted = true;
             for (uint32_t c = 0; c < frame_info->chunk_num; c++) {
-                yy_png_chunk_info *insert_chunk_info = info->chunks + frame_info->chunk_index + c;
+                udesk_yy_png_chunk_info *insert_chunk_info = info->chunks + frame_info->chunk_index + c;
                 if (insert_chunk_info->fourcc == YY_FOUR_CC('f', 'd', 'A', 'T')) {
-                    *((uint32_t *)(frame_data + data_offset)) = yy_swap_endian_uint32(insert_chunk_info->length - 4);
+                    *((uint32_t *)(frame_data + data_offset)) = udesk_yy_swap_endian_uint32(insert_chunk_info->length - 4);
                     *((uint32_t *)(frame_data + data_offset + 4)) = YY_FOUR_CC('I', 'D', 'A', 'T');
                     memcpy(frame_data + data_offset + 8, data + insert_chunk_info->offset + 12, insert_chunk_info->length - 4);
                     uint32_t crc = (uint32_t)crc32(0, frame_data + data_offset + 4, insert_chunk_info->length);
-                    *((uint32_t *)(frame_data + data_offset + insert_chunk_info->length + 4)) = yy_swap_endian_uint32(crc);
+                    *((uint32_t *)(frame_data + data_offset + insert_chunk_info->length + 4)) = udesk_yy_swap_endian_uint32(crc);
                     data_offset += insert_chunk_info->length + 8;
                 } else { // IDAT
                     memcpy(frame_data + data_offset, data + insert_chunk_info->offset, insert_chunk_info->length + 12);
@@ -611,11 +611,11 @@ static uint8_t *yy_png_copy_frame_data_at_index(const uint8_t *data,
         if (shared_chunk_info->fourcc == YY_FOUR_CC('I', 'H', 'D', 'R')) {
             uint8_t tmp[25] = {0};
             memcpy(tmp, data + shared_chunk_info->offset, 25);
-            yy_png_chunk_IHDR IHDR = info->header;
+            udesk_yy_png_chunk_IHDR IHDR = info->header;
             IHDR.width = frame_info->frame_control.width;
             IHDR.height = frame_info->frame_control.height;
-            yy_png_chunk_IHDR_write(&IHDR, tmp + 8);
-            *((uint32_t *)(tmp + 21)) = yy_swap_endian_uint32((uint32_t)crc32(0, tmp + 4, 17));
+            udesk_yy_png_chunk_IHDR_write(&IHDR, tmp + 8);
+            *((uint32_t *)(tmp + 21)) = udesk_yy_swap_endian_uint32((uint32_t)crc32(0, tmp + 4, 17));
             memcpy(frame_data + data_offset, tmp, 25);
             data_offset += 25;
         } else {
@@ -632,12 +632,12 @@ static uint8_t *yy_png_copy_frame_data_at_index(const uint8_t *data,
 #pragma mark - Helper
 
 /// Returns byte-aligned size.
-static inline size_t YYImageByteAlign(size_t size, size_t alignment) {
+static inline size_t UdeskYYImageByteAlign(size_t size, size_t alignment) {
     return ((size + (alignment - 1)) / alignment) * alignment;
 }
 
 /// Convert degree to radians
-static inline CGFloat YYImageDegreesToRadians(CGFloat degrees) {
+static inline CGFloat UdeskYYImageDegreesToRadians(CGFloat degrees) {
     return degrees * M_PI / 180;
 }
 
@@ -675,7 +675,7 @@ BOOL Udesk_YYCGColorSpaceIsDeviceGray(CGColorSpaceRef space) {
  void *data = malloc(size);
  CGDataProviderRef provider = CGDataProviderCreateWithData(data, data, size, YYCGDataProviderReleaseDataCallback);
  */
-static void YYCGDataProviderReleaseDataCallback(void *info, const void *data, size_t size) {
+static void UdeskYYCGDataProviderReleaseDataCallback(void *info, const void *data, size_t size) {
     if (info) free(info);
 }
 
@@ -692,7 +692,7 @@ static void YYCGDataProviderReleaseDataCallback(void *info, const void *data, si
  @warning This method support iOS7.0 and later. If call it on iOS6, it just returns NO.
  CG_AVAILABLE_STARTING(__MAC_10_9, __IPHONE_7_0)
  */
-static BOOL YYCGImageDecodeToBitmapBufferWithAnyFormat(CGImageRef srcImage, vImage_Buffer *dest, vImage_CGImageFormat *destFormat) {
+static BOOL UdeskYYCGImageDecodeToBitmapBufferWithAnyFormat(CGImageRef srcImage, vImage_Buffer *dest, vImage_CGImageFormat *destFormat) {
     if (!srcImage || (((long)vImageConvert_AnyToAny) + 1 == 1) || !destFormat || !dest) return NO;
     size_t width = CGImageGetWidth(srcImage);
     size_t height = CGImageGetHeight(srcImage);
@@ -751,7 +751,7 @@ fail:
  
  @return Whether succeed.
  */
-static BOOL YYCGImageDecodeToBitmapBufferWith32BitFormat(CGImageRef srcImage, vImage_Buffer *dest, CGBitmapInfo bitmapInfo) {
+static BOOL UdeskYYCGImageDecodeToBitmapBufferWith32BitFormat(CGImageRef srcImage, vImage_Buffer *dest, CGBitmapInfo bitmapInfo) {
     if (!srcImage || !dest) return NO;
     size_t width = CGImageGetWidth(srcImage);
     size_t height = CGImageGetHeight(srcImage);
@@ -814,7 +814,7 @@ static BOOL YYCGImageDecodeToBitmapBufferWith32BitFormat(CGImageRef srcImage, vI
     destFormat.colorSpace = Udesk_YYCGColorSpaceGetDeviceRGB();
     destFormat.bitmapInfo = bitmapInfo;
     dest->data = NULL;
-    if (YYCGImageDecodeToBitmapBufferWithAnyFormat(srcImage, dest, &destFormat)) return YES;
+    if (UdeskYYCGImageDecodeToBitmapBufferWithAnyFormat(srcImage, dest, &destFormat)) return YES;
     
     CGBitmapInfo contextBitmapInfo = bitmapInfo & kCGBitmapByteOrderMask;
     if (!hasAlpha || alphaPremultiplied) {
@@ -926,9 +926,9 @@ CGImageRef Udesk_YYCGImageCreateAffineTransformCopy(CGImageRef imageRef, CGAffin
     CGDataProviderRef tmpProvider = NULL, destProvider = NULL;
     CGImageRef tmpImage = NULL, destImage = NULL;
     vImage_Buffer src = {0}, tmp = {0}, dest = {0};
-    if(!YYCGImageDecodeToBitmapBufferWith32BitFormat(imageRef, &src, kCGImageAlphaFirst | kCGBitmapByteOrderDefault)) return NULL;
+    if(!UdeskYYCGImageDecodeToBitmapBufferWith32BitFormat(imageRef, &src, kCGImageAlphaFirst | kCGBitmapByteOrderDefault)) return NULL;
     
-    size_t destBytesPerRow = YYImageByteAlign(destWidth * 4, 32);
+    size_t destBytesPerRow = UdeskYYImageByteAlign(destWidth * 4, 32);
     tmp.data = malloc(destHeight * destBytesPerRow);
     if (!tmp.data) goto fail;
     
@@ -942,7 +942,7 @@ CGImageRef Udesk_YYCGImageCreateAffineTransformCopy(CGImageRef imageRef, CGAffin
     free(src.data);
     src.data = NULL;
     
-    tmpProvider = CGDataProviderCreateWithData(tmp.data, tmp.data, destHeight * destBytesPerRow, YYCGDataProviderReleaseDataCallback);
+    tmpProvider = CGDataProviderCreateWithData(tmp.data, tmp.data, destHeight * destBytesPerRow, UdeskYYCGDataProviderReleaseDataCallback);
     if (!tmpProvider) goto fail;
     tmp.data = NULL; // hold by provider
     tmpImage = CGImageCreate(destWidth, destHeight, 8, 32, destBytesPerRow, Udesk_YYCGColorSpaceGetDeviceRGB(), kCGImageAlphaFirst | kCGBitmapByteOrderDefault, tmpProvider, NULL, false, kCGRenderingIntentDefault);
@@ -955,11 +955,11 @@ CGImageRef Udesk_YYCGImageCreateAffineTransformCopy(CGImageRef imageRef, CGAffin
         return tmpImage;
     }
     
-    if (!YYCGImageDecodeToBitmapBufferWith32BitFormat(tmpImage, &dest, destBitmapInfo)) goto fail;
+    if (!UdeskYYCGImageDecodeToBitmapBufferWith32BitFormat(tmpImage, &dest, destBitmapInfo)) goto fail;
     CFRelease(tmpImage);
     tmpImage = NULL;
     
-    destProvider = CGDataProviderCreateWithData(dest.data, dest.data, destHeight * destBytesPerRow, YYCGDataProviderReleaseDataCallback);
+    destProvider = CGDataProviderCreateWithData(dest.data, dest.data, destHeight * destBytesPerRow, UdeskYYCGDataProviderReleaseDataCallback);
     if (!destProvider) goto fail;
     dest.data = NULL; // hold by provider
     destImage = CGImageCreate(destWidth, destHeight, 8, 32, destBytesPerRow, Udesk_YYCGColorSpaceGetDeviceRGB(), destBitmapInfo, destProvider, NULL, false, kCGRenderingIntentDefault);
@@ -1018,16 +1018,16 @@ CGImageRef Udesk_YYCGImageCreateCopyWithOrientation(CGImageRef imageRef, UIImage
     BOOL swapWidthAndHeight = NO;
     switch (orientation) {
         case UIImageOrientationDown: {
-            transform = CGAffineTransformMakeRotation(YYImageDegreesToRadians(180));
+            transform = CGAffineTransformMakeRotation(UdeskYYImageDegreesToRadians(180));
             transform = CGAffineTransformTranslate(transform, -(CGFloat)width, -(CGFloat)height);
         } break;
         case UIImageOrientationLeft: {
-            transform = CGAffineTransformMakeRotation(YYImageDegreesToRadians(90));
+            transform = CGAffineTransformMakeRotation(UdeskYYImageDegreesToRadians(90));
             transform = CGAffineTransformTranslate(transform, -(CGFloat)0, -(CGFloat)height);
             swapWidthAndHeight = YES;
         } break;
         case UIImageOrientationRight: {
-            transform = CGAffineTransformMakeRotation(YYImageDegreesToRadians(-90));
+            transform = CGAffineTransformMakeRotation(UdeskYYImageDegreesToRadians(-90));
             transform = CGAffineTransformTranslate(transform, -(CGFloat)width, (CGFloat)0);
             swapWidthAndHeight = YES;
         } break;
@@ -1040,13 +1040,13 @@ CGImageRef Udesk_YYCGImageCreateCopyWithOrientation(CGImageRef imageRef, UIImage
             transform = CGAffineTransformScale(transform, 1, -1);
         } break;
         case UIImageOrientationLeftMirrored: {
-            transform = CGAffineTransformMakeRotation(YYImageDegreesToRadians(-90));
+            transform = CGAffineTransformMakeRotation(UdeskYYImageDegreesToRadians(-90));
             transform = CGAffineTransformScale(transform, 1, -1);
             transform = CGAffineTransformTranslate(transform, -(CGFloat)width, -(CGFloat)height);
             swapWidthAndHeight = YES;
         } break;
         case UIImageOrientationRightMirrored: {
-            transform = CGAffineTransformMakeRotation(YYImageDegreesToRadians(90));
+            transform = CGAffineTransformMakeRotation(UdeskYYImageDegreesToRadians(90));
             transform = CGAffineTransformScale(transform, 1, -1);
             swapWidthAndHeight = YES;
         } break;
@@ -1511,7 +1511,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     
     BOOL _sourceTypeDetected;
     CGImageSourceRef _source;
-    yy_png_info *_apngSource;
+    udesk_yy_png_info *_apngSource;
 #if YYIMAGE_WEBP_ENABLED
     WebPDemuxer *_webpSource;
 #endif
@@ -1526,7 +1526,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
 
 - (void)dealloc {
     if (_source) CFRelease(_source);
-    if (_apngSource) yy_png_info_release(_apngSource);
+    if (_apngSource) udesk_yy_png_info_release(_apngSource);
 #if YYIMAGE_WEBP_ENABLED
     if (_webpSource) WebPDemuxDelete(_webpSource);
 #endif
@@ -1857,18 +1857,18 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
      faster than ImageIO.
      */
     
-    yy_png_info_release(_apngSource);
+    udesk_yy_png_info_release(_apngSource);
     _apngSource = nil;
     
     [self _updateSourceImageIO]; // decode first frame
     if (_frameCount == 0) return; // png decode failed
     if (!_finalized) return; // ignore multi-frame before finalized
     
-    yy_png_info *apng = yy_png_info_create(_data.bytes, (uint32_t)_data.length);
+    udesk_yy_png_info *apng = yy_png_info_create(_data.bytes, (uint32_t)_data.length);
     if (!apng) return; // apng decode failed
     if (apng->apng_frame_num == 0 ||
         (apng->apng_frame_num == 1 && apng->apng_first_frame_is_cover)) {
-        yy_png_info_release(apng);
+        udesk_yy_png_info_release(apng);
         return; // no animation
     }
     if (_source) { // apng decode succeed, no longer need image souce
@@ -1885,9 +1885,9 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
         Udesk_YYImageDecoderFrame *frame = [Udesk_YYImageDecoderFrame new];
         [frames addObject:frame];
         
-        yy_png_frame_info *fi = apng->apng_frames + i;
+        udesk_yy_png_frame_info *fi = apng->apng_frames + i;
         frame.index = i;
-        frame.duration = yy_png_delay_to_seconds(fi->frame_control.delay_num, fi->frame_control.delay_den);
+        frame.duration = udesk_yy_png_delay_to_seconds(fi->frame_control.delay_num, fi->frame_control.delay_den);
         frame.hasAlpha = YES;
         frame.width = fi->frame_control.width;
         frame.height = fi->frame_control.height;
@@ -1899,10 +1899,10 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
         frame.isFullSize = (sizeEqualsToCanvas && offsetIsZero);
         
         switch (fi->frame_control.dispose_op) {
-            case YY_PNG_DISPOSE_OP_BACKGROUND: {
+            case UDESK_YY_PNG_DISPOSE_OP_BACKGROUND: {
                 frame.dispose = Udesk_YYImageDisposeBackground;
             } break;
-            case YY_PNG_DISPOSE_OP_PREVIOUS: {
+            case UDESK_YY_PNG_DISPOSE_OP_PREVIOUS: {
                 frame.dispose = Udesk_YYImageDisposePrevious;
             } break;
             default: {
@@ -1910,7 +1910,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
             } break;
         }
         switch (fi->frame_control.blend_op) {
-            case YY_PNG_BLEND_OP_OVER: {
+            case UDESK_YY_PNG_BLEND_OP_OVER: {
                 frame.blend = Udesk_YYImageBlendOver;
             } break;
                 
@@ -2082,9 +2082,9 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     
     if (_apngSource) {
         uint32_t size = 0;
-        uint8_t *bytes = yy_png_copy_frame_data_at_index(_data.bytes, _apngSource, (uint32_t)index, &size);
+        uint8_t *bytes = udesk_yy_png_copy_frame_data_at_index(_data.bytes, _apngSource, (uint32_t)index, &size);
         if (!bytes) return NULL;
-        CGDataProviderRef provider = CGDataProviderCreateWithData(bytes, bytes, size, YYCGDataProviderReleaseDataCallback);
+        CGDataProviderRef provider = CGDataProviderCreateWithData(bytes, bytes, size, UdeskYYCGDataProviderReleaseDataCallback);
         if (!provider) {
             free(bytes);
             return NULL;
@@ -2567,7 +2567,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     }
     
     NSData *firstFrameData = pngDatas[0];
-    yy_png_info *info = yy_png_info_create(firstFrameData.bytes, (uint32_t)firstFrameData.length);
+    udesk_yy_png_info *info = yy_png_info_create(firstFrameData.bytes, (uint32_t)firstFrameData.length);
     if (!info) return nil;
     NSMutableData *result = [NSMutableData new];
     BOOL insertBefore = NO, insertAfter = NO;
@@ -2580,35 +2580,35 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     [result appendBytes:png_header length:8];
     
     for (int i = 0; i < info->chunk_num; i++) {
-        yy_png_chunk_info *chunk = info->chunks + i;
+        udesk_yy_png_chunk_info *chunk = info->chunks + i;
         
         if (!insertBefore && chunk->fourcc == YY_FOUR_CC('I', 'D', 'A', 'T')) {
             insertBefore = YES;
             // insert acTL (APNG Control)
             uint32_t acTL[5] = {0};
-            acTL[0] = yy_swap_endian_uint32(8); //length
+            acTL[0] = udesk_yy_swap_endian_uint32(8); //length
             acTL[1] = YY_FOUR_CC('a', 'c', 'T', 'L'); // fourcc
-            acTL[2] = yy_swap_endian_uint32((uint32_t)pngDatas.count); // num frames
-            acTL[3] = yy_swap_endian_uint32((uint32_t)_loopCount); // num plays
-            acTL[4] = yy_swap_endian_uint32((uint32_t)crc32(0, (const Bytef *)(acTL + 1), 12)); //crc32
+            acTL[2] = udesk_yy_swap_endian_uint32((uint32_t)pngDatas.count); // num frames
+            acTL[3] = udesk_yy_swap_endian_uint32((uint32_t)_loopCount); // num plays
+            acTL[4] = udesk_yy_swap_endian_uint32((uint32_t)crc32(0, (const Bytef *)(acTL + 1), 12)); //crc32
             [result appendBytes:acTL length:20];
             
             // insert fcTL (first frame control)
-            yy_png_chunk_fcTL chunk_fcTL = {0};
+            udesk_yy_png_chunk_fcTL chunk_fcTL = {0};
             chunk_fcTL.sequence_number = apngSequenceIndex;
             chunk_fcTL.width = (uint32_t)firstFrameSize.width;
             chunk_fcTL.height = (uint32_t)firstFrameSize.height;
-            yy_png_delay_to_fraction([(NSNumber *)_durations[0] doubleValue], &chunk_fcTL.delay_num, &chunk_fcTL.delay_den);
+            udesk_yy_png_delay_to_fraction([(NSNumber *)_durations[0] doubleValue], &chunk_fcTL.delay_num, &chunk_fcTL.delay_den);
             chunk_fcTL.delay_num = chunk_fcTL.delay_num;
             chunk_fcTL.delay_den = chunk_fcTL.delay_den;
-            chunk_fcTL.dispose_op = YY_PNG_DISPOSE_OP_BACKGROUND;
-            chunk_fcTL.blend_op = YY_PNG_BLEND_OP_SOURCE;
+            chunk_fcTL.dispose_op = UDESK_YY_PNG_DISPOSE_OP_BACKGROUND;
+            chunk_fcTL.blend_op = UDESK_YY_PNG_BLEND_OP_SOURCE;
             
             uint8_t fcTL[38] = {0};
-            *((uint32_t *)fcTL) = yy_swap_endian_uint32(26); //length
+            *((uint32_t *)fcTL) = udesk_yy_swap_endian_uint32(26); //length
             *((uint32_t *)(fcTL + 4)) = YY_FOUR_CC('f', 'c', 'T', 'L'); // fourcc
-            yy_png_chunk_fcTL_write(&chunk_fcTL, fcTL + 8);
-            *((uint32_t *)(fcTL + 34)) = yy_swap_endian_uint32((uint32_t)crc32(0, (const Bytef *)(fcTL + 4), 30));
+            udesk_yy_png_chunk_fcTL_write(&chunk_fcTL, fcTL + 8);
+            *((uint32_t *)(fcTL + 34)) = udesk_yy_swap_endian_uint32((uint32_t)crc32(0, (const Bytef *)(fcTL + 4), 30));
             [result appendBytes:fcTL length:38];
             
             apngSequenceIndex++;
@@ -2620,57 +2620,57 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
             
             for (int i = 1; i < pngDatas.count; i++) {
                 NSData *frameData = pngDatas[i];
-                yy_png_info *frame = yy_png_info_create(frameData.bytes, (uint32_t)frameData.length);
+                udesk_yy_png_info *frame = yy_png_info_create(frameData.bytes, (uint32_t)frameData.length);
                 if (!frame) {
-                    yy_png_info_release(info);
+                    udesk_yy_png_info_release(info);
                     return nil;
                 }
                 
                 // insert fcTL (first frame control)
-                yy_png_chunk_fcTL chunk_fcTL = {0};
+                udesk_yy_png_chunk_fcTL chunk_fcTL = {0};
                 chunk_fcTL.sequence_number = apngSequenceIndex;
                 chunk_fcTL.width = frame->header.width;
                 chunk_fcTL.height = frame->header.height;
-                yy_png_delay_to_fraction([(NSNumber *)_durations[i] doubleValue], &chunk_fcTL.delay_num, &chunk_fcTL.delay_den);
+                udesk_yy_png_delay_to_fraction([(NSNumber *)_durations[i] doubleValue], &chunk_fcTL.delay_num, &chunk_fcTL.delay_den);
                 chunk_fcTL.delay_num = chunk_fcTL.delay_num;
                 chunk_fcTL.delay_den = chunk_fcTL.delay_den;
-                chunk_fcTL.dispose_op = YY_PNG_DISPOSE_OP_BACKGROUND;
-                chunk_fcTL.blend_op = YY_PNG_BLEND_OP_SOURCE;
+                chunk_fcTL.dispose_op = UDESK_YY_PNG_DISPOSE_OP_BACKGROUND;
+                chunk_fcTL.blend_op = UDESK_YY_PNG_BLEND_OP_SOURCE;
                 
                 uint8_t fcTL[38] = {0};
-                *((uint32_t *)fcTL) = yy_swap_endian_uint32(26); //length
+                *((uint32_t *)fcTL) = udesk_yy_swap_endian_uint32(26); //length
                 *((uint32_t *)(fcTL + 4)) = YY_FOUR_CC('f', 'c', 'T', 'L'); // fourcc
-                yy_png_chunk_fcTL_write(&chunk_fcTL, fcTL + 8);
-                *((uint32_t *)(fcTL + 34)) = yy_swap_endian_uint32((uint32_t)crc32(0, (const Bytef *)(fcTL + 4), 30));
+                udesk_yy_png_chunk_fcTL_write(&chunk_fcTL, fcTL + 8);
+                *((uint32_t *)(fcTL + 34)) = udesk_yy_swap_endian_uint32((uint32_t)crc32(0, (const Bytef *)(fcTL + 4), 30));
                 [result appendBytes:fcTL length:38];
                 
                 apngSequenceIndex++;
                 
                 // insert fdAT (frame data)
                 for (int d = 0; d < frame->chunk_num; d++) {
-                    yy_png_chunk_info *dchunk = frame->chunks + d;
+                    udesk_yy_png_chunk_info *dchunk = frame->chunks + d;
                     if (dchunk->fourcc == YY_FOUR_CC('I', 'D', 'A', 'T')) {
-                        uint32_t length = yy_swap_endian_uint32(dchunk->length + 4);
+                        uint32_t length = udesk_yy_swap_endian_uint32(dchunk->length + 4);
                         [result appendBytes:&length length:4]; //length
                         uint32_t fourcc = YY_FOUR_CC('f', 'd', 'A', 'T');
                         [result appendBytes:&fourcc length:4]; //fourcc
-                        uint32_t sq = yy_swap_endian_uint32(apngSequenceIndex);
+                        uint32_t sq = udesk_yy_swap_endian_uint32(apngSequenceIndex);
                         [result appendBytes:&sq length:4]; //data (sq)
                         [result appendBytes:(((uint8_t *)frameData.bytes) + dchunk->offset + 8) length:dchunk->length]; //data
                         uint8_t *bytes = ((uint8_t *)result.bytes) + result.length - dchunk->length - 8;
-                        uint32_t crc = yy_swap_endian_uint32((uint32_t)crc32(0, bytes, dchunk->length + 8));
+                        uint32_t crc = udesk_yy_swap_endian_uint32((uint32_t)crc32(0, bytes, dchunk->length + 8));
                         [result appendBytes:&crc length:4]; //crc
                         
                         apngSequenceIndex++;
                     }
                 }
-                yy_png_info_release(frame);
+                udesk_yy_png_info_release(frame);
             }
         }
         
         [result appendBytes:((uint8_t *)firstFrameData.bytes) + chunk->offset length:chunk->length + 12];
     }
-    yy_png_info_release(info);
+    udesk_yy_png_info_release(info);
     return result;
 }
 

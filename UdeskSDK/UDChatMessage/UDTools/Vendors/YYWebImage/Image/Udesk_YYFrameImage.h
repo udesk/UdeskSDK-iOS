@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
      YYAnimatedImageView *imageView = [YYAnimatedImageView alloc] initWithImage:image];
      [view addSubView:imageView];
  */
-@interface Udesk_YYFrameImage : UIImage <YYAnimatedImage>
+@interface Udesk_YYFrameImage : UIImage <UdeskYYAnimatedImage>
 
 /**
  Create a frame animated image from files.

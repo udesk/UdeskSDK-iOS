@@ -19,7 +19,7 @@
 
 
 /// Returns nil in App Extension.
-static UIApplication *_YYSharedApplication() {
+static UIApplication *_UdeskYYSharedApplication() {
     static BOOL isAppExtension = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -135,7 +135,7 @@ static UIApplication *_YYSharedApplication() {
 }
 
 + (void)_delaySetActivity:(NSTimer *)timer {
-    UIApplication *app = _YYSharedApplication();
+    UIApplication *app = _UdeskYYSharedApplication();
     if (!app) return;
     
     NSNumber *visiable = timer.userInfo;
@@ -146,7 +146,7 @@ static UIApplication *_YYSharedApplication() {
 }
 
 + (void)_changeNetworkActivityCount:(NSInteger)delta {
-    if (!_YYSharedApplication()) return;
+    if (!_UdeskYYSharedApplication()) return;
     
     void (^block)(void) = ^{
         Udesk_YYWebImageApplicationNetworkIndicatorInfo *info = [self _networkIndicatorInfo];

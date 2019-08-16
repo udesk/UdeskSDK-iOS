@@ -15,7 +15,7 @@
  An array of NSNumber objects, shows the best order for path scale search.
  e.g. iPhone3GS:@[@1,@2,@3] iPhone5:@[@2,@3,@1]  iPhone6 Plus:@[@3,@2,@1]
  */
-static NSArray *_NSBundlePreferredScales() {
+static NSArray *_UdeskNSBundlePreferredScales() {
     static NSArray *scales;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -48,7 +48,7 @@ static NSArray *_NSBundlePreferredScales() {
  @param scale Resource scale.
  @return String by add scale modifier, or just return if it's not end with file name.
  */
-static NSString *_NSStringByAppendingNameScale(NSString *string, CGFloat scale) {
+static NSString *_UdeskNSStringByAppendingNameScale(NSString *string, CGFloat scale) {
     if (!string) return nil;
     if (fabs(scale - 1) <= __FLT_EPSILON__ || string.length == 0 || [string hasSuffix:@"/"]) return string.copy;
     return [string stringByAppendingFormat:@"@%@x", @(scale)];
@@ -68,7 +68,7 @@ static NSString *_NSStringByAppendingNameScale(NSString *string, CGFloat scale) 
  <tr><td>"icon@2x.png/"  </td><td>1     </td></tr>
  </table>
  */
-static CGFloat _NSStringPathScale(NSString *string) {
+static CGFloat _UdeskNSStringPathScale(NSString *string) {
     if (string.length == 0 || [string hasSuffix:@"/"]) return 1;
     NSString *name = string.stringByDeletingPathExtension;
     __block CGFloat scale = 1;
@@ -102,10 +102,10 @@ static CGFloat _NSStringPathScale(NSString *string) {
     
     // If no extension, guess by system supported (same as UIImage).
     NSArray *exts = ext.length > 0 ? @[ext] : @[@"", @"png", @"jpeg", @"jpg", @"gif", @"webp", @"apng"];
-    NSArray *scales = _NSBundlePreferredScales();
+    NSArray *scales = _UdeskNSBundlePreferredScales();
     for (int s = 0; s < scales.count; s++) {
         scale = ((NSNumber *)scales[s]).floatValue;
-        NSString *scaledName = _NSStringByAppendingNameScale(res, scale);
+        NSString *scaledName = _UdeskNSStringByAppendingNameScale(res, scale);
         for (NSString *e in exts) {
             path = [[NSBundle mainBundle] pathForResource:scaledName ofType:e];
             if (path) break;
@@ -134,7 +134,7 @@ static CGFloat _NSStringPathScale(NSString *string) {
 
 - (instancetype)initWithContentsOfFile:(NSString *)path {
     NSData *data = [NSData dataWithContentsOfFile:path];
-    return [self initWithData:data scale:_NSStringPathScale(path)];
+    return [self initWithData:data scale:_UdeskNSStringPathScale(path)];
 }
 
 - (instancetype)initWithData:(NSData *)data {

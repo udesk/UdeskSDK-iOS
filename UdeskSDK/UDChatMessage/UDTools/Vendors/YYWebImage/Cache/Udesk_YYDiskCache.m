@@ -22,7 +22,7 @@
 static const int extended_data_key;
 
 /// Free disk space in bytes.
-static int64_t _YYDiskSpaceFree() {
+static int64_t _UdeskYYDiskSpaceFree() {
     NSError *error = nil;
     NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfFileSystemForPath:NSHomeDirectory() error:&error];
     if (error) return -1;
@@ -32,7 +32,7 @@ static int64_t _YYDiskSpaceFree() {
 }
 
 /// String's md5 hash.
-static NSString *_YYNSStringMD5(NSString *string) {
+static NSString *_UdeskYYNSStringMD5(NSString *string) {
     if (!string) return nil;
     NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     unsigned char result[CC_MD5_DIGEST_LENGTH];
@@ -47,32 +47,32 @@ static NSString *_YYNSStringMD5(NSString *string) {
 }
 
 /// weak reference for all instances
-static NSMapTable *_globalInstances;
-static dispatch_semaphore_t _globalInstancesLock;
+static NSMapTable *_udeskGlobalInstances;
+static dispatch_semaphore_t _udeskGlobalInstancesLock;
 
-static void _YYDiskCacheInitGlobal() {
+static void _UdeskYYDiskCacheInitGlobal() {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _globalInstancesLock = dispatch_semaphore_create(1);
-        _globalInstances = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsWeakMemory capacity:0];
+        _udeskGlobalInstancesLock = dispatch_semaphore_create(1);
+        _udeskGlobalInstances = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsWeakMemory capacity:0];
     });
 }
 
-static Udesk_YYDiskCache *_YYDiskCacheGetGlobal(NSString *path) {
+static Udesk_YYDiskCache *_UdeskYYDiskCacheGetGlobal(NSString *path) {
     if (path.length == 0) return nil;
-    _YYDiskCacheInitGlobal();
-    dispatch_semaphore_wait(_globalInstancesLock, DISPATCH_TIME_FOREVER);
-    id cache = [_globalInstances objectForKey:path];
-    dispatch_semaphore_signal(_globalInstancesLock);
+    _UdeskYYDiskCacheInitGlobal();
+    dispatch_semaphore_wait(_udeskGlobalInstancesLock, DISPATCH_TIME_FOREVER);
+    id cache = [_udeskGlobalInstances objectForKey:path];
+    dispatch_semaphore_signal(_udeskGlobalInstancesLock);
     return cache;
 }
 
-static void _YYDiskCacheSetGlobal(Udesk_YYDiskCache *cache) {
+static void _UdeskYYDiskCacheSetGlobal(Udesk_YYDiskCache *cache) {
     if (cache.path.length == 0) return;
-    _YYDiskCacheInitGlobal();
-    dispatch_semaphore_wait(_globalInstancesLock, DISPATCH_TIME_FOREVER);
-    [_globalInstances setObject:cache forKey:cache.path];
-    dispatch_semaphore_signal(_globalInstancesLock);
+    _UdeskYYDiskCacheInitGlobal();
+    dispatch_semaphore_wait(_udeskGlobalInstancesLock, DISPATCH_TIME_FOREVER);
+    [_udeskGlobalInstances setObject:cache forKey:cache.path];
+    dispatch_semaphore_signal(_udeskGlobalInstancesLock);
 }
 
 
@@ -134,7 +134,7 @@ static void _YYDiskCacheSetGlobal(Udesk_YYDiskCache *cache) {
     if (targetFreeDiskSpace == 0) return;
     int64_t totalBytes = [_kv getItemsSize];
     if (totalBytes <= 0) return;
-    int64_t diskFreeBytes = _YYDiskSpaceFree();
+    int64_t diskFreeBytes = _UdeskYYDiskSpaceFree();
     if (diskFreeBytes < 0) return;
     int64_t needTrimBytes = targetFreeDiskSpace - diskFreeBytes;
     if (needTrimBytes <= 0) return;
@@ -146,7 +146,7 @@ static void _YYDiskCacheSetGlobal(Udesk_YYDiskCache *cache) {
 - (NSString *)_filenameForKey:(NSString *)key {
     NSString *filename = nil;
     if (_customFileNameBlock) filename = _customFileNameBlock(key);
-    if (!filename) filename = _YYNSStringMD5(key);
+    if (!filename) filename = _UdeskYYNSStringMD5(key);
     return filename;
 }
 
@@ -176,7 +176,7 @@ static void _YYDiskCacheSetGlobal(Udesk_YYDiskCache *cache) {
     self = [super init];
     if (!self) return nil;
     
-    Udesk_YYDiskCache *globalCache = _YYDiskCacheGetGlobal(path);
+    Udesk_YYDiskCache *globalCache = _UdeskYYDiskCacheGetGlobal(path);
     if (globalCache) return globalCache;
     
     Udesk_YYKVStorageType type;
@@ -203,7 +203,7 @@ static void _YYDiskCacheSetGlobal(Udesk_YYDiskCache *cache) {
     _autoTrimInterval = 60;
     
     [self _trimRecursively];
-    _YYDiskCacheSetGlobal(self);
+    _UdeskYYDiskCacheSetGlobal(self);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appWillBeTerminated) name:UIApplicationWillTerminateNotification object:nil];
     return self;
