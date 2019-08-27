@@ -96,6 +96,8 @@
             
             //添加留言文案
             [self addLeaveGuideMessageToArray];
+            //添加排队文案
+            [self addQueueMessageToArray];
             //添加临时
             [self addRobotTempMessageToArray];
             //更新UI
@@ -164,7 +166,7 @@
                     self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:moreMessagesArray lastMessage:nil];
                 }
             }
-            [self updateCallbackMessages];
+            [self updateCallbackMoreMessages];
         });
     }];
 }
@@ -186,6 +188,14 @@
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     } @finally {
+    }
+}
+
+//添加排队消息
+- (void)addQueueMessageToArray {
+    
+    if (![UdeskSDKUtil isBlankString:self.queueMessageTips]) {
+        [self updateQueue:self.queueMessageTips];
     }
 }
 
@@ -270,6 +280,7 @@
                     break;
                 }
             }
+            self.queueMessageTips = nil;
             self.messagesArray = array;
             [self updateCallbackMessages];
         }
@@ -663,6 +674,16 @@
     
     if (self.didUpdateMessagesBlock) {
         self.didUpdateMessagesBlock(self.messagesArray);
+    }
+}
+
+- (void)updateCallbackMoreMessages {
+    
+    //过滤
+    [self filterRepeatMessages];
+    
+    if (self.didUpdateMoreMessagesBlock) {
+        self.didUpdateMoreMessagesBlock(self.messagesArray);
     }
 }
 

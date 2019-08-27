@@ -7,6 +7,7 @@
 //
 
 #import "UdeskSmallVideoRecordView.h"
+#import "UdeskThrottleUtil.h"
 
 @implementation UdeskSmallVideoRecordView {
     
@@ -96,9 +97,11 @@
 
 - (void)tapAction:(UIGestureRecognizer *)gest {
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(smallVideoRecordView:gestureRecognizer:)]) {
-        [self.delegate smallVideoRecordView:self gestureRecognizer:gest];
-    }
+    ud_dispatch_throttle(0.35, ^{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(smallVideoRecordView:gestureRecognizer:)]) {
+            [self.delegate smallVideoRecordView:self gestureRecognizer:gest];
+        }
+    });
 }
 
 - (void)setDuration:(NSInteger)duration {

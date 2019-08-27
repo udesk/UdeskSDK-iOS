@@ -19,14 +19,25 @@
 
 @implementation UdeskSmallVideoPreviewViewController
 
+- (instancetype)initWithURL:(NSString *)URL
+{
+    self = [super init];
+    if (self) {
+        _url = URL;
+        [self setupUI];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    [self setupUI];
 }
 
 - (void)setupUI {
+    if (!self.url || self.url == (id)kCFNull) return ;
+    if (![self.url isKindOfClass:[NSString class]]) return ;
+    if (self.url.length == 0) return ;
     
     UIImageView *imgView ;
     if (self.url.length >0) {

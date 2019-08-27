@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 5.0.0
+//  Version: 5.1.0
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -60,12 +60,12 @@
 /**
  需要重新拉取消息
  */
-- (void)needFetchServersMessages;
+- (void)didReceiveRequestServersMessages;
 
 /**
  请求配置信息
  */
-- (void)needFetchServersSetting;
+- (void)didReceiveRequestServersSetting;
 
 /**
  排队消息已到最大值
@@ -80,7 +80,7 @@
 /**
  请求客服信息
  */
-- (void)needFetchAgentServers;
+- (void)didReceiveRequestServersAgent;
 
 @end
 

@@ -16,4 +16,6 @@
 @property (nonatomic, copy  ) NSString *url;
 @property (nonatomic, strong) UIImage  *image;
 
+- (instancetype)initWithURL:(NSString *)URL;
+
 @end

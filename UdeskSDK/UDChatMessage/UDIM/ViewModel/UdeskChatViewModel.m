@@ -214,20 +214,20 @@
 }
 
 //需要重新拉下消息
-- (void)needFetchServersMessages {
+- (void)didReceiveRequestServersMessages {
     
     [self.messageManager fetchServersMessages];
 }
 
 //请求配置信息
-- (void)needFetchServersSetting {
+- (void)didReceiveRequestServersSetting {
     
     [self.agentManager sessionClosed];
     [self fetchSDKSetting];
 }
 
 //请求客服信息
-- (void)needFetchAgentServers {
+- (void)didReceiveRequestServersAgent {
     
     if (self.agentManager.agentModel.code == UDAgentStatusResultBoardMessage) {
         [self.agentManager fetchAgent:nil];
@@ -404,6 +404,10 @@
             @udStrongify(self);
             [self reloadChatWithMessages:messages];
         };
+        _messageManager.didUpdateMoreMessagesBlock = ^(NSArray *messages) {
+            @udStrongify(self);
+            [self reloadChatWithMoreMessages:messages];
+        };
         _messageManager.didUpdateMessageAtIndexPathBlock = ^(NSIndexPath *indexPath) {
             @udStrongify(self);
             [self reloadChatAtIndexPath:indexPath];
@@ -425,6 +429,16 @@
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(reloadChatTableView)]) {
         [self.delegate reloadChatTableView];
+    }
+}
+
+- (void)reloadChatWithMoreMessages:(NSArray *)messages {
+    
+    self.isShowRefresh = self.messageManager.isShowRefresh;
+    self.messagesArray = [messages copy];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(reloadMoreMessageChatTableView)]) {
+        [self.delegate reloadMoreMessageChatTableView];
     }
 }
 

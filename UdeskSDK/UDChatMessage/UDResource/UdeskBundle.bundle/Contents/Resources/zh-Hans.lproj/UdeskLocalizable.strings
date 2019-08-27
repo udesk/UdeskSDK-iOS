@@ -109,6 +109,7 @@
 "udesk_survey_remark_required" = "评价备注为必填项";
 "udesk_admin" = "管理员";
 "udesk_queue" = "排队中";
+"udesk_text_max_num" = "发送消息内容超长，请分条发送";
 
 //v4
 "udesk_please_talk" = "请说话";

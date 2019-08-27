@@ -109,6 +109,7 @@
 "udesk_survey_remark_required" = "Remarks are required";
 "udesk_admin" = "Admin";
 "udesk_queue" = "In the queue";
+"udesk_text_max_num" = "Message too long.Send it in multiple parts.";
 
 "udesk_please_talk" = "Please enter";
 "udesk_clean" = "clear out";

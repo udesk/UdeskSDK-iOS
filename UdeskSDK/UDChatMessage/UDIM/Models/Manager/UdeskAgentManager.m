@@ -181,6 +181,7 @@
 //放弃排队
 - (void)quitQueue {
     
+    [UdeskAgentUtil setUdeskQuitQueue:YES];
     [UdeskManager cancelAllOperations];
     [UdeskManager quitQueueWithType:[[UdeskSDKConfig customConfig] quitQueueString]];
 }
@@ -284,6 +285,10 @@
         else if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
             [self showLeaveMessage];
         }
+        //工作台留言
+        else if ([self.sdkSetting.leaveMessageType isEqualToString:@"im"]) {
+            [self showBoardMessage];
+        }
         
         //放弃排队
         [self quitQueue];
@@ -305,6 +310,7 @@
     }
     
     UdeskTicketViewController *offLineTicket = [[UdeskTicketViewController alloc] initWithSDKConfig:sdkConfig setting:self.sdkSetting];
+    offLineTicket.modalPresentationStyle = UIModalPresentationFullScreen;
     [[UdeskSDKUtil currentViewController] presentViewController:offLineTicket animated:YES completion:nil];
 }
 

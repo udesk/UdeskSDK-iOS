@@ -2045,7 +2045,7 @@
 					44C3A05B1C93ADCE004BDB2B = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = DVNW3ZM7G9;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -2485,6 +2485,7 @@
 				CODE_SIGN_ENTITLEMENTS = UdeskSDKExample/UdeskSDKExample.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = DVNW3ZM7G9;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2561,7 +2562,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = udeskapp111;
 			};
 			name = Debug;
 		};
@@ -2575,6 +2576,7 @@
 				CODE_SIGN_ENTITLEMENTS = UdeskSDKExample/UdeskSDKExample.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Lipeng Xiao (ZWGRWPKARH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = DVNW3ZM7G9;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2651,7 +2653,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.udesk.udeskapp11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = udeskapp111;
 			};
 			name = Release;
 		};

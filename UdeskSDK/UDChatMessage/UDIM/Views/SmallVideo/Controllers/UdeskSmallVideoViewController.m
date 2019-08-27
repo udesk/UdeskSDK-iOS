@@ -99,8 +99,7 @@
 
 - (void)previewVideoWithURL:(NSString *)sandboxURL videoInfo:(NSDictionary *)info {
     
-    self.previewVC = [UdeskSmallVideoPreviewViewController new];
-    self.previewVC.url = sandboxURL;
+    self.previewVC = [[UdeskSmallVideoPreviewViewController alloc] initWithURL:sandboxURL];
     __weak typeof(self) weakSelf = self;
     self.previewVC.SubmitShootingBlock = ^{
         __strong typeof(weakSelf) strongSelf = weakSelf;

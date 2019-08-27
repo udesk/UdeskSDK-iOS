@@ -10,8 +10,17 @@
 #import "UdeskManager.h"
 
 static CGFloat kUdeskAgentPollingSeconds = 25.0f;
+static BOOL kUdeskQuitQueue;
 
 @implementation UdeskAgentUtil
+
++ (BOOL)udeskQuitQueue {
+    return kUdeskQuitQueue;
+}
+
++ (void)setUdeskQuitQueue:(BOOL)udeskQuitQueue {
+    kUdeskQuitQueue = udeskQuitQueue;
+}
 
 /** 获取客服Model */
 + (void)fetchAgentWithPreSessionId:(NSNumber *)preSessionId preSessionMessage:(UdeskMessage *)preSessionMessage completion:(void(^)(UdeskAgent *agentModel,NSError *error))completion {
@@ -24,7 +33,9 @@ static CGFloat kUdeskAgentPollingSeconds = 25.0f;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kUdeskAgentPollingSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 
-                [self fetchAgentWithPreSessionId:preSessionId preSessionMessage:nil completion:completion];
+                if (!kUdeskQuitQueue) {
+                    [self fetchAgentWithPreSessionId:preSessionId preSessionMessage:nil completion:completion];
+                }
             });
         }
         
@@ -48,7 +59,9 @@ static CGFloat kUdeskAgentPollingSeconds = 25.0f;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kUdeskAgentPollingSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 
-                [self fetchAgentWithAgentId:agentId preSessionId:preSessionId preSessionMessage:nil completion:completion];
+                if (!kUdeskQuitQueue) {
+                    [self fetchAgentWithAgentId:agentId preSessionId:preSessionId preSessionMessage:nil completion:completion];
+                }
             });
         }
         
@@ -72,7 +85,9 @@ static CGFloat kUdeskAgentPollingSeconds = 25.0f;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kUdeskAgentPollingSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 
-                [self fetchAgentWithGroupId:groupId preSessionId:preSessionId preSessionMessage:nil completion:completion];
+                if (!kUdeskQuitQueue) {
+                    [self fetchAgentWithGroupId:groupId preSessionId:preSessionId preSessionMessage:nil completion:completion];
+                }
             });
         }
         
@@ -96,7 +111,9 @@ static CGFloat kUdeskAgentPollingSeconds = 25.0f;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kUdeskAgentPollingSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 
-                [self fetchAgentWithMenuId:menuId preSessionId:preSessionId preSessionMessage:nil completion:completion];
+                if (!kUdeskQuitQueue) {
+                    [self fetchAgentWithMenuId:menuId preSessionId:preSessionId preSessionMessage:nil completion:completion];
+                }
             });
         }
         

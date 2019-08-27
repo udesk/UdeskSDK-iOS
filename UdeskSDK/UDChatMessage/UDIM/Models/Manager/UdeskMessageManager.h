@@ -18,6 +18,8 @@
 
 /** 更新消息 */
 @property (nonatomic, copy) void(^didUpdateMessagesBlock)(NSArray *messages);
+/** 更新更多消息 */
+@property (nonatomic, copy) void(^didUpdateMoreMessagesBlock)(NSArray *messages);
 /** 更新单个消息 */
 @property (nonatomic, copy) void(^didUpdateMessageAtIndexPathBlock)(NSIndexPath *indexPath);
 /** 更新客服信息 */

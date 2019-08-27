@@ -71,14 +71,14 @@ static CGFloat const kUDTextMendSpacing = 1.0;
             self.textLabelForHeightCalculation.attributedText = self.cellText;
             CGSize labelSize = [self.textLabelForHeightCalculation sizeThatFits:CGSizeMake(self.textMaxWidth, MAXFLOAT)];
 
-            if (CGRectGetHeight(self.textFrame) < labelSize.height) {
+//            if (CGRectGetHeight(self.textFrame) < labelSize.height) {
                 if (self.message.messageFrom == UDMessageTypeSending) {
                     [self setSendFrameWithSize:labelSize spacing:spacing];
                 }
                 else if (self.message.messageFrom == UDMessageTypeReceiving) {
                     [self setReceiveFrameWithSize:labelSize spacing:spacing];
                 }
-            }
+//            }
         });
         
     } @catch (NSException *exception) {

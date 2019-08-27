@@ -12,6 +12,9 @@
 
 @interface UdeskAgentUtil : NSObject
 
++ (BOOL)udeskQuitQueue;
++ (void)setUdeskQuitQueue:(BOOL)udeskQuitQueue;
+
 /** 获取客服Model */
 + (void)fetchAgentWithPreSessionId:(NSNumber *)preSessionId
                  preSessionMessage:(UdeskMessage *)preSessionMessage

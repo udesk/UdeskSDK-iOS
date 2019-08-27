@@ -19,6 +19,7 @@
 
 /** 通知viewController更新tableView； */
 - (void)reloadChatTableView;
+- (void)reloadMoreMessageChatTableView;
 /** 更新tableView某个cell */
 - (void)didUpdateCellModelWithIndexPath:(NSIndexPath *)indexPath;
 

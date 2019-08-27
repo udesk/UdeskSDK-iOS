@@ -101,6 +101,18 @@ static CGFloat udInputBarHeight = 54.0f;
     });
 }
 
+- (void)reloadMoreMessageChatTableView {
+    
+    @udWeakify(self);
+    //更新消息内容
+    dispatch_async(dispatch_get_main_queue(), ^{
+        @udStrongify(self);
+        //是否需要下拉刷新
+        [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
+        [self.messageTableView reloadData];
+    });
+}
+
 - (void)didUpdateCellModelWithIndexPath:(NSIndexPath *)indexPath {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self safeCellUpdate:indexPath.section row:indexPath.row];
@@ -896,6 +908,13 @@ static CGFloat udInputBarHeight = 54.0f;
 #pragma mark - 发送文字
 - (void)sendTextMessageWithContent:(NSString *)content {
     if (!content || content == (id)kCFNull) return ;
+    if (![content isKindOfClass:[NSString class]]) return ;
+
+    //最大字符限制
+    if (content.length > 800) {
+        [UdeskSDKAlert showWithMessage:getUDLocalizedString(@"udesk_text_max_num") handler:nil];
+        return;
+    }
     
     @udWeakify(self);
     [self.chatViewModel sendTextMessage:content completion:^(UdeskMessage *message) {
