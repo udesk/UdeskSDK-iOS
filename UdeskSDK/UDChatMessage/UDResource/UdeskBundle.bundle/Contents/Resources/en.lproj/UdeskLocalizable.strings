@@ -105,7 +105,7 @@
 "udesk_survey_satisfied" = "Satisfied";
 "udesk_survey_general" = "Neutral";
 "udesk_survey_unsatisfactory" = "Unsatisfied";
-"udesk_survey_tips" = "Thanks for your feedback！！";
+"udesk_survey_tips" = "Please comment on the current service, thank you! !";
 "udesk_survey_remark_required" = "Remarks are required";
 "udesk_admin" = "Admin";
 "udesk_queue" = "In the queue";
