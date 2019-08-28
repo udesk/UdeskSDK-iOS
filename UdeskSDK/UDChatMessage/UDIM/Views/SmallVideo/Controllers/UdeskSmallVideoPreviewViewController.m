@@ -29,18 +29,25 @@
     return self;
 }
 
+- (instancetype)initWithImage:(UIImage *)image
+{
+    self = [super init];
+    if (self) {
+        _image = image;
+        [self setupUI];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
 
 - (void)setupUI {
-    if (!self.url || self.url == (id)kCFNull) return ;
-    if (![self.url isKindOfClass:[NSString class]]) return ;
-    if (self.url.length == 0) return ;
     
     UIImageView *imgView ;
-    if (self.url.length >0) {
+    if (self.url.length > 0) {
         
         imgView = [[UIImageView alloc] initWithImage:[UdeskVideoUtil videoPreViewImageWithURL:self.url]];
         [self.view addSubview:imgView];

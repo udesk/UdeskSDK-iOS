@@ -98,6 +98,8 @@
 }
 
 - (void)previewVideoWithURL:(NSString *)sandboxURL videoInfo:(NSDictionary *)info {
+    if (!sandboxURL || sandboxURL == (id)kCFNull) return ;
+    if (![sandboxURL isKindOfClass:[NSString class]]) return ;
     
     self.previewVC = [[UdeskSmallVideoPreviewViewController alloc] initWithURL:sandboxURL];
     __weak typeof(self) weakSelf = self;
@@ -235,10 +237,11 @@
 }
 
 - (void)previewPhoto:(UIImage *)image {
+    if (!image || image == (id)kCFNull) return ;
+    if (![image isKindOfClass:[UIImage class]]) return ;
     
     _savingImage = NO;
-    self.previewVC = [UdeskSmallVideoPreviewViewController new];
-    self.previewVC.image = image;
+    self.previewVC = [[UdeskSmallVideoPreviewViewController alloc] initWithImage:image];
     __weak typeof(self) weakSelf = self;
     self.previewVC.SubmitShootingBlock = ^{
         __strong typeof(weakSelf) strongSelf = weakSelf;
