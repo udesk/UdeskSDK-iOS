@@ -444,6 +444,9 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     self.voiceButton.hidden = YES;
     self.emotionButton.hidden = YES;
     self.moreButton.hidden = YES;
+    self.recordButton.hidden = YES;
+    self.chatTextView.alpha = 1;
+    self.chatInputType = UdeskChatInputTypeText;
     [self removeCustomToolbar];
 }
 
@@ -465,7 +468,7 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     UdeskSDKConfig *config = [UdeskSDKConfig customConfig];
     
     self.voiceButton.hidden = !config.isShowVoiceEntry;
-    self.emotionButton.hidden = !config.isShowEmotionEntry;
+    self.emotionButton.hidden = (self.voiceButton.selected == YES)?YES:(!config.isShowEmotionEntry);
     self.moreButton.hidden = NO;
     self.customButtonConfigs = [UdeskSDKConfig customConfig].customButtons;
 }

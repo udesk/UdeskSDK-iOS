@@ -341,12 +341,6 @@
             return;
         }
         
-        //直接留言 不切换客服的状态
-        if (self.agentModel.code == UDAgentStatusResultLeaveMessage ||
-            self.agentModel.code == UDAgentStatusResultBoardMessage) {
-            return;
-        }
-        
         UDAgentStatusType agentCode = UDAgentStatusResultOffline;
         NSString *agentMessage = @"unavailable";
         NSString *agentNick = self.agentModel.nick;

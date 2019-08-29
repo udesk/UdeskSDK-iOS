@@ -722,9 +722,7 @@
         return;
     }
     
-    if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
-        self.agentManager.agentModel.code != UDAgentStatusResultLeaveMessage &&
-        self.agentManager.agentModel.code != UDAgentStatusResultBoardMessage) {
+    if (self.agentManager.agentModel.code == UDAgentStatusResultOffline) {
         
         [self requestAgentDataWithPreSessionMessage:nil completion:^(UdeskAgent *agentModel) {
             if (agentModel.code == UDAgentStatusResultOnline) {
@@ -740,7 +738,9 @@
     }
     else {
         
-        //重发
+        if (self.agentManager.agentModel.code == UDAgentStatusResultOnline) {
+            resendMessage.sendType = UDMessageSendTypeNormal;
+        }
         [UdeskManager sendMessage:resendMessage progress:progress completion:completion];
     }
 }
