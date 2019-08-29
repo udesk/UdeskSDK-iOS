@@ -240,17 +240,22 @@
     if (!image || image == (id)kCFNull) return ;
     if (![image isKindOfClass:[UIImage class]]) return ;
     
-    _savingImage = NO;
     self.previewVC = [[UdeskSmallVideoPreviewViewController alloc] initWithImage:image];
     __weak typeof(self) weakSelf = self;
     self.previewVC.SubmitShootingBlock = ^{
         __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.savingImage = NO;
         [strongSelf removeSelf:^{
             if (strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(didFinishCaptureImage:)]) {
                 [strongSelf.delegate didFinishCaptureImage:image];
             }
         }];
     };
+    self.previewVC.AbandonSmallVideoBlock = ^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.savingImage = NO;
+    };
+    
     [self.view addSubview:self.previewVC.view];
 }
 
