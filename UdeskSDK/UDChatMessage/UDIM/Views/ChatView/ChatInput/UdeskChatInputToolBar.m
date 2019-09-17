@@ -329,17 +329,12 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
 #pragma mark - Text view delegate
 - (void)growingTextViewDidChange:(UdeskHPGrowingTextView *)growingTextView {
     
+    //输入预知
     NSDate *nowDate = [NSDate date];
     NSTimeInterval time = [nowDate timeIntervalSinceDate:self.sendDate];
-    if (time>0.5) {
+    if (time>0.5 && self.agent.code == UDAgentStatusResultOnline && ![UdeskSDKUtil isBlankString:growingTextView.text]) {
         self.sendDate = nowDate;
         [UdeskManager sendClientInputtingWithContent:growingTextView.text];
-    }
-    //输入预知
-    if (self.agent.code != UDAgentStatusResultLeaveMessage) {
-        if ([UdeskSDKUtil isBlankString:growingTextView.text]) {
-            [UdeskManager sendClientInputtingWithContent:growingTextView.text];
-        }
     }
 }
 
@@ -426,6 +421,9 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     self.voiceButton.hidden = YES;
     self.emotionButton.hidden = YES;
     self.moreButton.hidden = YES;
+    self.recordButton.alpha = 0;
+    self.chatTextView.alpha = 1;
+    self.chatInputType = UdeskChatInputTypeText;
     
     if (self.customToolBar) {
         self.customToolBar.hidden = YES;
@@ -452,7 +450,7 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     UdeskSDKConfig *config = [UdeskSDKConfig customConfig];
     
     self.voiceButton.hidden = !config.isShowVoiceEntry;
-    self.emotionButton.hidden = !config.isShowEmotionEntry;
+    self.emotionButton.hidden = (self.voiceButton.selected == YES)?YES:(!config.isShowEmotionEntry);
     self.moreButton.hidden = NO;
     
     if (self.customToolBar && self.customToolBar.hidden) {

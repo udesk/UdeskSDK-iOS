@@ -956,9 +956,23 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v4.3.0版本更新功能:
+
+1.修复了YYWebImage冲突问题
+
+2.修复了客服状态问题
+
+3.修复了获取多语言应用名称问题
+
+4.限制了满意度评价备注字数
+
+5.修复了已知问题
+
+------
+
 sdk v4.1.9版本更新功能:
 
-1.修复了YYWebImage冲突问腿
+1.修复了YYWebImage冲突问题
 
 ------
 

@@ -77,7 +77,7 @@
     _appIdTextField.placeholder = @"APP ID";
     _appIdTextField.textColor = [UIColor whiteColor];
     
-    _domainTextField.text = @"udesksdk.udesk.cn";
+    _domainTextField.text = @"udesk-rd-bj-10.udesk.cn";
     _appKeyTextField.text = @"6c37f775019907785d85c027e29dae4e";
     _appIdTextField.text = @"cdc6da4fa97efc2c";
 

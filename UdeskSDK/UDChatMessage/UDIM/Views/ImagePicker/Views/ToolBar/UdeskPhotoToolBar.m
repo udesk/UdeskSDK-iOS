@@ -107,6 +107,9 @@ static NSString *kCollectionViewCellIdentifier = @"kCollectionViewCellIdentifier
     if (self.delegate && [self.delegate respondsToSelector:@selector(toolBarDidSelectDone:)]) {
         [self.delegate toolBarDidSelectDone:self];
     }
+    
+    self.doneButton.enabled = NO;
+    self.doneButton.alpha = 0.4;
 }
 
 - (void)updateSendNumber:(NSInteger)count {

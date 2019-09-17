@@ -164,6 +164,7 @@
         
     } failure:^(NSError *error) {
         
+        NSLog(@"UdeskSDK：%@",error);
         [UdeskToast showToast:getUDLocalizedString(@"udesk_has_bad_net") duration:0.35f window:viewController.view];
     }];
 }

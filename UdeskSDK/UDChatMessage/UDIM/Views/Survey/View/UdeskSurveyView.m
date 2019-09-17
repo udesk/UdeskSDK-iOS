@@ -250,6 +250,11 @@
             }
         }
         
+        if (self.surveyContentView.remarkTextView.text.length > 255) {
+            [UdeskToast showToast:getUDLocalizedString(@"udesk_survey_remark_max_num") duration:0.5f window:self];
+            return;
+        }
+        
         NSDictionary *parameters = @{
                                      @"agent_id":self.agentId,
                                      @"option_id":survey.selectedOptionId,

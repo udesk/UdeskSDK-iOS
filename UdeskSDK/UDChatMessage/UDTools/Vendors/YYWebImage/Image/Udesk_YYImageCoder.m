@@ -1243,7 +1243,7 @@ CFDataRef Udesk_YYCGImageCreateEncodedWebPData(CGImageRef imageRef, BOOL lossles
     if (height == 0 || height > WEBP_MAX_DIMENSION) return nil;
     
     vImage_Buffer buffer = {0};
-    if(!YYCGImageDecodeToBitmapBufferWith32BitFormat(imageRef, &buffer, kCGImageAlphaLast | kCGBitmapByteOrderDefault)) return nil;
+    if(!UdeskYYCGImageDecodeToBitmapBufferWith32BitFormat(imageRef, &buffer, kCGImageAlphaLast | kCGBitmapByteOrderDefault)) return nil;
     
     WebPConfig config = {0};
     WebPPicture picture = {0};
@@ -1377,7 +1377,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     hasAlpha = config.input.has_alpha;
     bitsPerComponent = 8;
     bitsPerPixel = 32;
-    bytesPerRow = YYImageByteAlign(bitsPerPixel / 8 * canvasWidth, 32);
+    bytesPerRow = UdeskYYImageByteAlign(bitsPerPixel / 8 * canvasWidth, 32);
     destLength = bytesPerRow * canvasHeight;
     if (decodeForDisplay) {
         bitmapInfo = kCGBitmapByteOrder32Host;
@@ -1416,7 +1416,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
         }
     }
     
-    provider = CGDataProviderCreateWithData(destBytes, destBytes, destLength, YYCGDataProviderReleaseDataCallback);
+    provider = CGDataProviderCreateWithData(destBytes, destBytes, destLength, UdeskYYCGDataProviderReleaseDataCallback);
     if (!provider) goto fail;
     destBytes = NULL; // hold by provider
     
@@ -2148,7 +2148,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
         
         size_t bitsPerComponent = 8;
         size_t bitsPerPixel = 32;
-        size_t bytesPerRow = YYImageByteAlign(bitsPerPixel / 8 * width, 32);
+        size_t bytesPerRow = UdeskYYImageByteAlign(bitsPerPixel / 8 * width, 32);
         size_t length = bytesPerRow * height;
         CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Host | kCGImageAlphaPremultipliedFirst; //bgrA
         
@@ -2186,7 +2186,7 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
             }
         }
         
-        CGDataProviderRef provider = CGDataProviderCreateWithData(pixels, pixels, length, YYCGDataProviderReleaseDataCallback);
+        CGDataProviderRef provider = CGDataProviderCreateWithData(pixels, pixels, length, UdeskYYCGDataProviderReleaseDataCallback);
         if (!provider) {
             free(pixels);
             return NULL;

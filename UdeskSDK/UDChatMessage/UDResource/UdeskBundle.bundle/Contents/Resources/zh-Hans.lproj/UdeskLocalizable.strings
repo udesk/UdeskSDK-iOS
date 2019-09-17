@@ -109,6 +109,8 @@
 "udesk_survey_remark_required" = "评价备注为必填项";
 "udesk_admin" = "管理员";
 "udesk_queue" = "排队中";
+"udesk_text_max_num" = "发送消息内容超长，请分条发送";
+"udesk_survey_remark_max_num" = "内容超出最大长度";
 
 "udesk_video_call_duration" = "通话时长：";
 
