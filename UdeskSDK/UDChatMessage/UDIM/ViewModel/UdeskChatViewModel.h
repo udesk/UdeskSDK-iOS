@@ -86,7 +86,7 @@
 /** 自动重发失败的消息 */
 - (void)autoResendFailedMessageWithProgress:(void(^)(NSString *messageId,float percent))progress completion:(void(^)(UdeskMessage *failedMessage))completion;
 /** 重发失败的消息 */
-- (void)resendMessageWithMessage:(UdeskMessage *)resendMessage progress:(void(^)(NSString *messageId,float percent))progress completion:(void(^)(UdeskMessage *message))completion;
+- (void)resendMessageWithMessage:(UdeskMessage *)resendMessage progress:(void(^)(float percent))progress completion:(void(^)(UdeskMessage *message))completion;
 /** 留言 */
 - (void)clickLeaveMsgAlertButtonAction;
 

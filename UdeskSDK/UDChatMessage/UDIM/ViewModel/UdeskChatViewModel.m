@@ -904,7 +904,7 @@
         //缓存图片
         [[Udesk_YYWebImageManager sharedManager].cache setImage:imageMessage.image forKey:imageMessage.messageId];
         [self addMessageToChatMessageArray:@[imageMessage]];
-        [UdeskManager sendMessage:imageMessage progress:^(NSString *key, float percent) {
+        [UdeskManager sendMessage:imageMessage progress:^(float percent) {
             
             if (progress) {
                 progress(imageMessage.messageId,percent);
@@ -963,7 +963,7 @@
     UdeskMessage *gifMessage = [self gifMessageWithData:gifData];
     if (gifMessage) {
         [self addMessageToChatMessageArray:@[gifMessage]];
-        [UdeskManager sendMessage:gifMessage progress:^(NSString *key, float percent) {
+        [UdeskManager sendMessage:gifMessage progress:^(float percent) {
             
             if (progress) {
                 progress(gifMessage.messageId,percent);
@@ -1041,7 +1041,7 @@
     }
     [self addMessageToChatMessageArray:@[videoMessage]];
     
-    [UdeskManager sendMessage:videoMessage progress:^(NSString *key, float percent) {
+    [UdeskManager sendMessage:videoMessage progress:^(float percent) {
         
         if (progress) {
             progress(videoMessage.messageId,percent);
@@ -1217,7 +1217,7 @@
     }
     
     @udWeakify(self);
-    [UdeskManager sendQueueMessage:message progress:^(NSString *key, float percent) {
+    [UdeskManager sendQueueMessage:message progress:^(float percent) {
      
         if (progress) {
             progress(message.messageId,percent);
@@ -1475,7 +1475,7 @@
 }
 
 - (void)resendMessageWithMessage:(UdeskMessage *)resendMessage
-                        progress:(void(^)(NSString *messageId,float percent))progress
+                        progress:(void(^)(float percent))progress
                       completion:(void(^)(UdeskMessage *message))completion {
     
     if (self.preSessionId) {

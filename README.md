@@ -956,6 +956,14 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v4.3.1版本更新功能:
+
+1.修改上传文件策略
+
+2.修改了在黑暗模式下的显示问题
+
+------
+
 sdk v4.3.0版本更新功能:
 
 1.修复了YYWebImage冲突问题

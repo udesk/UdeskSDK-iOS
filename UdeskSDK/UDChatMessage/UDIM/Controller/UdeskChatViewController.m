@@ -547,7 +547,7 @@
 - (void)didResendMessage:(UdeskMessage *)resendMessage {
 
     @udWeakify(self);
-    [self.chatViewModel resendMessageWithMessage:resendMessage progress:^(NSString *messageId, float percent) {
+    [self.chatViewModel resendMessageWithMessage:resendMessage progress:^(float percent) {
         
         //更新进度
         @udStrongify(self);

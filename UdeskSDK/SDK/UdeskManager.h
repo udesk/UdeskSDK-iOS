@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 4.3.0
+//  Version: 4.3.1
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -14,8 +14,6 @@
 #import "UdeskSetting.h"
 #import "UdeskCustomer.h"
 #import "UdeskOrganization.h"
-
-typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
 
 /**
  *  Udesk客服系统当前有新消息，开发者可注册该通知接受未读消息，显示小红点未读标识
@@ -197,8 +195,8 @@ typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
  *  @param completion 发送回调
  */
 + (void)sendMessage:(UdeskMessage *)message
-           progress:(UDUploadProgressHandler)progress
-         completion:(void (^)(UdeskMessage *message))completion;
+           progress:(void(^)(float percent))progress
+         completion:(void(^)(UdeskMessage *message))completion;
 
 /**
  * 将用户正在输入的内容，提供给客服查看。该接口没有调用限制，但每1秒内只会向服务器发送一次数据
@@ -419,7 +417,7 @@ typedef void (^UDUploadProgressHandler)(NSString *key, float percent);
  @param completion 完成回调
  */
 + (void)sendQueueMessage:(UdeskMessage *)message
-                progress:(UDUploadProgressHandler)progress
+                progress:(void(^)(float percent))progress
               completion:(void (^)(UdeskMessage *message,NSString *resultMsg))completion;
 
 @end
