@@ -74,6 +74,7 @@
         
     } else {
         viewController = [[UdeskBaseNavigationViewController alloc] initWithRootViewController:udeskViewController];
+        viewController.modalPresentationStyle = UIModalPresentationFullScreen;
         [self updateNavAttributesWithViewController:udeskViewController navigationController:(UdeskBaseNavigationViewController *)viewController defaultNavigationController:rootViewController.navigationController isPresentModalView:true];
         
         if (ud_isIOS8) {
