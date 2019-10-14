@@ -18,7 +18,6 @@
 #import "UdeskSDKMacro.h"
 #import "UIView+UdeskSDK.h"
 #import "UdeskSetting.h"
-#import "UdeskSDKConfig.h"
 #import "UdeskManager.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskMessage+UdeskSDK.h"

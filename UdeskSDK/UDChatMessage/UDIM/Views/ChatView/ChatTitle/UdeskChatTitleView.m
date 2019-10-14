@@ -37,13 +37,22 @@
 - (void)updateTitle:(UdeskAgent *)agent {
 
     NSString *titleText = @"";
-    if (agent.code == UDAgentStatusResultOnline) {
+    if (agent.statusType == UDAgentStatusResultOnline) {
         titleText = agent.nick;
     }
-    else if (agent.code == UDAgentStatusResultOffline) {
-        titleText = agent.nick?agent.nick:getUDLocalizedString(@"udesk_agent_offline");
+    else if (agent.statusType == UDAgentStatusResultOffline) {
+
+        if (agent.sessionType == UDAgentSessionTypeInSession) {
+            titleText = agent.nick?agent.nick:getUDLocalizedString(@"udesk_leave_msg");
+        }
+        else if (agent.sessionType == UDAgentSessionTypeHasOver) {
+            titleText = getUDLocalizedString(@"udesk_chat_end");
+        }
+        else {
+            titleText = getUDLocalizedString(@"udesk_leave_msg");
+        }
     }
-    else if (agent.code == UDAgentStatusResultQueue) {
+    else if (agent.statusType == UDAgentStatusResultQueue) {
         titleText = getUDLocalizedString(@"udesk_queue");
     }
     else {
@@ -56,7 +65,7 @@
     }
     
     UIImage *titleImage;
-    switch (agent.code) {
+    switch (agent.statusType) {
         case UDAgentStatusResultOnline:
             titleImage = [UIImage udDefaultAgentOnlineImage];
             break;
@@ -64,8 +73,6 @@
             titleImage = [UIImage udDefaultAgentBusyImage];
             break;
         case UDAgentStatusResultOffline:
-        case UDAgentStatusResultLeaveMessage:
-        case UDAgentStatusResultBoardMessage:
             titleImage = [UIImage udDefaultAgentOfflineImage];
             break;
         default:

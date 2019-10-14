@@ -8,7 +8,6 @@
 
 #import "UdeskSDKUtil.h"
 #import "UdeskReachability.h"
-#import <sys/utsname.h>
 
 static NSString *kUdeskGroupId = @"kUdeskGroupId";
 static NSString *kUdeskMenuId = @"kUdeskMenuId";

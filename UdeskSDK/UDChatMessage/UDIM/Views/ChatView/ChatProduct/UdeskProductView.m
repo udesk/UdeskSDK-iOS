@@ -10,7 +10,6 @@
 #import "UdeskSDKConfig.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKUtil.h"
-#import "UIImage+UdeskSDK.h"
 #import "Udesk_YYWebImage.h"
 
 /** 咨询对象height */

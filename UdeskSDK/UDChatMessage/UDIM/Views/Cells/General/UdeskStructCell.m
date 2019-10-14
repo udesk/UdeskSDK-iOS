@@ -9,7 +9,6 @@
 #import "UdeskStructCell.h"
 #import "UdeskStructMessage.h"
 #import "UdeskSDKShow.h"
-#import "UdeskSDKUtil.h"
 
 @implementation UdeskStructCell{
     

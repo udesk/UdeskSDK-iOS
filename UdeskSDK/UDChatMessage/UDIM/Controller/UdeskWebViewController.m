@@ -11,10 +11,9 @@
 #import "UdeskSDKMacro.h"
 #import "UIView+UdeskSDK.h"
 
-@interface UdeskWebViewController ()<WKUIDelegate,WKNavigationDelegate,UIWebViewDelegate>
+@interface UdeskWebViewController ()<WKUIDelegate,WKNavigationDelegate>
 
-@property (nonatomic, strong) WKWebView *robotWkWebView;
-@property (nonatomic, strong) UIWebView *robotWebView;
+@property (nonatomic, strong) WKWebView *udWkWebView;
 @property (nonatomic, strong) UIProgressView *progressView;
 
 @property (nonatomic, strong) NSURL *URL;
@@ -43,34 +42,22 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:self.URL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:45];
     
-    if (ud_isIOS8) {
-        
-        _robotWkWebView = [[WKWebView alloc] initWithFrame:self.view.bounds];
-        _robotWkWebView.backgroundColor = [UIColor whiteColor];
-        _robotWkWebView.udHeight -= spacing;
-        _robotWkWebView.UIDelegate = self;
-        _robotWkWebView.navigationDelegate = self;
-        [_robotWkWebView loadRequest:request];
-        [self.view addSubview:_robotWkWebView];
-        
-        //进度条
-        _progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 10)];
-        _progressView.progress = 0.1f;
-        _progressView.trackTintColor = [UdeskSDKConfig customConfig].sdkStyle.webViewProgressTrackTintColor;
-        _progressView.tintColor = [UdeskSDKConfig customConfig].sdkStyle.webViewProgressTintColor;
-        [self.view addSubview:_progressView];
-        
-        [self.robotWkWebView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
-    }
-    else {
-        
-        _robotWebView = [[UIWebView alloc] initWithFrame:self.view.bounds];
-        _robotWebView.backgroundColor = [UIColor whiteColor];
-        _robotWebView.udHeight -= spacing;
-        _robotWebView.delegate = self;
-        [_robotWebView loadRequest:request];
-        [self.view addSubview:_robotWebView];
-    }
+    _udWkWebView = [[WKWebView alloc] initWithFrame:self.view.bounds];
+    _udWkWebView.backgroundColor = [UIColor whiteColor];
+    _udWkWebView.udHeight -= spacing;
+    _udWkWebView.UIDelegate = self;
+    _udWkWebView.navigationDelegate = self;
+    [_udWkWebView loadRequest:request];
+    [self.view addSubview:_udWkWebView];
+    
+    //进度条
+    _progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 0, UD_SCREEN_WIDTH, 10)];
+    _progressView.progress = 0.1f;
+    _progressView.trackTintColor = [UdeskSDKConfig customConfig].sdkStyle.webViewProgressTrackTintColor;
+    _progressView.tintColor = [UdeskSDKConfig customConfig].sdkStyle.webViewProgressTintColor;
+    [self.view addSubview:_progressView];
+    
+    [self.udWkWebView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
@@ -78,9 +65,9 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     
     if ([keyPath isEqualToString:@"estimatedProgress"]) {
-        [self.progressView setProgress:self.robotWkWebView.estimatedProgress animated:YES];
+        [self.progressView setProgress:self.udWkWebView.estimatedProgress animated:YES];
         
-        if(self.robotWkWebView.estimatedProgress >= 1.0f) {
+        if(self.udWkWebView.estimatedProgress >= 1.0f) {
             [UIView animateWithDuration:0.3 delay:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
                 [self.progressView setAlpha:0.0f];
             } completion:^(BOOL finished) {
@@ -88,16 +75,6 @@
             }];
         }
     }
-}
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        [[UIApplication sharedApplication] openURL:request.URL];
-        return NO;
-    }
-    
-    return YES;
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
@@ -123,24 +100,15 @@
 
 - (void)updateWebViewFrameWithKeyboardF:(CGRect)keyboardF {
     
-    if (ud_isIOS8) {
-        
-        if (_robotWkWebView) {
-            _robotWkWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
-        }
-    }
-    else {
-        
-        if (_robotWebView) {
-            _robotWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
-        }
+    if (_udWkWebView) {
+        _udWkWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
     }
 }
 
 - (void)dealloc {
     
-    if (ud_isIOS8 && self.robotWkWebView) {
-        [self.robotWkWebView removeObserver:self forKeyPath:@"estimatedProgress" context:nil];
+    if (self.udWkWebView) {
+        [self.udWkWebView removeObserver:self forKeyPath:@"estimatedProgress" context:nil];
     }
 }
 

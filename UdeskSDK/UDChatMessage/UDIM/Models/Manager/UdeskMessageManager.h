@@ -47,13 +47,15 @@
 //添加直接留言文案
 - (void)addLeaveGuideMessageToArray;
 //更新排队事件
-- (void)updateQueue:(NSString *)contentText;
+- (void)updateQueueMessageWithContent:(NSString *)contentText;
 //移除排队事件
 - (void)removeQueueInArray;
 //添加消息到数组
 - (void)addMessageToArray:(NSArray *)messageArray;
 //收到撤回消息
-- (void)receiveRollbackWithMessageId:(NSString *)messageId rollbackAgentNick:(NSString *)rollbackAgentNick;
+- (void)receiveRollbackWithMessage:(UdeskMessage *)message;
+//会话已关闭
+- (void)sessionClosed;
 
 /* 发送消息 */
 

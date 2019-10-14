@@ -8,7 +8,7 @@
 
 #import "UdeskImageCell.h"
 #import "Udesk_YYWebImage.h"
-#import "UdeskPhotoManeger.h"
+#import "UdeskPhotoManager.h"
 #import "UdeskImageMessage.h"
 
 @interface UdeskImageCell ()
@@ -66,7 +66,7 @@
         [self.delegate didTapChatImageView];
     }
     
-    UdeskPhotoManeger *photoManeger = [UdeskPhotoManeger maneger];
+    UdeskPhotoManager *photoManeger = [UdeskPhotoManager maneger];
     NSString *url = self.baseMessage.message.content?self.baseMessage.message.content:self.baseMessage.message.messageId;
     
     [photoManeger showLocalPhoto:self.chatImageView withMessageURL:url];

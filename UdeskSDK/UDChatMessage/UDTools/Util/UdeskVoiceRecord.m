@@ -7,7 +7,6 @@
 //
 
 #import "UdeskVoiceRecord.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskSDKMacro.h"
 
 @interface UdeskVoiceRecord () <AVAudioRecorderDelegate> {

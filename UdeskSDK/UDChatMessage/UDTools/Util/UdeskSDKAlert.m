@@ -10,7 +10,6 @@
 #import "UdeskAlertController.h"
 #import "UdeskSDKUtil.h"
 #import "UdeskBundleUtils.h"
-#import "UdeskSDKMacro.h"
 #import "UdeskChatViewController.h"
 #import "NSAttributedString+UdeskHTML.h"
 

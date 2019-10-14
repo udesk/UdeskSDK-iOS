@@ -8,12 +8,9 @@
 
 #import "UdeskSDKShow.h"
 #import "UdeskTransitioningAnimation.h"
-#import "UIImage+UdeskSDK.h"
-#import "UdeskSDKMacro.h"
 #import "UdeskFAQViewController.h"
 #import "UdeskChatViewController.h"
 #import "UdeskBundleUtils.h"
-#import "UdeskStringSizeUtil.h"
 #import "UIBarButtonItem+UdeskSDK.h"
 #import "UdeskBaseNavigationViewController.h"
 #import "UdeskWebViewController.h"
@@ -51,7 +48,7 @@
     
     UIViewController *viewController = nil;
     if (animation == UDTransiteAnimationTypePush) {
-        viewController = [self createNavigationControllerWithWithAnimationSupport:udeskViewController presentedViewController:rootViewController];
+        viewController = [self createNavigationControllerWithAnimationSupport:udeskViewController];
         BOOL shouldUseUIKitAnimation = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7;
         
         if (ud_isIOS8) {
@@ -61,13 +58,21 @@
             }
         }
         
+        //指定浅色模式
+        if (@available(iOS 13.0, *)) {
+            viewController.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
+        
         if(![rootViewController.navigationController.topViewController isKindOfClass:[viewController class]]) {
             [rootViewController presentViewController:viewController animated:shouldUseUIKitAnimation completion:completion];
         }
         
     } else {
         viewController = [[UdeskBaseNavigationViewController alloc] initWithRootViewController:udeskViewController];
-        [self updateNavAttributesWithViewController:udeskViewController navigationController:(UdeskBaseNavigationViewController *)viewController defaultNavigationController:rootViewController.navigationController isPresentModalView:true];
+        viewController.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self updateNavAttributesWithViewController:udeskViewController navigationController:(UdeskBaseNavigationViewController *)viewController defaultNavigationController:rootViewController.navigationController];
         
         if (ud_isIOS8) {
             //防止多次点击崩溃
@@ -76,20 +81,27 @@
             }
         }
         
+        //指定浅色模式
+        if (@available(iOS 13.0, *)) {
+            viewController.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
+        
         if(![rootViewController.navigationController.topViewController isKindOfClass:[viewController class]]) {
             [rootViewController presentViewController:viewController animated:YES completion:completion];
         }
     }
 }
 
-- (UdeskBaseNavigationViewController *)createNavigationControllerWithWithAnimationSupport:(UIViewController *)rootViewController presentedViewController:(UIViewController *)presentedViewController{
+- (UdeskBaseNavigationViewController *)createNavigationControllerWithAnimationSupport:(UIViewController *)rootViewController {
     UdeskBaseNavigationViewController *navigationController = [[UdeskBaseNavigationViewController alloc] initWithRootViewController:rootViewController];
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-        [self updateNavAttributesWithViewController:rootViewController navigationController:(UdeskBaseNavigationViewController *)navigationController defaultNavigationController:rootViewController.navigationController isPresentModalView:true];
+        [self updateNavAttributesWithViewController:rootViewController navigationController:(UdeskBaseNavigationViewController *)navigationController defaultNavigationController:rootViewController.navigationController];
         [navigationController setTransitioningDelegate:[UdeskTransitioningAnimation transitioningDelegateImpl]];
         [navigationController setModalPresentationStyle:UIModalPresentationCustom];
     } else {
-        [self updateNavAttributesWithViewController:rootViewController navigationController:(UdeskBaseNavigationViewController *)navigationController defaultNavigationController:rootViewController.navigationController isPresentModalView:true];
+        [self updateNavAttributesWithViewController:rootViewController navigationController:(UdeskBaseNavigationViewController *)navigationController defaultNavigationController:rootViewController.navigationController];
         [rootViewController.view.window.layer addAnimation:[UdeskTransitioningAnimation createPresentingTransiteAnimation:_sdkConfig.presentingAnimation] forKey:nil];
     }
     return navigationController;
@@ -98,8 +110,7 @@
 //修改导航栏属性
 - (void)updateNavAttributesWithViewController:(UIViewController *)viewController
                          navigationController:(UINavigationController *)navigationController
-                  defaultNavigationController:(UINavigationController *)defaultNavigationController
-                           isPresentModalView:(BOOL)isPresentModalView {
+                  defaultNavigationController:(UINavigationController *)defaultNavigationController {
     if (_sdkConfig.sdkStyle.navBackButtonColor) {
         navigationController.navigationBar.tintColor = _sdkConfig.sdkStyle.navBackButtonColor;
     } else if (defaultNavigationController && defaultNavigationController.navigationBar.tintColor) {
@@ -111,8 +122,10 @@
     } else {
         UIColor *color = _sdkConfig.sdkStyle.titleColor;
         UIFont *font = _sdkConfig.sdkStyle.titleFont;
-        NSDictionary *attr = @{NSForegroundColorAttributeName : color, NSFontAttributeName : font};
-        navigationController.navigationBar.titleTextAttributes = attr;
+        if (color && font) {
+            NSDictionary *attr = @{NSForegroundColorAttributeName : color, NSFontAttributeName : font};
+            navigationController.navigationBar.titleTextAttributes = attr;
+        }
     }
     
     if (_sdkConfig.sdkStyle.navBarBackgroundImage) {

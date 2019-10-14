@@ -4,7 +4,9 @@
 
 <https://github.com/udesk/UdeskSDK-iOS/tree/5.x>
 
-5.x版本暂时还未支持pod导入！！！
+5.x版本使用Xcode11.1、iPhoneX iOS13.1.2 编译。
+
+5.x版本暂不支持pod导入。
 
 ## 目录
 - [一、集成SDK](#%E4%B8%80%e9%9b%86%e6%88%90sdk)
@@ -34,7 +36,7 @@
 
 | 类别      | 兼容范围                      |
 | --------- | ----------------------------- |
-| 系统      | 支持iOS 7.0及以上系统         |
+| 系统      | 支持iOS 8.0及以上系统         |
 | 架构      | armv7、arm64、i386、x86_64    |
 | 开发环境  | 建议使用最新版本Xcode进行开发 |
 | Cocoapods | 1.5.3版本                     |
@@ -199,10 +201,10 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 ```objective-c
 //使用push
 UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:[UdeskSDKConfig customConfig]];
-[sdkManager pushUdeskInViewController:self udeskType:UdeskFAQ completion:nil];
+[chatViewManager showFAQInViewController:self transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 
 //使用present
-[sdkManager presentUdeskInViewController:self udeskType:UdeskFAQ completion:nil];
+[chatViewManager showFAQInViewController:self transiteAnimation:UDTransiteAnimationTypePresent completion:nil];
 ```
 
 - ##### [UdeskSDKStyle customStyle] 是 SDK默认的UI风格，用户可自定义风格，具体可[点击查看](#%E4%B8%89udesk-sdk-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
@@ -279,12 +281,16 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 
 ### 3.5 设置放弃排队类型
 
+**注意：放弃排队类型默认值是"mark"，标记放弃**
+
 ```objective-c
 UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
 //直接从排列中清除
-sdkConfig.quitQueueType = UdeskForceQuit;
+sdkConfig.quitQueueMode = @"force_quit";
 //标记放弃
-//sdkConfig.quitQueueType = UdeskMark;
+//sdkConfig.quitQueueMode = @"mark";
+//取消标记
+//sdkConfig.quitQueueMode = @"cannel_mark";
 
 UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
@@ -307,6 +313,12 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 ```
 
 ### 3.7 设置自定义按钮
+
+**如果设置了自定义按钮在界面上没显示请检查：**
+
+1. 是否只设置了机器人按钮没有设置人工客服按钮
+2. 是否只设置了“InMoreView”没有设置”InInputTop“
+3. 是否是留言状态，留言状态不显示自定义按钮
 
 ```objective-c
 //按钮位于输入框上方
@@ -504,7 +516,32 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 
 ##### NSLocationAlwaysUsageDescription ，允许永久使用GPS的描述
 
-### 3.15 SDK事件回调
+### 3.15 未读消息
+
+SDK提供了未读消息监听的宏`UD_RECEIVED_NEW_MESSAGES_NOTIFICATION`
+
+当用户在线并且不在sdk页面时客服发送消息，sdk会发送通知。
+
+**注意：此方法只处理用户在线情况，用户不在线情况需要接入离线推送功能。**
+
+```objective-c
+[[NSNotificationCenter defaultCenter] addObserverForName:UD_RECEIVED_NEW_MESSAGES_NOTIFICATION object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        
+  //获取sdk发送的未读消息通知内容
+   if ([note.object isKindOfClass:[UdeskMessage class]]) {
+       UdeskMessage *message = (UdeskMessage *)note.object;
+       NSLog(@"未读消息内容：%@",message.content);
+   }
+        
+  //延迟获取sdk存在db的未读消息
+   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      NSLog(@"未读消息数：%ld",[UdeskManager getLocalUnreadeMessagesCount]);
+      NSLog(@"未读消息：%@",[UdeskManager getLocalUnreadeMessages]);
+   });
+}];
+```
+
+### 3.16 SDK事件回调
 
 ```objective-c
 UdeskSDKActionConfig *actionConfig = [UdeskSDKActionConfig new];
@@ -546,7 +583,7 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 [sdkManager pushUdeskInViewController:self completion:nil];
 ```
 
-### 3.16 机器人语音
+### 3.17 机器人语音
 
 SDK已经支持机器人百度语音识别，由于百度语音sdk文件体积太大 所以只能客户自己导入到工程里。
 UdeskSDK会自行判断是否有导入百度语音识别SDK从而显示机器人语音识别按钮。
@@ -953,6 +990,14 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.1.1版本更新功能:
+
+1.对话中客服离线体验优化
+
+2.已知bug修改
+
+------
+
 sdk v5.1.0版本更新功能:
 
 1.支持模版消息
@@ -970,6 +1015,66 @@ sdk v5.0.0版本更新功能:
 2.支持三方会话
 
 2.UI交互改版
+
+------
+
+sdk v4.3.1版本更新功能:
+
+1.修改上传文件策略
+
+2.修改了在黑暗模式下的显示问题
+
+------
+
+sdk v4.3.0版本更新功能:
+
+1.修复了YYWebImage冲突问题
+
+2.修复了客服状态问题
+
+3.修复了获取多语言应用名称问题
+
+4.限制了满意度评价备注字数
+
+5.修复了已知问题
+
+------
+
+sdk v4.1.9版本更新功能:
+
+1.修复了YYWebImage冲突问题
+
+------
+
+sdk v4.1.8版本更新功能:
+
+1.修复了泰文消息显示不全的问题
+
+------
+
+sdk v4.1.7版本更新功能:
+
+1.适配iOS13
+
+2.修复了已知问题
+
+------
+
+sdk v4.1.6版本更新功能:
+
+1.修复了图片选择器错乱问题
+
+2.空消息优化
+
+3.修复了已知问题
+
+------
+
+sdk v4.1.5版本更新功能:
+
+1.修复了无消息对话过滤在某些场景下失效的问题
+
+2.修复了使用sdk指定客服/客服组在某些场景下失效的问题
 
 ------
 

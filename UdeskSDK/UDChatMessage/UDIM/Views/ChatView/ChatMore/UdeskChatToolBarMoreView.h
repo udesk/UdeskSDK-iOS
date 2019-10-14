@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @class UdeskChatToolBarMoreView;
+@class UdeskAgent;
 
 typedef NS_ENUM(NSUInteger, UdeskChatToolBarMoreType) {
     UdeskChatToolBarMoreTypeAlubm,      //相册
@@ -27,12 +28,12 @@ typedef NS_ENUM(NSUInteger, UdeskChatToolBarMoreType) {
 
 @interface UdeskChatToolBarMoreView : UIView
 
+@property (nonatomic, strong) UdeskAgent *agent;
 @property (nonatomic, strong) NSArray *customMenuItems;
 @property (nonatomic, weak  ) id<UdeskChatToolBarMoreViewDelegate> delegate;
 @property (nonatomic, assign) BOOL isAgentSession;
 @property (nonatomic, assign) BOOL isPreSession;
 @property (nonatomic, assign) BOOL isRobotSession;
-@property (nonatomic, assign) BOOL isQueueSession;
 
 - (instancetype)initWithEnableSurvey:(BOOL)enableSurvey enableVideoCall:(BOOL)enableVideoCall;
 

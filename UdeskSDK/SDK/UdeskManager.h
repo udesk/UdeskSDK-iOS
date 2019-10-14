@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 5.1.0
+//  Version: 5.1.1
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -50,12 +50,6 @@
  *  @param agentId 是否调查满意度
  */
 - (void)didReceiveSurveyWithAgentId:(NSString *)agentId;
-/**
- 接收撤回消息
-
- @param messageId 撤回的消息ID
- */
-- (void)didReceiveRollback:(NSString *)messageId agentNick:(NSString *)agentNick;
 
 /**
  需要重新拉取消息
@@ -319,14 +313,13 @@
  
  @param track 轨迹
  */
-+ (void)sendTrack:(UdeskTrack *)track;
-
++ (void)sendTrack:(UdeskTrack *)track completion:(void(^)(BOOL result))completion;
 /**
  发送订单，此接口只有在“initWithOrganization:customer:”接口调用过之后才生效，调用此接口请保证管理员后台开启了订单功能
  
  @param order 订单
  */
-+ (void)sendOrder:(UdeskOrder *)order;
++ (void)sendOrder:(UdeskOrder *)order completion:(void(^)(BOOL result))completion;
 
 
 /*-----------------帮助中心-------------------*/

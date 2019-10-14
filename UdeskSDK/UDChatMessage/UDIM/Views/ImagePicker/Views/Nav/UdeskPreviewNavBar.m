@@ -8,7 +8,6 @@
 
 #import "UdeskPreviewNavBar.h"
 #import "UIImage+UdeskSDK.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskSDKMacro.h"
 
 @implementation UdeskPreviewNavBar

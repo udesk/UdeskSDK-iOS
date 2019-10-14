@@ -14,6 +14,7 @@
 #import "UdeskCustomButtonConfig.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskImageUtil.h"
+#import "UdeskAgent.h"
 
 // 每行有4个
 #define kUdeskPerRowItemCount 4
@@ -119,6 +120,23 @@
     self.customMenuItems = [UdeskSDKConfig customConfig].customButtons;
 }
 
+- (void)setAgent:(UdeskAgent *)agent {
+    _agent = agent;
+    
+    if (agent.statusType == UDAgentStatusResultOffline ||
+        agent.statusType == UDAgentStatusResultQueue) {
+        [self removeAllAreaButtons];
+        [self setupAdditionalAreaButtons];
+        [self removeSurveyAndVideoCallButton];
+        [self setNeedsLayout];
+    }
+    else if (agent.statusType == UDAgentStatusResultOnline) {
+        [self removeAllAreaButtons];
+        [self setupAdditionalAreaButtons];
+        [self setNeedsLayout];
+    }
+}
+
 - (void)setCustomMenuItems:(NSArray *)customMenuItems {
     if (!customMenuItems || customMenuItems == (id)kCFNull) return ;
     if (![customMenuItems isKindOfClass:[NSArray class]]) return ;
@@ -212,20 +230,6 @@
     [self setupAdditionalAreaButtons];
     
     [self setNeedsLayout];
-}
-
-//排队会话
-- (void)setIsQueueSession:(BOOL)isQueueSession {
-    _isQueueSession = isQueueSession;
-    
-    //排队
-    if (isQueueSession) {
-        
-        [self removeAllAreaButtons];
-        [self setupAdditionalAreaButtons];
-        [self removeSurveyAndVideoCallButton];
-        [self setNeedsLayout];
-    }
 }
 
 //机器人会话

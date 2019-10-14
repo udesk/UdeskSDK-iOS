@@ -8,8 +8,6 @@
 
 #import "UdeskEventMessage.h"
 #import "UdeskEventCell.h"
-#import "UdeskSDKConfig.h"
-#import "UdeskBundleUtils.h"
 
 /** Event垂直距离 */
 static CGFloat const kUDEventToVerticalEdgeSpacing = 10;

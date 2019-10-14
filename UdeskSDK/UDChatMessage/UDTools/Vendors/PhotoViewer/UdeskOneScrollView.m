@@ -8,6 +8,7 @@
 
 #import "UdeskOneScrollView.h"
 #import "Udesk_YYWebImage.h"
+#import "UdeskImageUtil.h"
 
 #define AnimationTime 0.25
 
@@ -122,10 +123,11 @@
             if (!image) {
                 return ;
             }
-            imageW = image.size.width;
-            imageH = image.size.height;
-            self.mainImageView.image = image;
-            [self updateImageViewWidth:image.size.width height:image.size.height];
+            UIImage *newImage = [UdeskImageUtil fixOrientation:image];
+            imageW = newImage.size.width;
+            imageH = newImage.size.height;
+            self.mainImageView.image = newImage;
+            [self updateImageViewWidth:newImage.size.width height:newImage.size.height];
         }];
     }
     

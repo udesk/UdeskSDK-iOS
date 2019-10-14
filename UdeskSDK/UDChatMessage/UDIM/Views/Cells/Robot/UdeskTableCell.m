@@ -9,7 +9,6 @@
 #import "UdeskTableCell.h"
 #import "UdeskTableMessage.h"
 #import "UdeskMessage+UdeskSDK.h"
-#import "UdeskSDKMacro.h"
 
 @interface UdeskTableCollectionViewCell : UICollectionViewCell
 

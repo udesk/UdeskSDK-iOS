@@ -10,8 +10,6 @@
 #import "UdeskTextMessage.h"
 #import "UdeskBundleUtils.h"
 #import "UDTTTAttributedLabel.h"
-#import "UdeskAlertController.h"
-#import "UdeskSDKShow.h"
 
 @interface UdeskTextCell()<UDTTTAttributedLabelDelegate>
 

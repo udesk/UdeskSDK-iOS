@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import "UdeskCallManager.h"
+#import "UdeskNetworkManager.h"
+#import "UdeskMessageManager.h"
+#import "UdeskAgentManager.h"
+
 @class UdeskMessage;
 @class UdeskAgent;
 @class UdeskSetting;
@@ -40,6 +45,8 @@
 - (void)didReceiveAutoTransferAgentServer;
 /** 显示转人工按钮 */
 - (void)showTransferButton;
+/** 更新标题 */
+- (void)updateChatTitleWithText:(NSString *)text;
 
 /** 网络断开连接 */
 - (void)didReceiveNetworkDisconnect;
@@ -57,6 +64,15 @@
 @property (nonatomic, strong, readonly) NSArray *messagesArray;
 /** 无消息会话ID */
 @property (nonatomic, strong, readonly) NSNumber *preSessionId;
+
+/** 视频通话管理类 */
+@property (nonatomic, strong) UdeskCallManager *callManager;
+/** 网络管理类 */
+@property (nonatomic, strong) UdeskNetworkManager *networkManager;
+/** 消息管理类 */
+@property (nonatomic, strong) UdeskMessageManager *messageManager;
+/** 客服管理类 */
+@property (nonatomic, strong) UdeskAgentManager *agentManager;
 
 - (instancetype)initWithSDKSetting:(UdeskSetting *)sdkSetting delegate:(id)delegate;
 

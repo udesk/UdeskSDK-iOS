@@ -10,7 +10,6 @@
 #import "UdeskSDKUtil.h"
 #import "UdeskSDKMacro.h"
 #import "UdeskMessage+UdeskSDK.h"
-#import "UdeskSDKConfig.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskLocationModel.h"
 #import "UdeskGoodsModel.h"
@@ -18,11 +17,7 @@
 #import "UdeskMessageUtil.h"
 #import "UdeskManager.h"
 #import "UdeskThrottleUtil.h"
-#import "UdeskCallManager.h"
-#import "UdeskNetworkManager.h"
-#import "UdeskMessageManager.h"
-#import "UdeskAgentManager.h"
-#import "Udesk_YYWebImage.h"
+//#import "Udesk_YYWebImage.h"
 
 @interface UdeskChatViewModel()<UDManagerDelegate>
 
@@ -36,14 +31,6 @@
 @property (nonatomic, strong, readwrite) NSNumber      *preSessionId;
 /** 无消息对话过滤时发送的消息 */
 @property (nonatomic, strong) NSMutableArray           *preSessionMessages;
-/** 视频通话管理类 */
-@property (nonatomic, strong) UdeskCallManager *callManager;
-/** 网络管理类 */
-@property (nonatomic, strong) UdeskNetworkManager *networkManager;
-/** 消息管理类 */
-@property (nonatomic, strong) UdeskMessageManager *messageManager;
-/** 客服管理类 */
-@property (nonatomic, strong) UdeskAgentManager *agentManager;
 /** 机器人消息个数 */
 @property (nonatomic, assign) NSInteger robotMessageCount;
 
@@ -170,8 +157,13 @@
     if ([UdeskSDKUtil isBlankString:message.content]) return;
     
     //收到消息时当前客服状态不在线 请求客服验证
-    if (self.agentManager.agentModel && self.agentManager.agentModel.code != UDAgentStatusResultOnline && message.sendType != UDMessageSendTypeRobot) {
+    if (self.agentManager.agentModel && self.agentManager.agentModel.statusType != UDAgentStatusResultOnline && message.sendType != UDMessageSendTypeRobot) {
         [self fetchServersAgent:nil];
+    }
+    
+    //撤回消息
+    if (message.messageType == UDMessageContentTypeRollback) {
+        [self.messageManager receiveRollbackWithMessage:message];
     }
     
     [self.messageManager addMessageToArray:@[message]];
@@ -207,12 +199,6 @@
     }
 }
 
-//收到撤回消息
-- (void)didReceiveRollback:(NSString *)messageId agentNick:(NSString *)agentNick {
-    
-    [self.messageManager receiveRollbackWithMessageId:messageId rollbackAgentNick:agentNick];
-}
-
 //需要重新拉下消息
 - (void)didReceiveRequestServersMessages {
     
@@ -223,13 +209,19 @@
 - (void)didReceiveRequestServersSetting {
     
     [self.agentManager sessionClosed];
+    [self.messageManager sessionClosed];
     [self fetchSDKSetting];
 }
 
 //请求客服信息
 - (void)didReceiveRequestServersAgent {
     
-    if (self.agentManager.agentModel.code == UDAgentStatusResultBoardMessage) {
+    //无消息对话过滤/机器人会话
+    if (self.preSessionId || self.messageManager.isRobotSession) {
+        return;
+    }
+    
+    if (self.agentManager.agentModel.leaveMessageType == UDAgentLeaveMessageTypeBoard) {
         [self.agentManager fetchAgent:nil];
     }
 }
@@ -246,7 +238,7 @@
 //无消息对话过滤
 - (void)preSessionWithTitle:(NSString *)preSessionTitle preSessionId:(NSNumber *)preSessionId {
     
-    if (self.agentManager.agentModel && self.agentManager.agentModel.code != UDAgentConversationOver) {
+    if (self.agentManager.agentModel && self.agentManager.agentModel.sessionType != UDAgentSessionTypeHasOver) {
         return ;
     }
     
@@ -344,12 +336,17 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateAgentPresence:)]) {
         [self.delegate didUpdateAgentPresence:agent];
     }
+    
+    //会话已关闭
+    if (agent.statusType == UDAgentSessionTypeHasOver) {
+        [self.messageManager sessionClosed];
+    }
 }
 
 //显示排队事件
 - (void)updateQueueMessage:(NSString *)contentText {
 
-    [self.messageManager updateQueue:contentText];
+    [self.messageManager updateQueueMessageWithContent:contentText];
 }
 
 //移除排队事件
@@ -373,16 +370,27 @@
 //显示提示框
 - (void)showSDKAlert {
     
-    [self.agentManager showAlert];
-    
     //会话已关闭
-    if (self.agentManager.agentModel.code == UDAgentConversationOver) {
+    if (self.agentManager.agentModel.sessionType == UDAgentSessionTypeHasOver) {
         [self fetchSDKSetting];
+    }
+    else {
+        
+        //表单留言提示
+        if (self.agentManager.agentModel.leaveMessageType == UDAgentLeaveMessageTypeForm) {
+            [self.agentManager showAlert];
+        }
     }
 }
 
 //转人工
 - (void)transferToAgentServer {
+    
+    //正在会话
+    if (self.agentManager.agentModel.sessionType == UDAgentSessionTypeInSession) {
+        [self updateAgent:self.agentManager.agentModel];
+        return;
+    }
     
     UdeskMessage *transferEvent = [[UdeskMessage alloc] initWithRobotTransferMessage:getUDLocalizedString(@"udesk_redirect")];
     [self.messageManager addMessageToArray:@[transferEvent]];
@@ -453,7 +461,7 @@
     
     [self fetchServersAgent:^(UdeskAgent *agentModel) {
         
-        if (agentModel.code == UDAgentStatusResultOnline) {
+        if (agentModel.statusType == UDAgentStatusResultOnline) {
             [self sendTextMessage:message.content completion:nil];
         }
     }];
@@ -504,12 +512,11 @@
         return;
     }
     
-    if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
-        self.agentManager.agentModel.code != UDAgentStatusResultLeaveMessage &&
-        self.agentManager.agentModel.code != UDAgentStatusResultBoardMessage &&
-        self.agentManager.agentModel.code != UDAgentStatusResultQueue &&
-        !self.messageManager.isRobotSession) {
-        
+    //会话未创建&客服离线&(表单留言|未开启留言)
+    if (self.agentManager.agentModel.sessionType == UDAgentSessionTypeNotCreate &&
+        self.agentManager.agentModel.statusType == UDAgentStatusResultOffline &&
+        (self.agentManager.agentModel.leaveMessageType == UDAgentLeaveMessageTypeForm ||
+         self.agentManager.agentModel.leaveMessageType == UDAgentLeaveMessageTypeClose)) {
         [self.agentManager showAlert];
         return;
     }
@@ -530,12 +537,6 @@
         return;
     }
     
-    if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
-        self.agentManager.agentModel.code != UDAgentStatusResultQueue) {
-        [self.agentManager showAlert];
-        return;
-    }
-    
     [self.messageManager sendImageMessage:image progress:progress completion:completion];
 }
 
@@ -549,12 +550,6 @@
     if (self.preSessionId) {
         UdeskMessage *gifMessage = [self.messageManager gifMessageWithData:gifData];
         [self endPreSessionWithMessage:gifMessage progress:progress completion:completion];
-        return;
-    }
-    
-    if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
-        self.agentManager.agentModel.code != UDAgentStatusResultQueue) {
-        [self.agentManager showAlert];
         return;
     }
     
@@ -574,12 +569,6 @@
         return;
     }
     
-    if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
-        self.agentManager.agentModel.code != UDAgentStatusResultQueue) {
-        [self.agentManager showAlert];
-        return;
-    }
-    
     [self.messageManager sendVideoMessage:videoData progress:progress completion:completion];
 }
 
@@ -593,12 +582,6 @@
     if (self.preSessionId) {
         UdeskMessage *voiceMessage = [self.messageManager voiceMessageWithPath:voicePath duration:voiceDuration];
         [self endPreSessionWithMessage:voiceMessage progress:nil completion:completion];
-        return;
-    }
-    
-    if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
-        self.agentManager.agentModel.code != UDAgentStatusResultQueue) {
-        [self.agentManager showAlert];
         return;
     }
     
@@ -618,12 +601,6 @@
         return;
     }
     
-    if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
-        self.agentManager.agentModel.code != UDAgentStatusResultQueue) {
-        [self.agentManager showAlert];
-        return;
-    }
-    
     [self.messageManager sendLocationMessage:model completion:completion];
 }
 
@@ -637,12 +614,6 @@
     if (self.preSessionId) {
         UdeskMessage *goodsMsg = [[UdeskMessage alloc] initWithGoods:model];
         [self endPreSessionWithMessage:goodsMsg progress:nil completion:completion];
-        return;
-    }
-    
-    if (self.agentManager.agentModel.code != UDAgentStatusResultOnline &&
-        self.agentManager.agentModel.code != UDAgentStatusResultQueue) {
-        [self.agentManager showAlert];
         return;
     }
     
@@ -664,17 +635,26 @@
         CGFloat delay = firstPreMessage.messageType != UDMessageContentTypeText ? 0.8f : 0;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             
+            //更新标题
+            if (self.delegate && [self.delegate respondsToSelector:@selector(updateChatTitleWithText:)]) {
+                [self.delegate updateChatTitleWithText:getUDLocalizedString(@"udesk_connecting")];
+            }
+            
             @udWeakify(self);
-            [UdeskSDKAlert showWithMessage:getUDLocalizedString(@"udesk_connecting") handler:nil];
             [self requestAgentDataWithPreSessionMessage:firstPreMessage completion:^(UdeskAgent *agentModel) {
                 @udStrongify(self);
-                if (agentModel.code == UDAgentStatusResultOffline) {
-                    return ;
-                }
-                else if (agentModel.code == UDAgentStatusResultLeaveMessage ||
-                         agentModel.code == UDAgentStatusResultBoardMessage) {
-                    if (message.messageType == UDMessageContentTypeText) {
-                        [self.messageManager sendTextMessage:message.content completion:completion];
+                //客服离线，发送留言
+                if (agentModel.statusType == UDAgentStatusResultOffline) {
+                    if (agentModel.leaveMessageType == UDAgentLeaveMessageTypeLeave||
+                        agentModel.leaveMessageType == UDAgentLeaveMessageTypeBoard) {
+                       
+                        if (message.messageType == UDMessageContentTypeText) {
+                            [self.messageManager sendTextMessage:message.content completion:completion];
+                        }
+                    }
+                    else if (agentModel.leaveMessageType == UDAgentLeaveMessageTypeForm) {
+                        message.messageStatus = UDMessageSendStatusFailed;
+                        if (completion) completion(message);
                     }
                     return;
                 }
@@ -682,6 +662,7 @@
                 if (self.preSessionMessages.count) {
                     message.messageStatus = UDMessageSendStatusSuccess;
                     [self.messageManager addMessageToArray:@[firstPreMessage]];
+                    if (completion) completion(message);
                     
                     //检查是否还有未发出去的（图片多张一起发的情况）
                     for (int i = 1; i<self.preSessionMessages.count; i++) {
@@ -713,6 +694,7 @@
                         progress:(void(^)(float percent))progress
                       completion:(void(^)(UdeskMessage *message))completion {
     
+    //无消息对话过滤
     if (self.preSessionId) {
         [self endPreSessionWithMessage:resendMessage progress:^(NSString *key, float percent) {
             if (progress) {
@@ -722,24 +704,53 @@
         return;
     }
     
-    if (self.agentManager.agentModel.code == UDAgentStatusResultOffline) {
+    //机器人
+    if (self.messageManager.isRobotSession) {
+        resendMessage.sendType = UDMessageSendTypeRobot;
+        [UdeskManager sendMessage:resendMessage progress:progress completion:completion];
+        return;
+    }
+    
+    //人工
+    if (self.agentManager.agentModel.statusType == UDAgentStatusResultOffline) {
         
         [self requestAgentDataWithPreSessionMessage:nil completion:^(UdeskAgent *agentModel) {
-            if (agentModel.code == UDAgentStatusResultOnline) {
+            if (agentModel.statusType == UDAgentStatusResultOnline) {
                 [UdeskManager sendMessage:resendMessage progress:progress completion:completion];
             }
             else {
-                resendMessage.messageStatus = UDMessageSendStatusFailed;
-                if (completion) {
-                    completion(resendMessage);
+                
+                //客服离线会话还未结束 发送离线消息
+                if (self.agentManager.agentModel.sessionType == UDAgentSessionTypeInSession) {
+                    [UdeskManager sendMessage:resendMessage progress:progress completion:completion];
+                }
+                //客服离线会话未创建 发送留言
+                else if (self.agentManager.agentModel.sessionType == UDAgentSessionTypeNotCreate) {
+                 
+                    if (self.agentManager.agentModel.leaveMessageType == UDAgentLeaveMessageTypeForm ||
+                        self.agentManager.agentModel.leaveMessageType == UDAgentLeaveMessageTypeClose) {
+                        resendMessage.messageStatus = UDMessageSendStatusFailed;
+                        if (completion) completion(resendMessage);
+                        return ;
+                    }
+                    else if (self.agentManager.agentModel.leaveMessageType == UDAgentLeaveMessageTypeBoard) {
+                        resendMessage.sendType = UDMessageSendTypeBoard;
+                    }
+                    else if (self.agentManager.agentModel.leaveMessageType == UDAgentLeaveMessageTypeLeave) {
+                        resendMessage.sendType = UDMessageSendTypeLeave;
+                    }
+                    [UdeskManager sendMessage:resendMessage progress:progress completion:completion];
                 }
             }
         }];
     }
     else {
         
-        if (self.agentManager.agentModel.code == UDAgentStatusResultOnline) {
+        if (self.agentManager.agentModel.statusType == UDAgentStatusResultOnline) {
             resendMessage.sendType = UDMessageSendTypeNormal;
+        }
+        else if (self.agentManager.agentModel.statusType == UDAgentStatusResultQueue) {
+            resendMessage.sendType = UDMessageSendTypeQueue;
         }
         [UdeskManager sendMessage:resendMessage progress:progress completion:completion];
     }

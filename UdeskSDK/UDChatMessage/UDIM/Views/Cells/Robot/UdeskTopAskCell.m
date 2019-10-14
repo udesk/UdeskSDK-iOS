@@ -9,9 +9,6 @@
 #import "UdeskTopAskCell.h"
 #import "UIView+UdeskSDK.h"
 #import "UdeskTopAskMessage.h"
-#import "NSAttributedString+UdeskHTML.h"
-#import "UdeskMessage+UdeskSDK.h"
-#import "UdeskPhotoManeger.h"
 
 static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
 
@@ -108,50 +105,7 @@ static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
 
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
     
-    if ([URL.absoluteString hasPrefix:@"sms:"] || [URL.absoluteString hasPrefix:@"tel:"]) {
-        
-        NSString *phoneNumber = [URL.absoluteString componentsSeparatedByString:@":"].lastObject;
-        [self callPhoneNumber:phoneNumber];
-        return NO;
-    }
-    else if ([URL.absoluteString hasPrefix:@"img:"]) {
-        
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didTapChatImageView)]) {
-            [self.delegate didTapChatImageView];
-        }
-        
-        NSString *url = [URL.absoluteString componentsSeparatedByString:@"img:"].lastObject;
-        url = [url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        
-        UdeskPhotoManeger *photoManeger = [UdeskPhotoManeger maneger];
-        [photoManeger showLocalPhoto:(UIImageView *)self.bubbleImageView withMessageURL:url];
-        return NO;
-    }
-    else if ([URL.absoluteString hasPrefix:@"data-type:"]) {
-        
-        if (textView.text.length >= (characterRange.location+characterRange.length)) {
-            NSString *content = [[textView.text substringWithRange:characterRange] stringByReplacingOccurrencesOfString:@"\n" withString:@""];;
-            [self flowMessageWithText:content flowContent:URL.absoluteString];
-        }
-        return NO;
-    }
-    else {
-        
-        if (textView.text.length >= (characterRange.location+characterRange.length)) {
-            NSURL *url = [NSURL URLWithString:[textView.text substringWithRange:characterRange]];
-            if (!url) {
-                url = URL;
-            }
-            
-            [self udOpenURL:url];
-        }
-        else {
-            [self udOpenURL:URL];
-        }
-        return NO;
-    }
-    
-    return YES;
+    return [self udRichTextView:textView shouldInteractWithURL:URL inRange:characterRange];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -291,23 +245,7 @@ static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    if (indexPath.section >= self.baseMessage.message.topAsk.count) return;
-    UdeskMessageTopAsk *messageTopAsk = self.baseMessage.message.topAsk[indexPath.section];
-    
-    if (indexPath.row >= messageTopAsk.optionsList.count) return;
-    UdeskMessageOption *option = messageTopAsk.optionsList[indexPath.row];
-    
-    UdeskMessage *questionMessage = [[UdeskMessage alloc] initWithText:option.value];
-    questionMessage.robotQuestionId = option.valueId;
-    questionMessage.robotQuestion = option.value;
-    questionMessage.robotQueryType = @"6";
-    questionMessage.sendType = UDMessageSendTypeHit;
-    questionMessage.robotType = @"1";
-    questionMessage.logId = self.baseMessage.message.logId;
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didSendRobotMessage:)]) {
-        [self.delegate didSendRobotMessage:questionMessage];
-    }
+    [self didSelectRobotHitMessageAtIndexPath:indexPath];
 }
 
 - (void)updateCellWithMessage:(UdeskBaseMessage *)baseMessage {

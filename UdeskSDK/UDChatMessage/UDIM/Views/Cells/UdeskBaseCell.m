@@ -14,6 +14,7 @@
 #import "UdeskManager.h"
 #import "UdeskSDKShow.h"
 #import "UdeskMessage+UdeskSDK.h"
+#import "UdeskPhotoManager.h"
 
 @interface UdeskBaseCell ()
 
@@ -161,6 +162,7 @@
     return _uselessButton;
 }
 
+#pragma mark - 消息处理
 - (void)updateCellWithMessage:(UdeskBaseMessage *)baseMessage {
 
     if (!baseMessage || baseMessage == (id)kCFNull) return ;
@@ -279,6 +281,24 @@
     }
 }
 
+- (void)tapResetButtonAction:(UIButton *)button {
+    
+    UdeskAlertController *alert = [UdeskAlertController alertControllerWithTitle:nil message:nil preferredStyle:UdeskAlertControllerStyleActionSheet];
+    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_cancel") style:UdeskAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_reset_message") style:UdeskAlertActionStyleDefault handler:^(UdeskAlertAction *action) {
+        
+        self.resetButton.hidden = YES;
+        self.sendingIndicator.hidden = NO;
+        [self.sendingIndicator startAnimating];
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didResendMessage:)]) {
+            [self.delegate didResendMessage:self.baseMessage.message];
+        }
+    }]];
+    [[UdeskSDKUtil currentViewController] presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark - 机器人转人工
 - (void)setupAnswerTransfer {
     
     if ([self.baseMessage.message.switchStaffType isKindOfClass:[NSString class]] && [self.baseMessage.message.switchStaffType isEqualToString:@"1"]) {
@@ -298,6 +318,14 @@
     }
 }
 
+- (void)tapTransferButtonAction:(UIButton *)button {
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didTapTransferAgentServer:)]) {
+        [self.delegate didTapTransferAgentServer:self.baseMessage.message];
+    }
+}
+
+#pragma mark - 机器人消息 有用/无用
 - (void)setupAnswerEvaluation {
     
     if (self.baseMessage.message.showUseful) {
@@ -306,30 +334,6 @@
     else {
         self.usefulButton.frame = CGRectZero;
         self.uselessButton.frame = CGRectZero;
-    }
-}
-
-- (void)tapResetButtonAction:(UIButton *)button {
-    
-    UdeskAlertController *alert = [UdeskAlertController alertControllerWithTitle:nil message:nil preferredStyle:UdeskAlertControllerStyleActionSheet];
-    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_cancel") style:UdeskAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UdeskAlertAction actionWithTitle:getUDLocalizedString(@"udesk_reset_message") style:UdeskAlertActionStyleDefault handler:^(UdeskAlertAction *action) {
-        
-        self.resetButton.hidden = YES;
-        self.sendingIndicator.hidden = NO;
-        [self.sendingIndicator startAnimating];
-        
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didResendMessage:)]) {
-            [self.delegate didResendMessage:self.baseMessage.message];
-        }
-    }]];
-    [[UdeskSDKUtil currentViewController] presentViewController:alert animated:YES completion:nil];
-}
-
-- (void)tapTransferButtonAction:(UIButton *)button {
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didTapTransferAgentServer:)]) {
-        [self.delegate didTapTransferAgentServer:self.baseMessage.message];
     }
 }
 
@@ -395,6 +399,55 @@
     }
 }
 
+#pragma mark - 富文本事件处理
+- (BOOL)udRichTextView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
+    
+    if ([URL.absoluteString hasPrefix:@"sms:"] || [URL.absoluteString hasPrefix:@"tel:"]) {
+        
+        NSString *phoneNumber = [URL.absoluteString componentsSeparatedByString:@":"].lastObject;
+        [self callPhoneNumber:phoneNumber];
+        return NO;
+    }
+    else if ([URL.absoluteString hasPrefix:@"img:"]) {
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didTapChatImageView)]) {
+            [self.delegate didTapChatImageView];
+        }
+        
+        NSString *url = [URL.absoluteString componentsSeparatedByString:@"img:"].lastObject;
+        url = [url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+        UdeskPhotoManager *photoManeger = [UdeskPhotoManager maneger];
+        [photoManeger showLocalPhoto:(UIImageView *)self.bubbleImageView withMessageURL:url];
+        return NO;
+    }
+    else if ([URL.absoluteString hasPrefix:@"data-type:"]) {
+        
+        if (textView.text.length >= (characterRange.location+characterRange.length)) {
+            NSString *content = [[textView.text substringWithRange:characterRange] stringByReplacingOccurrencesOfString:@"\n" withString:@""];;
+            [self flowMessageWithText:content flowContent:URL.absoluteString];
+        }
+        return NO;
+    }
+    else {
+        
+        if (textView.text.length >= (characterRange.location+characterRange.length)) {
+            NSURL *url = [NSURL URLWithString:[textView.text substringWithRange:characterRange]];
+            if (!url) {
+                url = URL;
+            }
+            
+            [self udOpenURL:url];
+        }
+        else {
+            [self udOpenURL:URL];
+        }
+        return NO;
+    }
+    
+    return YES;
+}
+
 - (void)callPhoneNumber:(NSString *)phoneNumber {
     
     UdeskAlertController *alert = [UdeskAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@\n%@",phoneNumber,getUDLocalizedString(@"udesk_phone_number_tip")] message:nil preferredStyle:UdeskAlertControllerStyleActionSheet];
@@ -457,6 +510,28 @@
         [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URL.absoluteString]]];
     } else {
         [UdeskSDKShow pushWebViewOnViewController:[UdeskSDKUtil currentViewController] URL:URL];
+    }
+}
+
+#pragma mark - 机器人点击消息
+- (void)didSelectRobotHitMessageAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section >= self.baseMessage.message.topAsk.count) return;
+    UdeskMessageTopAsk *messageTopAsk = self.baseMessage.message.topAsk[indexPath.section];
+    
+    if (indexPath.row >= messageTopAsk.optionsList.count) return;
+    UdeskMessageOption *option = messageTopAsk.optionsList[indexPath.row];
+    
+    UdeskMessage *questionMessage = [[UdeskMessage alloc] initWithText:option.value];
+    questionMessage.robotQuestionId = option.valueId;
+    questionMessage.robotQuestion = option.value;
+    questionMessage.robotQueryType = @"6";
+    questionMessage.sendType = UDMessageSendTypeHit;
+    questionMessage.robotType = @"1";
+    questionMessage.logId = self.baseMessage.message.logId;
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSendRobotMessage:)]) {
+        [self.delegate didSendRobotMessage:questionMessage];
     }
 }
 

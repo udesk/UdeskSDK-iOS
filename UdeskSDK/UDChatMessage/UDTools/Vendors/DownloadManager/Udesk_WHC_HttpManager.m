@@ -14,8 +14,6 @@
 
 #import "Udesk_WHC_HttpManager.h"
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "Udesk_WHC_DownloadObject.h"
-#import "UdeskBundleUtils.h"
 
 //默认下载并发数量 在这里修改
 const NSInteger kUdeskWHCDefaultDownloadNumber = 5;

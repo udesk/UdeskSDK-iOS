@@ -13,7 +13,6 @@
 #import "UdeskPhotoToolBar.h"
 #import "UdeskAssetPreviewController.h"
 #import "UdeskImagePickerController.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKMacro.h"
 #import "UdeskAlbumsViewManager.h"
@@ -415,12 +414,10 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
         
-        UdeskImagePickerController *udImagePicker = (UdeskImagePickerController *)self.navigationController;
-        [udImagePicker.selectedModels removeAllObjects];
-        udImagePicker.selectedModels = nil;
-    }
+    UdeskImagePickerController *udImagePicker = (UdeskImagePickerController *)self.navigationController;
+    [udImagePicker.selectedModels removeAllObjects];
+    udImagePicker.selectedModels = nil;
 }
 
 - (void)viewDidAppear:(BOOL)animated{

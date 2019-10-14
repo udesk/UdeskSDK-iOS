@@ -71,11 +71,11 @@
 
 + (void)checkPermissionsOfCamera:(void(^)(void))completion {
     
-    //模拟器
-    if (TARGET_IPHONE_SIMULATOR) {
-        NSLog(@"UdeskSDK：模拟器无法使用拍摄功能");
-        return;
-    }
+//    //模拟器
+//    if (TARGET_IPHONE_SIMULATOR) {
+//        NSLog(@"UdeskSDK：模拟器无法使用拍摄功能");
+//        return;
+//    }
     
     [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
         
@@ -131,11 +131,11 @@
 
 + (void)checkPermissionsOfMicrophone:(void(^)(void))completion {
     
-    //模拟器
-    if (TARGET_IPHONE_SIMULATOR) {
-        NSLog(@"UdeskSDK：模拟器无法使用录音功能");
-        return;
-    }
+//    //模拟器
+//    if (TARGET_IPHONE_SIMULATOR) {
+//        NSLog(@"UdeskSDK：模拟器无法使用录音功能");
+//        return;
+//    }
     
     if (ud_isIOS7) {
         

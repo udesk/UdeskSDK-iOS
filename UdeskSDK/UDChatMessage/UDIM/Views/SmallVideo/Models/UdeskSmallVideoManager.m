@@ -8,7 +8,6 @@
 
 #import "UdeskSmallVideoManager.h"
 #import "UdeskSmallVideoWriter.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "UdeskSDKConfig.h"
 
 @interface UdeskSmallVideoManager()<AVCaptureAudioDataOutputSampleBufferDelegate,AVCaptureVideoDataOutputSampleBufferDelegate,UdeskSmallVideoWriterDelegate> {
@@ -89,7 +88,7 @@
         
         self.isCapturing = NO;
         self.session = [[AVCaptureSession alloc] init];
-        [self configurationSession];
+        [self configurationSession:AVCaptureDevicePositionBack];
         [self configurationPreviewLayer];
     }
 }
@@ -151,10 +150,10 @@
     [self finishCaptureWithReason:UdeskRecorderFinishedReasonCancle];
 }
 
-- (void)configurationSession {
+- (void)configurationSession:(AVCaptureDevicePosition)position {
     
     dispatch_async(self.sessionQueue, ^{
-        self.captureDevice = [self deviceWithMediaType:AVMediaTypeVideo preferringPosition:AVCaptureDevicePositionBack];
+        self.captureDevice = [self deviceWithMediaType:AVMediaTypeVideo preferringPosition:position];
         if (self.videoDeviceInput) {
             [self.session removeInput:self.videoDeviceInput];
         }
@@ -169,121 +168,6 @@
         [self configFrameDuration];
         
         if ([self.session canAddInput:self.videoDeviceInput]) {
-            [self.session addInput:self.videoDeviceInput];
-            if (self.videoDataOutput) {
-                [self.session removeOutput:self.videoDataOutput];
-            }
-            
-            //MARK :视频输出
-            self.videoDataOutput = [[AVCaptureVideoDataOutput alloc] init];
-            self.videoDataOutput.videoSettings = @{(id)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA)};
-            [self.videoDataOutput setSampleBufferDelegate:self queue:self.videoDataOutputQueue];
-            self.videoDataOutput.alwaysDiscardsLateVideoFrames = NO;
-            
-            if ([self.session canAddOutput:self.videoDataOutput]) {
-                
-                [self.session addOutput:self.videoDataOutput];
-                [self.captureDevice addObserver:self
-                                     forKeyPath:@"adjustingFocus"
-                                        options:NSKeyValueObservingOptionNew
-                                        context:nil];
-                
-                self.videoConnection = [self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
-                if (self.videoConnection.isVideoStabilizationSupported) {
-                    self.videoConnection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationModeAuto;
-                }
-                
-                self.videoConnection.videoOrientation = AVCaptureVideoOrientationPortrait;
-            }
-            else {
-                NSLog(@"UdeskSDK：无法添加视频输入到会话");
-            }
-            
-            if (self.imageDataOutput) {
-                [self.session removeOutput:self.imageDataOutput];
-            }
-            // MARK：图片输出
-            self.imageDataOutput = [[AVCaptureStillImageOutput alloc] init];
-            if ([self.session canAddOutput:self.imageDataOutput]) {
-                [self.session addOutput:self.imageDataOutput];
-            }
-            
-            if (self.audioDataOutput) {
-                [self.session removeOutput:self.audioDataOutput];
-            }
-            
-            // MARK :音频输出
-            self.audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-            self.audioDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:self.audioCaptureDevice error:&error];
-            if (!self.audioDeviceInput) {
-                NSLog(@"UdeskSDK：不能创建音频 %@", error);
-            }
-            
-            if ([self.session canAddInput:self.audioDeviceInput]) {
-                [self.session addInput:self.audioDeviceInput];
-            }
-            
-            self.audioDataOutput = [[AVCaptureAudioDataOutput alloc] init];
-            [self.audioDataOutput setSampleBufferDelegate:self queue:self.audioDataOutputQueue];
-            
-            if ([self.session canAddOutput:self.audioDataOutput]) {
-                [self.session addOutput:self.audioDataOutput];
-            }
-            self.audioConnection = [self.audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
-            [self.session commitConfiguration];
-        }
-    });
-}
-
-- (void)configFrameDuration {
-    
-    if ([NSProcessInfo processInfo].processorCount == 1) {
-        if ([self.session canSetSessionPreset:AVCaptureSessionPresetLow]) {
-            [self.session setSessionPreset:AVCaptureSessionPresetLow];
-        }
-    }
-    else {
-        if ([self.session canSetSessionPreset:[self customSessionPreset]]) {
-            [self.session setSessionPreset:[self customSessionPreset]];
-        }
-    }
-    
-    Float64 _frameRate = 0.0;
-    
-    AVCaptureDeviceFormat *activeFormat = self.captureDevice.activeFormat;
-    NSArray *supportedRanges = activeFormat.videoSupportedFrameRateRanges;
-    AVFrameRateRange *targetRange = [supportedRanges count] > 0 ? supportedRanges[0] : nil;
-    for (AVFrameRateRange* range in supportedRanges) {
-        if (range.maxFrameRate <= _frameRate && targetRange.maxFrameRate <= range.maxFrameRate) {
-            targetRange = range;
-        }
-    }
-    
-    
-    if (targetRange && [self.captureDevice lockForConfiguration:NULL]) {
-        [self.captureDevice setActiveVideoMinFrameDuration:CMTimeMake(1, _frameRate)];
-        [self.captureDevice setActiveVideoMaxFrameDuration:targetRange.maxFrameDuration];
-        [self.captureDevice unlockForConfiguration];
-    }
-}
-
-- (void)configurationSessionFront {
-    dispatch_async(self.sessionQueue, ^{
-        self.captureDevice = [self deviceWithMediaType:AVMediaTypeVideo preferringPosition:AVCaptureDevicePositionFront];
-        
-        if (self.videoDeviceInput) {
-            [self.session removeInput:self.videoDeviceInput];
-        }
-        
-        NSError *error = nil;
-        self.videoDeviceInput = [[AVCaptureDeviceInput alloc] initWithDevice:self.captureDevice error:&error];
-        if (!self.videoDeviceInput)  {  NSLog(@"未找到设备");  }
-        
-        // === beginConfiguration ===
-        [self.session beginConfiguration];
-        [self configFrameDuration];
-        if ([self.session canAddInput:self.videoDeviceInput]) {
-            
             [self.session addInput:self.videoDeviceInput];
             if (self.videoDataOutput) {
                 [self.session removeOutput:self.videoDataOutput];
@@ -353,6 +237,38 @@
     });
 }
 
+- (void)configFrameDuration {
+    
+    if ([NSProcessInfo processInfo].processorCount == 1) {
+        if ([self.session canSetSessionPreset:AVCaptureSessionPresetLow]) {
+            [self.session setSessionPreset:AVCaptureSessionPresetLow];
+        }
+    }
+    else {
+        if ([self.session canSetSessionPreset:[self customSessionPreset]]) {
+            [self.session setSessionPreset:[self customSessionPreset]];
+        }
+    }
+    
+    Float64 _frameRate = 0.0;
+    
+    AVCaptureDeviceFormat *activeFormat = self.captureDevice.activeFormat;
+    NSArray *supportedRanges = activeFormat.videoSupportedFrameRateRanges;
+    AVFrameRateRange *targetRange = [supportedRanges count] > 0 ? supportedRanges[0] : nil;
+    for (AVFrameRateRange* range in supportedRanges) {
+        if (range.maxFrameRate <= _frameRate && targetRange.maxFrameRate <= range.maxFrameRate) {
+            targetRange = range;
+        }
+    }
+    
+    
+    if (targetRange && [self.captureDevice lockForConfiguration:NULL]) {
+        [self.captureDevice setActiveVideoMinFrameDuration:CMTimeMake(1, _frameRate)];
+        [self.captureDevice setActiveVideoMaxFrameDuration:targetRange.maxFrameDuration];
+        [self.captureDevice unlockForConfiguration];
+    }
+}
+
 - (void)configurationPreviewLayer {
     self.preview = [AVCaptureVideoPreviewLayer layerWithSession:self.session];
     self.preview.videoGravity = AVLayerVideoGravityResizeAspectFill;
@@ -372,11 +288,11 @@
             AVCaptureDevicePosition position = device.position;
             if (position ==AVCaptureDevicePositionFront) {
                 animation.subtype = kCATransitionFromLeft;
-                [self configurationSession];
+                [self configurationSession:AVCaptureDevicePositionBack];
             }
             else {
                 animation.subtype = kCATransitionFromRight;
-                [self configurationSessionFront];
+                [self configurationSession:AVCaptureDevicePositionFront];
             }
             break;
         }

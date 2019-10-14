@@ -195,6 +195,21 @@
     [self.contactUsButton addTarget:self action:@selector(contactUs:) forControlEvents:UIControlEventTouchUpInside];
     [self.ticketButton addTarget:self action:@selector(ticket:) forControlEvents:UIControlEventTouchUpInside];
     [self.developerButton addTarget:self action:@selector(developer:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:UD_RECEIVED_NEW_MESSAGES_NOTIFICATION object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        
+        //获取sdk发送的未读消息通知内容
+        if ([note.object isKindOfClass:[UdeskMessage class]]) {
+            UdeskMessage *message = (UdeskMessage *)note.object;
+            NSLog(@"未读消息内容%@",message.content);
+        }
+        
+        //延迟获取sdk存在db的未读消息
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSLog(@"未读消息数:%ld",[UdeskManager getLocalUnreadeMessagesCount]);
+            NSLog(@"未读消息:%@",[UdeskManager getLocalUnreadeMessages]);
+        });
+    }];
 }
 
 - (void)backButtonAction:(id)sender {
@@ -204,7 +219,7 @@
 - (void)faq:(id)sender {
     
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:[UdeskSDKConfig customConfig]];
-    [chatViewManager pushUdeskInViewController:self udeskType:UdeskFAQ completion:nil];
+    [chatViewManager showFAQInViewController:self transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 }
 
 - (void)contactUs:(id)sender {
@@ -220,7 +235,7 @@
 - (void)ticket:(id)sender {
     
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:[UdeskSDKConfig customConfig]];
-    [chatViewManager presentUdeskInViewController:self udeskType:UdeskTicket completion:nil];
+    [chatViewManager presentTicketInViewController:self completion:nil];
 }
 
 - (void)developer:(id)sender {

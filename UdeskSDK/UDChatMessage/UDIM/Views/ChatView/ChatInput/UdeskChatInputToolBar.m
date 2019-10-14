@@ -15,7 +15,6 @@
 #import "UdeskBundleUtils.h"
 #import "UdeskPrivacyUtil.h"
 #import "UdeskMessageTableView.h"
-#import "UdeskSDKMacro.h"
 
 /** 按钮大小 */
 static CGFloat const kInputToolBarIconDiameter = 32.0;
@@ -346,18 +345,12 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
         return;
     }
     
+    //输入预知
     NSDate *nowDate = [NSDate date];
     NSTimeInterval time = [nowDate timeIntervalSinceDate:self.sendDate];
-    if (time>0.5) {
+    if (time>0.5 && self.agent.statusType == UDAgentStatusResultOnline && ![UdeskSDKUtil isBlankString:growingTextView.text]) {
         self.sendDate = nowDate;
         [UdeskManager sendClientInputtingWithContent:growingTextView.text];
-    }
-    //输入预知
-    if (self.agent.code != UDAgentStatusResultLeaveMessage ||
-        self.agent.code != UDAgentStatusResultBoardMessage) {
-        if ([UdeskSDKUtil isBlankString:growingTextView.text]) {
-            [UdeskManager sendClientInputtingWithContent:growingTextView.text];
-        }
     }
 }
 
@@ -427,12 +420,13 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
 - (void)setAgent:(UdeskAgent *)agent {
     _agent = agent;
     
-    if (agent.code == UDAgentStatusResultOnline) {
+    if (agent.statusType == UDAgentStatusResultOnline) {
         [self resetAllButton];
     }
-    else if(agent.code == UDAgentStatusResultLeaveMessage ||
-            agent.code == UDAgentStatusResultBoardMessage) {
-        [self updateInputBarForLeaveMessage];
+    else if (agent.statusType == UDAgentStatusResultOffline) {
+        if (agent.sessionType == UDAgentSessionTypeNotCreate) {
+            [self updateInputBarForLeaveMessage];
+        }
     }
     
     [self setNeedsLayout];
@@ -444,7 +438,7 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     self.voiceButton.hidden = YES;
     self.emotionButton.hidden = YES;
     self.moreButton.hidden = YES;
-    self.recordButton.hidden = YES;
+    self.recordButton.alpha = 0;
     self.chatTextView.alpha = 1;
     self.chatInputType = UdeskChatInputTypeText;
     [self removeCustomToolbar];
@@ -471,6 +465,8 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     self.emotionButton.hidden = (self.voiceButton.selected == YES)?YES:(!config.isShowEmotionEntry);
     self.moreButton.hidden = NO;
     self.customButtonConfigs = [UdeskSDKConfig customConfig].customButtons;
+    
+    [self resetAllButtonSelectedStatus];
 }
 
 - (BOOL)checkAgentStatusValid {
@@ -493,16 +489,34 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
         return YES;
     }
     
-    if (self.agent.code == UDAgentStatusResultQueue) {
-        return YES;
-    }
-    
     if (!self.agent || self.agent == (id)kCFNull) return YES;
     
-    if (self.agent.code != UDAgentStatusResultOnline &&
-        self.agent.code != UDAgentStatusResultLeaveMessage &&
-        self.agent.code != UDAgentStatusResultBoardMessage) {
+    //会话中可以发送 消息/离线消息/留言消息
+    if (self.agent.sessionType == UDAgentSessionTypeInSession) {
+        return YES;
+    }
+    //会话未创建
+    else if (self.agent.sessionType == UDAgentSessionTypeNotCreate) {
         
+        //客服离线
+        if (self.agent.statusType == UDAgentStatusResultOffline) {
+            //表单留言
+            if (self.agent.leaveMessageType == UDAgentLeaveMessageTypeForm) {
+                if (self.delegate && [self.delegate respondsToSelector:@selector(didClickChatInputToolBar)]) {
+                    [self.delegate didClickChatInputToolBar];
+                }
+                return NO;
+            }
+            else {
+                return YES;
+            }
+        }
+        else {
+            return YES;
+        }
+    }
+    //会话已关闭
+    else if (self.agent.sessionType == UDAgentSessionTypeHasOver) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(didClickChatInputToolBar)]) {
             [self.delegate didClickChatInputToolBar];
         }

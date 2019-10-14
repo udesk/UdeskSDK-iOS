@@ -7,7 +7,6 @@
 //
 
 #import "UdeskLocationViewModel.h"
-#import "UdeskSDKMacro.h"
 #import "UdeskLocationModel.h"
 #import "UdeskSDKUtil.h"
 

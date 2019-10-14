@@ -13,7 +13,6 @@
 #import "UdeskAgentUtil.h"
 #import "UdeskAgent.h"
 #import "UdeskManager.h"
-#import "UdeskSetting.h"
 #import "UdeskSDKAlert.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskTicketViewController.h"
@@ -83,9 +82,6 @@
 //配置
 - (void)setupWithAgentModel:(UdeskAgent *)agentModel completion:(void(^)(UdeskAgent *agentModel))completion {
     
-    //隐藏弹窗
-    [UdeskSDKAlert hide];
-    
     self.preSessionId = nil;
     
     //这里是因为 有时nick会是null
@@ -95,11 +91,14 @@
     
     self.agentModel = agentModel;
     
+    //设置留言类型
+    [self setupAgentLeaveMessageType];
+    
     //客服离线
-    if (agentModel.code != UDAgentStatusResultOnline) {
+    if (agentModel.statusType != UDAgentStatusResultOnline) {
         
         //排队
-        if (agentModel.code == UDAgentStatusResultQueue) {
+        if (agentModel.statusType == UDAgentStatusResultQueue) {
             [self showQueueEvent];
         }
         else {
@@ -123,16 +122,18 @@
 //客服离线
 - (void)agentOffline {
     
+    //还在会话中
+    if (self.agentModel.sessionType == UDAgentSessionTypeInSession) {
+        return;
+    }
+    
     //放弃排队
     [self quitQueue];
     
     //开启留言
-    if (_sdkSetting.enableWebImFeedback.boolValue && [_sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
-        [self showLeaveMessage];
-        return;
-    }
-    else if (_sdkSetting.enableWebImFeedback.boolValue && [_sdkSetting.leaveMessageType isEqualToString:@"im"]) {
-        [self showBoardMessage];
+    if (_sdkSetting.enableWebImFeedback.boolValue &&
+        ([_sdkSetting.leaveMessageType isEqualToString:@"msg"] || [_sdkSetting.leaveMessageType isEqualToString:@"im"])) {
+        [self leaveMessageWithAgentOffline];
         return;
     }
     
@@ -160,6 +161,25 @@
     [self removeQueueEvent];
 }
 
+//设置留言类型
+- (void)setupAgentLeaveMessageType {
+    
+    if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
+        self.agentModel.leaveMessageType = UDAgentLeaveMessageTypeLeave;
+    }
+    else if ([self.sdkSetting.leaveMessageType isEqualToString:@"im"]) {
+        self.agentModel.leaveMessageType = UDAgentLeaveMessageTypeBoard;
+    }
+    else if ([self.sdkSetting.leaveMessageType isEqualToString:@"form"]) {
+        self.agentModel.leaveMessageType = UDAgentLeaveMessageTypeForm;
+    }
+    
+    //留言关闭
+    if (!self.sdkSetting.enableWebImFeedback.boolValue) {
+        self.agentModel.leaveMessageType = UDAgentLeaveMessageTypeClose;
+    }
+}
+
 //显示排队事件
 - (void)showQueueEvent {
     
@@ -183,27 +203,16 @@
     
     [UdeskAgentUtil setUdeskQuitQueue:YES];
     [UdeskManager cancelAllOperations];
-    [UdeskManager quitQueueWithType:[[UdeskSDKConfig customConfig] quitQueueString]];
+    [UdeskManager quitQueueWithType:[UdeskSDKConfig customConfig].quitQueueMode];
 }
 
-//工作台留言
-- (void)showBoardMessage {
-    
-    [self agentOfflineWithStatus:UDAgentStatusResultBoardMessage];
-}
-
-//直接留言
-- (void)showLeaveMessage {
-    
-    [self agentOfflineWithStatus:UDAgentStatusResultLeaveMessage];
-}
-
-- (void)agentOfflineWithStatus:(UDAgentStatusType)status {
+//直接留言/工作台留言
+- (void)leaveMessageWithAgentOffline {
  
     //移除排队事件
     [self removeQueueEvent];
     
-    self.agentModel.code = status;
+    self.agentModel.statusType = UDAgentStatusResultOffline;
     self.agentModel.message = getUDLocalizedString(@"udesk_leave_msg");
     
     if (self.didUpdateAgentBlock) {
@@ -211,13 +220,9 @@
     }
     
     if (!_leaveMessageGuideFlag) {
-        
-        if (self.agentModel.code == status) {
-            if (self.didAddLeaveMessageGuideBlock) {
-                self.didAddLeaveMessageGuideBlock();
-            }
+        if (self.didAddLeaveMessageGuideBlock) {
+            self.didAddLeaveMessageGuideBlock();
         }
-        
         _leaveMessageGuideFlag = YES;
     }
 }
@@ -233,13 +238,13 @@
     
     if (self.sdkSetting) {
         NSString *noReplyhint = self.sdkSetting.noReplyHint;
-        if(self.agentModel.code == UDAgentStatusResultQueue) {
+        if(self.agentModel.statusType == UDAgentStatusResultQueue) {
             noReplyhint = self.agentModel.message;
         }
         
         //开启留言
         if (self.sdkSetting.enableWebImFeedback.boolValue) {
-            if (self.agentModel.code == UDAgentStatusResultOffline) {
+            if (self.agentModel.statusType == UDAgentStatusResultOffline) {
                 //表单留言文案
                 if ([UdeskSDKUtil isBlankString:self.sdkSetting.leaveMessageGuide]) {
                     noReplyhint = getUDLocalizedString(@"udesk_alert_view_leave_msg");
@@ -249,26 +254,26 @@
                 }
             }
             
-            [UdeskSDKAlert showWithAgentCode:self.agentModel.code message:noReplyhint enableFeedback:YES leaveMsgHandler:^{
+            [UdeskSDKAlert showWithAgentCode:self.agentModel.statusType message:noReplyhint enableFeedback:YES leaveMsgHandler:^{
                 [self leaveMessageTapAction];
             }];
             return;
         }
         
         //关闭留言
-        if (self.agentModel.code == UDAgentStatusResultOffline) {
+        if (self.agentModel.statusType == UDAgentStatusResultOffline) {
             if ([UdeskSDKUtil isBlankString:noReplyhint]) {
                 noReplyhint = getUDLocalizedString(@"udesk_alert_view_no_reply_hint");
             }
         }
         
-        [UdeskSDKAlert showWithAgentCode:self.agentModel.code message:noReplyhint enableFeedback:NO leaveMsgHandler:^{
+        [UdeskSDKAlert showWithAgentCode:self.agentModel.statusType message:noReplyhint enableFeedback:NO leaveMsgHandler:^{
             [self leaveMessageTapAction];
         }];
         return;
     }
     
-    [UdeskSDKAlert showWithAgentCode:self.agentModel.code message:self.agentModel.message enableFeedback:YES leaveMsgHandler:^{
+    [UdeskSDKAlert showWithAgentCode:self.agentModel.statusType message:self.agentModel.message enableFeedback:YES leaveMsgHandler:^{
         [self leaveMessageTapAction];
     }];
 }
@@ -282,16 +287,11 @@
             [self showForm];
         }
         //直接留言
-        else if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) {
-            [self showLeaveMessage];
+        else if ([self.sdkSetting.leaveMessageType isEqualToString:@"msg"] ||
+                 [self.sdkSetting.leaveMessageType isEqualToString:@"im"]) {
+            [self leaveMessageWithAgentOffline];
+            [self quitQueue];
         }
-        //工作台留言
-        else if ([self.sdkSetting.leaveMessageType isEqualToString:@"im"]) {
-            [self showBoardMessage];
-        }
-        
-        //放弃排队
-        [self quitQueue];
         return;
     }
     
@@ -341,7 +341,8 @@
             return;
         }
         
-        UDAgentStatusType agentCode = UDAgentStatusResultOffline;
+        UDAgentSessionType agentSession = self.agentModel.sessionType;
+        UDAgentStatusType agentStatus = self.agentModel.statusType;
         NSString *agentMessage = @"unavailable";
         NSString *agentNick = self.agentModel.nick;
         //容错处理
@@ -351,25 +352,27 @@
         
         if([statusType isEqualToString:@"over"]) {
             
-            agentCode = UDAgentConversationOver;
+            agentSession = UDAgentSessionTypeHasOver;
+            agentStatus = UDAgentStatusResultOffline;
             agentMessage = getUDLocalizedString(@"udesk_chat_end");
         }
         else if ([statusType isEqualToString:@"available"]) {
             
-            agentCode = UDAgentStatusResultOnline;
+            agentSession = UDAgentSessionTypeInSession;
+            agentStatus = UDAgentStatusResultOnline;
             agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),agentNick,getUDLocalizedString(@"udesk_online")];
-            
         }
         else if ([statusType isEqualToString:@"unavailable"]) {
             
-            agentCode = UDAgentStatusResultOffline;
+            agentSession = UDAgentSessionTypeInSession;
+            agentStatus = UDAgentStatusResultOffline;
             agentMessage = [NSString stringWithFormat:@"%@ %@ %@",getUDLocalizedString(@"udesk_agent"),agentNick,getUDLocalizedString(@"udesk_offline")];
         }
         
-        
         //与上次不同的code才抛给vc
-        if (self.agentModel.code != agentCode) {
-            self.agentModel.code = agentCode;
+        if (self.agentModel.statusType != agentStatus) {
+            self.agentModel.statusType = agentStatus;
+            self.agentModel.sessionType = agentSession;
             self.agentModel.message = agentMessage;
             
             if (self.didUpdateAgentPresenceBlock) {
@@ -386,7 +389,8 @@
 - (void)sessionClosed {
     
     self.agentModel.message = getUDLocalizedString(@"udesk_chat_end");
-    self.agentModel.code = UDAgentConversationOver;
+    self.agentModel.sessionType = UDAgentSessionTypeHasOver;
+    self.agentModel.statusType = UDAgentStatusResultOffline;
 
     if (self.didUpdateAgentBlock) {
         self.didUpdateAgentBlock(self.agentModel);

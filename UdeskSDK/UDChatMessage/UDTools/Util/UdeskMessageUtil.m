@@ -16,12 +16,12 @@
 #import "UdeskLocationMessage.h"
 #import "UdeskVideoCallMessage.h"
 #import "UdeskGoodsMessage.h"
-#import "UdeskSDKUtil.h"
 #import "NSTimer+UdeskSDK.h"
 #import "UdeskManager.h"
 #import "UdeskLocationModel.h"
 #import "Udesk_YYWebImage.h"
 #import "UdeskCacheUtil.h"
+#import "UdeskImageUtil.h"
 #import "UdeskQueueMessage.h"
 #import "UdeskRichMessage.h"
 #import "UdeskTopAskMessage.h"
@@ -80,18 +80,20 @@
                 }
                 case UDMessageContentTypeImage:{
                     
-                    UdeskImageMessage *imageMessage = [[UdeskImageMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
-                    [msgLayout addObject:imageMessage];
                     //缓存收到的图片
                     [self storeImageWithMessage:message];
+                    
+                    UdeskImageMessage *imageMessage = [[UdeskImageMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
+                    [msgLayout addObject:imageMessage];
                     break;
                 }
                 case UDMessageContentTypeVoice: {
                     
+                    //缓存语音
+                    [self storeVoiceWithMessage:message];
+                    
                     UdeskVoiceMessage *voiceLayout = [[UdeskVoiceMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:voiceLayout];
-                    //缓存收到的语音
-                    [self storeVoiceWithMessage:message];
                     break;
                 }
                 case UDMessageContentTypeVideo: {
@@ -211,21 +213,23 @@
 + (void)storeImageWithMessage:(UdeskMessage *)message {
     
     if (message.messageFrom == UDMessageTypeReceiving) {
-        if (message.sourceData) {
-            Udesk_YYImage *gifImage = [[Udesk_YYImage alloc] initWithData:message.sourceData];
-            message.image = gifImage;
-            [[Udesk_YYWebImageManager sharedManager].cache setImage:gifImage forKey:message.content];
+        
+        Udesk_YYImage *image = [[Udesk_YYImage alloc] initWithData:message.sourceData];
+        if (image.animatedImageType == Udesk_YYImageTypeGIF) {
+            message.image = image;
         }
         else {
-            [[Udesk_YYWebImageManager sharedManager].cache setImage:message.image forKey:message.content];
+            message.image = [UdeskImageUtil imageWithOriginalImage:[UdeskImageUtil fixOrientation:image]];
         }
+        
+        [[Udesk_YYWebImageManager sharedManager].cache setImage:message.image forKey:message.content];
     }
 }
 
 //缓存语音
 + (void)storeVoiceWithMessage:(UdeskMessage *)message {
     
-    if (message.messageFrom == UDMessageTypeReceiving) {
+    if (message.sourceData && message.messageId) {
         [[UdeskCacheUtil sharedManager] setObject:message.sourceData forKey:message.messageId];
     }
 }

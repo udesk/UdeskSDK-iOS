@@ -18,9 +18,7 @@
 #import "UdeskAudioPlayer.h"
 #import "UdeskManager.h"
 #import "UdeskBaseCell.h"
-#import "UdeskTransitioningAnimation.h"
 #import "UdeskVoiceRecordView.h"
-#import "UdeskBaseMessage.h"
 #import "UdeskVideoCell.h"
 #import "UdeskImageCell.h"
 #import "UdeskChatTitleView.h"
@@ -33,7 +31,6 @@
 #import "UdeskVoiceRecord.h"
 #import "UdeskEmojiKeyboardControl.h"
 #import "UdeskSurveyView.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskSmallVideoNavigationController.h"
 #import "UdeskMessageUtil.h"
 #import "UdeskSDKAlert.h"
@@ -74,6 +71,8 @@ static CGFloat udInputBarHeight = 54.0f;
 
     [super viewDidLoad];
 
+    //进入sdk页面
+    [UdeskManager enterSDKPage];
     //初始化viewModel
     [self setupViewModel];
     //初始化消息页面布局
@@ -155,7 +154,7 @@ static CGFloat udInputBarHeight = 54.0f;
 //接受客服状态，弹出下拉动画
 - (void)didUpdateAgentPresence:(UdeskAgent *)agent {
 
-    [UdeskTopAlertView showWithCode:agent.code withMessage:agent.message parentView:self.view];
+    [UdeskTopAlertView showWithCode:agent.statusType withMessage:agent.message parentView:self.view];
     [self didUpdateAgentModel:agent];
 }
 
@@ -164,16 +163,16 @@ static CGFloat udInputBarHeight = 54.0f;
     if (!agent || agent == (id)kCFNull) return ;
 
     [self setupAgentSessionMessageUI:YES];
-    self.moreView.isQueueSession = (agent.code == UDAgentStatusResultQueue)?YES:NO;
+    self.moreView.agent = agent;
     self.chatInputToolBar.agent = agent;
     [self.titleView updateTitle:agent];
     
     //客服在线
-    if (agent.code == UDAgentStatusResultOnline) {
+    if (agent.statusType == UDAgentStatusResultOnline) {
         //自动消息
         [self sendPreMessage];
     }
-    else if (agent.code == UDAgentConversationOver) {
+    else if (agent.statusType == UDAgentStatusResultOffline) {
         //会话已关闭
         [self layoutOtherMenuViewHiden:YES];
         [self.chatInputToolBar resetAllButtonSelectedStatus];
@@ -233,6 +232,12 @@ static CGFloat udInputBarHeight = 54.0f;
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem udRightItemWithTitle:getUDLocalizedString(@"udesk_redirect") target:self action:@selector(didSelectNavigationRightButton)];
 }
 
+//更新标题
+- (void)updateChatTitleWithText:(NSString *)text {
+    
+    self.titleView.titleLabel.text = text;
+}
+
 //配置人工会话的UI
 - (void)setupAgentSessionMessageUI:(BOOL)isAgentSession {
     
@@ -290,10 +295,10 @@ static CGFloat udInputBarHeight = 54.0f;
     dispatch_after(delayTime, dispatch_get_main_queue(), ^{
         for (id messageContent in self.sdkConfig.preSendMessages) {
             if ([messageContent isKindOfClass:[NSString class]]) {
-                [self sendTextMessageWithContent:messageContent];
+                [self sendTextMessageWithContent:messageContent completion:nil];
             }
             else if ([messageContent isKindOfClass:[UIImage class]]) {
-                [self sendImageMessageWithImage:messageContent];
+                [self sendImageMessageWithImage:messageContent completion:nil];
             }
         }
         self.sdkConfig.preSendMessages = nil;
@@ -359,7 +364,7 @@ static CGFloat udInputBarHeight = 54.0f;
 //发送文本消息
 - (void)didSendText:(NSString *)text {
     
-    [self sendTextMessageWithContent:text];
+    [self sendTextMessageWithContent:text completion:nil];
 }
 
 //点击语音
@@ -402,6 +407,9 @@ static CGFloat udInputBarHeight = 54.0f;
 //点击UdeskChatInputToolBar
 - (void)didClickChatInputToolBar {
     
+    if (self.chatInputToolBar.agent.sessionType == UDAgentSessionTypeHasOver) {
+        self.titleView.titleLabel.text = getUDLocalizedString(@"udesk_connecting");
+    }
     [self.chatViewModel showSDKAlert];
 }
 
@@ -473,7 +481,7 @@ static CGFloat udInputBarHeight = 54.0f;
     
     [self.voiceRecordHelper stopRecordingWithStopRecorderCompletion:^{
         @udStrongify(self);
-        [self sendVoiceMessageWithVoicePath:self.voiceRecordHelper.recordPath voiceDuration:self.voiceRecordHelper.recordDuration];
+        [self sendVoiceMessageWithVoicePath:self.voiceRecordHelper.recordPath voiceDuration:self.voiceRecordHelper.recordDuration completion:nil];
     }];
 }
 
@@ -563,7 +571,7 @@ static CGFloat udInputBarHeight = 54.0f;
     location.sendLocationBlock = ^(UdeskLocationModel *model) {
         
         @udStrongify(self);
-        [self sendLoactionMessageWithModel:model];
+        [self sendLoactionMessageWithModel:model completion:nil];
     };
 }
 
@@ -643,7 +651,7 @@ static CGFloat udInputBarHeight = 54.0f;
 - (void)imagePickerController:(UdeskImagePickerController *)picker didFinishPickingPhotos:(NSArray<UIImage *> *)photos {
     
     for (UIImage *image in photos) {
-        [self sendImageMessageWithImage:image];
+        [self sendImageMessageWithImage:image completion:nil];
     }
 }
 
@@ -651,7 +659,7 @@ static CGFloat udInputBarHeight = 54.0f;
 - (void)imagePickerController:(UdeskImagePickerController *)picker didFinishPickingVideos:(NSArray<NSString *> *)videoPaths {
     
     for (NSString *path in videoPaths) {
-        [self sendVideoMessageWithVideoFile:path];
+        [self sendVideoMessageWithVideoFile:path completion:nil];
     }
 }
 
@@ -659,7 +667,7 @@ static CGFloat udInputBarHeight = 54.0f;
 - (void)imagePickerController:(UdeskImagePickerController *)picker didFinishPickingGIFImages:(NSArray<NSData *> *)gifImages {
     
     for (NSData *data in gifImages) {
-        [self sendGIFMessageWithGIFData:data];
+        [self sendGIFMessageWithGIFData:data completion:nil];
     }
 }
 
@@ -671,13 +679,13 @@ static CGFloat udInputBarHeight = 54.0f;
         return;
     }
     NSString *url = videoInfo[@"videoURL"];
-    [self sendVideoMessageWithVideoFile:url];
+    [self sendVideoMessageWithVideoFile:url completion:nil];
 }
 
 //拍摄图片
 - (void)didFinishCaptureImage:(UIImage *)image {
     
-    [self sendImageMessageWithImage:image];
+    [self sendImageMessageWithImage:image completion:nil];
 }
 
 //ios8以下的选择图片和拍照方式
@@ -686,21 +694,21 @@ static CGFloat udInputBarHeight = 54.0f;
     //打开图片选择器
     void (^PickerMediaBlock)(UIImage *image) = ^(UIImage *image) {
         if (image) {
-            [self sendImageMessageWithImage:[UdeskImageUtil fixOrientation:image]];
+            [self sendImageMessageWithImage:[UdeskImageUtil fixOrientation:image] completion:nil];
         }
     };
     
     //打开图片选择器(gif)
     void (^PickerMediaGIFBlock)(NSData *gifData) = ^(NSData *gifData) {
         if (gifData) {
-            [self sendGIFMessageWithGIFData:gifData];
+            [self sendGIFMessageWithGIFData:gifData completion:nil];
         }
     };
     
     //打开视频选择器
     void (^PickerMediaVideoBlock)(NSString *filePath,NSString *videoName) = ^(NSString *filePath,NSString *videoName) {
         if (filePath) {
-            [self sendVideoMessageWithVideoFile:filePath];
+            [self sendVideoMessageWithVideoFile:filePath completion:nil];
         }
     };
     
@@ -906,7 +914,7 @@ static CGFloat udInputBarHeight = 54.0f;
 }
 
 #pragma mark - 发送文字
-- (void)sendTextMessageWithContent:(NSString *)content {
+- (void)sendTextMessageWithContent:(NSString *)content completion:(void(^)(UdeskMessage *message))completion {
     if (!content || content == (id)kCFNull) return ;
     if (![content isKindOfClass:[NSString class]]) return ;
 
@@ -918,6 +926,7 @@ static CGFloat udInputBarHeight = 54.0f;
     
     @udWeakify(self);
     [self.chatViewModel sendTextMessage:content completion:^(UdeskMessage *message) {
+        if (completion) completion(message);
 
         @udStrongify(self);
         [self updateMessageStatus:message];
@@ -928,7 +937,7 @@ static CGFloat udInputBarHeight = 54.0f;
 }
 
 #pragma mark - 发送图片
-- (void)sendImageMessageWithImage:(UIImage *)image {
+- (void)sendImageMessageWithImage:(UIImage *)image completion:(void(^)(UdeskMessage *message))completion {
     if (!image || image == (id)kCFNull) return ;
     
     @udWeakify(self);
@@ -938,6 +947,7 @@ static CGFloat udInputBarHeight = 54.0f;
         [self updateUploadProgress:progress messageId:key sendStatus:UDMessageSendStatusSending];
         
     } completion:^(UdeskMessage *message) {
+        if (completion) completion(message);
 
         @udStrongify(self);
         [self updateMessageStatus:message];
@@ -946,7 +956,7 @@ static CGFloat udInputBarHeight = 54.0f;
 }
 
 //发送GIF图片
-- (void)sendGIFMessageWithGIFData:(NSData *)gifData {
+- (void)sendGIFMessageWithGIFData:(NSData *)gifData completion:(void(^)(UdeskMessage *message))completion {
     if (!gifData || gifData == (id)kCFNull) return ;
     
     @udWeakify(self);
@@ -956,6 +966,7 @@ static CGFloat udInputBarHeight = 54.0f;
         [self updateUploadProgress:progress messageId:key sendStatus:UDMessageSendStatusSending];
         
     } completion:^(UdeskMessage *message) {
+        if (completion) completion(message);
 
         @udStrongify(self);
         [self updateMessageStatus:message];
@@ -964,7 +975,7 @@ static CGFloat udInputBarHeight = 54.0f;
 }
 
 #pragma mark - 发送视频
-- (void)sendVideoMessageWithVideoFile:(NSString *)videoFile {
+- (void)sendVideoMessageWithVideoFile:(NSString *)videoFile completion:(void(^)(UdeskMessage *message))completion {
     if (!videoFile || videoFile == (id)kCFNull) return ;
     if (![videoFile isKindOfClass:[NSString class]]) return ;
     
@@ -983,6 +994,7 @@ static CGFloat udInputBarHeight = 54.0f;
         [self updateUploadProgress:progress messageId:key sendStatus:UDMessageSendStatusSending];
         
     } completion:^(UdeskMessage *message) {
+        if (completion) completion(message);
         
         @udStrongify(self);
         [self updateMessageStatus:message];
@@ -991,12 +1003,13 @@ static CGFloat udInputBarHeight = 54.0f;
 }
 
 #pragma mark - 发送语音
-- (void)sendVoiceMessageWithVoicePath:(NSString *)voicePath voiceDuration:(NSString *)voiceDuration {
+- (void)sendVoiceMessageWithVoicePath:(NSString *)voicePath voiceDuration:(NSString *)voiceDuration completion:(void(^)(UdeskMessage *message))completion {
     if (!voicePath || voicePath == (id)kCFNull) return ;
     if (!voiceDuration || voiceDuration == (id)kCFNull) return ;
     
     @udWeakify(self);
     [self.chatViewModel sendVoiceMessage:voicePath voiceDuration:voiceDuration completion:^(UdeskMessage *message) {
+        if (completion) completion(message);
         
         @udStrongify(self);
         [self updateMessageStatus:message];
@@ -1004,11 +1017,12 @@ static CGFloat udInputBarHeight = 54.0f;
 }
 
 #pragma mark - 发送位置信息
-- (void)sendLoactionMessageWithModel:(UdeskLocationModel *)locationModel {
+- (void)sendLoactionMessageWithModel:(UdeskLocationModel *)locationModel completion:(void(^)(UdeskMessage *message))completion {
     if (!locationModel || locationModel == (id)kCFNull) return ;
     
     @udWeakify(self);
     [self.chatViewModel sendLocationMessage:locationModel completion:^(UdeskMessage *message) {
+        if (completion) completion(message);
         
         @udStrongify(self);
         [self updateMessageStatus:message];
@@ -1016,11 +1030,12 @@ static CGFloat udInputBarHeight = 54.0f;
 }
 
 #pragma mark - 发送商品信息
-- (void)sendGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel {
+- (void)sendGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel completion:(void(^)(UdeskMessage *message))completion {
     if (!goodsModel || goodsModel == (id)kCFNull) return ;
     
     @udWeakify(self);
     [self.chatViewModel sendGoodsMessage:goodsModel completion:^(UdeskMessage *message) {
+        if (completion) completion(message);
         
         @udStrongify(self);
         [self updateMessageStatus:message];
@@ -1040,10 +1055,8 @@ static CGFloat udInputBarHeight = 54.0f;
         case UDMessageSendStatusFailed:
         case UDMessageSendStatusOffSending:
             
-            if (self.chatInputToolBar.agent.code == UDAgentStatusResultLeaveMessage ||
-                self.chatInputToolBar.agent.code == UDAgentStatusResultBoardMessage ||
-                self.chatInputToolBar.agent.code == UDAgentStatusResultQueue ||
-                self.chatInputToolBar.agent.code == UDAgentConversationOver) {
+            if (self.chatInputToolBar.agent.statusType != UDAgentStatusResultOnline ||
+                self.chatInputToolBar.agent.sessionType == UDAgentSessionTypeHasOver) {
                 [self updateChatMessageUI:message];
                 break;
             }
@@ -1166,10 +1179,10 @@ static CGFloat udInputBarHeight = 54.0f;
     NSData *imageData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:resource]];
     NSString *imageType = [UdeskImageUtil contentTypeForImageData:imageData];
     if ([imageType isEqualToString:@"gif"]) {
-        [self sendGIFMessageWithGIFData:imageData];
+        [self sendGIFMessageWithGIFData:imageData completion:nil];
     }
     else {
-        [self sendImageMessageWithImage:[UIImage imageWithData:imageData]];
+        [self sendImageMessageWithImage:[UIImage imageWithData:imageData] completion:nil];
     }
 }
 
@@ -1185,7 +1198,7 @@ static CGFloat udInputBarHeight = 54.0f;
 //发送表情
 - (void)emojiViewDidPressSend {
     
-    [self sendTextMessageWithContent:self.chatInputToolBar.chatTextView.text];
+    [self sendTextMessageWithContent:self.chatInputToolBar.chatTextView.text completion:nil];
 }
 
 #pragma mark - 导航栏右侧按钮事件
@@ -1302,8 +1315,8 @@ static CGFloat udInputBarHeight = 54.0f;
     }
     
     //离开页面放弃排队
-    if (self.chatInputToolBar.agent.code == UDAgentStatusResultQueue) {
-        [UdeskManager quitQueueWithType:[self.sdkConfig quitQueueString]];
+    if (self.chatInputToolBar.agent.statusType == UDAgentStatusResultQueue) {
+        [UdeskManager quitQueueWithType:self.sdkConfig.quitQueueMode];
     }
     //取消所有请求
     [UdeskManager LeaveSDKPage];
@@ -1449,7 +1462,7 @@ static CGFloat udInputBarHeight = 54.0f;
 
 #pragma mark - @protocol UdeskRecognizerViewDelegate
 - (void)didSendRecognizerVoiceResultText:(NSString *)resultText {
-    [self sendTextMessageWithContent:resultText];
+    [self sendTextMessageWithContent:resultText completion:nil];
 }
 
 #pragma mark - lazy
@@ -1540,7 +1553,7 @@ static CGFloat udInputBarHeight = 54.0f;
                 self.sdkConfig.actionConfig.productMessageSendLinkClickBlock(self,self.sdkConfig.productDictionary);
             }
             else {
-                [self sendTextMessageWithContent:productURL];
+                [self sendTextMessageWithContent:productURL completion:nil];
             }
         };
         [self.view addSubview:_productView];
@@ -1599,8 +1612,6 @@ static CGFloat udInputBarHeight = 54.0f;
     
     //监听键盘
     [self subscribeToKeyboard];
-    //设置客户在线
-    [UdeskManager enterSDKPage];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

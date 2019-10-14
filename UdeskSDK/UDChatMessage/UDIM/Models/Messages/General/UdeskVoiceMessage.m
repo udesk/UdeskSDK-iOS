@@ -52,11 +52,6 @@ static CGFloat const kUDCellVoiceDurationWidth = 30;
     self = [super initWithMessage:message displayTimestamp:displayTimestamp];
     if (self) {
         
-        if (message.sourceData && message.messageId) {
-            //语音缓存
-            [[UdeskCacheUtil sharedManager] setObject:message.sourceData forKey:message.messageId];
-        }
-        
         [self getAnimationVoiceImages];
         [self layoutVoiceMessage];
     }

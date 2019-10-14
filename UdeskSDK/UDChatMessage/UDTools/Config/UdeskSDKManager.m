@@ -15,7 +15,7 @@
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKUtil.h"
 #import "UdeskManager.h"
-#import "Udesk_YYWebImage.h"
+//#import "Udesk_YYWebImage.h"
 
 @implementation UdeskSDKManager{
     UdeskChatViewController *chatViewController;
@@ -91,38 +91,6 @@
     [self presentUdeskViewController:viewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
 }
 
-- (void)pushUdeskInViewController:(UIViewController *)viewController
-                        udeskType:(UdeskType)udeskType
-                       completion:(void (^)(void))completion {
-
-    [self customPresentViewController:viewController udeskType:udeskType transiteAnimation:UDTransiteAnimationTypePush completion:completion];
-}
-
-- (void)presentUdeskInViewController:(UIViewController *)viewController
-                           udeskType:(UdeskType)udeskType
-                          completion:(void (^)(void))completion {
-    
-    [self customPresentViewController:viewController udeskType:udeskType transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
-}
-
-- (void)customPresentViewController:(UIViewController *)viewController
-                          udeskType:(UdeskType)udeskType
-                  transiteAnimation:(UDTransiteAnimationType)animationType
-                         completion:(void (^)(void))completion {
-    
-    switch (udeskType) {
-        case UdeskFAQ:
-            [self presentFAQController:viewController transiteAnimation:animationType completion:completion];
-            break;
-        case UdeskTicket:
-            [self presentTicketController:viewController transiteAnimation:animationType completion:completion];
-            break;
-            
-        default:
-            break;
-    }
-}
-
 //根据后台配置
 - (void)presentUdeskViewController:(UIViewController *)viewController
                  transiteAnimation:(UDTransiteAnimationType)animationType
@@ -171,30 +139,6 @@
     [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:animationType completion:completion];
 }
 
-//推到帮助中心页面
-- (void)presentFAQController:(UIViewController *)viewController
-           transiteAnimation:(UDTransiteAnimationType)animationType
-                  completion:(void (^)(void))completion {
-    
-    
-    if (!faq) {
-        faq = [[UdeskFAQViewController alloc] initWithSDKConfig:_sdkConfig];
-    }
-    
-    [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:animationType completion:completion];
-}
-
-//推到留言页面
-- (void)presentTicketController:(UIViewController *)viewController
-              transiteAnimation:(UDTransiteAnimationType)animationType
-                     completion:(void (^)(void))completion {
-    
-    if (!ticket) {
-        ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig setting:nil];
-    }
-    [viewController presentViewController:ticket animated:YES completion:nil];
-}
-
 //推到客服导航栏页面
 - (void)presentMenuController:(UIViewController *)viewController
            transiteAnimation:(UDTransiteAnimationType)animationType
@@ -238,6 +182,26 @@
         } @finally {
         }
     }];
+}
+
+//推到留言页面
+- (void)presentTicketInViewController:(UIViewController *)viewController completion:(void (^)(void))completion {
+    
+    if (!ticket) {
+        ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig setting:nil];
+        ticket.modalPresentationStyle = UIModalPresentationFullScreen;
+    }
+    [viewController presentViewController:ticket animated:YES completion:nil];
+}
+
+//推到帮助中心页面
+- (void)showFAQInViewController:(UIViewController *)viewController transiteAnimation:(UDTransiteAnimationType)animationType completion:(void (^)(void))completion {
+    
+    if (!faq) {
+        faq = [[UdeskFAQViewController alloc] initWithSDKConfig:_sdkConfig];
+    }
+    
+    [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:animationType completion:completion];
 }
 
 @end

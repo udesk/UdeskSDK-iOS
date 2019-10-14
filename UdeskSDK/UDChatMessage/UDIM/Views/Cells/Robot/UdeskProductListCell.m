@@ -10,7 +10,6 @@
 #import "UdeskProductListMessage.h"
 #import "Udesk_YYWebImage.h"
 #import "NSAttributedString+UdeskHTML.h"
-#import "UIColor+UdeskSDK.h"
 #import "UdeskSDKShow.h"
 #import "UdeskMessage+UdeskSDK.h"
 

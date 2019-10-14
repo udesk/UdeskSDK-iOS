@@ -8,8 +8,6 @@
 
 #import "UdeskLinkCell.h"
 #import "UdeskLinkMessage.h"
-#import "UdeskSDKUtil.h"
-#import "UdeskSDKShow.h"
 
 @interface UdeskLinkCell()
 

@@ -13,7 +13,6 @@
 #import "Udesk_WHC_HttpManager.h"
 #import "Udesk_WHC_DownloadObject.h"
 #import "UdeskToast.h"
-#import "UIView+UdeskSDK.h"
 #import "UdeskSDKAlert.h"
 #import <AVKit/AVKit.h>
 

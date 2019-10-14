@@ -8,7 +8,6 @@
 
 #import "UdeskTemplateCell.h"
 #import "UdeskTemplateMessage.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskSDKShow.h"
 #import "UdeskManager.h"
 

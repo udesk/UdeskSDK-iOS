@@ -1,5 +1,5 @@
 //
-//  UdeskPhotoManeger.h
+//  UdeskPhotoManager.h
 //  UdeskSDK
 //
 //  Created by Udesk on 16/1/18.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface UdeskPhotoManeger : NSObject
+@interface UdeskPhotoManager : NSObject
 /**
  *  创建
  */

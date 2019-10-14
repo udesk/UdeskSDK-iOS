@@ -10,7 +10,6 @@
 #import "UDTTTAttributedLabel.h"
 #import "UdeskGoodsMessage.h"
 #import "Udesk_YYWebImage.h"
-#import "UIImage+UdeskSDK.h"
 
 @interface UdeskGoodsCell ()<UDTTTAttributedLabelDelegate>
 

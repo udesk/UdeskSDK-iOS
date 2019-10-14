@@ -8,8 +8,6 @@
 
 #import "UdeskRichCell.h"
 #import "UdeskRichMessage.h"
-#import "UdeskBundleUtils.h"
-#import "UdeskPhotoManeger.h"
 
 @interface UdeskRichCell()<UITextViewDelegate>
 
@@ -41,63 +39,6 @@
     _richTextView.textContainerInset = UIEdgeInsetsMake(5, 0, 0, 0);
     _richTextView.backgroundColor = [UIColor clearColor];
     [self.bubbleImageView addSubview:_richTextView];
-    
-    UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressRichTextViewAction:)];
-    [recognizer setMinimumPressDuration:0.4f];
-    [_richTextView addGestureRecognizer:recognizer];
-}
-
-//长按复制
-- (void)longPressRichTextViewAction:(UILongPressGestureRecognizer *)longPressGestureRecognizer {
-    
-    @try {
-        
-        if (longPressGestureRecognizer.state != UIGestureRecognizerStateBegan || ![self becomeFirstResponder])
-            return;
-        
-        NSMutableArray *menuItems = [[NSMutableArray alloc] init];
-        
-        if (self.baseMessage.message.messageType == UDMessageContentTypeText ||
-            self.baseMessage.message.messageType == UDMessageContentTypeRich) {
-            
-            UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:getUDLocalizedString(@"udesk_copy") action:@selector(copyed:)];
-            if (item) {
-                [menuItems addObject:item];
-            }
-            
-            UIMenuController *menu = [UIMenuController sharedMenuController];
-            [menu setMenuItems:menuItems];
-            
-            CGRect targetRect = [self convertRect:self.baseMessage.bubbleFrame
-                                         fromView:self];
-            
-            [menu setTargetRect:CGRectInset(targetRect, 0.0f, 4.0f) inView:self];
-            [menu setMenuVisible:YES animated:YES];
-        }
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
-}
-
-#pragma mark - 复制
-- (BOOL)canBecomeFirstResponder {
-    return YES;
-}
-
-- (BOOL)becomeFirstResponder {
-    return [super becomeFirstResponder];
-}
-
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-    return (action == @selector(copyed:));
-}
-
-- (void)copyed:(id)sender {
-    
-    [[UIPasteboard generalPasteboard] setString:self.richTextView.text];
-    [self resignFirstResponder];
 }
 
 - (void)updateCellWithMessage:(UdeskBaseMessage *)baseMessage {
@@ -119,50 +60,7 @@
 
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
     
-    if ([URL.absoluteString hasPrefix:@"sms:"] || [URL.absoluteString hasPrefix:@"tel:"]) {
-        
-        NSString *phoneNumber = [URL.absoluteString componentsSeparatedByString:@":"].lastObject;
-        [self callPhoneNumber:phoneNumber];
-        return NO;
-    }
-    else if ([URL.absoluteString hasPrefix:@"img:"]) {
-        
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didTapChatImageView)]) {
-            [self.delegate didTapChatImageView];
-        }
-        
-        NSString *url = [URL.absoluteString componentsSeparatedByString:@"img:"].lastObject;
-        url = [url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        
-        UdeskPhotoManeger *photoManeger = [UdeskPhotoManeger maneger];
-        [photoManeger showLocalPhoto:(UIImageView *)self.bubbleImageView withMessageURL:url];
-        return NO;
-    }
-    else if ([URL.absoluteString hasPrefix:@"data-type:"]) {
-        
-        if (textView.text.length >= (characterRange.location+characterRange.length)) {
-            NSString *content = [[textView.text substringWithRange:characterRange] stringByReplacingOccurrencesOfString:@"\n" withString:@""];;
-            [self flowMessageWithText:content flowContent:URL.absoluteString];
-        }
-        return NO;
-    }
-    else {
-        
-        if (textView.text.length >= (characterRange.location+characterRange.length)) {
-            NSURL *url = [NSURL URLWithString:[textView.text substringWithRange:characterRange]];
-            if (!url) {
-                url = URL;
-            }
-            
-            [self udOpenURL:url];
-        }
-        else {
-            [self udOpenURL:URL];
-        }
-        return NO;
-    }
-    
-    return YES;
+    return [self udRichTextView:textView shouldInteractWithURL:URL inRange:characterRange];
 }
 
 - (void)awakeFromNib {

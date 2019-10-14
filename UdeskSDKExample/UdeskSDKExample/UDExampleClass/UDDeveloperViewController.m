@@ -395,16 +395,24 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
     }
     
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"强制" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    
+    [alert addAction:[UIAlertAction actionWithTitle:@"标记放弃" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-        sdkConfig.quitQueueType = UDQuitQueueTypeForce;
+        sdkConfig.quitQueueMode = @"mark";
         UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
         [chatViewManager pushUdeskInViewController:self completion:nil];
     }]];
     
-    [alert addAction:[UIAlertAction actionWithTitle:@"标记" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消标记" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-        sdkConfig.quitQueueType = UDQuitQueueTypeForceMark;
+        sdkConfig.quitQueueMode = @"cannel_mark";
+        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
+        [chatViewManager pushUdeskInViewController:self completion:nil];
+    }]];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:@"强制立即放弃" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
+        sdkConfig.quitQueueMode = @"force_quit";
         UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
         [chatViewManager pushUdeskInViewController:self completion:nil];
     }]];

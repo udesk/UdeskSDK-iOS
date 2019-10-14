@@ -7,9 +7,7 @@
 //
 
 #import "UdeskListCell.h"
-#import "UIView+UdeskSDK.h"
 #import "UdeskListMessage.h"
-#import "NSAttributedString+UdeskHTML.h"
 #import "UdeskMessage+UdeskSDK.h"
 
 static NSString *kUDListCellId = @"kUDListCellId";

@@ -74,21 +74,7 @@
     self.smallVideoDuration = 15;
     self.orientationMask = UIInterfaceOrientationMaskPortrait;
     self.robotWelcomeMessage = getUDLocalizedString(@"udesk_robot_welcome_message");
-}
-
-- (NSString *)quitQueueString {
-    
-    switch (self.quitQueueType) {
-        case UDQuitQueueTypeForceMark:
-            return @"mark";
-            break;
-        case UDQuitQueueTypeForce:
-            return @"force_quit";
-            break;
-            
-        default:
-            break;
-    }
+    self.quitQueueMode = @"mark";
 }
 
 @end

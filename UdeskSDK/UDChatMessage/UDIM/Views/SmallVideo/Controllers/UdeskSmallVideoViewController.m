@@ -10,8 +10,6 @@
 #import "UdeskSmallVideoPreviewViewController.h"
 #import "UdeskSmallVideoBottomView.h"
 #import "UdeskSmallVideoManager.h"
-#import <AssetsLibrary/ALAssetsLibrary.h>
-#import "UdeskBundleUtils.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskImageUtil.h"
 #import "UdeskSDKConfig.h"

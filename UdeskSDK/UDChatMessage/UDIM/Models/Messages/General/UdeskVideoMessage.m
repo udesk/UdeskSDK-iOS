@@ -11,7 +11,6 @@
 #import "UdeskCacheUtil.h"
 #import "UdeskVideoUtil.h"
 #import "UdeskImageUtil.h"
-#import "UIImage+UdeskSDK.h"
 
 /** 播放按钮宽度 */
 static CGFloat const kUDVideoPlayButtonWidth = 48;

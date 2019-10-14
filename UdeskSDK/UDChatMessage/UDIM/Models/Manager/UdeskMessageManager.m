@@ -10,11 +10,7 @@
 #import "UdeskManager.h"
 #import "UdeskMessageUtil.h"
 #import "UdeskQueueMessage.h"
-#import "UdeskSDKConfig.h"
-#import "UdeskSetting.h"
-#import "UdeskAgent.h"
 #import "UdeskMessage+UdeskSDK.h"
-#import "UdeskBaseMessage.h"
 #import "UdeskSDKAlert.h"
 #import "UdeskBundleUtils.h"
 #import "Udesk_YYWebImage.h"
@@ -82,7 +78,7 @@
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             self.isShowRefresh = hasMore;
             if (messagesArray.count) {
-                self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:messagesArray lastMessage:nil];
+                [self updateMessagesArrayWithMessages:messagesArray];
             }
             
             //极端情况下，读取数据库失败，把服务器上拉取的记录做一次处理
@@ -90,20 +86,25 @@
                 //重新排序
                 NSArray *sortedMsgArray = [self mergeMessagesFromServers:serverMsgList dbMessages:messagesArray];
                 if (sortedMsgArray && sortedMsgArray.count > 0) {
-                    self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:sortedMsgArray lastMessage:nil];
+                    [self updateMessagesArrayWithMessages:sortedMsgArray];
                 }
             }
             
-            //添加留言文案
-            [self addLeaveGuideMessageToArray];
-            //添加排队文案
-            [self addQueueMessageToArray];
-            //添加临时
-            [self addRobotTempMessageToArray];
+            //更新排队文案
+            [self updateQueueMessageInArray];
             //更新UI
             [self updateCallbackMessages];
         });
     }];
+}
+
+//更新消息数组
+- (void)updateMessagesArrayWithMessages:(NSArray *)messagesArray {
+    
+    //添加临时消息
+    NSMutableArray *array = [NSMutableArray arrayWithArray:messagesArray];
+    [array addObjectsFromArray:[self temporaryMessages]];
+    self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:array lastMessage:nil];
 }
 
 //合并消息
@@ -171,68 +172,81 @@
     }];
 }
 
+//添加临时消息
+- (NSArray *)temporaryMessages {
+    
+    NSMutableArray *array = [NSMutableArray array];
+    
+    //机器人
+    if (self.isRobotSession && self.robotTempArray.count) {
+        [array addObjectsFromArray:self.robotTempArray];
+    }
+    
+    //留言文案
+    UdeskMessage *leaveGuideMsg = [self leaveGuideMessage];
+    if (leaveGuideMsg) {
+        [array addObject:leaveGuideMsg];
+    }
+    
+    return array;
+}
+
 //添加直接留言文案
 - (void)addLeaveGuideMessageToArray {
     
-    @try {
-     
-        if ((self.agentModel.code == UDAgentStatusResultLeaveMessage && [self.sdkSetting.leaveMessageType isEqualToString:@"msg"]) ||
-            (self.agentModel.code == UDAgentStatusResultBoardMessage && [self.sdkSetting.leaveMessageType isEqualToString:@"im"])) {
-        
+    UdeskMessage *message = [self leaveGuideMessage];
+    if (message) {
+        [self addMessageToArray:@[message]];
+    }
+}
+
+//留言文案消息
+- (UdeskMessage *)leaveGuideMessage {
+    
+    //会话未创建
+    if (self.agentModel.sessionType == UDAgentSessionTypeNotCreate && self.agentModel.statusType == UDAgentStatusResultOffline) {
+        //直接留言/对话留言
+        if (self.agentModel.leaveMessageType == UDAgentLeaveMessageTypeLeave || self.agentModel.leaveMessageType == UDAgentLeaveMessageTypeBoard) {
             if (![UdeskSDKUtil isBlankString:self.sdkSetting.leaveMessageGuide]) {
                 UdeskMessage *guideMsg = [[UdeskMessage alloc] initWithRich:self.sdkSetting.leaveMessageGuide];
-                [self addMessageToArray:@[guideMsg]];
+                return guideMsg;
             }
         }
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
     }
+    
+    return nil;
 }
 
 //添加排队消息
-- (void)addQueueMessageToArray {
+- (void)updateQueueMessageInArray {
     
     if (![UdeskSDKUtil isBlankString:self.queueMessageTips]) {
-        [self updateQueue:self.queueMessageTips];
+        
+        NSString *string = [self.messagesArray componentsJoinedByString:@","];
+        if ([string rangeOfString:@"UdeskQueueMessage"].location == NSNotFound || !self.messagesArray.count) {
+            NSMutableArray *mArray = [NSMutableArray arrayWithArray:self.messagesArray];
+            [mArray addObject:self.queueMessage];
+            self.messagesArray = mArray;
+        }
+        
+        self.queueMessage.contentText = self.queueMessageTips;
     }
-}
-
-//添加临时
-- (void)addRobotTempMessageToArray {
-    
-    if (!self.isRobotSession) {
-        return;
-    }
-    
-    if (self.robotTempArray.count == 0) {
-        return;
-    }
-    
-    [self addMessageToArray:self.robotTempArray];
 }
 
 //收到撤回消息
-- (void)receiveRollbackWithMessageId:(NSString *)messageId rollbackAgentNick:(NSString *)rollbackAgentNick {
+- (void)receiveRollbackWithMessage:(UdeskMessage *)message {
     
     @try {
         
         for (UdeskBaseMessage *baseMessage in self.messagesArray) {
             
-            if ([baseMessage.messageId isEqualToString:messageId]) {
+            if ([baseMessage.messageId isEqualToString:message.messageId]) {
                 
                 NSMutableArray *array = [NSMutableArray arrayWithArray:self.messagesArray];
                 if ([array containsObject:baseMessage]) {
                     [array removeObject:baseMessage];
                     self.messagesArray = array;
                 }
-                
-                if ([UdeskSDKUtil isBlankString:rollbackAgentNick]) {
-                    rollbackAgentNick = self.agentModel.nick;
-                }
-                UdeskMessage *message = [[UdeskMessage alloc] initWithRollback:rollbackAgentNick];
-                [self addMessageToArray:@[message]];
                 break;
             }
         }
@@ -242,26 +256,13 @@
     }
 }
 
-//显示排队事件
-- (void)updateQueue:(NSString *)contentText {
-
-    @try {
-        
-        _queueMessageTips = contentText;
-        NSString *string = [self.messagesArray componentsJoinedByString:@","];
-        if ([string rangeOfString:@"UdeskQueueMessage"].location == NSNotFound || !self.messagesArray.count) {
-            NSMutableArray *mArray = [NSMutableArray arrayWithArray:self.messagesArray];
-            [mArray addObject:self.queueMessage];
-            self.messagesArray = mArray;
-        }
-        
-        self.queueMessage.contentText = contentText;
-        [self updateCallbackMessages];
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
+//更新排队事件
+- (void)updateQueueMessageWithContent:(NSString *)contentText {
+    
+    self.queueMessageTips = contentText;
+    [self updateQueueMessageInArray];
+    
+    [self updateCallbackMessages];
 }
 
 //移除排队事件
@@ -439,19 +440,25 @@
     }
     
     //排队消息
-    if (self.agentModel.code == UDAgentStatusResultQueue) {
+    if (self.agentModel.statusType == UDAgentStatusResultQueue) {
         textMessage.sendType = UDMessageSendTypeQueue;
     }
-    //客户发送离线留言
-    else if (self.agentModel.code == UDAgentStatusResultLeaveMessage) {
-        textMessage.sendType = UDMessageSendTypeLeave;
-    }
-    //客户发送对话留言
-    else if (self.agentModel.code == UDAgentStatusResultBoardMessage) {
-        textMessage.sendType = UDMessageSendTypeBoard;
-        //检查消息时间
-        BOOL result = [self checkBoardMessageSendTime:textMessage];
-        if (result) return;
+    
+    //会话未创建&客服离线
+    if (self.agentModel.sessionType == UDAgentSessionTypeNotCreate && self.agentModel.statusType == UDAgentStatusResultOffline) {
+         
+        //客户发送离线留言
+        if (self.agentModel.leaveMessageType == UDAgentLeaveMessageTypeLeave) {
+            textMessage.sendType = UDMessageSendTypeLeave;
+        }
+        
+        //客户发送对话留言
+        if (self.agentModel.leaveMessageType == UDAgentLeaveMessageTypeBoard) {
+            textMessage.sendType = UDMessageSendTypeBoard;
+            //检查消息时间
+            BOOL result = [self checkBoardMessageSendTime:textMessage];
+            if (result) return;
+        }
     }
 
     if (!textMessage || textMessage == (id)kCFNull) return ;
@@ -467,7 +474,7 @@
     
     UdeskMessage *imageMessage = [[UdeskMessage alloc] initWithImage:image];
     //排队消息
-    if (self.agentModel.code == UDAgentStatusResultQueue) {
+    if (self.agentModel.statusType == UDAgentStatusResultQueue) {
         imageMessage.sendType = UDMessageSendTypeQueue;
     }
     
@@ -502,7 +509,7 @@
     
     UdeskMessage *gifMessage = [self gifMessageWithData:gifData];
     //排队消息
-    if (self.agentModel.code == UDAgentStatusResultQueue) {
+    if (self.agentModel.statusType == UDAgentStatusResultQueue) {
         gifMessage.sendType = UDMessageSendTypeQueue;
     }
     
@@ -558,7 +565,7 @@
     
     UdeskMessage *videoMessage = [self videoMessageWithVideoData:videoData];
     //排队消息
-    if (self.agentModel.code == UDAgentStatusResultQueue) {
+    if (self.agentModel.statusType == UDAgentStatusResultQueue) {
         videoMessage.sendType = UDMessageSendTypeQueue;
     }
     
@@ -604,7 +611,7 @@
     
     UdeskMessage *voiceMessage = [self voiceMessageWithPath:voicePath duration:voiceDuration];
     //排队消息
-    if (self.agentModel.code == UDAgentStatusResultQueue) {
+    if (self.agentModel.statusType == UDAgentStatusResultQueue) {
         voiceMessage.sendType = UDMessageSendTypeQueue;
     }
     
@@ -632,7 +639,7 @@
     
     UdeskMessage *locationMessage = [self locationMessageWithModel:model];
     //排队消息
-    if (self.agentModel.code == UDAgentStatusResultQueue) {
+    if (self.agentModel.statusType == UDAgentStatusResultQueue) {
         locationMessage.sendType = UDMessageSendTypeQueue;
     }
     
@@ -657,7 +664,7 @@
     
     UdeskMessage *goodsMessage = [[UdeskMessage alloc] initWithGoods:model];
     //排队消息
-    if (self.agentModel.code == UDAgentStatusResultQueue) {
+    if (self.agentModel.statusType == UDAgentStatusResultQueue) {
         goodsMessage.sendType = UDMessageSendTypeQueue;
     }
     
@@ -705,6 +712,11 @@
     }
     
     return NO;
+}
+
+//会话已关闭
+- (void)sessionClosed {
+    [self.robotTempArray removeAllObjects];
 }
 
 - (NSMutableArray *)robotTempArray {

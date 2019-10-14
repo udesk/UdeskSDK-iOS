@@ -9,7 +9,6 @@
 #import "UdeskProductMessage.h"
 #import "UdeskProductCell.h"
 #import "NSAttributedString+UdeskHTML.h"
-#import "UIColor+UdeskSDK.h"
 
 /** 水平间距 */
 static CGFloat const kUDBubbleToProductHorizontalSpacing = 14.0;

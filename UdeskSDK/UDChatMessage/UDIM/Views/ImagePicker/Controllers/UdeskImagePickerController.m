@@ -7,7 +7,6 @@
 //
 
 #import "UdeskImagePickerController.h"
-#import "UdeskAlbumsViewController.h"
 #import "UdeskAssetsPickerController.h"
 #import "UdeskSDKConfig.h"
 

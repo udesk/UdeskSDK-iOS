@@ -94,24 +94,24 @@
     switch (sendType) {
         case UdeskOrderSendTypeText:
             
-            [viewController sendTextMessageWithContent:@"测试自定义按钮回调发送文本信息"];
+            [viewController sendTextMessageWithContent:@"测试自定义按钮回调发送文本信息" completion:nil];
             break;
         case UdeskOrderSendTypeImage:
             
-            [viewController sendImageMessageWithImage:[UIImage imageNamed:@"avatar"]];
+            [viewController sendImageMessageWithImage:[UIImage imageNamed:@"avatar"] completion:nil];
             break;
         case UdeskOrderSendTypeVideo:
             
-            [viewController sendVideoMessageWithVideoFile:[[NSBundle mainBundle] pathForResource:@"889" ofType:@"mp4"]];
+            [viewController sendVideoMessageWithVideoFile:[[NSBundle mainBundle] pathForResource:@"889" ofType:@"mp4"] completion:nil];
             break;
         case UdeskOrderSendTypeVoice:
             
-            [viewController sendVoiceMessageWithVoicePath:[[NSBundle mainBundle] pathForResource:@"002" ofType:@"aac"] voiceDuration:@"3"];
+            [viewController sendVoiceMessageWithVoicePath:[[NSBundle mainBundle] pathForResource:@"002" ofType:@"aac"] voiceDuration:@"3" completion:nil];
             break;
         case UdeskOrderSendTypeGIF:{
             
             NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"001" ofType:@"gif"]];
-            [viewController sendGIFMessageWithGIFData:data];
+            [viewController sendGIFMessageWithGIFData:data completion:nil];
             break;
         }
         case UdeskOrderSendTypeLocation:{
@@ -121,12 +121,12 @@
             model.image = [UIImage imageNamed:@"003"];
             model.longitude = 116.356796;
             model.latitude = 39.939559;
-            [viewController sendLoactionMessageWithModel:model];
+            [viewController sendLoactionMessageWithModel:model completion:nil];
             break;
         }
         case UdeskOrderSendTypeGoods:{
             
-            [viewController sendGoodsMessageWithModel:goodsModel];
+            [viewController sendGoodsMessageWithModel:goodsModel completion:nil];
             break;
         }
         default:

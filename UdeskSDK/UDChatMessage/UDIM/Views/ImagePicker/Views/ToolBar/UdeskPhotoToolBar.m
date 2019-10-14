@@ -11,7 +11,6 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskAssetModel.h"
 #import "UdeskAssetsPickerManager.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskSDKMacro.h"
 
 static NSString *kCollectionViewCellIdentifier = @"kCollectionViewCellIdentifier";
@@ -107,6 +106,9 @@ static NSString *kCollectionViewCellIdentifier = @"kCollectionViewCellIdentifier
     if (self.delegate && [self.delegate respondsToSelector:@selector(toolBarDidSelectDone:)]) {
         [self.delegate toolBarDidSelectDone:self];
     }
+    
+    self.doneButton.enabled = NO;
+    self.doneButton.alpha = 0.4;
 }
 
 - (void)updateSendNumber:(NSInteger)count {

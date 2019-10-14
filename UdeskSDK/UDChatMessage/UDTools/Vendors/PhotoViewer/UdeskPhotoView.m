@@ -7,7 +7,6 @@
 //
 
 #import "UdeskPhotoView.h"
-#import "UdeskOneScrollView.h"
 #import "UdeskBundleUtils.h"
 #import "Udesk_YYWebImage.h"
 #import "UdeskButton.h"

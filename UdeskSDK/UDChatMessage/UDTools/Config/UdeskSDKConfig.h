@@ -37,14 +37,6 @@ typedef NS_ENUM(NSUInteger, UDLanguageType) {
     UDLanguageTypeEN
 };
 
-// 排队放弃类型枚举
-typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
-    /** 直接从排列中清除 */
-    UDQuitQueueTypeForce,
-    /** 标记放弃 */
-    UDQuitQueueTypeForceMark
-};
-
 @interface UdeskSDKActionConfig : NSObject
 
 /** 离线留言点击 */
@@ -161,9 +153,9 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  ru:俄语;
  zh-cn:中文简体; // 注意:App端对应zh-Hans.proj !!!!!!!!!
  */
-@property (nonatomic, strong) NSString *language;
-/** 放弃排队方式 */
-@property (nonatomic, assign) UDQuitQueueType quitQueueType;
+@property (nonatomic, copy  ) NSString *language;
+/** 放弃排队模式：mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃) */
+@property (nonatomic, copy  ) NSString *quitQueueMode;
 /** 页面弹出方式 */
 @property (nonatomic, assign) UDTransiteAnimationType presentingAnimation;
 
@@ -203,6 +195,5 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 + (instancetype)customConfig;
 
 - (void)setConfigToDefault;
-- (NSString *)quitQueueString;
 
 @end

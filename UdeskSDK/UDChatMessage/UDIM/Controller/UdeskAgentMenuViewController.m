@@ -9,10 +9,8 @@
 #import "UdeskAgentMenuViewController.h"
 #import "UdeskAgentMenuModel.h"
 #import "UIView+UdeskSDK.h"
-#import "UdeskSDKMacro.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskChatViewController.h"
-#import "UIImage+UdeskSDK.h"
 #import "UdeskStringSizeUtil.h"
 #import "UdeskSDKUtil.h"
 #import "UdeskSDKShow.h"
@@ -211,10 +209,11 @@
     
     //UdeskChatViewController已经存在
     if ([self.sdkConfig.udViewControllers containsObject:NSStringFromClass([UdeskChatViewController class])]) {
+        [self dismissChatViewController];
+        
         if (self.didSelectAgentGroupServerBlock) {
             self.didSelectAgentGroupServerBlock();
         }
-        [self dismissChatViewController];
     }
     else {
         

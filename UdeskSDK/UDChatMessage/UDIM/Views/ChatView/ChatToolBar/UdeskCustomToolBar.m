@@ -10,7 +10,6 @@
 #import "UdeskCustomButtonConfig.h"
 #import "UdeskButton.h"
 #import "UdeskStringSizeUtil.h"
-#import "UdeskSDKMacro.h"
 #import "UdeskBundleUtils.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskSDKConfig.h"

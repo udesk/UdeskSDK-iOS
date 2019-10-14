@@ -68,8 +68,9 @@
 //更新消息状态
 - (void)updateMessageSendStatus:(UDMessageSendStatus)sendStatus;
 
+- (BOOL)udRichTextView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange;
 - (void)callPhoneNumber:(NSString *)phoneNumber;
-- (void)flowMessageWithText:(NSString *)text flowContent:(NSString *)flowContent;
 - (void)udOpenURL:(NSURL *)URL;
+- (void)didSelectRobotHitMessageAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

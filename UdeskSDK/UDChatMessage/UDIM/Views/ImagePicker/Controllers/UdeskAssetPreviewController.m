@@ -10,7 +10,6 @@
 #import "UdeskPreviewNavBar.h"
 #import "UdeskPhotoToolBar.h"
 #import "UdeskAssetPreviewCell.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskAssetModel.h"
 #import "UdeskImagePickerController.h"
 #import <Photos/Photos.h>

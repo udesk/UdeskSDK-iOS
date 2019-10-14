@@ -13,4 +13,6 @@
 @property (nonatomic, copy) void(^didSelectAgentGroupServerBlock)(void);
 @property (nonatomic, strong) NSArray *menuDataSource;
 
+- (void)requestAgentMenu:(NSArray *)result;
+
 @end

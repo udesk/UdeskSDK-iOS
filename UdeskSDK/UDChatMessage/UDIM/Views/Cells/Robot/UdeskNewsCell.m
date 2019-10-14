@@ -11,7 +11,6 @@
 #import "Udesk_YYWebImage.h"
 #import "UdeskSDKShow.h"
 #import "UIView+UdeskSDK.h"
-#import "UdeskMessage+UdeskSDK.h"
 
 static NSString *kUDNewsTopAskQuestionCellId = @"kUDNewsTopAskQuestionCellId";
 
@@ -179,23 +178,7 @@ static NSString *kUDNewsTopAskQuestionCellId = @"kUDNewsTopAskQuestionCellId";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    if (indexPath.section >= self.baseMessage.message.topAsk.count) return;
-    UdeskMessageTopAsk *messageTopAsk = self.baseMessage.message.topAsk[indexPath.section];
-    
-    if (indexPath.row >= messageTopAsk.optionsList.count) return;
-    UdeskMessageOption *option = messageTopAsk.optionsList[indexPath.row];
-    
-    UdeskMessage *questionMessage = [[UdeskMessage alloc] initWithText:option.value];
-    questionMessage.robotQuestionId = option.valueId;
-    questionMessage.robotQuestion = option.value;
-    questionMessage.robotQueryType = @"6";
-    questionMessage.sendType = UDMessageSendTypeHit;
-    questionMessage.robotType = @"1";
-    questionMessage.logId = self.baseMessage.message.logId;
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didSendRobotMessage:)]) {
-        [self.delegate didSendRobotMessage:questionMessage];
-    }
+    [self didSelectRobotHitMessageAtIndexPath:indexPath];
 }
 
 - (void)updateCellWithMessage:(UdeskBaseMessage *)baseMessage {

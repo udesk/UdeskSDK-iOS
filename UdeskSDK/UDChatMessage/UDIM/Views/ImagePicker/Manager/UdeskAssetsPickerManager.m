@@ -325,14 +325,10 @@
     
     if (!asset || asset == (id)kCFNull) return ;
     if (![asset isKindOfClass:[PHAsset class]]) return ;
-    
-    __block UIImage *image;
+
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
     [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage *result, NSDictionary *info) {
-        if (result) {
-            image = result;
-        }
         BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
         if (downloadFinined && result) {
             result = [UdeskImageUtil fixOrientation:result];

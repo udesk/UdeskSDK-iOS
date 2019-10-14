@@ -6,17 +6,17 @@
 //  Copyright © 2016年 Udesk. All rights reserved.
 //
 
-#import "UdeskPhotoManeger.h"
+#import "UdeskPhotoManager.h"
 #import "UdeskPhotoView.h"
 
-@implementation UdeskPhotoManeger
+@implementation UdeskPhotoManager
 
 /**
  *  创建
  */
 +(instancetype)maneger
 {
-    UdeskPhotoManeger *mg = [[UdeskPhotoManeger alloc] init];
+    UdeskPhotoManager *mg = [[UdeskPhotoManager alloc] init];
     return mg;
 }
 
