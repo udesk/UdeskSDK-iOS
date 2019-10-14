@@ -201,10 +201,10 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 ```objective-c
 //使用push
 UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:[UdeskSDKConfig customConfig]];
-[chatViewManager showFAQInViewController:self transiteAnimation:UDTransiteAnimationTypePush completion:nil];
+[sdkManager showFAQInViewController:self transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 
 //使用present
-[chatViewManager showFAQInViewController:self transiteAnimation:UDTransiteAnimationTypePresent completion:nil];
+[sdkManager showFAQInViewController:self transiteAnimation:UDTransiteAnimationTypePresent completion:nil];
 ```
 
 - ##### [UdeskSDKStyle customStyle] 是 SDK默认的UI风格，用户可自定义风格，具体可[点击查看](#%E4%B8%89udesk-sdk-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
