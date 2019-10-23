@@ -350,7 +350,6 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
     UdeskEmojiPanelModel *model = [UdeskEmojiPanelModel new];
     model.emojiIcon = [UIImage imageNamed:@"likeSticker"];
     model.stickerPaths = @[
-                           [[NSBundle mainBundle] pathForResource:@"if_apple_2003193"ofType:@"png"],
                            [[NSBundle mainBundle] pathForResource:@"angry"ofType:@"png"],
                            [[NSBundle mainBundle] pathForResource:@"cry"ofType:@"png"],
                            [[NSBundle mainBundle] pathForResource:@"dead"ofType:@"png"],
