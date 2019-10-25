@@ -1,5 +1,15 @@
 # UdeskSDK-iOS
 
+### 公告
+
+**接入sdk编译报错误请升级Xcode到最新版本或者根据app需求选择“4.x_xcode10、5.x_xocde10”这两个分支下载手动导入！！！**
+
+**“4.x_xcode10” 分支对应的sdk版本是4.3.1。**
+
+**“5.x_xocde10” 分支对应的sdk版本是5.1.1。**
+
+
+
 ### SDK下载地址
 
 <https://github.com/udesk/UdeskSDK-iOS/tree/5.x>
