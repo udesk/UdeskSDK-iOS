@@ -435,7 +435,7 @@ config.showCustomButtons = YES;
 
 UdeskCustomButtonConfig *customButton = [[UdeskCustomButtonConfig alloc] initWithTitle:@"自定义按钮" image:nil type:UdeskCustomButtonConfigTypeInInputTop clickBlock:^(UdeskCustomButtonConfig *customButton, UdeskChatViewController *viewController) {
 	//发送商品消息（示例点击按钮直接发送商品消息，用户可根据自身需求进行修改）
-    [viewController sendGoodsMessageWithModel:[self getGoodsModel]];
+    [viewController sendGoodsMessageWithModel:[self getGoodsModel] completion:nil];
 }];
 
 config.customButtons = @[customButton];
@@ -829,7 +829,7 @@ actionConfig.locationButtonClickBlock = ^(UdeskChatViewController *viewControlle
    [viewController presentViewController:nav animated:YES completion:nil];
    //地理位置VC 发送回调
    custom.sendLocationBlock = ^(UdeskLocationModel *model) {
-       [viewController sendLoactionMessageWithModel:model];
+       [viewController sendLoactionMessageWithModel:model completion:nil];
    };
 };
 //点击地理位置消息回调（实现该回调则放弃sdk原生地理位置功能）
