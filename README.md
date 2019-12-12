@@ -1000,6 +1000,16 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.1.2版本更新功能:
+
+1.对话留言优化
+
+2.修复了iOS13 deviceToken的问题
+
+2.已知bug修改
+
+------
+
 sdk v5.1.1版本更新功能:
 
 1.对话中客服离线体验优化

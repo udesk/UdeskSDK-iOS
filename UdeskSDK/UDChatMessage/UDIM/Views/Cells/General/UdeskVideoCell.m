@@ -214,8 +214,6 @@
     playerVC.modalPresentationStyle = UIModalPresentationOverFullScreen;
     if (@available(iOS 11.0, *)) {
         playerVC.entersFullScreenWhenPlaybackBegins = YES;
-    }
-    if (@available(iOS 11.0, *)) {
         playerVC.exitsFullScreenWhenPlaybackEnds = YES;
     }
     [[UdeskSDKUtil currentViewController] presentViewController:playerVC animated:YES completion:^{

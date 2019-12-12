@@ -37,5 +37,7 @@
 + (NSArray *)linkRegexs;
 //URL正则匹配
 + (NSRange)linkRegexsMatch:(NSString *)content;
+//URL编码
++ (NSString *)stringByURLEncode:(NSString *)string;
 
 @end

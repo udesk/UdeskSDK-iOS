@@ -256,4 +256,14 @@ static NSString *kUdeskMenuId = @"kUdeskMenuId";
     return NSMakeRange(NSNotFound, 0);
 }
 
++ (NSString *)stringByURLEncode:(NSString *)string {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    
+    NSString *encoded = CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, (CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]", NULL, kCFStringEncodingUTF8));
+    
+    return encoded;
+#pragma clang diagnostic pop
+}
+
 @end
