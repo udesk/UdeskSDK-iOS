@@ -33,8 +33,6 @@ const CGFloat kUDSendStatusDiameter = 20.0;
 const CGFloat kUDBubbleToSendStatusSpacing = 10.0;
 /** 时间 Y */
 const CGFloat kUDChatMessageDateLabelY   = 10.0f;
-/** 气泡箭头宽度 */
-const CGFloat kUDArrowMarginWidth        = 10.5f;
 /** 底部留白 */
 const CGFloat kUDCellBottomMargin = 10.0;
 /** 底部留白 */

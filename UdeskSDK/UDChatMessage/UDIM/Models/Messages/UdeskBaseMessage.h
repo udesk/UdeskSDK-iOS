@@ -38,8 +38,6 @@ extern const CGFloat kUDSendStatusDiameter;
 extern const CGFloat kUDBubbleToSendStatusSpacing;
 /** 时间 Y */
 extern const CGFloat kUDChatMessageDateLabelY;
-/** 气泡箭头宽度 */
-extern const CGFloat kUDArrowMarginWidth;
 /** 底部留白 */
 extern const CGFloat kUDCellBottomMargin;
 /** 底部留白 */
