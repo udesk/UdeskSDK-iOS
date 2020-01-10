@@ -94,20 +94,20 @@
     //设置留言类型
     [self setupAgentLeaveMessageType];
     
+    //客服在线
+    if (agentModel.statusType == UDAgentStatusResultOnline) {
+        [self agentOnline];
+    }
+    //客服忙碌
+    else if (agentModel.statusType == UDAgentStatusResultQueue) {
+        [self agentQueue];
+    }
     //客服离线
-    if (agentModel.statusType != UDAgentStatusResultOnline) {
-        
-        //排队
-        if (agentModel.statusType == UDAgentStatusResultQueue) {
-            [self showQueueEvent];
-        }
-        else {
-            [self agentOffline];
-        }
+    else if (agentModel.statusType == UDAgentStatusResultOffline) {
+        [self agentOffline];
     }
     else {
-        //客服在线
-        [self agentOnline];
+        [self showAlert];
     }
     
     if (self.didUpdateAgentBlock) {
@@ -181,7 +181,7 @@
 }
 
 //显示排队事件
-- (void)showQueueEvent {
+- (void)agentQueue {
     
     if (self.didUpdateQueueMessageBlock) {
         self.didUpdateQueueMessageBlock(self.agentModel.message);

@@ -10,11 +10,9 @@
 #import "UdeskVideoCallCell.h"
 
 /** 聊天气泡和其中的文字水平间距 */
-static CGFloat const kUDBubbleToCallTextHorizontalSpacing = 10.0;
+static CGFloat const kUDBubbleToCallTextHorizontalSpacing = 14.0;
 /** 聊天气泡和其中的文字垂直间距 */
-static CGFloat const kUDBubbleToCallTextVerticalSpacing = 10.0;
-/** 聊天气泡和其中的文字垂直间距 */
-static CGFloat const kUDCallTextMendSpacing = 2.0;
+static CGFloat const kUDBubbleToCallTextVerticalSpacing = 9.0;
 
 @interface UdeskVideoCallMessage()
 
@@ -77,18 +75,20 @@ static CGFloat const kUDCallTextMendSpacing = 2.0;
             case UDMessageTypeSending:{
                 
                 //文本气泡frame
-                self.bubbleFrame = CGRectMake(UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-textSize.width, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, textSize.width+(kUDBubbleToCallTextHorizontalSpacing*3), textSize.height+(kUDBubbleToCallTextVerticalSpacing*2));
+                CGFloat bubbleWidth = textSize.width+(kUDBubbleToCallTextHorizontalSpacing*2);
+                CGFloat bubbleX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-bubbleWidth;
+                self.bubbleFrame = CGRectMake(bubbleX, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, bubbleWidth, textSize.height+(kUDBubbleToCallTextVerticalSpacing*2));
                 //文本frame
-                self.textFrame = CGRectMake(kUDBubbleToCallTextHorizontalSpacing, kUDBubbleToCallTextVerticalSpacing+kUDCallTextMendSpacing, textSize.width, textSize.height);
+                self.textFrame = CGRectMake(kUDBubbleToCallTextHorizontalSpacing, kUDBubbleToCallTextVerticalSpacing, textSize.width, textSize.height);
                 
                 break;
             }
             case UDMessageTypeReceiving:{
                 
                 //接收文字气泡frame
-                self.bubbleFrame = CGRectMake(kUDBubbleToHorizontalEdgeSpacing, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, textSize.width+(kUDBubbleToCallTextHorizontalSpacing*3), textSize.height+(kUDBubbleToCallTextVerticalSpacing*2));
+                self.bubbleFrame = CGRectMake(kUDBubbleToHorizontalEdgeSpacing, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, textSize.width+(kUDBubbleToCallTextHorizontalSpacing*2), textSize.height+(kUDBubbleToCallTextVerticalSpacing*2));
                 //接收文字frame
-                self.textFrame = CGRectMake(kUDBubbleToCallTextHorizontalSpacing+kUDArrowMarginWidth, kUDBubbleToCallTextVerticalSpacing+kUDCallTextMendSpacing, textSize.width, textSize.height);
+                self.textFrame = CGRectMake(kUDBubbleToCallTextHorizontalSpacing, kUDBubbleToCallTextVerticalSpacing, textSize.width, textSize.height);
                 
                 break;
             }

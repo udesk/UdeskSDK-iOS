@@ -160,7 +160,7 @@
             
             if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0){
                 if ([richContent isKindOfClass:[NSString class]]) {
-                    [self.textContentLabel addLinkToURL:[NSURL URLWithString:[richContent stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] withRange:[textMessage.richURLDictionary[richContent] rangeValue]];
+                    [self.textContentLabel addLinkToURL:[NSURL URLWithString:[UdeskSDKUtil stringByURLEncode:richContent]] withRange:[textMessage.richURLDictionary[richContent] rangeValue]];
                 }
             }
         }
