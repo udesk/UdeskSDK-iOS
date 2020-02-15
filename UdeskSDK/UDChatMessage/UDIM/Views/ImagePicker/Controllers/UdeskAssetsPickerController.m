@@ -21,6 +21,7 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskPopAnimation.h"
 #import "UdeskAlbumsViewController.h"
+#import "UdeskLoadingView.h"
 
 static CGFloat udItemMargin = 5;
 static CGFloat udColumnNumber = 4;
@@ -32,7 +33,7 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
 @property (nonatomic, strong) UICollectionViewFlowLayout *assetFlowLayout;
 @property (nonatomic, strong) UICollectionView *assetCollectionView;
 @property (nonatomic, strong) UdeskPhotoToolBar *toolBar;
-@property (nonatomic, strong) UIActivityIndicatorView *loadingView;
+@property (nonatomic, strong) UdeskLoadingView *loadingView;
 
 @end
 
@@ -257,7 +258,7 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     
     dispatch_group_t group = dispatch_group_create();
     
-    [self.loadingView startAnimating];
+    [self.loadingView start];
     //原图
     if (self.toolBar.originalPhotoButton.selected) {
 
@@ -273,8 +274,7 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     }
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        [self.loadingView stopAnimating];
-        [self.loadingView setHidesWhenStopped:YES];
+        [self resetUI];
         [self dismissViewControllerAnimated:YES completion:nil];
     });
 }
@@ -337,9 +337,12 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     [self.viewManager fetchCompressVideoWithAssets:[selectedModels valueForKey:@"asset"] completion:^(NSArray<NSString *> *paths) {
         
         if (!paths) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_video_export_failed") preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UIAlertActionStyleDefault handler:nil]];
-            [self presentViewController:alert animated:YES completion:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self resetUI];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_video_export_failed") preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UIAlertActionStyleDefault handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
+            });
             return ;
         }
         
@@ -363,6 +366,13 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     }
     
     return YES;
+}
+
+- (void)resetUI {
+    
+    self.toolBar.doneButton.enabled = YES;
+    self.toolBar.doneButton.alpha = 1;
+    [self.loadingView stop];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -402,19 +412,11 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     return _viewManager;
 }
 
-- (UIActivityIndicatorView *)loadingView {
+- (UdeskLoadingView *)loadingView {
     if (!_loadingView) {
-        
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 120)];
-        view.center = self.view.center;
-        view.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.8];
-        view.layer.masksToBounds = YES;
-        view.layer.cornerRadius = 5;
-        [self.view addSubview:view];
-        
-        _loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        _loadingView.frame = CGRectMake(60, 60, 0, 0);
-        [view addSubview:_loadingView];
+        _loadingView = [[UdeskLoadingView alloc] initWithFrame:CGRectMake(0, 0, 120, 120)];
+        _loadingView.center = self.view.center;
+        [self.view addSubview:_loadingView];
     }
     return _loadingView;
 }

@@ -228,6 +228,7 @@
 		44C3A0771C93ADFF004BDB2B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C3A0761C93ADFF004BDB2B /* libsqlite3.tbd */; };
 		44C3A0791C93AE05004BDB2B /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C3A0781C93AE05004BDB2B /* libresolv.tbd */; };
 		44C3A07D1C93AE11004BDB2B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C3A07C1C93AE11004BDB2B /* libz.tbd */; };
+		44CE924F23F7960E009F9275 /* UdeskLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CE924E23F7960E009F9275 /* UdeskLoadingView.m */; };
 		44D3A3DB1F66307E001145EA /* UdeskCustomLocationDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 44D3A3D61F66307E001145EA /* UdeskCustomLocationDataSource.m */; };
 		44D3A3DC1F66307E001145EA /* UdeskCustomLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44D3A3D81F66307E001145EA /* UdeskCustomLocationViewController.m */; };
 		44D3A3DD1F66307E001145EA /* UdeskCustomLocationViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44D3A3DA1F66307E001145EA /* UdeskCustomLocationViewModel.m */; };
@@ -655,6 +656,8 @@
 		44C3A0761C93ADFF004BDB2B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		44C3A0781C93AE05004BDB2B /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		44C3A07C1C93AE11004BDB2B /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		44CE924D23F7960E009F9275 /* UdeskLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskLoadingView.h; sourceTree = "<group>"; };
+		44CE924E23F7960E009F9275 /* UdeskLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskLoadingView.m; sourceTree = "<group>"; };
 		44D3A3D51F66307E001145EA /* UdeskCustomLocationDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskCustomLocationDataSource.h; sourceTree = "<group>"; };
 		44D3A3D61F66307E001145EA /* UdeskCustomLocationDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCustomLocationDataSource.m; sourceTree = "<group>"; };
 		44D3A3D71F66307E001145EA /* UdeskCustomLocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskCustomLocationViewController.h; sourceTree = "<group>"; };
@@ -876,6 +879,7 @@
 		444A1C5E22A106CA00A8ACE3 /* UDTools */ = {
 			isa = PBXGroup;
 			children = (
+				44CE924C23F7960E009F9275 /* Loading */,
 				444A1C5F22A106CA00A8ACE3 /* DataSource */,
 				444A1C6222A106CA00A8ACE3 /* Vendors */,
 				444A1CB122A106CA00A8ACE3 /* Category */,
@@ -1837,6 +1841,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		44CE924C23F7960E009F9275 /* Loading */ = {
+			isa = PBXGroup;
+			children = (
+				44CE924D23F7960E009F9275 /* UdeskLoadingView.h */,
+				44CE924E23F7960E009F9275 /* UdeskLoadingView.m */,
+			);
+			path = Loading;
+			sourceTree = "<group>";
+		};
 		44D3A3D41F66307E001145EA /* UDBaiduLocationSimple */ = {
 			isa = PBXGroup;
 			children = (
@@ -2120,6 +2133,7 @@
 				4420BA8A20D8FC06005E1D18 /* UDFunctionViewController.m in Sources */,
 				444A1E2B22A106CB00A8ACE3 /* UdeskLanguageConfig.m in Sources */,
 				444A1DFB22A106CB00A8ACE3 /* UdeskPhotoView.m in Sources */,
+				44CE924F23F7960E009F9275 /* UdeskLoadingView.m in Sources */,
 				444A1E0522A106CB00A8ACE3 /* Udesk_YYDiskCache.m in Sources */,
 				444A1E5122A106CB00A8ACE3 /* UdeskBaseNavigationViewController.m in Sources */,
 				444A1E6422A106CB00A8ACE3 /* UdeskLocationCell.m in Sources */,
