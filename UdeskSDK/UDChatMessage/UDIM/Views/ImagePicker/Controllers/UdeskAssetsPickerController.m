@@ -336,11 +336,15 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     [self.viewManager fetchCompressVideoWithAssets:[selectedModels valueForKey:@"asset"] completion:^(NSArray<NSString *> *paths,NSString *errorMessage) {
         
         if (!paths) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:getUDLocalizedString(@"udesk_video_export_failed") message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UIAlertActionStyleDefault handler:nil]];
-            [self presentViewController:alert animated:YES completion:nil];
-            [self.loadingView stopAnimating];
-            [self.loadingView setHidesWhenStopped:YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.loadingView stopAnimating];
+                [self.loadingView setHidesWhenStopped:YES];
+                self.toolBar.doneButton.enabled = YES;
+                self.toolBar.doneButton.alpha = 1;
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:getUDLocalizedString(@"udesk_video_export_failed") message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UIAlertActionStyleDefault handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
+            });
             return ;
         }
         
