@@ -186,6 +186,8 @@ typedef NS_ENUM(NSInteger,UDMessageSendType) {
 @property (nonatomic, strong) NSNumber *turnFlag;
 /** 答案的消息id */
 @property (nonatomic, strong) NSString *logId;
+/** 是常见问题（常见问题和建议问题的UI是一致的，需要有个参数判断下） */
+@property (nonatomic, assign) BOOL     isFaq;
 /** 这个参数表示该消息是不存储db的，需要暂时存到内存 */
 @property (nonatomic, assign) BOOL     tempStore;
 

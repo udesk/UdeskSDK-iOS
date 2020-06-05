@@ -84,7 +84,7 @@ typedef NS_ENUM(NSUInteger, UDLanguageType) {
 
 /*  ----------- 自动消息 ------------  */
 
-/** 进入聊天界面自动发送给客服的消息, 可以包括图片和文字 */
+/** 进入聊天界面自动发送给客服的消息, 可以包括图片、文字、商品消息（传UdeskGoodsModel） */
 @property (nonatomic, strong) NSArray *preSendMessages;
 
 /*  ----------- 图片选择器 ------------  */

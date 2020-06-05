@@ -81,7 +81,7 @@
 /** 转人工 */
 - (void)transferToAgentServer;
 
-//发送消息
+/** 发送机器人消息 */
 - (void)sendRobotMessage:(UdeskMessage *)message completion:(void(^)(UdeskMessage *message))completion;
 /** 发送文本消息 */
 - (void)sendTextMessage:(NSString *)text completion:(void(^)(UdeskMessage *message))completion;

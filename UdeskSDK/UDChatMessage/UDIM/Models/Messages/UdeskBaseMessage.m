@@ -8,6 +8,7 @@
 
 #import "UdeskBaseMessage.h"
 #import "UdeskDateUtil.h"
+#import "NSAttributedString+UdeskHTML.h"
 
 /** 头像距离屏幕水平边沿距离 */
 const CGFloat kUDAvatarToHorizontalEdgeSpacing = 12.0;
@@ -57,6 +58,10 @@ const CGFloat kUDUsefulWidth = 32.0;
 const CGFloat kUDUsefulHeight = 32.0;
 /** 有问答评价的消息最小高度 */
 const CGFloat kUDAnswerBubbleMinHeight = 75.0;
+/** 聊天气泡和其中的文字垂直间距 */
+const CGFloat kUDRichMendSpacingOne = 1.0;
+/** 聊天气泡和其中的文字垂直间距 */
+static CGFloat const kUDRichMendSpacingTwo = 5.0;
 
 @interface UdeskBaseMessage()
 
@@ -179,6 +184,55 @@ const CGFloat kUDAnswerBubbleMinHeight = 75.0;
     }
     
     return NO;
+}
+
+- (NSAttributedString *)getAttributedStringWithText:(NSString *)text font:(UIFont *)font {
+    
+    if ([UdeskSDKUtil isBlankString:text]) {
+        return [[NSAttributedString alloc] initWithString:@""];
+    }
+    
+    NSAttributedString *attributedString = [NSAttributedString attributedStringFromHTML:text customFont:font];
+    
+    NSMutableParagraphStyle *contentParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    contentParagraphStyle.lineSpacing = 6.0f;
+    contentParagraphStyle.lineHeightMultiple = 1.0f;
+    contentParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    contentParagraphStyle.alignment = NSTextAlignmentLeft;
+    
+    NSMutableAttributedString *mAtt = [[NSMutableAttributedString alloc] initWithAttributedString:attributedString];
+    [mAtt addAttribute:NSParagraphStyleAttributeName value:contentParagraphStyle range:NSMakeRange(0, attributedString.length)];
+    
+    //富文本末尾会有\n，为了不影响正常显示 这里前端过滤掉
+    if (attributedString.length) {
+        NSAttributedString *last = [mAtt attributedSubstringFromRange:NSMakeRange(mAtt.length - 1, 1)];
+        if ([[last string] isEqualToString:@"\n"]) {
+            [mAtt replaceCharactersInRange:NSMakeRange(mAtt.length - 1, 1) withString:@""];
+        }
+    }
+    
+    return mAtt;
+}
+
+- (CGSize)getAttributedStringSizeWithAttr:(NSAttributedString *)attributedString size:(CGSize)size {
+ 
+    CGSize textSize = [UdeskStringSizeUtil sizeWithAttributedText:attributedString size:size];
+    
+    if ([UdeskSDKUtil stringContainsEmoji:[attributedString string]]) {
+        textSize.width += kUDRichMendSpacingTwo;
+    }
+    
+    __block CGFloat space = 0;
+    [attributedString enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, attributedString.length) options:NSAttributedStringEnumerationReverse usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop) {
+        
+        if (value && [value isKindOfClass:[NSTextAttachment class]]){
+            space = kUDRichMendSpacingTwo * 2;
+        }
+    }];
+    
+    textSize.height = ceil(textSize.height+space) + kUDRichMendSpacingOne;
+    
+    return textSize;
 }
 
 - (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {

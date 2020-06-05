@@ -525,7 +525,7 @@
     UdeskMessage *questionMessage = [[UdeskMessage alloc] initWithText:option.value];
     questionMessage.robotQuestionId = option.valueId;
     questionMessage.robotQuestion = option.value;
-    questionMessage.robotQueryType = @"6";
+    questionMessage.robotQueryType = self.baseMessage.message.isFaq ? @"6" : @"7";
     questionMessage.sendType = UDMessageSendTypeHit;
     questionMessage.robotType = @"1";
     questionMessage.logId = self.baseMessage.message.logId;

@@ -14,9 +14,13 @@
 
 <https://github.com/udesk/UdeskSDK-iOS/tree/5.x>
 
-5.x版本使用Xcode11.1、iPhoneX iOS13.1.2 编译。
+5.x版本使用Xcode11.5、iPhoneX iOS13.5 编译。
 
-5.x版本暂不支持pod导入。
+5.x版本pod导入请使用：
+
+```ruby
+pod 'UdeskSDK', :git => 'https://github.com/udesk/UdeskSDK-iOS', :branch => '5.x'
+```
 
 ## 目录
 - [一、集成SDK](#%E4%B8%80%e9%9b%86%e6%88%90sdk)
@@ -295,11 +299,12 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 
 ```objective-c
 UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-//直接从排列中清除
+  
+//立即放弃: 请求后直接从排列中清除,记为排队放弃
 sdkConfig.quitQueueMode = @"force_quit";
-//标记放弃
+//标记放弃: 标记后,等到客服拉取时,如果客户不在线,从排列中清除,记为排队放弃
 //sdkConfig.quitQueueMode = @"mark";
-//取消标记
+//取消标记: 在标记后,用户再回来可以取消标记,请求 agent 接口会做一次取消操作
 //sdkConfig.quitQueueMode = @"cannel_mark";
 
 UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
@@ -359,8 +364,11 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 
 ```objective-c
 UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-//只支持文本和图片
-sdkConfig.preSendMessages = @[@"testPreMessage",[UIImage imageNamed:@"image"]];
+//UdeskGoodsModel具体参数请查看该文件
+UdeskGoodsModel *goodsModel = [[UdeskGoodsModel alloc] init];
+goodsModel.name = @"name";
+//只支持文本、图片、商品消息
+sdkConfig.preSendMessages = @[@"testPreMessage",[UIImage imageNamed:@"image"],goodsModel];
 
 UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
@@ -1000,13 +1008,25 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.1.3版本更新功能:
+
+1.机器人推荐消息富文本显示问题修复
+
+2.自动消息增加商品类型
+
+3.机器人消息增加建议问题类型
+
+4.已知bug修改
+
+------
+
 sdk v5.1.2版本更新功能:
 
 1.对话留言优化
 
 2.修复了iOS13 deviceToken的问题
 
-2.已知bug修改
+3.已知bug修改
 
 ------
 

@@ -41,6 +41,7 @@
 #import "UdeskSpeechRecognizerView.h"
 #import "UIBarButtonItem+UdeskSDK.h"
 #import "UdeskProductView.h"
+#import "UdeskGoodsModel.h"
 
 static CGFloat udInputBarHeight = 54.0f;
 
@@ -299,6 +300,9 @@ static CGFloat udInputBarHeight = 54.0f;
             }
             else if ([messageContent isKindOfClass:[UIImage class]]) {
                 [self sendImageMessageWithImage:messageContent completion:nil];
+            }
+            else if ([messageContent isKindOfClass:[UdeskGoodsModel class]]) {
+                [self sendGoodsMessageWithModel:messageContent completion:nil];
             }
         }
         self.sdkConfig.preSendMessages = nil;
@@ -1032,6 +1036,7 @@ static CGFloat udInputBarHeight = 54.0f;
 #pragma mark - 发送商品信息
 - (void)sendGoodsMessageWithModel:(UdeskGoodsModel *)goodsModel completion:(void(^)(UdeskMessage *message))completion {
     if (!goodsModel || goodsModel == (id)kCFNull) return ;
+    if (![goodsModel isKindOfClass:[UdeskGoodsModel class]]) return ;
     
     @udWeakify(self);
     [self.chatViewModel sendGoodsMessage:goodsModel completion:^(UdeskMessage *message) {

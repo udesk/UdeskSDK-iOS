@@ -11,7 +11,7 @@
 #import "UDTTTAttributedLabel.h"
 
 /** 聊天气泡和其中的文字水平间距 */
-static CGFloat const kUDBubbleToTextHorizontalSpacing = 14.0;
+static CGFloat const kUDBubbleToTextHorizontalSpacing = 15.0;
 /** 聊天气泡和其中的文字垂直间距 */
 static CGFloat const kUDBubbleToTextVerticalSpacing = 9.0;
 /** 聊天气泡和其中的文字垂直间距 */

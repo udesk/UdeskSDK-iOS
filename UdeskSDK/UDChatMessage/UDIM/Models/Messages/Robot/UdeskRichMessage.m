@@ -8,18 +8,11 @@
 
 #import "UdeskRichMessage.h"
 #import "UdeskRichCell.h"
-#import "NSAttributedString+UdeskHTML.h"
 
 /** 聊天气泡和其中的文字水平间距 */
-static CGFloat const kUDBubbleToRichHorizontalSpacing = 14.0;
+static CGFloat const kUDBubbleToRichHorizontalSpacing = 15.0;
 /** 聊天气泡和其中的文字垂直间距 */
-static CGFloat const kUDBubbleToRichVerticalSpacing = 9.0;
-/** 聊天气泡和其中的文字垂直间距 */
-static CGFloat const kUDBubbleToRichVerticalMinSpacing = 6.0;
-/** 聊天气泡和其中的文字垂直间距 */
-static CGFloat const kUDRichMendSpacingOne = 1.0;
-/** 聊天气泡和其中的文字垂直间距 */
-static CGFloat const kUDRichMendSpacingTwo = 5.0;
+static CGFloat const kUDBubbleToRichVerticalSpacing = 10.0;
 
 @interface UdeskRichMessage()
 
@@ -51,7 +44,8 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
         
         CGFloat spacing = ud_isIOS11 ? 0 : kUDRichMendSpacingOne;
         
-        CGSize richSize = [self setRichAttributedCellText:self.message.content];
+        self.attributedString = [self getAttributedStringWithText:self.message.content font:[UdeskSDKConfig customConfig].sdkStyle.messageContentFont];
+        CGSize richSize = [self getAttributedStringSizeWithAttr:self.attributedString size:CGSizeMake([self textMaxWidth], CGFLOAT_MAX)];
         switch (self.message.messageFrom) {
             case UDMessageTypeSending:{
                 
@@ -75,7 +69,7 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
                 
                 CGFloat bubbleWidth = richSize.width+(kUDBubbleToRichHorizontalSpacing*2);
                 CGFloat bubbleHeight = richSize.height+(kUDBubbleToRichVerticalSpacing*2);
-                CGFloat richTextY = ud_isIOS13 ? (kUDBubbleToRichVerticalMinSpacing+kUDRichMendSpacingOne) : kUDBubbleToRichVerticalMinSpacing;
+                CGFloat richTextY = kUDBubbleToRichVerticalSpacing;
                 
                 if (self.message.showUseful) {
                     bubbleHeight = bubbleHeight > kUDAnswerBubbleMinHeight ? bubbleHeight : kUDAnswerBubbleMinHeight;
@@ -104,59 +98,9 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
     }
 }
 
-- (CGSize)setRichAttributedCellText:(NSString *)text {
-    
-    @try {
-        
-        if ([UdeskSDKUtil isBlankString:text]) {
-            return CGSizeMake(100, 20);
-        }
-        
-        NSAttributedString *attributedString = [NSAttributedString attributedStringFromHTML:text customFont:[UdeskSDKConfig customConfig].sdkStyle.messageContentFont];
-        
-        NSMutableParagraphStyle *contentParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-        contentParagraphStyle.lineSpacing = 6.0f;
-        contentParagraphStyle.lineHeightMultiple = 1.0f;
-        contentParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-        contentParagraphStyle.alignment = NSTextAlignmentLeft;
-        
-        NSMutableAttributedString *mAtt = [[NSMutableAttributedString alloc] initWithAttributedString:attributedString];
-        [mAtt addAttribute:NSParagraphStyleAttributeName value:contentParagraphStyle range:NSMakeRange(0, attributedString.length)];
-        
-        //富文本末尾会有\n，为了不影响正常显示 这里前端过滤掉
-        if (attributedString.length) {
-            NSAttributedString *last = [mAtt attributedSubstringFromRange:NSMakeRange(mAtt.length - 1, 1)];
-            if ([[last string] isEqualToString:@"\n"]) {
-                [mAtt replaceCharactersInRange:NSMakeRange(mAtt.length - 1, 1) withString:@""];
-            }
-        }
-        
-        self.attributedString = mAtt;
-        
-        CGSize textSize = [UdeskStringSizeUtil sizeWithAttributedText:mAtt size:CGSizeMake(self.textMaxWidth, CGFLOAT_MAX)];
-        
-        if ([UdeskSDKUtil stringContainsEmoji:[mAtt string]]) {
-            textSize.width += kUDRichMendSpacingTwo;
-        }
-        
-        __block CGFloat space = 0;
-        [attributedString enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, attributedString.length) options:NSAttributedStringEnumerationReverse usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop) {
-            
-            if (value && [value isKindOfClass:[NSTextAttachment class]]){
-                space = kUDRichMendSpacingTwo * 2;
-            }
-        }];
-        
-        textSize.height = ceil(textSize.height+space) + kUDRichMendSpacingOne;
-        
-        return textSize;
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
+- (CGFloat)textMaxWidth {
+    return ((310.0/375.0) * UD_SCREEN_WIDTH)-(kUDBubbleToRichHorizontalSpacing*2);
 }
-
 - (UITableViewCell *)getCellWithReuseIdentifier:(NSString *)cellReuseIdentifer {
     return [[UdeskRichCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifer];
 }

@@ -60,6 +60,8 @@ extern const CGFloat kUDUsefulWidth;
 extern const CGFloat kUDUsefulHeight;
 /** 有问答评价的消息最小高度 */
 extern const CGFloat kUDAnswerBubbleMinHeight;
+/** 富文本间隙 */
+extern const CGFloat kUDRichMendSpacingOne;
 
 @interface UdeskBaseMessage : NSObject
 
@@ -91,6 +93,9 @@ extern const CGFloat kUDAnswerBubbleMinHeight;
 @property (nonatomic, strong) UdeskMessage *message;
 
 - (instancetype)initWithMessage:(UdeskMessage *)message displayTimestamp:(BOOL)displayTimestamp;
+
+- (NSAttributedString *)getAttributedStringWithText:(NSString *)text font:(UIFont *)font;
+- (CGSize)getAttributedStringSizeWithAttr:(NSAttributedString *)attributedString size:(CGSize)size;
 
 /**
  *  通过重用的名字初始化cell

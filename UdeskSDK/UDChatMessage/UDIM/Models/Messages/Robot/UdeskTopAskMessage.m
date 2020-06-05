@@ -56,12 +56,12 @@ const CGFloat kUDOptionToTagHorizontalSpacing = 8.0;
     
     if (self.message.messageType == UDMessageContentTypeTopAsk && self.message.messageFrom == UDMessageTypeReceiving) {
         
-        self.leadingAttributedString = [NSAttributedString attributedStringFromHTML:self.message.answerTitle customFont:[UIFont systemFontOfSize:15]];
+        self.leadingAttributedString = [self getAttributedStringWithText:self.message.answerTitle font:[UdeskSDKConfig customConfig].sdkStyle.messageContentFont];
         
-        CGFloat width = [self topAskMaxWidth]-(kUDBubbleToTopAskHorizontalSpacing*2);
-        CGSize leadingWordSize = [UdeskStringSizeUtil sizeWithAttributedText:self.leadingAttributedString size:CGSizeMake(width, CGFLOAT_MAX)];
         //引导文字frame
-        self.leadingWordFrame = CGRectMake(kUDBubbleToTopAskHorizontalSpacing, kUDBubbleToTopAskVerticalSpacing, leadingWordSize.width, leadingWordSize.height);
+        CGFloat width = [self topAskMaxWidth]-(kUDBubbleToTopAskHorizontalSpacing*2);
+        CGSize leadingWordSize = [self getAttributedStringSizeWithAttr:self.leadingAttributedString size:CGSizeMake(width, CGFLOAT_MAX)];
+        self.leadingWordFrame = CGRectMake(kUDBubbleToTopAskHorizontalSpacing, kUDBubbleToTopAskVerticalSpacing, leadingWordSize.width, leadingWordSize.height+5);
         
         CGFloat topAskHeight = 0;
         NSMutableArray *topAskHeightArray = [NSMutableArray array];
@@ -93,7 +93,7 @@ const CGFloat kUDOptionToTagHorizontalSpacing = 8.0;
         self.topAskTitleHeightArray = [topAskHeightArray copy];
         self.questionHeightArray = [questionHeightArray copy];
         
-        self.lineFrame = CGRectMake(0, CGRectGetMaxY(self.leadingWordFrame), [self topAskMaxWidth], 1);
+        self.lineFrame = CGRectMake(0, CGRectGetMaxY(self.leadingWordFrame)+kUDBubbleToTopAskVerticalSpacing, [self topAskMaxWidth], 1);
         
         CGFloat topAskSpacing = self.message.topAsk.count > 1 ? 0 : kUDBubbleToTopAskVerticalSpacing*0.5;
         self.topAskFrame = CGRectMake(3, CGRectGetMaxY(self.lineFrame)+topAskSpacing, [self topAskMaxWidth]-6, topAskHeight);

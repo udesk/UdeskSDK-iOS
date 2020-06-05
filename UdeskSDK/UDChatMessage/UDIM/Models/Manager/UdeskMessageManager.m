@@ -626,7 +626,7 @@
     if (!voiceData || voiceData == (id)kCFNull) return nil;
     
     UdeskMessage *voiceMessage = [[UdeskMessage alloc] initWithVoice:voiceData duration:duration];
-    [[UdeskCacheUtil sharedManager] setObject:[NSData dataWithContentsOfFile:voicePath] forKey:voiceMessage.messageId];
+    [[UdeskCacheUtil sharedManager] setObject:voiceData forKey:voiceMessage.messageId];
     
     return voiceMessage;
 }
