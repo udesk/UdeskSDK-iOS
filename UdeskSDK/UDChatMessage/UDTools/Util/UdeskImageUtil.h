@@ -23,6 +23,8 @@
 + (UIImage *)imageResize:(UIImage *)image toSize:(CGSize)toSize;
 // 计算图片实际大小
 + (CGSize)udImageSize:(UIImage *)image;
+// 计算图片实际大小
++ (CGSize)richImageSize:(UIImage *)image;
 // 获取图片的类型
 + (NSString *)contentTypeForImageData:(NSData *)data;
 

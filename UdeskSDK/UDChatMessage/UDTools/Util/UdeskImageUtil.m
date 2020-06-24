@@ -239,18 +239,16 @@
 }
 
 // 计算图片实际大小
-+ (CGSize)udImageSize:(UIImage *)image {
++ (CGSize)richImageSize:(UIImage *)image {
+    
+    CGFloat fixedSize = ((310.0/375.0) * [[UIScreen mainScreen] bounds].size.width)-30;
+    return [UdeskImageUtil udeskImageSize:image fixedSize:fixedSize];
+}
+
++ (CGSize)udeskImageSize:(UIImage *)image fixedSize:(CGFloat)fixedSize {
     
     @try {
-        
-        CGFloat fixedSize;
-        if ([[UIScreen mainScreen] bounds].size.width>320) {
-            fixedSize = 140;
-        }
-        else {
-            fixedSize = 115;
-        }
-        
+
         CGSize imageSize = CGSizeMake(fixedSize, fixedSize);
         
         if (image.size.height > image.size.width) {
@@ -265,7 +263,6 @@
             
         }
         else if (image.size.height < image.size.width) {
-            
             CGFloat scale = image.size.width/fixedSize;
             
             if (scale!=0) {
@@ -286,6 +283,20 @@
         NSLog(@"%@",exception);
     } @finally {
     }
+}
+
+// 计算图片实际大小
++ (CGSize)udImageSize:(UIImage *)image {
+    
+    CGFloat fixedSize;
+    if ([[UIScreen mainScreen] bounds].size.width>320) {
+        fixedSize = 140;
+    }
+    else {
+        fixedSize = 115;
+    }
+    
+    return [UdeskImageUtil udeskImageSize:image fixedSize:fixedSize];
 }
 
 //通过图片Data数据第一个字节 来获取图片扩展名

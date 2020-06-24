@@ -108,14 +108,16 @@
 //        }
         
         //开通客户导航栏
-        if (!setting.enableRobot.boolValue && setting.enableImGroup.boolValue && !setting.inSession.boolValue) {
+        if ([setting.status isEqualToString:@"init"] && !setting.enableRobot.boolValue && setting.enableImGroup.boolValue && !setting.inSession.boolValue) {
             [self presentMenuController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
             return ;
         }
         
         //不在会话
         [UdeskSDKUtil storeGroupId:_sdkConfig.groupId];
-        [UdeskSDKUtil storeMenuId:nil];
+        if ([setting.status isEqualToString:@"init"]) {
+            [UdeskSDKUtil storeMenuId:nil];
+        }
         
         [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
         

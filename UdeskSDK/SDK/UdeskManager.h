@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 5.1.3
+//  Version: 5.1.4
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -74,7 +74,7 @@
 /**
  请求客服信息
  */
-- (void)didReceiveRequestServersAgent;
+- (void)didReceiveRequestServersAgent:(UdeskMessage *)message;
 
 @end
 

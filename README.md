@@ -1008,6 +1008,16 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.1.4版本更新功能:
+
+1.机器人富文本消息显示问题修复
+
+2.排队留言会话问题修复
+
+3.已知bug修改
+
+------
+
 sdk v5.1.3版本更新功能:
 
 1.机器人推荐消息富文本显示问题修复

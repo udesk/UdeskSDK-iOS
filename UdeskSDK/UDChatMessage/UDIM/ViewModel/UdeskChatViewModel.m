@@ -95,27 +95,30 @@
         return;
     }
     
-    //正在会话
-    if ([setting.status isEqualToString:@"chatting"]) {
+    //正在会话/排队
+    if ([setting.status isEqualToString:@"chatting"] || [setting.status isEqualToString:@"queuing"]) {
         [self requestAgentDataWithPreSessionMessage:nil completion:nil];
-        return;
     }
-    
-    //开通机器人
-    if (setting.enableRobot.boolValue && !setting.inSession.boolValue) {
-        [UdeskManager initRobot:^(NSString *robotName) {
-            [self udeskRobotSessionWithName:robotName];
-        }];
-        return;
-    }
-    
     //无消息对话过滤
-    if (setting.showPreSession.boolValue && !setting.inSession.boolValue) {
+    else if ([setting.status isEqualToString:@"pre_session"]) {
         [self preSessionWithTitle:setting.preSessionTitle preSessionId:setting.preSessionId];
-        return;
     }
-    
-    [self fetchServersAgent:nil];
+    //按设置好的走 机器人->无消息对话过滤->人工
+    else {
+        //开通机器人
+        if (setting.enableRobot.boolValue && !setting.inSession.boolValue) {
+            [UdeskManager initRobot:^(NSString *robotName) {
+                [self udeskRobotSessionWithName:robotName];
+            }];
+            return;
+        }
+        //无消息对话过滤
+        if (setting.showPreSession.boolValue && !setting.inSession.boolValue) {
+            [self preSessionWithTitle:setting.preSessionTitle preSessionId:setting.preSessionId];
+            return;
+        }
+        [self fetchServersAgent:nil];
+    }
 }
 
 #pragma mark - 请求客服数据
@@ -214,7 +217,7 @@
 }
 
 //请求客服信息
-- (void)didReceiveRequestServersAgent {
+- (void)didReceiveRequestServersAgent:(UdeskMessage *)message {
     
     //无消息对话过滤/机器人会话
     if (self.preSessionId || self.messageManager.isRobotSession) {
@@ -222,7 +225,9 @@
     }
     
     if (self.agentManager.agentModel.leaveMessageType == UDAgentLeaveMessageTypeBoard) {
-        [self.agentManager fetchAgent:nil];
+        [self.agentManager fetchAgent:^(UdeskAgent *agentModel) {
+            [UdeskManager sendMessage:message progress:nil completion:nil];
+        }];
     }
 }
 

@@ -9,6 +9,8 @@
 #import "NSAttributedString+UdeskHTML.h"
 #include <libxml/HTMLparser.h>
 
+#import "UdeskImageUtil.h"
+
 @implementation NSAttributedString (UdeskHTML)
 
 + (NSAttributedString *)attributedStringFromHTML:(NSString *)htmlString customFont:(UIFont *)customFont
@@ -86,7 +88,8 @@
         //加粗标签
         if (strncmp("strong", (const char *)xmlNode->name, strlen((const char *)xmlNode->name)) == 0) {
             if (customFont) {
-                [nodeAttributedString addAttribute:NSFontAttributeName value:customFont range:nodeAttributedStringRange];
+                UIFont *boldFont = [UIFont boldSystemFontOfSize:customFont.pointSize];
+                [nodeAttributedString addAttribute:NSFontAttributeName value:boldFont range:nodeAttributedStringRange];
             }
         }
         //列表
@@ -132,17 +135,24 @@
             
             @try {
                 
-                UIColor *color = [UIColor blackColor];
-                
                 //解析颜色
                 if ([attributeDictionary.allKeys containsObject:@"style"]) {
-                    NSString *nColor = attributeDictionary[@"style"];
-                    
-                    //7是：“#ff9900” 的length
-                    if ([nColor rangeOfString:@"color"].location != NSNotFound && [nColor rangeOfString:@"#"].location != NSNotFound) {
-                        if (nColor.length >= ([nColor rangeOfString:@"#"].length+7)) {
-                            NSString *s = [nColor substringWithRange:NSMakeRange([nColor rangeOfString:@"#"].location, 7)];
-                            color = [self colorFromHexString:s];
+                    NSString *style = attributeDictionary[@"style"];
+                    NSArray *array = [style componentsSeparatedByString:@";"];
+                    for (NSString *tagStr in array) {
+                        //7是：“#ff9900” 的length
+                        if ([tagStr hasPrefix:@"color"] && [tagStr rangeOfString:@"#"].location != NSNotFound) {
+                            if (tagStr.length >= ([tagStr rangeOfString:@"#"].length+7)) {
+                                NSString *s = [tagStr substringWithRange:NSMakeRange([tagStr rangeOfString:@"#"].location, 7)];
+                                UIColor *color = [self colorFromHexString:s];
+                                [nodeAttributedString addAttribute:NSForegroundColorAttributeName value:color range:nodeAttributedStringRange];
+                            }
+                        } else if ([tagStr hasPrefix:@"background-color"] && [tagStr rangeOfString:@"#"].location != NSNotFound) {
+                            if (tagStr.length >= ([tagStr rangeOfString:@"#"].length+7)) {
+                                NSString *s = [tagStr substringWithRange:NSMakeRange([tagStr rangeOfString:@"#"].location, 7)];
+                                UIColor *color = [self colorFromHexString:s];
+                                [nodeAttributedString addAttribute:NSBackgroundColorAttributeName value:color range:nodeAttributedStringRange];
+                            }
                         }
                     }
                 }
@@ -160,8 +170,6 @@
                         [nodeAttributedString addAttribute:NSLinkAttributeName value:value range:NSMakeRange(0, nodeAttributedString.string.length)];
                     }
                 }
-                
-                [nodeAttributedString addAttribute:NSForegroundColorAttributeName value:color range:nodeAttributedStringRange];
                 
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
@@ -287,30 +295,24 @@
             @try {
                 
                 NSString *src = attributeDictionary[@"src"];
-                NSString *width = attributeDictionary[@"width"];
-                NSString *height = attributeDictionary[@"height"];
-                
                 if (src != nil) {
                     
-                    NSString *newURL = [src stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                    src = [[src stringByRemovingPercentEncoding] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                     NSError *error = nil;
-                    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:newURL] options:0 error:&error];
+                    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:src] options:0 error:&error];
                     UIImage *image = [UIImage imageWithData:data];
                     
                     if (image != nil) {
                         NSTextAttachment *imageAttachment = [[NSTextAttachment alloc] init];
                         imageAttachment.image = image;
-                        if (width != nil && height != nil) {
-                            imageAttachment.bounds = CGRectMake(0, 0, [width integerValue] / 2, [height integerValue] / 2);
-                        }
-                        else {
-                            imageAttachment.bounds = CGRectMake(0, 0, 100, 100);
-                        }
+                        
+                        CGSize imageSize = [UdeskImageUtil richImageSize:image];
+                        imageAttachment.bounds = CGRectMake(0, 0, imageSize.width, imageSize.height);
                         
                         NSAttributedString *imageAttributeString = [NSAttributedString attributedStringWithAttachment:imageAttachment];
                         [nodeAttributedString appendAttributedString:imageAttributeString];
                         
-                        NSString *imgLink = [@"img:" stringByAppendingString:newURL];
+                        NSString *imgLink = [@"img:" stringByAppendingString:src];
                         [nodeAttributedString addAttribute:NSLinkAttributeName value:imgLink range:NSMakeRange(0, imageAttributeString.length)];
                     }
                 }

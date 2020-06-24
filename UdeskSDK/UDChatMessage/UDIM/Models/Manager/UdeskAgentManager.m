@@ -203,7 +203,7 @@
     
     [UdeskAgentUtil setUdeskQuitQueue:YES];
     [UdeskManager cancelAllOperations];
-    [UdeskManager quitQueueWithType:[UdeskSDKConfig customConfig].quitQueueMode];
+    [UdeskManager quitQueueWithType:@"force_quit"];
 }
 
 //直接留言/工作台留言
