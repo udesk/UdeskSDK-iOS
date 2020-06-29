@@ -16,11 +16,7 @@
 
 5.x版本使用Xcode11.5、iPhoneX iOS13.5 编译。
 
-5.x版本pod导入请使用：
-
-```ruby
-pod 'UdeskSDK', :git => 'https://github.com/udesk/UdeskSDK-iOS', :branch => '5.x'
-```
+**5.x版本目前不支持Cocoapods导入**
 
 ## 目录
 - [一、集成SDK](#%E4%B8%80%e9%9b%86%e6%88%90sdk)
