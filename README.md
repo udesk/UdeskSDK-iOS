@@ -1004,6 +1004,14 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.1.5版本更新功能:
+
+1.修复了使用pod导入分支方式编译报错问题
+
+2.已知bug修改
+
+------
+
 sdk v5.1.4版本更新功能:
 
 1.机器人富文本消息显示问题修复

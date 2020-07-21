@@ -2505,7 +2505,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				MARKETING_VERSION = 5.1.4;
+				MARKETING_VERSION = 5.1.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -2598,7 +2598,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				MARKETING_VERSION = 5.1.4;
+				MARKETING_VERSION = 5.1.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
