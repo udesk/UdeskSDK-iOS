@@ -209,7 +209,6 @@
 		444A1E8D22A106CB00A8ACE3 /* UdeskSurveyTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 444A1DDD22A106CA00A8ACE3 /* UdeskSurveyTitleView.m */; };
 		444A1E8E22A106CB00A8ACE3 /* UdeskProblemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 444A1DE022A106CA00A8ACE3 /* UdeskProblemModel.m */; };
 		444A1E8F22A106CB00A8ACE3 /* UdeskFAQViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444A1DE622A106CA00A8ACE3 /* UdeskFAQViewController.m */; };
-		444A1E9022A106CB00A8ACE3 /* UdeskSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444A1DE722A106CA00A8ACE3 /* UdeskSearchController.m */; };
 		444A1E9122A106CB00A8ACE3 /* UdeskContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444A1DE822A106CA00A8ACE3 /* UdeskContentController.m */; };
 		444A1E9222A106CB00A8ACE3 /* libUdesk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 444A1DEF22A106CA00A8ACE3 /* libUdesk.a */; };
 		4479FC1A1E8B8D84000D8DBF /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4479FC191E8B8D84000D8DBF /* CFNetwork.framework */; };
@@ -621,11 +620,9 @@
 		444A1DDD22A106CA00A8ACE3 /* UdeskSurveyTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskSurveyTitleView.m; sourceTree = "<group>"; };
 		444A1DE022A106CA00A8ACE3 /* UdeskProblemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskProblemModel.m; sourceTree = "<group>"; };
 		444A1DE122A106CA00A8ACE3 /* UdeskProblemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskProblemModel.h; sourceTree = "<group>"; };
-		444A1DE322A106CA00A8ACE3 /* UdeskSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskSearchController.h; sourceTree = "<group>"; };
 		444A1DE422A106CA00A8ACE3 /* UdeskFAQViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskFAQViewController.h; sourceTree = "<group>"; };
 		444A1DE522A106CA00A8ACE3 /* UdeskContentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskContentController.h; sourceTree = "<group>"; };
 		444A1DE622A106CA00A8ACE3 /* UdeskFAQViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskFAQViewController.m; sourceTree = "<group>"; };
-		444A1DE722A106CA00A8ACE3 /* UdeskSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskSearchController.m; sourceTree = "<group>"; };
 		444A1DE822A106CA00A8ACE3 /* UdeskContentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskContentController.m; sourceTree = "<group>"; };
 		444A1DEA22A106CA00A8ACE3 /* UdeskAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgent.h; sourceTree = "<group>"; };
 		444A1DEB22A106CA00A8ACE3 /* UdeskMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskMessage.h; sourceTree = "<group>"; };
@@ -1747,11 +1744,9 @@
 		444A1DE222A106CA00A8ACE3 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				444A1DE322A106CA00A8ACE3 /* UdeskSearchController.h */,
 				444A1DE422A106CA00A8ACE3 /* UdeskFAQViewController.h */,
 				444A1DE522A106CA00A8ACE3 /* UdeskContentController.h */,
 				444A1DE622A106CA00A8ACE3 /* UdeskFAQViewController.m */,
-				444A1DE722A106CA00A8ACE3 /* UdeskSearchController.m */,
 				444A1DE822A106CA00A8ACE3 /* UdeskContentController.m */,
 			);
 			path = Controller;
@@ -2111,7 +2106,6 @@
 				444A1E7D22A106CB00A8ACE3 /* UdeskSmallVideoManager.m in Sources */,
 				444A1E6922A106CB00A8ACE3 /* UdeskVoiceCell.m in Sources */,
 				4420BA8620D8FC06005E1D18 /* UDDeveloperViewController.m in Sources */,
-				444A1E9022A106CB00A8ACE3 /* UdeskSearchController.m in Sources */,
 				444A1E6322A106CB00A8ACE3 /* UdeskImageCell.m in Sources */,
 				444A1E3F22A106CB00A8ACE3 /* UdeskStructMessage.m in Sources */,
 				444A1E6F22A106CB00A8ACE3 /* UdeskAssetModel.m in Sources */,

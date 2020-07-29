@@ -15,7 +15,7 @@
 #import "UIView+UdeskSDK.h"
 #import <WebKit/WebKit.h>
 
-@interface UdeskTicketViewController ()<UIWebViewDelegate,WKUIDelegate,WKNavigationDelegate>
+@interface UdeskTicketViewController ()<WKUIDelegate,WKNavigationDelegate>
 
 @end
 
@@ -84,23 +84,12 @@
                 ticketURL = [NSURL URLWithString:@"https://www.udesk.cn"];
             }
             
-            if (ud_isIOS8) {
-                WKWebView *ticketWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, customNav.udBottom, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-customNav.udBottom)];
-                ticketWebView.UIDelegate = self;
-                ticketWebView.navigationDelegate = self;
-                ticketWebView.backgroundColor = [UIColor whiteColor];
-                [ticketWebView loadRequest:[NSURLRequest requestWithURL:ticketURL]];
-                [self.view addSubview:ticketWebView];
-            }
-            else {
-            
-                UIWebView *ticketWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, customNav.udBottom, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-customNav.udBottom)];
-                ticketWebView.backgroundColor = [UIColor whiteColor];
-                ticketWebView.delegate = self;
-                [ticketWebView loadRequest:[NSURLRequest requestWithURL:ticketURL]];
-                [self.view addSubview:ticketWebView];
-            }
-            
+            WKWebView *ticketWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, customNav.udBottom, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-customNav.udBottom)];
+            ticketWebView.UIDelegate = self;
+            ticketWebView.navigationDelegate = self;
+            ticketWebView.backgroundColor = [UIColor whiteColor];
+            [ticketWebView loadRequest:[NSURLRequest requestWithURL:ticketURL]];
+            [self.view addSubview:ticketWebView];
         }
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -113,15 +102,6 @@
     {
         [super dismissViewControllerAnimated:flag completion:completion];
     }
-}
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        [[UIApplication sharedApplication] openURL:request.URL];
-        return NO;
-    }
-    return YES;
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {

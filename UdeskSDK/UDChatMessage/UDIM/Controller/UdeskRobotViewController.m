@@ -20,10 +20,9 @@
 #import "UdeskSDKAlert.h"
 #import "UIBarButtonItem+UdeskSDK.h"
 
-@interface UdeskRobotViewController()<WKUIDelegate,WKNavigationDelegate,UIWebViewDelegate>
+@interface UdeskRobotViewController()<WKUIDelegate,WKNavigationDelegate>
 
 @property (nonatomic, strong) WKWebView *robotWkWebView;
-@property (nonatomic, strong) UIWebView *robotWebView;
 
 @end
 
@@ -152,25 +151,13 @@
                 CGRect webViewRect = self.navigationController.navigationBarHidden?CGRectMake(0, 64, UD_SCREEN_WIDTH, UD_SCREEN_HEIGHT-64):self.view.bounds;
                 NSURLRequest *request = [NSURLRequest requestWithURL:self.robotURL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
                 
-                if (ud_isIOS8) {
-
-                    _robotWkWebView = [[WKWebView alloc] initWithFrame:webViewRect];
-                    _robotWkWebView.UIDelegate = self;
-                    _robotWkWebView.navigationDelegate = self;
-                    _robotWkWebView.udHeight -= spacing;
-                    _robotWkWebView.backgroundColor = [UIColor whiteColor];
-                    [_robotWkWebView loadRequest:request];
-                    [self.view addSubview:_robotWkWebView];
-                }
-                else {
-
-                    _robotWebView = [[UIWebView alloc] initWithFrame:webViewRect];
-                    _robotWebView.udHeight -= spacing;
-                    _robotWebView.backgroundColor=[UIColor whiteColor];
-                    _robotWebView.delegate = self;
-                    [_robotWebView loadRequest:request];
-                    [self.view addSubview:_robotWebView];
-                }
+                _robotWkWebView = [[WKWebView alloc] initWithFrame:webViewRect];
+                _robotWkWebView.UIDelegate = self;
+                _robotWkWebView.navigationDelegate = self;
+                _robotWkWebView.udHeight -= spacing;
+                _robotWkWebView.backgroundColor = [UIColor whiteColor];
+                [_robotWkWebView loadRequest:request];
+                [self.view addSubview:_robotWkWebView];
             }
             else {
                 
@@ -186,29 +173,6 @@
         } @finally {
         }
     }];
-}
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        [[UIApplication sharedApplication] openURL:request.URL];
-        return NO;
-    }
-    else if (navigationType == UIWebViewNavigationTypeOther) {
-        //显示转人工
-        if ([request.URL.absoluteString rangeOfString:@"udesk_notice_type=show_transfer"].location != NSNotFound) {
-            self.navigationItem.rightBarButtonItem = [UIBarButtonItem udRightItemWithTitle:getUDLocalizedString(@"udesk_redirect") target:self action:@selector(didSelectNavigationRightButton)];
-        }
-        else if ([request.URL.absoluteString rangeOfString:@"udesk_notice_type=go_chat"].location != NSNotFound) {
-            [self didSelectNavigationRightButton];
-            return NO;
-        }
-        else if ([request.URL.absoluteString rangeOfString:@"udesk_notice_type=auto_transfer"].location != NSNotFound) {
-            [self didSelectNavigationRightButton];
-            return NO;
-        }
-    }
-    return YES;
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
@@ -336,17 +300,8 @@
 
 - (void)updateWebViewFrameWithKeyboardF:(CGRect)keyboardF {
     
-    if (ud_isIOS8) {
-        
-        if (_robotWkWebView) {
-            _robotWkWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
-        }
-    }
-    else {
-        
-        if (_robotWebView) {
-            _robotWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
-        }
+    if (_robotWkWebView) {
+        _robotWkWebView.udHeight = (UD_SCREEN_HEIGHT == keyboardF.origin.y) ? CGRectGetHeight(self.view.bounds) : keyboardF.origin.y;
     }
 }
 

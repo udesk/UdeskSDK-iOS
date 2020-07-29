@@ -7,25 +7,22 @@
 //
 
 #import "UdeskFAQViewController.h"
-#import "UdeskSDKMacro.h"
-#import "UdeskBundleUtils.h"
 #import "UdeskProblemModel.h"
 #import "UdeskContentController.h"
 #import "UdeskManager.h"
-#import "UdeskSDKConfig.h"
-#import "UdeskSearchController.h"
 #import "UdeskTransitioningAnimation.h"
-#import "UIImage+UdeskSDK.h"
 #import "UdeskSDKShow.h"
+#import "UdeskThrottleUtil.h"
 
-@interface UdeskFAQViewController ()<UISearchBarDelegate,UISearchDisplayDelegate>
+@interface UdeskFAQViewController ()<UISearchResultsUpdating,UISearchControllerDelegate>
 
 /**  帮助中心表示图 */
 @property (nonatomic, strong) UITableView *faqTableView;
 /**  帮助中心数据数组 */
 @property (nonatomic, strong) NSArray      *problemData;
-/**  搜索vc */
-@property (nonatomic, strong) UdeskSearchController *searchController;
+/**  搜索 */
+@property (nonatomic, strong) UISearchController *searchController;
+
 @property (nonatomic, strong) UdeskSDKConfig   *sdkConfig;
 
 @end
@@ -95,7 +92,6 @@
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
-    
 }
 
 #pragma mark - 添加帮助中心TableView和搜索
@@ -105,30 +101,15 @@
     _faqTableView.backgroundColor = [UIColor colorWithRed:0.918f  green:0.922f  blue:0.925f alpha:1];
     _faqTableView.dataSource = self;
     _faqTableView.delegate = self;
+    _faqTableView.tableFooterView = [UIView new];
     [self.view addSubview:_faqTableView];
     
-    
-    //删除多余的cell
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectZero];
-    [_faqTableView setTableFooterView:footerView];
-    
-    UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.f, 0.f,UD_SCREEN_WIDTH, 44)];
-    searchBar.tintColor = [UIColor colorWithRed:33/255.0f green:40/255.0f blue:42/255.0f alpha:1];
-    
-    _faqTableView.tableHeaderView = searchBar;
-    
-    UdeskSearchController *searchDisplayController = [[UdeskSearchController alloc] initWithSearchBar:searchBar
-                                                                                   contentsController:self];
-    
-    
-    self.searchController = searchDisplayController;
-    
+    _faqTableView.tableHeaderView = self.searchController.searchBar;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     return _problemData.count;
-    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -154,6 +135,11 @@
     
     @try {
         
+        if (self.searchController.active) {
+            self.searchController.active = NO;
+            [self.searchController.searchBar removeFromSuperview];
+        }
+        
         UdeskContentController *content = [[UdeskContentController alloc] init];
         UdeskProblemModel *model = _problemData[indexPath.row];
         content.articleId = model.articleId;
@@ -167,17 +153,6 @@
     }
 }
 
-#pragma mark UISearchBarDelegate
-
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
-{
-    return YES;
-}
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
-{
-    [searchBar resignFirstResponder];
-}
 #pragma mark - 请求数据
 - (void)requestFAQData {
     
@@ -191,7 +166,7 @@
                 NSMutableArray *muArray = [NSMutableArray array];
                 NSArray *contents = [responseObject objectForKey:@"contents"];
                 for (NSDictionary *dic in contents) {
-                    UdeskProblemModel *model = [[UdeskProblemModel alloc] initWithContentsOfDic:dic];
+                    UdeskProblemModel *model = [[UdeskProblemModel alloc] initModelWithJSON:dic];
                     if (model) {
                         [muArray addObject:model];
                     }
@@ -209,13 +184,51 @@
         } @finally {
         }
     }];
-    
 }
 
--(void)dealloc {
+- (UISearchController *)searchController {
     
-    _faqTableView = nil;
+    if (!_searchController) {
+        
+        _searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+        _searchController.searchResultsUpdater = self;
+        _searchController.delegate = self;
+        _searchController.dimsBackgroundDuringPresentation = NO;
+        _searchController.searchBar.frame = CGRectMake(_searchController.searchBar.frame.origin.x, _searchController.searchBar.frame.origin.y, _searchController.searchBar.frame.size.width, 44.0);
+        _searchController.searchBar.backgroundColor = [UIColor colorWithRed:0.953f  green:0.953f  blue:0.953f alpha:1];
+        _searchController.searchBar.barTintColor = [UIColor colorWithRed:0.953f  green:0.953f  blue:0.953f alpha:1];
+        _searchController.searchBar.backgroundImage = [UIImage new];
+        _searchController.searchBar.placeholder = @"搜索";
+    }
+    return _searchController;
+}
+
+#pragma mark - @protocol UISearchResultsUpdating
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     
+    //设置时间阈值来限制方法调用频率
+    ud_dispatch_throttle(0.35f, ^{
+        if (searchController.searchBar.text.length == 0) {
+            [self requestFAQData];
+            return ;
+        }
+        
+        [UdeskManager searchFaqArticles:searchController.searchBar.text completion:^(id responseObject, NSError *error) {
+            
+            if (!error) {
+                
+                NSMutableArray *array = [NSMutableArray array];
+                NSArray *contents = [responseObject objectForKey:@"contents"];
+                for (NSDictionary *dic in contents) {
+                    UdeskProblemModel *model = [[UdeskProblemModel alloc] initModelWithJSON:dic];
+                    [array addObject:model];
+                }
+                
+                self.problemData = [array copy];
+                [self.faqTableView reloadData];
+            }
+        }];
+    });
 }
 
 - (void)didReceiveMemoryWarning {

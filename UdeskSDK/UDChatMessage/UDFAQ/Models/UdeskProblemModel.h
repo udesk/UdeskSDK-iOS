@@ -18,4 +18,6 @@
  */
 @property (nonatomic, copy) NSString *subject;
 
+- (instancetype)initModelWithJSON:(id)json;
+
 @end

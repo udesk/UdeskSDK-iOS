@@ -13,14 +13,14 @@
 #import "UdeskManager.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskTransitioningAnimation.h"
+#import <WebKit/WebKit.h>
 
-@interface UdeskContentController (){
+@interface UdeskContentController ()<WKUIDelegate,WKNavigationDelegate>{
     
     UILabel *_labelTitle;
     BOOL isLoadingFinished;
-    UIWebView *htmlWebView;
+    WKWebView *htmlWebView;
     NSString *_htmlContent;
-
 }
 
 @end
@@ -113,7 +113,6 @@
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
-    
 }
 
 //加载数据
@@ -136,17 +135,25 @@
             _labelTitle.hidden = NO;
         }
     }];
-    
 }
 
 - (void)loadHtmlContent:(NSString *)htmlString baseUrl:(NSString *)baseUrl {
     
     @try {
         
+        // 自适应屏幕宽度js
+        NSString *jScript = @"var meta = document.createElement('meta'); meta.setAttribute('name', 'viewport'); meta.setAttribute('content', 'width=device-width'); document.getElementsByTagName('head')[0].appendChild(meta);";
+        WKUserScript *wkUScript = [[WKUserScript alloc] initWithSource:jScript injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
+        WKUserContentController *wkUController = [[WKUserContentController alloc] init];
+        [wkUController addUserScript:wkUScript];
+        WKWebViewConfiguration *wkWebConfig = [[WKWebViewConfiguration alloc] init];
+        wkWebConfig.userContentController = wkUController;
+        
         CGFloat webY = _labelTitle.frame.origin.y+_labelTitle.frame.size.height+5;
-        htmlWebView=[[UIWebView alloc] initWithFrame:CGRectMake(7, webY, UD_SCREEN_WIDTH-14, self.view.frame.size.height-webY)];
+        htmlWebView=[[WKWebView alloc] initWithFrame:CGRectMake(7, webY, UD_SCREEN_WIDTH-14, self.view.frame.size.height-webY) configuration:wkWebConfig];
         htmlWebView.backgroundColor = [UIColor whiteColor];
-        htmlWebView.delegate = self;
+        htmlWebView.UIDelegate = self;
+        htmlWebView.navigationDelegate = self;
         NSString *newBaseURL = [NSString stringWithFormat:@"http://%@",baseUrl];
         
         [htmlWebView loadHTMLString:htmlString baseURL:[NSURL URLWithString:newBaseURL]];
@@ -158,9 +165,9 @@
     }
 }
 
-#pragma mark - UIWebViewDelegate
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
+#pragma mark - WKWebViewDelegate
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    
     @try {
         
         for (UIView *_aView in [htmlWebView subviews])
@@ -187,22 +194,13 @@
     }
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        
-        [[UIApplication sharedApplication] openURL:request.URL];
-        
-        return NO;
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+        [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
     }
     
-    return YES;
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-
-    [super viewWillAppear:animated];
-    
+    decisionHandler(WKNavigationActionPolicyAllow);
 }
 
 @end

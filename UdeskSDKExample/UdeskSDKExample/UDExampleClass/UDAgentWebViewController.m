@@ -20,19 +20,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    if (ud_isIOS8) {
-
-        WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds];
-        [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.url?:@"http://udesksdk.udesk.cn/im_client"]]];
-        [self.view addSubview:webView];
-
-    }
-    else {
-    
-        UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
-        [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.url?:@"http://udesksdk.udesk.cn/im_client"]]];
-        [self.view addSubview:webView];
-    }
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds];
+    [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.url?:@"http://udesksdk.udesk.cn/im_client"]]];
+    [self.view addSubview:webView];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -41,7 +41,7 @@ https://github.com/udesk/UdeskSDK-iOS
 
 | 类别     | 兼容范围                      |
 | -------- | ----------------------------- |
-| 系统     | 支持iOS 7.0及以上系统         |
+| 系统     | 支持iOS 8.0及以上系统         |
 | 架构     | armv7、arm64、i386、x86_64    |
 | 开发环境 | 建议使用最新版本Xcode进行开发 |
 
@@ -961,6 +961,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+
+sdk v4.3.2版本更新功能:
+
+1.替换UIWebView
+
+------
 
 sdk v4.3.1版本更新功能:
 

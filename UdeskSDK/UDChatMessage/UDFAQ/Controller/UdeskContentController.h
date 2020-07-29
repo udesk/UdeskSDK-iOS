@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UdeskContentController : UIViewController<UIWebViewDelegate>
+@interface UdeskContentController : UIViewController
 
 /**
  *  文章ID
