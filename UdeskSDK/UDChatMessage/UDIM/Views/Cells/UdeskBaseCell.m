@@ -57,7 +57,7 @@
         
         //初始化头像
         _avatarImageView = [[UIImageView alloc] init];
-        _avatarImageView.contentMode = UIViewContentModeScaleAspectFit;
+        _avatarImageView.contentMode = UIViewContentModeScaleAspectFill;
         _avatarImageView.userInteractionEnabled = YES;
         UDViewRadius(_avatarImageView, 12);
         [self.contentView addSubview:_avatarImageView];
@@ -428,6 +428,15 @@
             [self flowMessageWithText:content flowContent:URL.absoluteString];
         }
         return NO;
+    }
+    else if ([URL.absoluteString hasPrefix:@"data-message-type:"]) {
+        
+        NSString *content = [[[URL.absoluteString stringByRemovingPercentEncoding] componentsSeparatedByString:@"data-content:"] lastObject];
+        UdeskMessage *message = [[UdeskMessage alloc] initWithText:content];
+        message.sendType = UDMessageSendTypeRobot;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didSendRobotMessage:)]) {
+            [self.delegate didSendRobotMessage:message];
+        }
     }
     else {
         

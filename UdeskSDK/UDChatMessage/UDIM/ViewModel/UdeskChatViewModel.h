@@ -97,6 +97,8 @@
 - (void)sendLocationMessage:(UdeskLocationModel *)model completion:(void(^)(UdeskMessage *message))completion;
 /** 发送商品消息 */
 - (void)sendGoodsMessage:(UdeskGoodsModel *)model completion:(void(^)(UdeskMessage *message))completion;
+/** 发送事件消息 */
+- (void)sendChatEventMessage:(NSString *)text completion:(void(^)(UdeskMessage *message))completion;
 /** 添加需要重新发送消息 */
 - (void)addResendMessageToArray:(UdeskMessage *)message;
 /** 移除发送失败的消息 */

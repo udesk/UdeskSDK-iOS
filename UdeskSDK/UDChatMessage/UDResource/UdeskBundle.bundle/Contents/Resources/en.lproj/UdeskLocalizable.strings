@@ -108,6 +108,7 @@
 "udesk_survey_tips" = "Please comment on the current service, thank you! !";
 "udesk_survey_remark_required" = "Remarks are required";
 "udesk_survey_remark_max_num" = "Text length is out of range";
+"udesk_survey_has_event" = "Survey done";
 "udesk_admin" = "Admin";
 "udesk_queue" = "In the queue";
 "udesk_text_max_num" = "Message too long.Send it in multiple parts.";

@@ -22,6 +22,7 @@
 #import "UdeskBundleUtils.h"
 #import "UdeskMessage+UdeskSDK.h"
 #import "UdeskAgent.h"
+#import "UdeskSDKUtil.h"
 
 @interface UdeskCallManager()<UdeskCallSessionManagerDelegate>
 
@@ -277,6 +278,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         
+        [[UdeskSDKUtil currentViewController].view endEditing:YES];
         self.callInviteView.avatarURL = agentAvatar;
         self.callInviteView.nickName = nick;
         [UIView animateWithDuration:0.35 animations:^{

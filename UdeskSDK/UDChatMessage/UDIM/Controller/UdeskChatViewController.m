@@ -597,6 +597,12 @@ static CGFloat udInputBarHeight = 54.0f;
     
     UdeskSurveyView *surveyView = [[UdeskSurveyView alloc] initWithAgentId:agentId imSubSessionId:[NSString stringWithFormat:@"%ld",(long)self.chatInputToolBar.agent.imSubSessionId] isRobotSession:self.moreView.isRobotSession];
     [surveyView show];
+    
+    @udWeakify(self);
+    surveyView.surveryCompletionBlcok = ^{
+        @udStrongify(self);
+        [self.chatViewModel sendChatEventMessage:getUDLocalizedString(@"udesk_survey_has_event") completion:nil];
+    };
 }
 
 //开启用户相册

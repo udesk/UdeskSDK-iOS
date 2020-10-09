@@ -9,6 +9,7 @@
 #import "UdeskTopAskMessage.h"
 #import "UdeskTopAskCell.h"
 #import "NSAttributedString+UdeskHTML.h"
+#import "UdeskBundleUtils.h"
 
 /** 聊天气泡和其中的文字水平间距 */
 const CGFloat kUDBubbleToTopAskHorizontalSpacing = 14.0;
@@ -56,6 +57,9 @@ const CGFloat kUDOptionToTagHorizontalSpacing = 8.0;
     
     if (self.message.messageType == UDMessageContentTypeTopAsk && self.message.messageFrom == UDMessageTypeReceiving) {
         
+        if ([UdeskSDKUtil isBlankString:self.message.answerTitle]) {
+            self.message.answerTitle = getUDLocalizedString(@"udesk_robot_recommendation_question");
+        }
         self.leadingAttributedString = [self getAttributedStringWithText:self.message.answerTitle font:[UdeskSDKConfig customConfig].sdkStyle.messageContentFont];
         
         //引导文字frame

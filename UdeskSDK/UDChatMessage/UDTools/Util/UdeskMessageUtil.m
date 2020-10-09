@@ -111,7 +111,8 @@
                 case UDMessageContentTypeRedirect:
                 case UDMessageContentTypeRobotEvent:
                 case UDMessageContentTypeRobotTransfer:
-                case UDMessageContentTypeLeaveEvent:{
+                case UDMessageContentTypeLeaveEvent:
+                case UDMessageContentTypeSurveyEvent:{
                     
                     UdeskEventMessage *eventMessage = [[UdeskEventMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:eventMessage];

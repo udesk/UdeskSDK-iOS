@@ -167,7 +167,24 @@
                         NSString *dataId = attributeDictionary[@"data-id"];
                         
                         NSString *value = [NSString stringWithFormat:@"data-type:%@;dataId:%@",dataType,dataId];
-                        [nodeAttributedString addAttribute:NSLinkAttributeName value:value range:NSMakeRange(0, nodeAttributedString.string.length)];
+                        [nodeAttributedString addAttribute:NSLinkAttributeName value:value range:nodeAttributedStringRange];
+                        [nodeAttributedString addAttribute:NSUnderlineStyleAttributeName value:@(NSUnderlineStyleSingle) range:nodeAttributedStringRange];
+                    }
+                }
+
+                //跳转
+                if (([attributeDictionary.allKeys containsObject:@"data-message-type"] || [attributeDictionary.allKeys containsObject:@"data-replace-type"]) && [attributeDictionary.allKeys containsObject:@"class"]) {
+
+//                    NSString *class = [NSString stringWithFormat:@"%@",attributeDictionary[@"class"]];
+                    NSString *replaceType = [NSString stringWithFormat:@"%@",attributeDictionary[@"data-replace-type"]];
+                    NSString *messageType = [NSString stringWithFormat:@"%@",attributeDictionary[@"data-message-type"]];
+                    if ([replaceType isEqualToString:@"QUESTION"] || [messageType isEqualToString:@"1"]) {
+                        
+                        NSString *dataContent = attributeDictionary[@"data-content"];
+                        NSString *value = [NSString stringWithFormat:@"data-message-type:%@;data-content:%@",messageType,dataContent];
+                        value = [[value stringByRemovingPercentEncoding] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                        [nodeAttributedString addAttribute:NSLinkAttributeName value:value range:nodeAttributedStringRange];
+                        [nodeAttributedString addAttribute:NSUnderlineStyleAttributeName value:@(NSUnderlineStyleSingle) range:nodeAttributedStringRange];
                     }
                 }
                 
@@ -281,6 +298,7 @@
                 link = [link stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"=`#%^{}\"[]|\\<> "].invertedSet];
                 
                 [nodeAttributedString addAttribute:NSLinkAttributeName value:link range:nodeAttributedStringRange];
+                [nodeAttributedString addAttribute:NSUnderlineStyleAttributeName value:@(NSUnderlineStyleSingle) range:nodeAttributedStringRange];
             }
         }
         

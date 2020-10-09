@@ -274,6 +274,9 @@
             if (error) {
                 string = getUDLocalizedString(@"udesk_top_view_failure");
             }
+            if (!error && self.surveryCompletionBlcok) {
+                self.surveryCompletionBlcok();
+            }
             [UdeskToast showToast:string duration:0.5f window:self];
             dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6/*延迟执行时间*/ * NSEC_PER_SEC));
             dispatch_after(delayTime, dispatch_get_main_queue(), ^{

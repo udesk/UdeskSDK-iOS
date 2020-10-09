@@ -625,6 +625,15 @@
     [self.messageManager sendGoodsMessage:model completion:completion];
 }
 
+//发送事件消息
+- (void)sendChatEventMessage:(NSString *)text completion:(void(^)(UdeskMessage *message))completion {
+    if (!text || text == (id)kCFNull) return ;
+    if ([UdeskSDKUtil isBlankString:text]) return;
+    
+    UdeskMessage *message = [[UdeskMessage alloc] initWithChatEvent:text];
+    [self.messageManager addMessageToArray:@[message]];
+}
+
 //结束无消息对话过滤
 - (void)endPreSessionWithMessage:(UdeskMessage *)message progress:(void(^)(NSString *key,float percent))progress completion:(void(^)(UdeskMessage *message))completion {
     

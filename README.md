@@ -1004,6 +1004,18 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.1.6版本更新功能:
+
+1.支持机器人消息跳转
+
+2.支持评价事件消息
+
+3.适配iOS14
+
+4.已知bug修改
+
+------
+
 sdk v5.1.5版本更新功能:
 
 1.修复了使用pod导入分支方式编译报错问题

@@ -44,6 +44,7 @@
     if (!asset || asset == (id)kCFNull) return nil;
     if (![asset isKindOfClass:[PHAsset class]]) return nil;
     
+
     UdeskAssetModel *model;
     UdeskAssetModelMediaType type = [self getAssetType:asset];
     if (!allowPickingVideo && type == UdeskAssetModelMediaTypeVideo) return nil;
@@ -191,7 +192,31 @@
             return ;
         }
         
-        [self startExportVideoWithVideoAsset:videoAsset presetName:presetName success:success failure:failure];
+        [self startExportVideoWithVideoAsset:videoAsset presetName:presetName success:success failure:^(NSString *errorMessage, NSError *error) {
+            
+            if ([videoAsset isKindOfClass:[AVURLAsset class]]) {
+                if (videoAsset.URL){
+                    NSDateFormatter *formater = [[NSDateFormatter alloc] init];
+                    [formater setDateFormat:@"yyyy-MM-dd-HH:mm:ss-SSS"];
+                    NSString *outputPath = [NSHomeDirectory() stringByAppendingFormat:@"/tmp/output-%@.mp4", [formater stringFromDate:[NSDate date]]];
+                    
+                    NSData *data = [NSData dataWithContentsOfURL:videoAsset.URL];
+                    if (data){
+                        [data writeToFile:outputPath atomically:YES];
+                        success(outputPath);
+                    }
+                    else {
+                        failure(getUDLocalizedString(@"udesk_video_export_failed"), nil);
+                    }
+                }
+                else {
+                    failure(getUDLocalizedString(@"udesk_video_export_failed"), nil);
+                }
+            }
+            else {
+                failure(getUDLocalizedString(@"udesk_video_export_failed"), nil);
+            }
+        }];
     }];
 }
 
