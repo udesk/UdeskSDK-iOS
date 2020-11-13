@@ -962,6 +962,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v4.3.3版本更新功能:
+
+1.适配iOS14
+
+------
+
 sdk v4.3.2版本更新功能:
 
 1.替换UIWebView

@@ -111,6 +111,7 @@
 
     CALayer *layer              = ImageView.layer;
     layer.frame                 = (CGRect){{0,0},ImageView.layer.frame.size};
+    layer.contents = (__bridge id _Nullable)(ImageView.image.CGImage);
     self.chatImageView.layer.mask = layer;
     [self.chatImageView setNeedsDisplay];
     

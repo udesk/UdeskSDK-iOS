@@ -48,7 +48,7 @@
         
         //初始化头像
         _avatarImageView = [[UIImageView alloc] init];
-        _avatarImageView.contentMode = UIViewContentModeScaleAspectFit;
+        _avatarImageView.contentMode = UIViewContentModeScaleAspectFill;
         _avatarImageView.userInteractionEnabled = YES;
         UDViewRadius(_avatarImageView, 20);
         [self.contentView addSubview:_avatarImageView];

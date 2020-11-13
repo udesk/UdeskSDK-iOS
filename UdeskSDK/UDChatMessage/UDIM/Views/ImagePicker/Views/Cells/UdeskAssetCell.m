@@ -105,12 +105,16 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    _selectAssetButton.frame = CGRectMake(CGRectGetWidth(self.frame) - 22 - 4, 4, 22, 22);
     _imageView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+    _selectAssetButton.frame = CGRectMake(CGRectGetWidth(self.frame) - 22 - 4, 4, 22, 22);
     
     _bottomView.frame = CGRectMake(0, CGRectGetHeight(self.frame) - 17, CGRectGetWidth(self.frame), 17);
     _videoImageView.frame = CGRectMake(8, 0, 20, 12);
     _timeLength.frame = CGRectMake(CGRectGetMaxX(self.videoImageView.frame), 0, CGRectGetWidth(self.frame) - CGRectGetMaxX(self.videoImageView.frame) - 5, 12);
+    
+    [self.contentView bringSubviewToFront:_imageView];
+    [self.contentView bringSubviewToFront:_selectAssetButton];
+    [self.contentView bringSubviewToFront:_bottomView];
     
     [self setupBottomView];
 }

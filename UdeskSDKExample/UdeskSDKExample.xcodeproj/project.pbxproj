@@ -234,6 +234,7 @@
 		44D3A3F01F66372B001145EA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44D3A3EF1F66372B001145EA /* MapKit.framework */; };
 		44E6F4181F34BBF400FEDCBB /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44E6F4171F34BBF400FEDCBB /* WebKit.framework */; };
 		AAC74908B63DD1E4156730FD /* Pods_UdeskSDKExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13EDA0B74284E2870B19392C /* Pods_UdeskSDKExample.framework */; };
+		D42B3DD6255E1C590031675C /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D42B3DD5255E1C590031675C /* Photos.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -663,6 +664,7 @@
 		44D3A3DA1F66307E001145EA /* UdeskCustomLocationViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCustomLocationViewModel.m; sourceTree = "<group>"; };
 		44D3A3EF1F66372B001145EA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		44E6F4171F34BBF400FEDCBB /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		D42B3DD5255E1C590031675C /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		E01C2A32A469CBD70D23D497 /* Pods-UdeskSDKExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UdeskSDKExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-UdeskSDKExample/Pods-UdeskSDKExample.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -672,6 +674,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4479FC281E8B8DB4000D8DBF /* Security.framework in Frameworks */,
+				D42B3DD6255E1C590031675C /* Photos.framework in Frameworks */,
 				441AAA3520FD8EF3003528F3 /* UdeskCall.framework in Frameworks */,
 				4420BCB220D8FF91005E1D18 /* libicucore.tbd in Frameworks */,
 				44D3A3F01F66372B001145EA /* MapKit.framework in Frameworks */,
@@ -1769,6 +1772,7 @@
 		4479FC181E8B8D84000D8DBF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D42B3DD5255E1C590031675C /* Photos.framework */,
 				4420BCB120D8FF90005E1D18 /* libicucore.tbd */,
 				4443036C2018352A00E35B3E /* Masonry.framework */,
 				44D3A3EF1F66372B001145EA /* MapKit.framework */,
