@@ -898,7 +898,7 @@ UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSD
 
 ### APP使用百度地图，进入SDK会话页面直接崩溃，崩溃信息显示 "xmlFreeDoc"
 
-出现这种情况，请检查使用的百度地图SDK版本是否是为3.4.2。请升级百度地图SDK到最新版本。
+出现这种情况，请检查使用的百度地图SDK版本是否是为3.4.2或者6.0.0。请升级百度地图SDK到最新版本。
 
 ### APP使用友盟分享无法正常跳转
 
