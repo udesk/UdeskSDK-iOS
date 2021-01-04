@@ -15,6 +15,7 @@
 #import <Photos/Photos.h>
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKMacro.h"
+#import "UdeskSDKConfig.h"
 
 static NSString *kUdeskPhotoPreviewCellIdentifier = @"kUdeskPhotoPreviewCellIdentifier";
 static NSString *kUdeskGIFPreviewCellIdentifier = @"kUdeskGIFPreviewCellIdentifier";
@@ -78,7 +79,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
     [self.view addSubview:_toolBar];
     
     _navBar = [[UdeskPreviewNavBar alloc] initWithFrame:CGRectZero];
-    _navBar.backgroundColor = [UIColor colorWithRed:0.141f  green:0.145f  blue:0.149f alpha:0.95];
+    _navBar.backgroundColor = [UdeskSDKConfig customConfig].sdkStyle.albumNavBgColor;
     _navBar.delegate = self;
     [self.view addSubview:_navBar];
     

@@ -39,5 +39,9 @@
 + (NSRange)linkRegexsMatch:(NSString *)content;
 //URL编码
 + (NSString *)stringByURLEncode:(NSString *)string;
+//编码
++ (NSString *)percentEscapedStringFromString:(NSString *)string;
+//url编码
++ (NSString *)urlEncode:(NSString *)url;
 
 @end

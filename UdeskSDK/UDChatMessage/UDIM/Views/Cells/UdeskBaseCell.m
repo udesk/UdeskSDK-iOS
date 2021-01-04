@@ -446,6 +446,11 @@
                 url = URL;
             }
             
+            NSRange range = [UdeskSDKUtil linkRegexsMatch:url.absoluteString];
+            if (range.location == NSNotFound) {
+                url = URL;
+            }
+            
             [self udOpenURL:url];
         }
         else {

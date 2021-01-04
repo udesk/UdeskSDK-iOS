@@ -114,6 +114,12 @@
 /** 咨询对象发送按钮颜色 */
 @property (nonatomic, strong) UIColor  *productSendTitleColor;
 
+/** 相册导航栏背景颜色 */
+@property (nonatomic, strong) UIColor  *albumNavBgColor;
+/** 相册标题颜色 */
+@property (nonatomic, strong) UIColor  *albumTitleColor;
+/** 相册返回按钮颜色 */
+@property (nonatomic, strong) UIColor  *albumBackColor;
 /** 相册取消按钮颜色 */
 @property (nonatomic, strong) UIColor  *albumCancelColor;
 

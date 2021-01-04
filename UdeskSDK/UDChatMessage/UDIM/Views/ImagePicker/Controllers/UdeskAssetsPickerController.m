@@ -20,6 +20,7 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskPopAnimation.h"
 #import "UdeskAlbumsViewController.h"
+#import "UdeskSDKConfig.h"
 
 static CGFloat udItemMargin = 5;
 static CGFloat udColumnNumber = 4;
@@ -49,7 +50,7 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    UIBarButtonItem *leftBarButtonItem = [UIBarButtonItem udItemWithTitle:getUDLocalizedString(@"udesk_back") image:[UIImage udDefaultWhiteBackImage] target:self action:@selector(backSelectImageAction)];
+    UIBarButtonItem *leftBarButtonItem = [UIBarButtonItem udItemWithTitle:getUDLocalizedString(@"udesk_back") image:[UIImage udDefaultWhiteBackImage] color:[UdeskSDKConfig customConfig].sdkStyle.albumBackColor target:self action:@selector(backSelectImageAction)];
     UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     
     if(ud_isIOS7){
@@ -61,7 +62,7 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     }
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:getUDLocalizedString(@"udesk_cancel") style:UIBarButtonItemStylePlain target:self action:@selector(cancelSelectImageAction)];
-    self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
+    self.navigationItem.rightBarButtonItem.tintColor = [UdeskSDKConfig customConfig].sdkStyle.albumCancelColor;
     
     _assetFlowLayout = [[UICollectionViewFlowLayout alloc] init];
     _assetCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_assetFlowLayout];

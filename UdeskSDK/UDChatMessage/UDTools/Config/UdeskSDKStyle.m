@@ -72,6 +72,11 @@
         self.productSendBackGroundColor = [UIColor udColorWithHexString:@"#FF3B30"];
         self.productSendTitleColor = [UIColor whiteColor];
         
+        //imagpicker
+        self.albumNavBgColor = [UIColor colorWithRed:0.141f  green:0.145f  blue:0.149f alpha:0.5];
+        self.albumBackColor = [UIColor whiteColor];
+        self.albumTitleColor = [UIColor whiteColor];
+        self.albumCancelColor = [UIColor whiteColor];
     }
     return self;
 }

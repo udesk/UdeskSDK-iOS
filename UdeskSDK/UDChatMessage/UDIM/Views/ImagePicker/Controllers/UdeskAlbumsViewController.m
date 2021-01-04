@@ -14,6 +14,7 @@
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKMacro.h"
 #import "UdeskPushAnimation.h"
+#import "UdeskSDKConfig.h"
 
 static NSString *kUdeskAlbumCellIdentifier = @"kUdeskAlbumCellIdentifier";
 
@@ -39,7 +40,10 @@ static NSString *kUdeskAlbumCellIdentifier = @"kUdeskAlbumCellIdentifier";
     
     self.navigationItem.hidesBackButton = YES;
     self.title = getUDLocalizedString(@"udesk_photo");
+    NSDictionary *attr = @{NSForegroundColorAttributeName : [UdeskSDKConfig customConfig].sdkStyle.albumTitleColor};
+    self.navigationController.navigationBar.titleTextAttributes = attr;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:getUDLocalizedString(@"udesk_cancel") style:UIBarButtonItemStylePlain target:self action:@selector(cancelSelectImageAction)];
+    self.navigationItem.rightBarButtonItem.tintColor = [UdeskSDKConfig customConfig].sdkStyle.albumCancelColor;
     
     _albumsTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _albumsTableView.delegate = self;

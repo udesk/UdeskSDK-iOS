@@ -46,7 +46,7 @@
     return [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:target action:action];
 }
 
-+ (UIBarButtonItem *)udItemWithTitle:(NSString *)title image:(UIImage *)image target:(id)target action:(SEL)action {
++ (UIBarButtonItem *)udItemWithTitle:(NSString *)title image:(UIImage *)image color:(UIColor *)color target:(id)target action:(SEL)action {
     
     @try {
         
@@ -58,6 +58,8 @@
         [leftBarButton setTitle:title forState:UIControlStateNormal];
         backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         [leftBarButton setImage:backImage forState:UIControlStateNormal];
+        [leftBarButton setTitleColor:color forState:UIControlStateNormal];
+        [leftBarButton setTintColor:color];
         [leftBarButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
         
         [leftBarButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];

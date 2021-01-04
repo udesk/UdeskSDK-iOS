@@ -266,4 +266,72 @@ static NSString *kUdeskMenuId = @"kUdeskMenuId";
 #pragma clang diagnostic pop
 }
 
++ (NSString *)urlEncode:(NSString *)url {
+    if ([UdeskSDKUtil isBlankString:url]) return url;
+    
+    NSString *urlCopy = [url copy];
+    NSString *params = @"";
+    if ([url rangeOfString:@"?"].location != NSNotFound) {
+        NSArray *linkArray = [url componentsSeparatedByString:@"?"];
+        NSArray *paramsArray = [linkArray.lastObject componentsSeparatedByString:@"&"];
+        for (NSString *paramsStr in paramsArray) {
+            NSArray *keyValues = [paramsStr componentsSeparatedByString:@"="];
+            NSString *key = [UdeskSDKUtil percentEscapedStringFromString:keyValues.firstObject];
+            NSString *value = [UdeskSDKUtil percentEscapedStringFromString:keyValues.lastObject];
+            NSString *connectorsA = @"=";
+            if ((!key || key.length == 0) && (!value || value.length == 0)) {
+                connectorsA = @"";
+            }
+            
+            NSString *connectorsB = @"&";
+            if (!params || params.length == 0) {
+                connectorsB = @"";
+            }
+            
+            params = [NSString stringWithFormat:@"%@%@%@",params,connectorsB,[key stringByAppendingFormat:@"%@%@",connectorsA,value]];
+        }
+        urlCopy = linkArray.firstObject;
+    }
+    
+    NSString *urlTmp = [urlCopy stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@""].invertedSet];
+    NSString *connectors = @"?";
+    if (!params || params.length == 0) {
+        connectors = @"";
+    }
+    return [NSString stringWithFormat:@"%@%@%@",urlTmp,connectors,params];
+}
+
++ (NSString *)percentEscapedStringFromString:(NSString *)string {
+    
+    NSString *kCharactersGeneralDelimitersToEncode = @":#[]@"; // does not include "?" or "/" due to RFC 3986 - Section 3.4
+    NSString *kCharactersSubDelimitersToEncode = @"!$&'()*+,;=";
+    
+    NSMutableCharacterSet * allowedCharacterSet = [[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
+    [allowedCharacterSet removeCharactersInString:[kCharactersGeneralDelimitersToEncode stringByAppendingString:kCharactersSubDelimitersToEncode]];
+    
+    // FIXME: https://github.com/AFNetworking/AFNetworking/pull/3028
+    // return [string stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
+    
+    static NSUInteger const batchSize = 50;
+    
+    NSUInteger index = 0;
+    NSMutableString *escaped = @"".mutableCopy;
+    
+    while (index < string.length) {
+        NSUInteger length = MIN(string.length - index, batchSize);
+        NSRange range = NSMakeRange(index, length);
+        
+        // To avoid breaking up character sequences such as 👴🏻👮🏽
+        range = [string rangeOfComposedCharacterSequencesForRange:range];
+        
+        NSString *substring = [string substringWithRange:range];
+        NSString *encoded = [substring stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
+        [escaped appendString:encoded];
+        
+        index += range.length;
+    }
+    
+    return escaped;
+}
+
 @end

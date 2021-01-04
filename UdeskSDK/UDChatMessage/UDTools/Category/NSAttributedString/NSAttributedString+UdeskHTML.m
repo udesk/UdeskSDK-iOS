@@ -10,6 +10,8 @@
 #include <libxml/HTMLparser.h>
 
 #import "UdeskImageUtil.h"
+#import "UIColor+UdeskSDK.h"
+#import "UdeskSDKUtil.h"
 
 @implementation NSAttributedString (UdeskHTML)
 
@@ -144,13 +146,13 @@
                         if ([tagStr hasPrefix:@"color"] && [tagStr rangeOfString:@"#"].location != NSNotFound) {
                             if (tagStr.length >= ([tagStr rangeOfString:@"#"].length+7)) {
                                 NSString *s = [tagStr substringWithRange:NSMakeRange([tagStr rangeOfString:@"#"].location, 7)];
-                                UIColor *color = [self colorFromHexString:s];
+                                UIColor *color = [UIColor udColorWithHexString:s];
                                 [nodeAttributedString addAttribute:NSForegroundColorAttributeName value:color range:nodeAttributedStringRange];
                             }
                         } else if ([tagStr hasPrefix:@"background-color"] && [tagStr rangeOfString:@"#"].location != NSNotFound) {
                             if (tagStr.length >= ([tagStr rangeOfString:@"#"].length+7)) {
                                 NSString *s = [tagStr substringWithRange:NSMakeRange([tagStr rangeOfString:@"#"].location, 7)];
-                                UIColor *color = [self colorFromHexString:s];
+                                UIColor *color = [UIColor udColorWithHexString:s];
                                 [nodeAttributedString addAttribute:NSBackgroundColorAttributeName value:color range:nodeAttributedStringRange];
                             }
                         }
@@ -295,7 +297,8 @@
             
             NSString *link = attributeDictionary[@"href"];
             if (link) {
-                link = [link stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"=`#%^{}\"[]|\\<> "].invertedSet];
+                link = [UdeskSDKUtil urlEncode:link];
+//                link = [link stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`%^{}\"[]|\\<> "].invertedSet];
                 
                 [nodeAttributedString addAttribute:NSLinkAttributeName value:link range:nodeAttributedStringRange];
                 [nodeAttributedString addAttribute:NSUnderlineStyleAttributeName value:@(NSUnderlineStyleSingle) range:nodeAttributedStringRange];
@@ -343,18 +346,6 @@
     }
     
     return nodeAttributedString;
-}
-
-+ (UIColor *)colorFromHexString:(NSString *)hexString
-{
-    if (hexString == nil)
-        return [UIColor blackColor];
-    
-    hexString = [hexString stringByReplacingOccurrencesOfString:@"#" withString:@""];
-    char *p;
-    NSUInteger hexValue = strtoul([hexString cStringUsingEncoding:NSUTF8StringEncoding], &p, 16);
-    
-    return [UIColor colorWithRed:((hexValue & 0xff0000) >> 16) / 255.0 green:((hexValue & 0xff00) >> 8) / 255.0 blue:(hexValue & 0xff) / 255.0 alpha:1.0];
 }
 
 @end

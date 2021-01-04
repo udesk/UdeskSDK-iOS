@@ -2,7 +2,7 @@
 //  UdeskManager.h
 //  UdeskSDK
 //
-//  Version: 5.1.6
+//  Version: 5.1.7
 //
 //  Created by Udesk on 16/1/12.
 //  Copyright © 2016年 Udesk. All rights reserved.
@@ -426,5 +426,9 @@
  @return url
  */
 + (NSURL *)udeskURLSignature:(NSString *)url;
+
+
+/// sdk版本号
++ (NSString *)sdkVersion;
 
 @end

@@ -165,7 +165,7 @@
             
             NSArray *result = [responseObject objectForKey:@"result"];
             //有设置客服导航栏
-            if (result.count) {
+            if (result && [result isKindOfClass:[NSArray class]] && result.count) {
                 
                 if (!agentMenu) {
                     agentMenu = [[UdeskAgentMenuViewController alloc] initWithSDKConfig:_sdkConfig setting:setting];

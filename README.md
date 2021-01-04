@@ -1004,6 +1004,16 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.1.7版本更新功能:
+
+1.修复了链接转码问题
+
+2.支持配置相册颜色
+
+3.已知bug修改
+
+------
+
 sdk v5.1.6版本更新功能:
 
 1.支持机器人消息跳转
