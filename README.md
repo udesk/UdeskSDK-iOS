@@ -592,6 +592,22 @@ actionConfig.locationButtonClickBlock = ^(UdeskChatViewController *viewControlle
 actionConfig.locationMessageClickBlock = ^(UdeskChatViewController *viewController, UdeskLocationModel *locationModel) {
     //do something
 };
+//登陆成功回调
+actionConfig.loginSuccessBlock = ^{
+    //do something
+};
+//点击文本链接回调（实现该回调则放弃sdk原生功能）
+actionConfig.linkClickBlock = ^(UIViewController *viewController, NSURL *URL) {
+    //do something
+};
+//商品消息回调
+actionConfig.goodsMessageClickBlock = ^(UdeskChatViewController *viewController, UdeskGoodsModel *goodsModel) {
+    //do something
+};
+//咨询对象发送按钮回调（实现该回调则放弃sdk原生功能）
+actionConfig.productMessageSendLinkClickBlock = ^(UdeskChatViewController *viewController, NSDictionary *productMessage) {
+    //do something
+};
 
 UdeskSDKManager *sdkManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:[UdeskSDKConfig customConfig] sdkActionConfig:actionConfig];
 [sdkManager pushUdeskInViewController:self completion:nil];
