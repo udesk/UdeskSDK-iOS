@@ -59,6 +59,7 @@ static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
 @property (nonatomic, strong) UITextView *leadWordTextView;
 @property (nonatomic, strong) UIView *lineView;
 @property (nonatomic, strong) UITableView *topAskTableView;
+@property (nonatomic, strong) UITextView *recommendLeadingWordTextView;
 
 @end
 
@@ -86,6 +87,18 @@ static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
     _leadWordTextView.textContainerInset = UIEdgeInsetsMake(5, 0, 0, 0);
     _leadWordTextView.backgroundColor = [UIColor clearColor];
     [self.bubbleImageView addSubview:_leadWordTextView];
+    
+    
+    _recommendLeadingWordTextView = [[UITextView alloc] initWithFrame:CGRectZero];
+    _recommendLeadingWordTextView.editable = NO;
+    _recommendLeadingWordTextView.dataDetectorTypes = UIDataDetectorTypeAll;
+    _recommendLeadingWordTextView.showsVerticalScrollIndicator = NO;
+    _recommendLeadingWordTextView.showsHorizontalScrollIndicator = NO;
+    _recommendLeadingWordTextView.textContainer.lineFragmentPadding = 0;
+    _recommendLeadingWordTextView.textContainerInset = UIEdgeInsetsMake(5, 0, 0, 0);
+    _recommendLeadingWordTextView.backgroundColor = [UIColor clearColor];
+    _recommendLeadingWordTextView.scrollEnabled = NO;
+    [self.bubbleImageView addSubview:_recommendLeadingWordTextView];
     
     _lineView = [[UIView alloc] initWithFrame:CGRectZero];
     _lineView.backgroundColor = [UIColor colorWithRed:0.953f  green:0.961f  blue:0.965f alpha:1];
@@ -257,10 +270,18 @@ static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
     self.leadWordTextView.frame = topAskMessage.leadingWordFrame;
     self.leadWordTextView.attributedText = topAskMessage.leadingAttributedString;
     
+    self.recommendLeadingWordTextView.attributedText = topAskMessage.recommendLeadingAttributedString;
+    self.recommendLeadingWordTextView.frame = topAskMessage.recommendLeadingWordFrame;
+    
     self.lineView.frame = topAskMessage.lineFrame;
     
     self.topAskTableView.frame = topAskMessage.topAskFrame;
     [self.topAskTableView reloadData];
+    
+    
+    //self.recommendLeadingWordTextView.backgroundColor = [UIColor yellowColor];
+    //self.leadWordTextView.backgroundColor = [UIColor lightGrayColor];
+    //self.topAskTableView.backgroundColor = [UIColor purpleColor];
 }
 
 - (void)awakeFromNib {

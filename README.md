@@ -1019,7 +1019,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+sdk v5.1.8版本更新功能：
+1. 支持推荐引导语
 
+2. 修改以往历史消息记录转人工按钮逻辑
+
+-----
 sdk v5.1.7版本更新功能:
 
 1.修复了链接转码问题

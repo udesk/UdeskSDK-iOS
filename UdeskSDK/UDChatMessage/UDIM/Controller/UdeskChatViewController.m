@@ -899,7 +899,10 @@ static CGFloat udInputBarHeight = 54.0f;
 
 //点击消息转人工
 - (void)didTapTransferAgentServer:(UdeskMessage *)message {
-    
+    if (!message.isTransferEnabled) {
+        [UdeskTopAlertView showAlertType:UDAlertTypeOrange withMessage:getUDLocalizedString(@"udesk_robot_transfer_out_of_date") parentView:self.view];
+        return;
+    }
     [self transferToAgentServer];
 }
 
@@ -1217,9 +1220,17 @@ static CGFloat udInputBarHeight = 54.0f;
     
     [self transferToAgentServer];
 }
+//转人工后，所有消息中的转人工按钮失效
+- (void)disableAllMessageTransfer{
+    for (UdeskBaseMessage* message in self.chatViewModel.messagesArray) {
+        if ([message isKindOfClass:[UdeskBaseMessage class]]) {
+            message.message.isTransferEnabled = NO;
+        }
+    }
+}
 
 //转人工
-- (void)transferToAgentServer {
+- (void)transferToAgentServer{
     
     //开通了导航栏
     if (self.sdkSetting.enableImGroup.boolValue) {
@@ -1239,6 +1250,7 @@ static CGFloat udInputBarHeight = 54.0f;
                     @udStrongify(self);
                     self.titleView.titleLabel.text = getUDLocalizedString(@"udesk_connecting");
                     [self.chatViewModel transferToAgentServer];
+                    [self disableAllMessageTransfer];
                 };
                 [show presentOnViewController:self udeskViewController:agentMenu transiteAnimation:UDTransiteAnimationTypePush completion:nil];
             }
@@ -1248,6 +1260,7 @@ static CGFloat udInputBarHeight = 54.0f;
     
     self.titleView.titleLabel.text = getUDLocalizedString(@"udesk_connecting");
     [self.chatViewModel transferToAgentServer];
+    [self disableAllMessageTransfer];
 }
 
 #pragma mark - 返回页面事件

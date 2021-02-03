@@ -36,6 +36,8 @@ const CGFloat kUDOptionToTagHorizontalSpacing = 8.0;
 @property (nonatomic, assign, readwrite) CGRect topAskFrame;
 @property (nonatomic, strong, readwrite) NSArray *topAskTitleHeightArray;
 @property (nonatomic, strong, readwrite) NSArray *questionHeightArray;
+@property (nonatomic, strong, readwrite) NSAttributedString *recommendLeadingAttributedString;
+@property (nonatomic, assign, readwrite) CGRect recommendLeadingWordFrame;
 
 @end
 
@@ -71,12 +73,24 @@ const CGFloat kUDOptionToTagHorizontalSpacing = 8.0;
         NSMutableArray *topAskHeightArray = [NSMutableArray array];
         NSMutableArray *questionHeightArray = [NSMutableArray array];
         
+        CGFloat recommentLeadingH = 0;
+        if ([self showRecommend]) {
+            NSString *string = self.message.recommendationGuidance;
+            NSAttributedString *recommend = [NSAttributedString attributedStringFromHTML:string customFont:[UIFont systemFontOfSize:15]];
+            CGSize recommendSize = [self getAttributedStringSizeWithAttr:recommend size:CGSizeMake(width, CGFLOAT_MAX)];
+            recommentLeadingH = recommendSize.height;
+            self.recommendLeadingAttributedString = recommend;
+        }
+        else{
+            self.recommendLeadingAttributedString = nil;
+        }
+        
         for (UdeskMessageTopAsk *topAskMessage in self.message.topAsk) {
             
             if (self.message.topAsk.count > 1) {
                 NSAttributedString *topAskAttributed = [NSAttributedString attributedStringFromHTML:topAskMessage.questionType customFont:[UIFont systemFontOfSize:15]];
-                CGFloat width = [self topAskMaxWidth] - kUDBubbleToTopAskHorizontalSpacing*2;
-                CGSize topAskSize = [UdeskStringSizeUtil sizeWithAttributedText:topAskAttributed size:CGSizeMake(width, CGFLOAT_MAX)];
+                CGFloat topAskWidth = [self topAskMaxWidth] - kUDBubbleToTopAskHorizontalSpacing*2;
+                CGSize topAskSize = [UdeskStringSizeUtil sizeWithAttributedText:topAskAttributed size:CGSizeMake(topAskWidth, CGFLOAT_MAX)];
                 [topAskHeightArray addObject:@(topAskSize.height+5)];
                 topAskHeight += topAskSize.height+5;
             }
@@ -97,7 +111,14 @@ const CGFloat kUDOptionToTagHorizontalSpacing = 8.0;
         self.topAskTitleHeightArray = [topAskHeightArray copy];
         self.questionHeightArray = [questionHeightArray copy];
         
-        self.lineFrame = CGRectMake(0, CGRectGetMaxY(self.leadingWordFrame)+kUDBubbleToTopAskVerticalSpacing, [self topAskMaxWidth], 1);
+        
+        if (recommentLeadingH > 0) {
+            self.recommendLeadingWordFrame = CGRectMake(kUDBubbleToTopAskHorizontalSpacing, CGRectGetMaxY(self.leadingWordFrame), width, recommentLeadingH);
+            self.lineFrame = CGRectMake(0, CGRectGetMaxY(self.recommendLeadingWordFrame), [self topAskMaxWidth], 1);
+        }
+        else{
+            self.lineFrame = CGRectMake(0, CGRectGetMaxY(self.leadingWordFrame)+kUDBubbleToTopAskVerticalSpacing, [self topAskMaxWidth], 1);
+        }
         
         CGFloat topAskSpacing = self.message.topAsk.count > 1 ? 0 : kUDBubbleToTopAskVerticalSpacing*0.5;
         self.topAskFrame = CGRectMake(3, CGRectGetMaxY(self.lineFrame)+topAskSpacing, [self topAskMaxWidth]-6, topAskHeight);
@@ -106,6 +127,15 @@ const CGFloat kUDOptionToTagHorizontalSpacing = 8.0;
     
     //cell高度
     self.cellHeight = self.bubbleFrame.size.height+self.bubbleFrame.origin.y+kUDCellBottomMargin+self.transferHeight;
+}
+
+- (BOOL)showRecommend{
+    if (!self.message.isFaq &&
+        self.message.recommendationGuidance.length > 0 &&
+        self.message.topAsk.count > 0) {
+        return YES;
+    }
+    return NO;
 }
 
 - (CGFloat)topAskMaxWidth {

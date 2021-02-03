@@ -124,6 +124,7 @@
 "udesk_robot_welcome_message" = "您好，智能机器人为您服务！";
 "udesk_change_group" = "换一组";
 "udesk_robot_recommendation_question" = "您是不是要咨询下面的问题？";
+"udesk_robot_transfer_out_of_date" = "转人工按钮已失效";
 
 "udesk_video_call_duration" = "通话时长：";
 

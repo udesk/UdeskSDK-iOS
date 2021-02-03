@@ -124,6 +124,7 @@
 "udesk_robot_welcome_message" = "Hello, the robot is at your service!";
 "udesk_change_group" = "change another words";
 "udesk_robot_recommendation_question" = "Would you like to ask the following questions?";
+"udesk_robot_transfer_out_of_date" = "transfer button is out of date";
 
 "udesk_video_call_duration" = "Talk time：";
 

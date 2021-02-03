@@ -33,6 +33,9 @@ extern const CGFloat kUDOptionToTagHorizontalSpacing;
 @property (nonatomic, assign, readonly) CGRect topAskFrame;
 @property (nonatomic, strong, readonly) NSArray *topAskTitleHeightArray;
 @property (nonatomic, strong, readonly) NSArray *questionHeightArray;
+@property (nonatomic, strong, readonly) NSAttributedString *recommendLeadingAttributedString;
+@property (nonatomic, assign, readonly) CGRect recommendLeadingWordFrame;
+
 
 - (void)layoutTopAskMessage;
 

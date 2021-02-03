@@ -191,6 +191,12 @@ typedef NS_ENUM(NSInteger,UDMessageSendType) {
 @property (nonatomic, assign) BOOL     isFaq;
 /** 这个参数表示该消息是不存储db的，需要暂时存到内存 */
 @property (nonatomic, assign) BOOL     tempStore;
+/** 推荐问题引导语，在消息的content中，跟topAsk平级 */
+@property (nonatomic, strong) NSString *recommendationGuidance;
+/** 转人工是否失效，历史消息或者已经点击过的转人工的消息，该消息中的转人工按钮已失效*/
+@property (nonatomic, assign) BOOL     isTransferEnabled;
+/** */
+@property (nonatomic, assign) BOOL     hideTransferButton;
 
 /** 消息类型 */
 @property (nonatomic, assign) UDMessageContentType messageType;
