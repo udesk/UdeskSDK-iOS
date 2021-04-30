@@ -1019,6 +1019,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+sdk v5.1.9版本更新功能：
+1. SDK 支持历史对话优化
+
+2. xcode 14.5编译问题
+
+-----
 sdk v5.1.8版本更新功能：
 1. 支持推荐引导语
 

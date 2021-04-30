@@ -450,7 +450,7 @@ static void UdeskURLInBlackListAdd(NSURL *url) {
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
     @autoreleasepool {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            if (!(_options & Udesk_YYWebImageOptionAllowInvalidSSLCertificates) &&
+            if (!(NO) &&
                 [challenge.sender respondsToSelector:@selector(performDefaultHandlingForAuthenticationChallenge:)]) {
                 [challenge.sender performDefaultHandlingForAuthenticationChallenge:challenge];
             } else {

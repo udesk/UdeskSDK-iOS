@@ -32,9 +32,6 @@ typedef NS_OPTIONS(NSUInteger, Udesk_YYWebImageOptions) {
     /// Use NSURLCache instead of YYImageCache.
     Udesk_YYWebImageOptionUseNSURLCache = 1 << 3,
     
-    /// Allows untrusted SSL ceriticates.
-    Udesk_YYWebImageOptionAllowInvalidSSLCertificates = 1 << 4,
-    
     /// Allows background task to download image when app is in background.
     Udesk_YYWebImageOptionAllowBackgroundTask = 1 << 5,
     

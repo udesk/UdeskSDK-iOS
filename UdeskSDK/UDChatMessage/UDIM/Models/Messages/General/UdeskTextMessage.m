@@ -220,7 +220,7 @@ static CGFloat const kUDTextMendSpacing = 1.0;
 
 - (UDTTTAttributedLabel *)textLabelForHeightCalculation {
     if (!_textLabelForHeightCalculation) {
-        _textLabelForHeightCalculation = [UDTTTAttributedLabel new];
+        _textLabelForHeightCalculation = [[UDTTTAttributedLabel alloc] initWithFrame:CGRectZero];
         _textLabelForHeightCalculation.numberOfLines = 0;
     }
     return _textLabelForHeightCalculation;
