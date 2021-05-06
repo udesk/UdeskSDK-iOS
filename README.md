@@ -961,6 +961,11 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+sdk v4.3.4版本更新功能:
+
+1.适配xcode 14.5
+
+------
 
 sdk v4.3.3版本更新功能:
 
