@@ -189,7 +189,12 @@
                         [nodeAttributedString addAttribute:NSUnderlineStyleAttributeName value:@(NSUnderlineStyleSingle) range:nodeAttributedStringRange];
                     }
                 }
-                
+                if ([attributeDictionary.allKeys containsObject:@"data-udesk-go-chat"]) {
+                    NSString *gochatValue = [NSString stringWithFormat:@"%@",attributeDictionary[@"data-udesk-go-chat"]];
+                    if ([@"true" isEqualToString:gochatValue]) {
+                        [nodeAttributedString addAttribute:NSLinkAttributeName value:@"gotochat://" range:nodeAttributedStringRange];
+                    }
+                }
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
             } @finally {

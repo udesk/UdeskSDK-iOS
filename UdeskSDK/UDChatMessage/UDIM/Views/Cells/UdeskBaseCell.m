@@ -421,6 +421,11 @@
         [photoManeger showLocalPhoto:(UIImageView *)self.bubbleImageView withMessageURL:url];
         return NO;
     }
+    else if([URL.absoluteString hasPrefix:@"gotochat:"]){
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didTapTransferAgentServer:)]) {
+            [self.delegate didTapTransferAgentServer:self.baseMessage.message];
+        }
+    }
     else if ([URL.absoluteString hasPrefix:@"data-type:"]) {
         
         if (textView.text.length >= (characterRange.location+characterRange.length)) {

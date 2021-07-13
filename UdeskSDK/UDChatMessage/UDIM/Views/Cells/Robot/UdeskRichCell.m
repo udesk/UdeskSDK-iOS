@@ -59,7 +59,6 @@
 }
 
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
-    
     return [self udRichTextView:textView shouldInteractWithURL:URL inRange:characterRange];
 }
 
