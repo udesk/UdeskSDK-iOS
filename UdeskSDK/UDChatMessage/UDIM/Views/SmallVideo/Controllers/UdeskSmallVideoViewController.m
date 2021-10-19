@@ -40,7 +40,6 @@
 - (void)setup {
     
     self.view.backgroundColor = [UIColor blackColor];
-    
     [self configVideoManager];
     
     [self.view addSubview:self.previewView];

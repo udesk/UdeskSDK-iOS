@@ -22,6 +22,8 @@ static CGFloat const kUDGoodsImageHeight = 60.0;
 static CGFloat const kUDGoodsParamsHorizontalSpacing = 10.0;
 /** 商品参数距离名称气泡垂直间距 */
 static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
+/** 商品参数距离名称垂直间距 */
+static CGFloat const kUDGoodsParamsTitleVerticalSpacing = 4.0;
 
 @interface UdeskGoodsMessage()
 
@@ -64,6 +66,14 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
     CGFloat labelWidth = UD_SCREEN_WIDTH>320?170:140;
     CGFloat bubbleWidth = UD_SCREEN_WIDTH>320?280:230;
     
+    //参数
+    //判断有没有图片
+    if(self.goodsModel.imgUrl){
+        labelWidth = bubbleWidth - kUDGoodsImageHorizontalSpacing - kUDGoodsImageWidth - 2*kUDGoodsImageHorizontalSpacing;
+    }else{
+        labelWidth = bubbleWidth - 2*kUDGoodsImageHorizontalSpacing;
+    }
+    
     CGFloat titleHeight = [UdeskStringSizeUtil getHeightForAttributedText:self.titleAttributedString textWidth:labelWidth];
     CGFloat paramsHeight = [UdeskStringSizeUtil getHeightForAttributedText:self.paramsAttributedString textWidth:labelWidth];
     
@@ -74,11 +84,23 @@ static CGFloat const kUDGoodsParamsVerticalSpacing = 10.0;
     }
     
     //参数
-    self.imgFrame = CGRectMake(kUDGoodsImageHorizontalSpacing, kUDGoodsImageVerticalSpacing, kUDGoodsImageWidth, kUDGoodsImageHeight);
-    self.titleFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, kUDGoodsParamsVerticalSpacing, labelWidth, titleHeight);
+    //判断有没有图片
+    if(self.goodsModel.imgUrl){
+        self.imgFrame = CGRectMake(kUDGoodsImageHorizontalSpacing, kUDGoodsImageVerticalSpacing, kUDGoodsImageWidth, kUDGoodsImageHeight);
+        self.titleFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, kUDGoodsParamsVerticalSpacing, labelWidth, titleHeight);
+        
+        CGFloat paramsY = (titleHeight==0)? kUDGoodsParamsVerticalSpacing : (CGRectGetMaxY(self.titleFrame) + kUDGoodsParamsTitleVerticalSpacing);
+        self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, paramsY, labelWidth, paramsHeight);
+    }else{
+        self.imgFrame = CGRectZero;
+        self.titleFrame = CGRectMake(kUDGoodsImageHorizontalSpacing, kUDGoodsParamsVerticalSpacing, labelWidth, titleHeight);
+        
+        CGFloat paramsY = (titleHeight==0)? kUDGoodsParamsVerticalSpacing : (CGRectGetMaxY(self.titleFrame) + kUDGoodsParamsTitleVerticalSpacing);
+        self.paramsFrame = CGRectMake(kUDGoodsImageHorizontalSpacing, paramsY, labelWidth, paramsHeight);
+    }
     
-    CGFloat paramsY = (titleHeight==0)? kUDGoodsParamsVerticalSpacing : (CGRectGetMaxY(self.titleFrame) + kUDGoodsParamsVerticalSpacing);
-    self.paramsFrame = CGRectMake(CGRectGetMaxX(self.imgFrame) + kUDGoodsParamsHorizontalSpacing, paramsY, labelWidth, paramsHeight);
+    
+    
     CGFloat bubbleHeight = MAX(kUDGoodsImageHeight+kUDGoodsImageVerticalSpacing, CGRectGetMaxY(self.paramsFrame));
     
     if (self.message.messageFrom == UDMessageTypeSending) {

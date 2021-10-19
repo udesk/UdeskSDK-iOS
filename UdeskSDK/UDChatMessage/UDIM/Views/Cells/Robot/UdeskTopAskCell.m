@@ -111,6 +111,9 @@ static NSString *kUDTopAskQuestionCellId = @"topAskQuestionCellId";
     _topAskTableView.sectionFooterHeight = 0;
     _topAskTableView.tableFooterView = [UIView new];
     _topAskTableView.backgroundColor = [UIColor clearColor];
+    if (@available(iOS 15.0, *)) {
+        _topAskTableView.sectionHeaderTopPadding = 0;
+    }
     [self.bubbleImageView addSubview:_topAskTableView];
     
     [_topAskTableView registerClass:[UdeskTopAskOptionsCell class] forCellReuseIdentifier:kUDTopAskQuestionCellId];

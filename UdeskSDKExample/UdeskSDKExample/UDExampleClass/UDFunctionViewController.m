@@ -40,7 +40,8 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-    
+
+    [UdeskManager sdkVersion];
     double text1 = 533/2/675.0f;
     CGFloat logoHeight = CGRectGetHeight(self.view.frame)*text1;
 
@@ -242,6 +243,12 @@
     
     UDDeveloperViewController *developer = [[UDDeveloperViewController alloc] init];
     [self.navigationController pushViewController:developer animated:YES];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 
 @end

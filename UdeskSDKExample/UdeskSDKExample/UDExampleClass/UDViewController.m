@@ -31,6 +31,18 @@
 
     [super viewDidLoad];
     
+    //适配ios15
+    if (@available(iOS 15.0, *)) {
+        if(self.navigationController){
+            UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+            appearance.backgroundColor = [UIColor whiteColor];
+            appearance.backgroundEffect = nil;
+            appearance.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+            self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+            self.navigationController.navigationBar.standardAppearance = appearance;
+        }
+    }
+    
     UIImageView *logo = [[UIImageView alloc] initWithFrame:CGRectMake((UD_SCREEN_WIDTH-226)/2, 70, 226, 91)];
     logo.image = [UIImage imageNamed:@"backGroundLogo"];
     [self.view addSubview:logo];
@@ -112,7 +124,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:self.appKeyTextField.text forKey:@"key"];
         [[NSUserDefaults standardUserDefaults] setObject:self.appIdTextField.text forKey:@"appId"];
         
-        NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
+        NSString *sdk_token = @"1212";//[NSString stringWithFormat:@"%u",arc4random()];
        
         UdeskOrganization *organization = [[UdeskOrganization alloc] initWithDomain:self.domainTextField.text
                                                                              appKey:self.appKeyTextField.text
@@ -171,6 +183,11 @@
     NSString *newText = [NSString stringWithFormat:@"请输入%@",text];
     UIAlertView *view = [[UIAlertView alloc] initWithTitle:nil message:newText delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
     [view show];
+}
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 
 @end

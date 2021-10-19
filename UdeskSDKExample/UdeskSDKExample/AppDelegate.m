@@ -55,6 +55,10 @@ static NSString *channel = @"AppStore";
         }
     }];
     
+//    //ios 15适配
+//     if (@available(iOS 15.0, *)) {
+//         [UITableView appearance].sectionHeaderTopPadding = 0;
+//     }
     return YES;
 }
 

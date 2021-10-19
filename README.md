@@ -2,21 +2,20 @@
 
 ### 公告
 
-**接入sdk编译报错误请升级Xcode到最新版本或者根据app需求选择“4.x_xcode10、5.x_xocde10”这两个分支下载手动导入！！！**
+**接入sdk编译报错误请升级Xcode到最新版本**
 
-**“4.x_xcode10” 分支对应的sdk版本是4.3.1。**
+**“master” 分支对应的sdk版本是5.0+**
 
-**“5.x_xocde10” 分支对应的sdk版本是5.1.1。**
+**“4.x_back” 分支对应的sdk版本是4.3.4**
 
+**如发现问题建议先升级到最新版本SDK，或者下载demo做一下验证**
 
 
 ### SDK下载地址
 
-<https://github.com/udesk/UdeskSDK-iOS/tree/5.x>
+<https://github.com/udesk/UdeskSDK-iOS>
 
-5.x版本使用Xcode11.5、iPhoneX iOS13.5 编译。
-
-**5.x版本目前不支持Cocoapods导入**
+master 代码使用Xcode13、iPhone12 iOS15 编译。
 
 ## 目录
 - [一、集成SDK](#%E4%B8%80%e9%9b%86%e6%88%90sdk)
@@ -83,8 +82,6 @@ CoreText.framework
 - 点击的你工程targets->Build Settings 
 - 搜索Other Linker Flags 加入 -lxml2 -ObjC
 - 搜索header search paths 加入/usr/include/libxml2
-
-#### 1.2 CocoaPods 导入（5.x版本暂时还未支持pod导入！！！）
 
 在 Podfile 中加入：
 
@@ -494,6 +491,28 @@ UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:sty
     return goodsModel;
 }
 ```
+
+ **UdeskGoodsModel 字段说明：**
+
+| 参数名称                 | 是否必选  | 说明                                              |
+| :--------    | :-----   | :-------    |
+| goodsId                  | 可选        | 商品消息ID（可传可不传，主要用于在点击商品消息时回调给开发者）            |
+| name                  | **必选**    | **商品名称标题**                                    |
+| imgUrl                  | **必选**    | **商品图片不传会造成UI错乱**                            |
+| url                      | 可选        | 订单跳转链接                                        |
+| customParameters        | 可选        | 自定义参数，会在点击商品消息时返回                        |
+
+
+
+ **UdeskGoodsParamModel 字段说明：**
+
+| 参数名称           | 是否必选      | 说明                                         |
+| :-            | :-        | :-                                        |
+| text           | 可选        | 文本                                        |
+| color           | 可选        | 颜色                                        |
+| fold           | 可选        | 加粗 (1加粗-0不加粗)    默认不加粗                |
+| udBreak          | 可选        | 换行（该段文本结束后换行，1换行-0不换行），**最后一条商品描述尽量不要换行**        |
+| size            | 可选        | 字体大小（单位px）                            |
 
 ### 3.13 图片选择器
 
@@ -1019,16 +1038,34 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
-sdk v5.1.9版本更新功能：
-1. SDK 支持历史对话优化
 
-2. xcode 14.5编译问题
+sdk v5.2.4版本更新功能：
+
+1.iOS15 适配
+ 
+-----
+
+sdk v5.2.3版本更新功能：
+
+1.新机型识别
+
+2.商品消息优化
+
+3.iOS15 适配
+ 
+-----
+
+sdk v5.1.9版本更新功能：
+
+1.SDK 支持历史对话优化
+
+2.xcode 14.5编译问题
 
 -----
 sdk v5.1.8版本更新功能：
-1. 支持推荐引导语
+1.支持推荐引导语
 
-2. 修改以往历史消息记录转人工按钮逻辑
+2.修改以往历史消息记录转人工按钮逻辑
 
 -----
 sdk v5.1.7版本更新功能:
