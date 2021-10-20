@@ -8,11 +8,9 @@
 
 #import "UDDeveloperViewController.h"
 #import "Udesk.h"
-#import "UDCustomClientInfoViewController.h"
 #import "UDAgentWebViewController.h"
 #import "UdeskCustomButtonTestViewController.h"
 #import "UdeskSmallViewTestViewController.h"
-#import "UdeskRobotCustomInfoViewController.h"
 #import "UdeskButtonConfigViewController.h"
 #import "UdeskPreMessageViewController.h"
 #import "UdeskCustomCustomerTableViewController.h"
@@ -46,18 +44,14 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
                        @"获取未读消息",
                        @"获取未读消息数量",
                        @"清空未读消息",
-                       @"更新客户信息",
                        @"自定义客户信息",
-                       @"更换UI模版",
                        @"添加咨询对象",
                        @"切换语言",
                        @"web客服",
                        @"配置自定义按钮",
                        @"小视频",
                        @"横竖屏兼容",
-                       @"配置RobotModelKey",
                        @"自定义表情",
-                       @"自定义机器人客户信息",
                        @"其他功能配置",
                        @"放弃排队方式",
                        @"预发消息",
@@ -109,62 +103,46 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
             [self markUnreadMsg];
             break;
         case 5:
-            //更新客户信息
-            [self updateCustomerInfo];
-            break;
-        case 6:
             //自定义客户信息
             [self customCustomerInfo];
             break;
-        case 7:
-            //更换sdk风格
-            [self replaceSDKStyle];
-            break;
-        case 8:
+        case 6:
             //咨询对象
             [self sdkProduct];
             break;
-        case 9:
+        case 7:
             //更换
             [self replaceLanguage];
             break;
-        case 10:
+        case 8:
             //web客服
             [self webAgent];
             break;
-        case 11:
+        case 9:
             //配置自定义按钮
             [self configCustomButton];
             break;
-        case 12:
+        case 10:
             //配置小视频
             [self configSmartVideo];
             break;
-        case 13:
+        case 11:
             //配置转向
             [self configSDKOrientation];
             break;
-        case 14:
-            //配置机器人key
-            [self configRobotModelKey];
-            break;
-        case 15:
+        case 12:
             //自定义表情
             [self customEmoji];
             break;
-        case 16:
-            //自定义机器人客户信息
-            [self configRobotCustomerInfo];
-            break;
-        case 17:
+        case 13:
             //配置其他功能
             [self sdkConfigOtherFeatures];
             break;
-        case 18:
+        case 14:
             //放弃排队方式
             [self configQuitQueueType];
             break;
-        case 19:
+        case 15:
             //配置预发
             [self configPreMessage];
             break;
@@ -188,7 +166,7 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
             UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
             sdkConfig.agentId = textField.text;
             
-            UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+            UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
             [chatViewManager pushUdeskInViewController:self completion:nil];
         }
         else {
@@ -214,7 +192,7 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
             UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
             sdkConfig.groupId = textField.text;
             
-            UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+            UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
             [chatViewManager pushUdeskInViewController:self completion:nil];
         }
         else {
@@ -265,13 +243,6 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
     [alertView show];
 }
 
-//更新客户信息
-- (void)updateCustomerInfo {
-    
-    UDCustomClientInfoViewController *update = [[UDCustomClientInfoViewController alloc] init];
-    [self.navigationController pushViewController:update animated:YES];
-}
-
 //自定义客户信息
 - (void)customCustomerInfo {
     
@@ -279,54 +250,25 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
     [self.navigationController pushViewController:custom animated:YES];
 }
 
-//更换sdk风格
-- (void)replaceSDKStyle {
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"更换SDK UI" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    if (ud_isPad) {
-        //ipad适配
-        [alert setModalPresentationStyle:UIModalPresentationPopover];
-        UIPopoverPresentationController *popPresenter = [alert popoverPresentationController];
-        popPresenter.sourceView = self.view;
-        popPresenter.sourceRect = CGRectMake(self.view.center.x, 74, 1, 1);
-    }
-    
-    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"原生" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:[UdeskSDKConfig customConfig]];
-        [chatViewManager pushUdeskInViewController:self completion:nil];
-    }]];
-    
-    [alert addAction:[UIAlertAction actionWithTitle:@"经典" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle blueStyle] sdkConfig:[UdeskSDKConfig customConfig]];
-        [chatViewManager pushUdeskInViewController:self completion:nil];
-    }]];
-    
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
 //咨询对象
 - (void)sdkProduct {
     
     NSDictionary *dict = @{
-                           @"productImageUrl":@"https://qn-im.udesk.cn/QQ20180927-104742_1538016472_663.png",
-                           @"productTitle":@"iPhoneXs Max",
-                           @"productDetail":@"¥1",
+                           @"productImageUrl":@"http://qn-im.udesk.cn/IMG_2884_1535020704_288.JPG",
+                           @"productTitle":@"测试测试测试测你测试测试测你测试测试测你测试测试测你测试测试测你测试测试测你！",
+                           @"productDetail":@"¥88888.088888.088888.0",
                            @"productURL":@"http://www.baidu.com"
                            };
     UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
     sdkConfig.productDictionary = dict;
     
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
     [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 
-//更换语言
-- (void)replaceLanguage {
+- (void)replaceLanguage{
     
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"更换SDK语言" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"设置多语言" message:@"注意:多语言同时需要后端支持, 前后端默认值逻辑不同; 常用设置如下 zh-cn:中文简体;ar:阿拉伯语;en-us:英语;es:西班牙语;fr:法语;ja:日语;ko:朝鲜语/韩语;th:泰语;id:印度尼西亚语;zh-TW:繁体中文;pt:葡萄牙语;ru:俄语;" preferredStyle:UIAlertControllerStyleAlert];
     if (ud_isPad) {
         //ipad适配
         [alert setModalPresentationStyle:UIModalPresentationPopover];
@@ -334,24 +276,18 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
         popPresenter.sourceView = self.view;
         popPresenter.sourceRect = CGRectMake(self.view.center.x, 74, 1, 1);
     }
-    
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"中文" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [alert addTextFieldWithConfigurationHandler:nil];
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
-        UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-        sdkConfig.languageType = UDLanguageTypeCN;
-        
-        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
-        [chatViewManager pushUdeskInViewController:self completion:nil];
-    }]];
-    
-    [alert addAction:[UIAlertAction actionWithTitle:@"Engilsh" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
-        UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-        sdkConfig.languageType = UDLanguageTypeEN;
-        
-        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
-        [chatViewManager pushUdeskInViewController:self completion:nil];
+        UITextField *textField = alert.textFields.firstObject;
+        if (textField.text.length) {
+            [UdeskSDKConfig customConfig].language = textField.text;
+        }
+        else {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请输入语言代码" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alertView show];
+        }
     }]];
     
     [self presentViewController:alert animated:YES completion:nil];
@@ -395,41 +331,16 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
         UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
         sdkConfig.orientationMask = UIInterfaceOrientationMaskPortrait;
         
-        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
         [chatViewManager presentUdeskInViewController:self completion:nil];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"横屏" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
         sdkConfig.orientationMask = UIInterfaceOrientationMaskLandscape;
-        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
         [chatViewManager presentUdeskInViewController:self completion:nil];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
-//配置RobotModelKey
-- (void)configRobotModelKey {
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"设置RobotModelKey" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addTextFieldWithConfigurationHandler:nil];
-    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
-        UITextField *textField = alert.textFields.firstObject;
-        if (textField.text.length) {
-            UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-            sdkConfig.robotModelKey = textField.text;
-            
-            UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
-            [chatViewManager pushUdeskInViewController:self completion:nil];
-        }
-        else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请输入ID" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-            [alertView show];
-        }
-    }]];
-    
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -438,7 +349,6 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
     
     UdeskEmojiPanelModel *model = [UdeskEmojiPanelModel new];
     model.emojiIcon = [UIImage imageNamed:@"likeSticker"];
-    
     model.stickerPaths = @[
                            [[NSBundle mainBundle] pathForResource:@"angry"ofType:@"png"],
                            [[NSBundle mainBundle] pathForResource:@"cry"ofType:@"png"],
@@ -453,14 +363,13 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
                            [[NSBundle mainBundle] pathForResource:@"surprise"ofType:@"png"],
                            [[NSBundle mainBundle] pathForResource:@"wink"ofType:@"png"],
                            ];
-    
-    model.stickerTitles = @[@"愤怒",@"哭泣",@"糟糕",@"冷汗",@"大笑",@"可爱",@"爱",@"流汗",@"害羞",@"睡觉",@"惊讶",@"调皮"];
+    model.stickerTitles = @[@"愤怒",@"愤怒",@"哭泣",@"糟糕",@"冷汗",@"大笑",@"可爱",@"爱",@"流汗",@"害羞",@"睡觉",@"惊讶",@"调皮"];
     
     UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
     sdkConfig.customEmojis = @[model];
     
     //初始化sdk
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
     [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 
@@ -468,13 +377,6 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
 - (void)sdkConfigOtherFeatures {
     
     UdeskButtonConfigViewController *config = [[UdeskButtonConfigViewController alloc] init];
-    [self.navigationController pushViewController:config animated:YES];
-}
-
-//自定义机器人客户信息
-- (void)configRobotCustomerInfo {
-    
-    UdeskRobotCustomInfoViewController *config = [[UdeskRobotCustomInfoViewController alloc] init];
     [self.navigationController pushViewController:config animated:YES];
 }
 
@@ -492,17 +394,25 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
     }
     
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"强制" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    
+    [alert addAction:[UIAlertAction actionWithTitle:@"标记放弃" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-        sdkConfig.quitQueueType = UDQuitQueueTypeForce;
-        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+        sdkConfig.quitQueueMode = @"mark";
+        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
         [chatViewManager pushUdeskInViewController:self completion:nil];
     }]];
     
-    [alert addAction:[UIAlertAction actionWithTitle:@"标记" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消标记" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-        sdkConfig.quitQueueType = UDQuitQueueTypeForceMark;
-        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+        sdkConfig.quitQueueMode = @"cannel_mark";
+        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
+        [chatViewManager pushUdeskInViewController:self completion:nil];
+    }]];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:@"强制立即放弃" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
+        sdkConfig.quitQueueMode = @"force_quit";
+        UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
         [chatViewManager pushUdeskInViewController:self completion:nil];
     }]];
     

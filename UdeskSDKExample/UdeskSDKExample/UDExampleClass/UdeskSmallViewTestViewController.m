@@ -73,7 +73,7 @@
     sdkConfig.smallVideoResolution = self.type;
     
     //初始化sdk
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:sdkConfig];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:sdkConfig];
     [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 

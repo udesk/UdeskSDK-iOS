@@ -23,6 +23,8 @@ static NSString *channel = @"AppStore";
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+    NSLog(@"当前SDK版本：%@",[UdeskManager sdkVersion]);
+    
     BOOL isProduction = NO;
 #ifdef DEBUG
     NSLog(@"debug");
@@ -55,6 +57,10 @@ static NSString *channel = @"AppStore";
         }
     }];
     
+    //ios 15适配
+     if (@available(iOS 15.0, *)) {
+         [UITableView appearance].sectionHeaderTopPadding = 0;
+     }
     return YES;
 }
 
@@ -71,7 +77,7 @@ static NSString *channel = @"AppStore";
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     
     //上线操作，拉取离线消息
-    [UdeskManager setupCustomerOnline];
+    [UdeskManager endUdeskPush];
     [application setApplicationIconBadgeNumber:0];
 }
 

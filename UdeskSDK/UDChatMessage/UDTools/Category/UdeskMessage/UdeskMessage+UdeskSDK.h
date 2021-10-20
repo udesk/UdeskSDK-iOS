@@ -19,12 +19,13 @@
 - (instancetype)initWithGIF:(NSData *)gifData;
 - (instancetype)initWithVoice:(NSData *)voiceData duration:(NSString *)duration;
 - (instancetype)initWithVideo:(NSData *)videoData;
-- (instancetype)initWithLeaveMessage:(NSString *)text leaveMessageFlag:(BOOL)leaveMsgFlag;
 - (instancetype)initWithLeaveEventMessage:(NSString *)text;
+- (instancetype)initWithRobotTransferMessage:(NSString *)text;
 - (instancetype)initWithRollback:(NSString *)text;
 - (instancetype)initWithLocation:(UdeskLocationModel *)model;
 - (instancetype)initWithVideoCall:(NSString *)text;
 - (instancetype)initWithGoods:(UdeskGoodsModel *)model;
 - (instancetype)initWithQueue:(NSString *)content showLeaveMsgBtn:(BOOL)showLeaveMsgBtn;
+- (instancetype)initWithChatEvent:(NSString *)text;
 
 @end

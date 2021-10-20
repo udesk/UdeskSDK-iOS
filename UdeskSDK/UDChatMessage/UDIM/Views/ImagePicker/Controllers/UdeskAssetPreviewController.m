@@ -10,12 +10,12 @@
 #import "UdeskPreviewNavBar.h"
 #import "UdeskPhotoToolBar.h"
 #import "UdeskAssetPreviewCell.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskAssetModel.h"
 #import "UdeskImagePickerController.h"
 #import <Photos/Photos.h>
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKMacro.h"
+#import "UdeskSDKConfig.h"
 
 static NSString *kUdeskPhotoPreviewCellIdentifier = @"kUdeskPhotoPreviewCellIdentifier";
 static NSString *kUdeskGIFPreviewCellIdentifier = @"kUdeskGIFPreviewCellIdentifier";
@@ -48,7 +48,21 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
 - (void)setupUI {
     
     self.automaticallyAdjustsScrollViewInsets = NO;
-    
+    //适配ios15
+    if (@available(iOS 15.0, *)) {
+        if(self.navigationController){
+            UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+            // 背景色
+            appearance.backgroundColor = [UIColor whiteColor];
+            // 去掉半透明效果
+            appearance.backgroundEffect = nil;
+            // 去除导航栏阴影（如果不设置clear，导航栏底下会有一条阴影线）
+            //        appearance.shadowColor = [UIColor clearColor];
+            appearance.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+            self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+            self.navigationController.navigationBar.standardAppearance = appearance;
+        }
+    }
     _previewFlowLayout = [[UICollectionViewFlowLayout alloc] init];
     _previewFlowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     _previewCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_previewFlowLayout];
@@ -79,7 +93,7 @@ static NSString *kUdeskVideoPreviewCellIdentifier = @"kUdeskVideoPreviewCellIden
     [self.view addSubview:_toolBar];
     
     _navBar = [[UdeskPreviewNavBar alloc] initWithFrame:CGRectZero];
-    _navBar.backgroundColor = [UIColor colorWithRed:0.141f  green:0.145f  blue:0.149f alpha:0.95];
+    _navBar.backgroundColor = [UdeskSDKConfig customConfig].sdkStyle.albumNavBgColor;
     _navBar.delegate = self;
     [self.view addSubview:_navBar];
     

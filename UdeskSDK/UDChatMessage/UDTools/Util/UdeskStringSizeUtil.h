@@ -11,9 +11,8 @@
 
 @interface UdeskStringSizeUtil : NSObject
 
-+ (CGSize)textSize:(NSString *)text withFont:(UIFont *)font withSize:(CGSize)size;
-+ (CGSize)getSizeForAttributedText:(NSAttributedString *)attributedText textWidth:(CGFloat)textWidth;
-
++ (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font size:(CGSize)size;
++ (CGSize)sizeWithAttributedText:(NSAttributedString *)attributedText size:(CGSize)size;
 + (CGFloat)getHeightForAttributedText:(NSAttributedString *)attributedText textWidth:(CGFloat)textWidth;
 
 @end

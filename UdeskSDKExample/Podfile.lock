@@ -1,35 +1,32 @@
 PODS:
   - AgoraRtcEngine_iOS (2.0.2)
   - BaiduMapKit (3.4.4)
-  - JCore (1.1.7)
-  - JPush (3.0.8):
-    - JCore (~> 1.1.7)
+  - JCore (1.2.6)
+  - JPush (3.0.9):
+    - JCore (~> 1.2.0)
   - Masonry (1.1.0)
-  - YYCache (1.0.4)
-  - YYImage (1.0.4):
-    - YYImage/Core (= 1.0.4)
-  - YYImage/Core (1.0.4)
-  - YYWebImage (1.0.5):
-    - YYCache
-    - YYImage
 
 DEPENDENCIES:
   - AgoraRtcEngine_iOS (~> 2.0.2)
-  - BaiduMapKit
-  - JPush
-  - Masonry
-  - YYWebImage
+  - BaiduMapKit (~> 3.4.4)
+  - JPush (~> 3.0.9)
+  - Masonry (~> 1.1.0)
+
+SPEC REPOS:
+  trunk:
+    - AgoraRtcEngine_iOS
+    - BaiduMapKit
+    - JCore
+    - JPush
+    - Masonry
 
 SPEC CHECKSUMS:
   AgoraRtcEngine_iOS: 67884f8bbe46aae8ed9af4195b0683562f083fde
   BaiduMapKit: 4ac88f5a363500760392825b69709f4a0125f81e
-  JCore: f7459c81c135281a874a6beafdd321666adcc834
-  JPush: 9574d072cc37e93fa293ba69b43ce763c440943a
+  JCore: cae516dd2bf1a73b578ce6e1065abd49e709e0f7
+  JPush: 48041e8c5ad2ef9b48709eb0888af9640b36e9b0
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
-  YYCache: 8105b6638f5e849296c71f331ff83891a4942952
-  YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
-  YYWebImage: 5f7f36aee2ae293f016d418c7d6ba05c4863e928
 
-PODFILE CHECKSUM: 0f7393c2dbc9014266a09801bf417fa317daf01e
+PODFILE CHECKSUM: fd6399e78d5874cb9db6fd044bc057c93b3b4377
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.10.1

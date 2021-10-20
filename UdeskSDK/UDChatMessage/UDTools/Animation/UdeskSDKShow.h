@@ -18,4 +18,6 @@
               transiteAnimation:(UDTransiteAnimationType)animation
                      completion:(void (^)(void))completion;
 
++ (void)pushWebViewOnViewController:(UIViewController *)viewController URL:(NSURL *)URL;
+
 @end

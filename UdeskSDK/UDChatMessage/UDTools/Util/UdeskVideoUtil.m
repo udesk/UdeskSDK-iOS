@@ -131,39 +131,6 @@
     
     @autoreleasepool
     {
-        CGImageRef cgImage = [self convertSamepleBufferRefToCGImage:sampleBufferRef];
-        UIImage *image;
-        
-        CGFloat height = CGImageGetHeight(cgImage);
-        CGFloat width = CGImageGetWidth(cgImage);
-        
-        height = height / 5;
-        width = width / 5;
-        
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, [UIScreen mainScreen].scale);
-        
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        CGContextTranslateCTM(context, 0, height);
-        CGContextScaleCTM(context, 1.0, -1.0);
-        CGContextDrawImage(context, CGRectMake(0, 0, width, height), cgImage);
-        
-        image = UIGraphicsGetImageFromCurrentImageContext();
-        
-        UIGraphicsEndImageContext();
-        
-        CGImageRelease(cgImage);
-        
-        UIGraphicsEndImageContext();
-        return image;
-    }
-}
-
-
-// Create a UIImage from sample buffer data
-// 官方回答 https://developer.apple.com/library/ios/qa/qa1702/_index.html
-+ (CGImageRef)convertSamepleBufferRefToCGImage:(CMSampleBufferRef)sampleBufferRef {
-    @autoreleasepool {
-        
         // Get a CMSampleBuffer's Core Video image buffer for the media data
         CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBufferRef);
         // Lock the base address of the pixel buffer
@@ -185,7 +152,7 @@
         CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8,
                                                      bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
         // Create a Quartz image from the pixel data in the bitmap graphics context
-        CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+        CGImageRef cgImage = CGBitmapContextCreateImage(context);
         // Unlock the pixel buffer
         CVPixelBufferUnlockBaseAddress(imageBuffer,0);
         
@@ -193,7 +160,29 @@
         CGContextRelease(context);
         CGColorSpaceRelease(colorSpace);
         
-        return quartzImage;
+        UIImage *image;
+        
+        CGFloat cgHeight = CGImageGetHeight(cgImage);
+        CGFloat cgWidth = CGImageGetWidth(cgImage);
+        
+        cgHeight = cgHeight / 5;
+        cgWidth = cgWidth / 5;
+        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(cgWidth, cgHeight), NO, [UIScreen mainScreen].scale);
+        
+        CGContextRef contextRef = UIGraphicsGetCurrentContext();
+        CGContextTranslateCTM(contextRef, 0, cgHeight);
+        CGContextScaleCTM(contextRef, 1.0, -1.0);
+        CGContextDrawImage(contextRef, CGRectMake(0, 0, cgWidth, cgHeight), cgImage);
+        
+        image = UIGraphicsGetImageFromCurrentImageContext();
+        
+        UIGraphicsEndImageContext();
+        
+        CGImageRelease(cgImage);
+        
+        UIGraphicsEndImageContext();
+        return image;
     }
 }
 

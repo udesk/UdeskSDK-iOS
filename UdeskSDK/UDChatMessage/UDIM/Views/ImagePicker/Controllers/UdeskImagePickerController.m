@@ -7,7 +7,6 @@
 //
 
 #import "UdeskImagePickerController.h"
-#import "UdeskAlbumsViewController.h"
 #import "UdeskAssetsPickerController.h"
 #import "UdeskSDKConfig.h"
 
@@ -34,10 +33,10 @@
 
 - (void)setup {
 
-    NSDictionary *attr = @{NSForegroundColorAttributeName : [UIColor whiteColor]};
+    NSDictionary *attr = @{NSForegroundColorAttributeName : [UdeskSDKConfig customConfig].sdkStyle.albumTitleColor};
     self.navigationBar.titleTextAttributes = attr;
-    self.navigationBar.barTintColor = [UIColor colorWithRed:0.141f  green:0.145f  blue:0.149f alpha:0.5];
-    self.navigationBar.tintColor = [UIColor whiteColor];
+    self.navigationBar.barTintColor = [UdeskSDKConfig customConfig].sdkStyle.albumNavBgColor;
+//    self.navigationBar.tintColor = [UdeskSDKConfig customConfig].sdkStyle.albumBackColor;
     
     self.quality = [UdeskSDKConfig customConfig].quality;
     self.maxImagesCount = [UdeskSDKConfig customConfig].maxImagesCount;

@@ -61,6 +61,7 @@
         self.height = size.height;
         self.width = size.width;
         self.content = self.messageId;
+        self.sourceData = UIImageJPEGRepresentation(image, 1);
     }
     
     return self;
@@ -76,8 +77,7 @@
         self.messageFrom = UDMessageTypeSending;
         self.messageStatus = UDMessageSendStatusSending;
         self.timestamp = [NSDate date];
-        self.isGif = YES;
-        self.imageData = gifData;
+        self.sourceData = gifData;
         self.content = self.messageId;
     }
     
@@ -94,8 +94,8 @@
         self.messageFrom = UDMessageTypeSending;
         self.messageStatus = UDMessageSendStatusSending;
         self.timestamp = [NSDate date];
-        self.voiceData = voiceData;
-        self.voiceDuration = duration.floatValue;
+        self.sourceData = voiceData;
+        self.duration = duration.floatValue;
         self.content = self.messageId;
     }
     
@@ -112,7 +112,7 @@
         self.messageFrom = UDMessageTypeSending;
         self.messageStatus = UDMessageSendStatusSending;
         self.timestamp = [NSDate date];
-        self.videoData = videoData;
+        self.sourceData = videoData;
         self.content = self.messageId;
     }
     
@@ -127,6 +127,7 @@
         self.messageId = [[NSUUID UUID] UUIDString];
         self.messageType = UDMessageContentTypeProduct;
         self.productMessage = productMessage;
+        self.timestamp = [NSDate date];
         if ([productMessage.allKeys containsObject:@"productTitle"]) {
             self.content = productMessage[@"productTitle"];
         }
@@ -156,18 +157,17 @@
     return self;
 }
 
-- (instancetype)initWithLeaveMessage:(NSString *)text leaveMessageFlag:(BOOL)leaveMsgFlag {
+- (instancetype)initWithRobotTransferMessage:(NSString *)text {
     
     self = [super init];
     if (self) {
         
         self.messageId = [[NSUUID UUID] UUIDString];
-        self.messageType = UDMessageContentTypeLeaveMsg;
-        self.messageFrom = UDMessageTypeSending;
-        self.messageStatus = UDMessageSendStatusSending;
+        self.messageType = UDMessageContentTypeRobotTransfer;
+        self.messageFrom = UDMessageTypeCenter;
+        self.messageStatus = UDMessageSendStatusSuccess;
         self.timestamp = [NSDate date];
         self.content = text;
-        self.leaveMsgFlag = leaveMsgFlag;
     }
     
     return self;
@@ -248,14 +248,17 @@
             if ([model.goodsId isKindOfClass:[NSString class]] && ![UdeskSDKUtil isBlankString:model.goodsId]) {
                 [dict setObject:model.goodsId forKey:@"id"];
             }
+            if (model.customParameters && [model.customParameters isKindOfClass:[NSDictionary class]] && model.customParameters.count) {
+                [dict setObject:model.customParameters forKey:@"customParameters"];
+            }
             
             NSMutableArray *array = [NSMutableArray array];
             for (UdeskGoodsParamModel *paramModel in model.params) {
                 NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-                if (![UdeskSDKUtil isBlankString:paramModel.text]) {
+                if (paramModel.text) {
                     [dict setObject:paramModel.text forKey:@"text"];
                 }
-                if (![UdeskSDKUtil isBlankString:paramModel.color]) {
+                if (paramModel.color) {
                     [dict setObject:paramModel.color forKey:@"color"];
                 }
                 if (paramModel.fold) {
@@ -298,6 +301,22 @@
         self.showLeaveMsgBtn = showLeaveMsgBtn;
     }
 
+    return self;
+}
+
+- (instancetype)initWithChatEvent:(NSString *)text {
+    
+    self = [super init];
+    if (self) {
+        
+        self.messageId = [[NSUUID UUID] UUIDString];
+        self.messageType = UDMessageContentTypeSurveyEvent;
+        self.messageFrom = UDMessageTypeCenter;
+        self.messageStatus = UDMessageSendStatusSuccess;
+        self.timestamp = [NSDate date];
+        self.content = text;
+    }
+    
     return self;
 }
 

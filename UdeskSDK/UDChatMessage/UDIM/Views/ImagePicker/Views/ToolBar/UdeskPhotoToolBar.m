@@ -11,7 +11,6 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskAssetModel.h"
 #import "UdeskAssetsPickerManager.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskSDKMacro.h"
 
 static NSString *kCollectionViewCellIdentifier = @"kCollectionViewCellIdentifier";

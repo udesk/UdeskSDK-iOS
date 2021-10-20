@@ -8,19 +8,20 @@
 
 Pod::Spec.new do |s|
   s.name         = 'UdeskSDK'
-  s.version      = '4.3.4'
+  s.version      = '5.2.3'
   s.license      = 'MIT'
   s.summary      = 'Udesk SDK for iOS'
   s.homepage     = 'https://github.com/udesk/UdeskSDK-iOS'
-  s.author       = {'xuchen ' => 'xuc@udesk.cn'}
-  s.source       =  {:git => 'https://github.com/udesk/UdeskSDK-iOS.git', :tag => s.version.to_s }
-  s.platform     = :ios, '8.0'
+  s.author       = {'zhangshuangyi ' => 'zhangshuangyi@udesk.cn'}
+  # s.source     = {:git => 'https://github.com/udesk/UdeskSDK-iOS.git', :tag => s.version.to_s }
+  s.source       = {:git => 'https://github.com/udesk/UdeskSDK-iOS.git'}
+  s.platform     = :ios, '9.0'
   s.requires_arc = true
   s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
   s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
 
   s.subspec 'SDK' do |ss|
-    ss.frameworks = 'AVFoundation', 'CoreTelephony', 'SystemConfiguration', 'MobileCoreServices', 'WebKit', 'MapKit','AssetsLibrary','ImageIO','Accelerate','MediaPlayer','Photos','CoreText', 'AVKit'
+    ss.frameworks = 'AVFoundation', 'CoreTelephony', 'SystemConfiguration', 'MobileCoreServices', 'WebKit', 'MapKit','AssetsLibrary','ImageIO','Accelerate','MediaPlayer','Photos','CoreText'
     ss.source_files = 'UdeskSDK/SDK/*.{h}'
     ss.vendored_libraries = 'UdeskSDK/SDK/libUdesk.a'
     ss.libraries    = 'z', 'xml2', 'resolv', 'sqlite3'

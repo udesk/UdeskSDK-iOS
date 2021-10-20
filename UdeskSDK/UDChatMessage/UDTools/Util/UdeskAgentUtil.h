@@ -12,6 +12,9 @@
 
 @interface UdeskAgentUtil : NSObject
 
++ (BOOL)udeskQuitQueue;
++ (void)setUdeskQuitQueue:(BOOL)udeskQuitQueue;
+
 /** 获取客服Model */
 + (void)fetchAgentWithPreSessionId:(NSNumber *)preSessionId
                  preSessionMessage:(UdeskMessage *)preSessionMessage
@@ -28,6 +31,13 @@
                  preSessionId:(NSNumber *)preSessionId
             preSessionMessage:(UdeskMessage *)preSessionMessage
                    completion:(void(^)(UdeskAgent *agentModel,NSError *error))completion;
+
+/** 指定分配客服组 */
++ (void)fetchAgentWithMenuId:(NSString *)menuId
+                preSessionId:(NSNumber *)preSessionId
+           preSessionMessage:(UdeskMessage *)preSessionMessage
+                  completion:(void(^)(UdeskAgent *agentModel,NSError *error))completion;
+
 
 
 @end

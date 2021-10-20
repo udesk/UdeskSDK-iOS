@@ -7,7 +7,6 @@
 //
 
 #import "UdeskPhotoView.h"
-#import "UdeskOneScrollView.h"
 #import "UdeskBundleUtils.h"
 #import "Udesk_YYWebImage.h"
 #import "UdeskButton.h"
@@ -68,7 +67,7 @@
     }
     else {
         
-        [[Udesk_YYWebImageManager sharedManager] requestImageWithURL:[NSURL URLWithString:imageUrl] options:Udesk_YYWebImageOptionShowNetworkActivity progress:nil transform:nil completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, Udesk_YYWebImageFromType from, Udesk_YYWebImageStage stage, NSError * _Nullable error) {
+        [[Udesk_YYWebImageManager sharedManager] requestImageWithURL:[NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:Udesk_YYWebImageOptionShowNetworkActivity progress:nil transform:nil completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, Udesk_YYWebImageFromType from, Udesk_YYWebImageStage stage, NSError * _Nullable error) {
            
             if (image) {
                 dispatch_async(dispatch_get_main_queue(), ^{

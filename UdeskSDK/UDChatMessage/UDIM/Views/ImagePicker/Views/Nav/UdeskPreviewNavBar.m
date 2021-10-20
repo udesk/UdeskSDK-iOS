@@ -8,8 +8,8 @@
 
 #import "UdeskPreviewNavBar.h"
 #import "UIImage+UdeskSDK.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskSDKMacro.h"
+#import "UdeskSDKConfig.h"
 
 @implementation UdeskPreviewNavBar
 
@@ -25,9 +25,11 @@
 
 - (void)setupUI {
     
-    _backButton = [[UdeskButton alloc] initWithFrame:CGRectZero];
-    [_backButton setImage:[UIImage udDefaultWhiteBackImage] forState:UIControlStateNormal];
-    [_backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    _backButton = [UdeskButton buttonWithType:UIButtonTypeCustom];
+    UIImage *backImage = [[UIImage udDefaultWhiteBackImage] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    [_backButton setImage:backImage forState:UIControlStateNormal];
+    [_backButton setTintColor:[UdeskSDKConfig customConfig].sdkStyle.albumBackColor];
+    [_backButton setTitleColor:[UdeskSDKConfig customConfig].sdkStyle.albumBackColor forState:UIControlStateNormal];
     [_backButton addTarget:self action:@selector(backButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_backButton];
     

@@ -112,7 +112,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:self.appKeyTextField.text forKey:@"key"];
         [[NSUserDefaults standardUserDefaults] setObject:self.appIdTextField.text forKey:@"appId"];
         
-        NSString *sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
+        NSString *sdk_token = @"1212";//[NSString stringWithFormat:@"%u",arc4random()];
        
         UdeskOrganization *organization = [[UdeskOrganization alloc] initWithDomain:self.domainTextField.text
                                                                              appKey:self.appKeyTextField.text

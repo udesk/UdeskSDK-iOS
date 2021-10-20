@@ -19,17 +19,35 @@
 
 @implementation UdeskSmallVideoPreviewViewController
 
+- (instancetype)initWithURL:(NSString *)URL
+{
+    self = [super init];
+    if (self) {
+        _url = URL;
+        [self setupUI];
+    }
+    return self;
+}
+
+- (instancetype)initWithImage:(UIImage *)image
+{
+    self = [super init];
+    if (self) {
+        _image = image;
+        [self setupUI];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    [self setupUI];
 }
 
 - (void)setupUI {
     
     UIImageView *imgView ;
-    if (self.url.length >0) {
+    if (self.url.length > 0) {
         
         imgView = [[UIImageView alloc] initWithImage:[UdeskVideoUtil videoPreViewImageWithURL:self.url]];
         [self.view addSubview:imgView];

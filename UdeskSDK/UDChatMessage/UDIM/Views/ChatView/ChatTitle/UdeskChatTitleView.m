@@ -10,8 +10,6 @@
 #import "UdeskAgent.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskBundleUtils.h"
-#import "UdeskStringSizeUtil.h"
-#import "UIView+UdeskSDK.h"
 #import "UdeskSDKUtil.h"
 
 @implementation UdeskChatTitleView
@@ -31,7 +29,7 @@
     _titleLabel = [[UILabel alloc] initWithFrame:self.frame];
     _titleLabel.textColor = [UdeskSDKConfig customConfig].sdkStyle.titleColor;
     _titleLabel.font = [UdeskSDKConfig customConfig].sdkStyle.titleFont;
-    _titleLabel.text = getUDLocalizedString(@"udesk_connecting_agent");
+    _titleLabel.text = getUDLocalizedString(@"udesk_connecting");
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     [self addSubview:_titleLabel];
 }
@@ -39,13 +37,22 @@
 - (void)updateTitle:(UdeskAgent *)agent {
 
     NSString *titleText = @"";
-    if (agent.code == UDAgentStatusResultOnline) {
+    if (agent.statusType == UDAgentStatusResultOnline) {
         titleText = agent.nick;
     }
-    else if (agent.code == UDAgentStatusResultOffline) {
-        titleText = agent.nick?agent.nick:getUDLocalizedString(@"udesk_agent_offline");
+    else if (agent.statusType == UDAgentStatusResultOffline) {
+
+        if (agent.sessionType == UDAgentSessionTypeInSession) {
+            titleText = agent.nick?agent.nick:getUDLocalizedString(@"udesk_leave_msg");
+        }
+        else if (agent.sessionType == UDAgentSessionTypeHasOver) {
+            titleText = getUDLocalizedString(@"udesk_chat_end");
+        }
+        else {
+            titleText = getUDLocalizedString(@"udesk_leave_msg");
+        }
     }
-    else if (agent.code == UDAgentStatusResultQueue) {
+    else if (agent.statusType == UDAgentStatusResultQueue) {
         titleText = getUDLocalizedString(@"udesk_queue");
     }
     else {
@@ -58,7 +65,7 @@
     }
     
     UIImage *titleImage;
-    switch (agent.code) {
+    switch (agent.statusType) {
         case UDAgentStatusResultOnline:
             titleImage = [UIImage udDefaultAgentOnlineImage];
             break;
@@ -66,7 +73,6 @@
             titleImage = [UIImage udDefaultAgentBusyImage];
             break;
         case UDAgentStatusResultOffline:
-        case UDAgentStatusResultLeaveMessage:
             titleImage = [UIImage udDefaultAgentOfflineImage];
             break;
         default:
@@ -86,7 +92,7 @@
     [attri appendAttributedString:string];
     _titleLabel.attributedText = attri;
     
-    _titleLabel.frame = CGRectMake(0, 0, self.udWidth, self.udHeight);
+    _titleLabel.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
 }
 
 @end

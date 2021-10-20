@@ -12,44 +12,7 @@
 
 @implementation UdeskStringSizeUtil
 
-+ (CGFloat)getHeightForAttributedText:(NSAttributedString *)attributedText
-                            textWidth:(CGFloat)textWidth
-{
-    if ([UdeskSDKUtil isBlankString:attributedText.string]) {
-        return 50;
-    }
-    
-    CGSize constraint = CGSizeMake(textWidth , CGFLOAT_MAX);
-    CGSize title_size;
-    CGFloat totalHeight;
-    title_size = [attributedText boundingRectWithSize:constraint
-                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
-                                              context:nil].size;
-    
-    totalHeight = ceil(title_size.height);
-    
-    return totalHeight;
-}
-
-+ (CGSize)getSizeForAttributedText:(NSAttributedString *)attributedText
-                         textWidth:(CGFloat)textWidth
-{
-    if ([UdeskSDKUtil isBlankString:attributedText.string]) {
-        return CGSizeMake(50, 50);
-    }
-    
-    CGSize constraint = CGSizeMake(textWidth , CGFLOAT_MAX);
-    
-    CGRect stringRect = [attributedText boundingRectWithSize:constraint
-                                                     options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
-                                                     context:nil];
-    
-    stringRect.size.height = stringRect.size.height < 30 ? stringRect.size.height = 18 : stringRect.size.height;
-    
-    return CGRectIntegral(stringRect).size;
-}
-
-+ (CGSize)textSize:(NSString *)text withFont:(UIFont *)font withSize:(CGSize)size {
++ (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font size:(CGSize)size {
 
     CGSize newSize = CGSizeMake(50, 50);
     
@@ -77,6 +40,38 @@
     }
     
     return newSize;
+}
+
++ (CGSize)sizeWithAttributedText:(NSAttributedString *)attributedText size:(CGSize)size {
+    
+    if ([UdeskSDKUtil isBlankString:attributedText.string]) {
+        return CGSizeMake(100, 50);
+    }
+    
+    CGSize constraint = CGSizeMake(size.width , size.height);
+    
+    CGRect stringRect = [attributedText boundingRectWithSize:constraint
+                                                     options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                                     context:nil];
+    
+    stringRect.size.height = stringRect.size.height < 30 ? stringRect.size.height = 20 : stringRect.size.height;
+    stringRect.size.width = stringRect.size.width < 25 ? 25 : stringRect.size.width;
+    
+    return CGSizeMake(stringRect.size.width, stringRect.size.height+2);
+}
+
++ (CGFloat)getHeightForAttributedText:(NSAttributedString *)attributedText textWidth:(CGFloat)textWidth {
+    
+    CGSize constraint = CGSizeMake(textWidth , CGFLOAT_MAX);
+    CGSize title_size;
+    CGFloat totalHeight;
+    title_size = [attributedText boundingRectWithSize:constraint
+                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                              context:nil].size;
+    
+    totalHeight = ceil(title_size.height);
+    
+    return totalHeight;
 }
 
 @end

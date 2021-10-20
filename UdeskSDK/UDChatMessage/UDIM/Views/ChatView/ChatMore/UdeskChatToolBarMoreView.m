@@ -14,12 +14,13 @@
 #import "UdeskCustomButtonConfig.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskImageUtil.h"
+#import "UdeskAgent.h"
 
 // 每行有4个
 #define kUdeskPerRowItemCount 4
 #define kUdeskPerColum 2
-#define kUdeskMoreItemWidth 60
-#define kUdeskMoreItemHeight 84
+#define kUdeskMoreItemWidth 64
+#define kUdeskMoreItemHeight 88
 
 @interface UdeskChatToolBarMoreView()<UIScrollViewDelegate>
 
@@ -76,6 +77,12 @@
     _pageControl.pageIndicatorTintColor = [UIColor colorWithRed:0.733f  green:0.733f  blue:0.733f alpha:1];
     [self addSubview:_pageControl];
     
+    [self setupAdditionalAreaButtons];
+}
+
+//添加附加区的功能按钮
+- (void)setupAdditionalAreaButtons {
+    
     UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
     
     if (sdkConfig.isShowAlbumEntry) {
@@ -92,6 +99,10 @@
         [self.allItems addObject:_cameraButton];
     }
     
+    if (_enableSurvey) {
+        [self appendSurveyButton];
+    }
+    
     if (sdkConfig.isShowLocationEntry) {
         _locationButton = [self buttonWithImage:[UIImage udDefaultChatBarMoreLocationImage] title:getUDLocalizedString(@"udesk_location")];
         _locationButton.tag = 9347 + 2;
@@ -99,35 +110,34 @@
         [self.allItems addObject:_locationButton];
     }
     
-    if (_enableSurvey) {
-        [self appendSurveyButton];
-    }
-    
     if (_enableVideoCall) {
-        [self appendVideoCallButton];
+        _videoCallButton = [self buttonWithImage:[UIImage udDefaultChatBarMoreVideoCallImage] title:getUDLocalizedString(@"udesk_video_call")];
+        _videoCallButton.tag = 9347 + 4;
+        [_scrollview addSubview:self.videoCallButton];
+        [self.allItems addObject:self.videoCallButton];
     }
     
+    self.customMenuItems = [UdeskSDKConfig customConfig].customButtons;
 }
 
-- (UdeskButton *)buttonWithImage:(UIImage *)image title:(NSString *)title {
+- (void)setAgent:(UdeskAgent *)agent {
+    _agent = agent;
     
-    UdeskButton *button = [UdeskButton buttonWithType:UIButtonTypeCustom];
-    [button addTarget:self action:@selector(itemButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [button setImage:image forState:UIControlStateNormal];
-    [button setTitle:title forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor colorWithRed:0.471f  green:0.471f  blue:0.471f alpha:1] forState:UIControlStateNormal];
-    button.titleLabel.font = [UIFont systemFontOfSize:11.0];
-    
-    if (image) {
-        button.imageEdgeInsets = UIEdgeInsetsMake(-10, 0, 15, 0);
-        button.titleEdgeInsets = UIEdgeInsetsMake(45, -60, -20, 0);
+    if (agent.statusType == UDAgentStatusResultOffline ||
+        agent.statusType == UDAgentStatusResultQueue) {
+        [self removeAllAreaButtons];
+        [self setupAdditionalAreaButtons];
+        [self removeSurveyAndVideoCallButton];
+        [self setNeedsLayout];
     }
-    
-    return button;
+    else if (agent.statusType == UDAgentStatusResultOnline) {
+        [self removeAllAreaButtons];
+        [self setupAdditionalAreaButtons];
+        [self setNeedsLayout];
+    }
 }
 
 - (void)setCustomMenuItems:(NSArray *)customMenuItems {
-    
     if (!customMenuItems || customMenuItems == (id)kCFNull) return ;
     if (![customMenuItems isKindOfClass:[NSArray class]]) return ;
     if (!customMenuItems.count) return;
@@ -139,7 +149,26 @@
     
     _customMenuItems = customMenuItems;
     
+    NSMutableArray *agentCustomButton = [NSMutableArray array];
+    NSMutableArray *robotCustomButton = [NSMutableArray array];
     for (UdeskCustomButtonConfig *customButton in customMenuItems) {
+        switch (customButton.scenesType) {
+            case UdeskCustomButtonConfigScenesAgent:
+                [agentCustomButton addObject:customButton];
+                break;
+            case UdeskCustomButtonConfigScenesRobot:
+                [robotCustomButton addObject:customButton];
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
+    NSArray *customeButtonArray = self.isRobotSession?robotCustomButton:agentCustomButton;
+    if (!customeButtonArray || customeButtonArray == (id)kCFNull || !customeButtonArray.count) return ;
+    
+    for (UdeskCustomButtonConfig *customButton in customeButtonArray) {
         if (![customButton isKindOfClass:[UdeskCustomButtonConfig class]]) return;
         
         if (customButton.type == UdeskCustomButtonConfigTypeInMoreView) {
@@ -168,14 +197,6 @@
     }
 }
 
-- (void)appendVideoCallButton {
-    
-    _videoCallButton = [self buttonWithImage:[UIImage udDefaultChatBarMoreVideoCallImage] title:getUDLocalizedString(@"udesk_video_call")];
-    _videoCallButton.tag = 9347 + 4;
-    [_scrollview addSubview:self.videoCallButton];
-    [self.allItems addObject:self.videoCallButton];
-}
-
 - (void)removeVideoCallButton {
     
     [self.videoCallButton removeFromSuperview];
@@ -184,129 +205,83 @@
     }
 }
 
-- (void)setIsQueue:(BOOL)isQueue {
-    _isQueue = isQueue;
+- (UdeskButton *)buttonWithImage:(UIImage *)image title:(NSString *)title {
     
-    //排队
-    if (isQueue) {
-        [self removeQueueNotSupportButton];
+    UdeskButton *button = [UdeskButton buttonWithType:UIButtonTypeCustom];
+    [button addTarget:self action:@selector(itemButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [button setImage:image forState:UIControlStateNormal];
+    [button setTitle:title forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor colorWithRed:0.471f  green:0.471f  blue:0.471f alpha:1] forState:UIControlStateNormal];
+    button.titleLabel.font = [UIFont systemFontOfSize:11.0];
+    
+    if (image) {
+        button.imageEdgeInsets = UIEdgeInsetsMake(-10, 0, 15, 0);
+        button.titleEdgeInsets = UIEdgeInsetsMake(45, -64, -20, 0);
     }
-    else {
-        [self appendQueueSupportButton];
+    
+    return button;
+}
+
+//人工会话
+- (void)setIsAgentSession:(BOOL)isAgentSession {
+    _isAgentSession = isAgentSession;
+    
+    [self removeAllAreaButtons];
+    [self setupAdditionalAreaButtons];
+    
+    [self setNeedsLayout];
+}
+
+//机器人会话
+- (void)setIsRobotSession:(BOOL)isRobot {
+    _isRobotSession = isRobot;
+    
+    //机器人
+    if (isRobot) {
+        
+        [self removeAllAreaButtons];
+        [self appendSurveyButton];
+        self.customMenuItems = [UdeskSDKConfig customConfig].customButtons;
+        [self setNeedsLayout];
     }
 }
 
-- (void)setIsPreSessionMessage:(BOOL)isPreSessionMessage {
-    _isPreSessionMessage = isPreSessionMessage;
+//无消息过滤会话
+- (void)setIsPreSession:(BOOL)isPreSession {
+    _isPreSession = isPreSession;
     
     //无消息对话过滤
-    if (isPreSessionMessage) {
-        [self removePreSessionNotSupportButton];
-    }
-    else {
-        [self appendPreSessionSupportButton];
+    if (isPreSession) {
+        
+        [self removeAllAreaButtons];
+        [self setupAdditionalAreaButtons];
+        [self removeSurveyAndVideoCallButton];
+        [self setNeedsLayout];
     }
 }
 
-- (void)removePreSessionNotSupportButton {
+//移除评价和直播按钮
+- (void)removeSurveyAndVideoCallButton {
     
-    @try {
-        //移除评价按钮
-        if (_enableSurvey) {
-            [self removeSurveyButton];
-        }
-        //移除视频直播按钮
-        if (_enableVideoCall) {
-            [self removeVideoCallButton];
-        }
-        //移除自定义按钮
-        if (self.customMenuItems.count) {
-            NSArray *array = [self.allItems copy];
-            for (UdeskButton *button in array) {
-                //自定义按钮
-                if (button.tag >= (9347 + 5)) {
-                    [button removeFromSuperview];
-                    if ([self.allItems containsObject:button]) {
-                        [self.allItems removeObject:button];
-                    }
-                }
-            }
-        }
-        
-        [self setNeedsLayout];
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
+    if (self.surveyButton && _enableSurvey) {
+        [self removeSurveyButton];
+    }
+    
+    if (self.videoCallButton && _enableVideoCall) {
+        [self removeVideoCallButton];
     }
 }
 
-- (void)appendPreSessionSupportButton {
+//移除所有按钮
+- (void)removeAllAreaButtons {
     
-    @try {
-     
-        //添加评价按钮
-        if (_enableSurvey && ![self.allItems containsObject:self.surveyButton]) {
-            [self appendSurveyButton];
+    for (UIView *view in [self.scrollview subviews]) {
+        if ([view isKindOfClass:[UdeskButton class]]) {
+            [view removeFromSuperview];
         }
-        //添加视频直播按钮
-        if (_enableVideoCall && ![self.allItems containsObject:self.videoCallButton]) {
-            [self appendVideoCallButton];
-        }
-        
-        //检查是否有自定义按钮
-        NSArray *array = [self.allItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"tag >= %d",(9347 + 5)]];
-        //重新赋值
-        if (self.customMenuItems.count && !array.count) {
-            self.customMenuItems = self.customMenuItems;
-        }
-        [self setNeedsLayout];
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
     }
-}
 
-- (void)removeQueueNotSupportButton {
-    
-    @try {
-        //移除评价按钮
-        if (_enableSurvey) {
-            [self removeSurveyButton];
-        }
-        //移除视频直播按钮
-        if (_enableVideoCall) {
-            [self removeVideoCallButton];
-        }
-
-        [self setNeedsLayout];
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
-}
-
-- (void)appendQueueSupportButton {
-    
-    @try {
-        
-        //添加评价按钮
-        if (_enableSurvey && ![self.allItems containsObject:self.surveyButton]) {
-            [self appendSurveyButton];
-        }
-        //添加视频直播按钮
-        if (_enableVideoCall && ![self.allItems containsObject:self.videoCallButton]) {
-            [self appendVideoCallButton];
-        }
-        
-        [self setNeedsLayout];
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-    }
+    [self.allItems removeAllObjects];
 }
 
 - (void)itemButtonAction:(UdeskButton *)button {

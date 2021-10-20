@@ -136,7 +136,7 @@
     config.customButtons = @[buttonConfig1,buttonConfig2,buttonConfig3];
     config.showCustomButtons = YES;
     
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle] sdkConfig:config];
+    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle customStyle] sdkConfig:config];
     [chatViewManager pushUdeskInViewController:self completion:nil];
 }
 

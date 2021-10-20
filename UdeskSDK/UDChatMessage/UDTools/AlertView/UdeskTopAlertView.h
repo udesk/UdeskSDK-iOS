@@ -13,7 +13,8 @@ typedef enum : NSUInteger {
     UDAlertTypeGreen,
     UDAlertTypeOrange,
     UDAlertTypeSkyBlue,
-    UDAlertTypeRed
+    UDAlertTypeRed,
+    UDAlertTypeNetworkFailure,
 } UDAlertType;
 
 @interface UdeskTopAlertView : UIView
@@ -29,12 +30,7 @@ typedef enum : NSUInteger {
 + (BOOL)hasViewWithParentView:(UIView*)parentView;
 + (void)hideViewWithParentView:(UIView*)parentView;
 
-+ (UdeskTopAlertView *)showAlertType:(UDAlertType)type
-                         withMessage:(NSString *)message
-                          parentView:(UIView*)parentView;
-
-+ (void)showWithCode:(NSInteger)code
-         withMessage:(NSString *)message
-          parentView:(UIView*)parentView;
++ (UdeskTopAlertView *)showAlertType:(UDAlertType)type withMessage:(NSString *)message parentView:(UIView*)parentView;
++ (void)showWithCode:(NSInteger)code withMessage:(NSString *)message parentView:(UIView*)parentView;
 
 @end

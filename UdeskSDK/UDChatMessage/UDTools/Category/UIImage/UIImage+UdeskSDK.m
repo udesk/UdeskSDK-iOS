@@ -86,14 +86,44 @@
     return frameDuration;
 }
 
-+ (UIImage *)udBubbleSendImage {
-
-    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatBubbleSendingSolid.png")];
++ (UIImage *)udBubbleSend01Image {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatBubbleSendingSolid01.png")];
 }
 
-+ (UIImage *)udBubbleReceiveImage {
++ (UIImage *)udBubbleReceive01Image {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatBubbleReceivingSolid01.png")];
+}
 
-    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatBubbleReceivingSolid.png")];
++ (UIImage *)udBubbleSend02Image {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatBubbleSendingSolid02.png")];
+}
+
++ (UIImage *)udBubbleReceive02Image {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatBubbleReceivingSolid02.png")];
+}
+
++ (UIImage *)udBubbleSend03Image {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatBubbleSendingSolid03.png")];
+}
+
++ (UIImage *)udBubbleReceive03Image {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatBubbleReceivingSolid03.png")];
+}
+
++ (UIImage *)udBubbleSend04Image {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatBubbleSendingSolid04.png")];
+}
+
++ (UIImage *)udBubbleReceive04Image {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatBubbleReceivingSolid04.png")];
 }
 
 + (UIImage *)udDefaultRefreshImage {
@@ -111,9 +141,19 @@
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatKeyboard.png")];
 }
 
++ (UIImage *)udDefaultKeyboardSmallImage {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatKeyboardSmall.png")];
+}
+
 + (UIImage *)udDefaultMoreImage {
     
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatMore.png")];
+}
+
++ (UIImage *)udDefaultMoreCloseImage {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udChatMoreClose.png")];
 }
 
 + (UIImage *)udDefaultSmileImage {
@@ -121,19 +161,19 @@
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udSmileButton.png")];
 }
 
-+ (UIImage *)udDefaultCustomerImage {
-
-    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udCustomerAvatar.png")];
-}
-
 + (UIImage *)udDefaultAgentImage {
 
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udAgentAvatar.png")];
 }
 
++ (UIImage *)udDefaultCustomerAvatarImage {
+    
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udCustomerAvatar.png")];
+}
+
 + (UIImage *)udDefaultBackImage {
 
-    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udBlueBack.png")];
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udBack.png")];
 }
 
 + (UIImage *)udDefaultWhiteBackImage {
@@ -232,6 +272,41 @@
 /** 满意度评价表情 实星 */
 + (UIImage *)udDefaultSurveyStarFilledImage {
     return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udSurveyStarFilled.png")];
+}
+
+/** 向上箭头 */
++ (UIImage *)udDefaultUpArrow {
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udUpArrow.png")];
+}
+
+/** 向下箭头 */
++ (UIImage *)udDefaultDownArrow {
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udDownArrow.png")];
+}
+
+/** 列表标签（。） */
++ (UIImage *)udDefaultListTag {
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udListTag.png")];
+}
+
+/** 机器人答案有用 */
++ (UIImage *)udDefaultUseful {
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udUseful.png")];
+}
+
+/** 机器人答案有用已选择 */
++ (UIImage *)udDefaultUsefulSelected {
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udUsefulSelected.png")];
+}
+
+/** 机器人答案无用 */
++ (UIImage *)udDefaultUseless {
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udUseless.png")];
+}
+
+/** 机器人答案无用已选择 */
++ (UIImage *)udDefaultUselessSelected {
+    return [UIImage imageWithContentsOfFile:getUDBundlePath(@"udUselessSelected.png")];
 }
 
 + (UIImage *)udDefaultAgentOnlineImage {

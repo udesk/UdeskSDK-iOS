@@ -7,7 +7,6 @@
 //
 
 #import "UdeskSDKManager.h"
-#import "UdeskRobotViewController.h"
 #import "UdeskFAQViewController.h"
 #import "UdeskAgentMenuViewController.h"
 #import "UdeskTicketViewController.h"
@@ -16,10 +15,10 @@
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKUtil.h"
 #import "UdeskManager.h"
+//#import "Udesk_YYWebImage.h"
 
 @implementation UdeskSDKManager{
     UdeskChatViewController *chatViewController;
-    UdeskRobotViewController *robotChat;
     UdeskFAQViewController *faq;
     UdeskAgentMenuViewController *agentMenu;
     UdeskTicketViewController *ticket;
@@ -33,7 +32,7 @@
     if (self) {
      
         _sdkConfig = [UdeskSDKConfig customConfig];
-        _sdkConfig.sdkStyle = [UdeskSDKStyle defaultStyle];
+        _sdkConfig.sdkStyle = [UdeskSDKStyle customStyle];
         _show = [[UdeskSDKShow alloc] initWithConfig:_sdkConfig];
     }
     return self;
@@ -92,72 +91,32 @@
     [self presentUdeskViewController:viewController transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
 }
 
-- (void)pushUdeskInViewController:(UIViewController *)viewController
-                        udeskType:(UdeskType)udeskType
-                       completion:(void (^)(void))completion {
-
-    [self customPresentViewController:viewController udeskType:udeskType transiteAnimation:UDTransiteAnimationTypePush completion:completion];
-}
-
-- (void)presentUdeskInViewController:(UIViewController *)viewController
-                           udeskType:(UdeskType)udeskType
-                          completion:(void (^)(void))completion {
-    
-    [self customPresentViewController:viewController udeskType:udeskType transiteAnimation:UDTransiteAnimationTypePresent completion:completion];
-}
-
-- (void)customPresentViewController:(UIViewController *)viewController
-                          udeskType:(UdeskType)udeskType
-                  transiteAnimation:(UDTransiteAnimationType)animationType
-                         completion:(void (^)(void))completion {
-    
-    switch (udeskType) {
-        case UdeskFAQ:
-            [self presentFAQController:viewController transiteAnimation:animationType completion:completion];
-            break;
-        case UdeskTicket:
-            [self presentTicketController:viewController transiteAnimation:animationType completion:completion];
-            break;
-            
-        default:
-            break;
-    }
-}
-
 //根据后台配置
 - (void)presentUdeskViewController:(UIViewController *)viewController
                  transiteAnimation:(UDTransiteAnimationType)animationType
                         completion:(void (^)(void))completion {
 
     //根据后台配置
-    [UdeskManager getServerSDKSetting:^(UdeskSetting *setting) {
+    [UdeskManager fetchSDKSetting:^(UdeskSetting *setting) {
         
-        //容错处理
-        if (!setting.inSession || !setting.enableRobot || !setting.enableImGroup) {
-            
-            [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
-            return ;
-        }
+        //设置图片请求头
+        //还未经过测试，暂时注释
+//        if (setting.referer) {
+//            NSMutableDictionary *header = [Udesk_YYWebImageManager sharedManager].headers.mutableCopy;
+//            header[@"referer"] = setting.referer;
+//            [Udesk_YYWebImageManager sharedManager].headers = header;
+//        }
         
-        //客户正在会话
-        if (setting.inSession.boolValue) {
-            [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
+        //开通客户导航栏
+        if ([setting.status isEqualToString:@"init"] && !setting.enableRobot.boolValue && setting.enableImGroup.boolValue && !setting.inSession.boolValue) {
+            [self presentMenuController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
             return ;
         }
         
         //不在会话
         [UdeskSDKUtil storeGroupId:_sdkConfig.groupId];
-        
-        //开通机器人
-        if (setting.enableRobot.boolValue) {
-            [self presentRobotController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
-            return ;
-        }
-        
-        //开通客户导航栏
-        if (setting.enableImGroup.boolValue) {
-            [self presentMenuController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
-            return ;
+        if ([setting.status isEqualToString:@"init"]) {
+            [UdeskSDKUtil storeMenuId:nil];
         }
         
         [self presentIMController:viewController transiteAnimation:animationType sdkSetting:setting completion:completion];
@@ -182,48 +141,6 @@
     [_show presentOnViewController:viewController udeskViewController:chatViewController transiteAnimation:animationType completion:completion];
 }
 
-//推到机器人页面
-- (void)presentRobotController:(UIViewController *)viewController
-             transiteAnimation:(UDTransiteAnimationType)animationType
-                    sdkSetting:(UdeskSetting *)setting
-                    completion:(void (^)(void))completion {
-    
-    //如果选择了配置
-    if (setting) {
-        
-        NSURL *url = [UdeskManager getServerRobotURLWithBaseURL:setting.robot];
-        if (!robotChat) {
-            robotChat = [[UdeskRobotViewController alloc] initWithSDKConfig:_sdkConfig setting:setting];
-            robotChat.robotURL = url;
-        }
-        [_show presentOnViewController:viewController udeskViewController:robotChat transiteAnimation:animationType completion:completion];
-    }
-}
-
-//推到帮助中心页面
-- (void)presentFAQController:(UIViewController *)viewController
-           transiteAnimation:(UDTransiteAnimationType)animationType
-                  completion:(void (^)(void))completion {
-    
-    
-    if (!faq) {
-        faq = [[UdeskFAQViewController alloc] initWithSDKConfig:_sdkConfig];
-    }
-    
-    [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:animationType completion:completion];
-}
-
-//推到留言页面
-- (void)presentTicketController:(UIViewController *)viewController
-              transiteAnimation:(UDTransiteAnimationType)animationType
-                     completion:(void (^)(void))completion {
-    
-    if (!ticket) {
-        ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig setting:nil];
-    }
-    [viewController presentViewController:ticket animated:YES completion:nil];
-}
-
 //推到客服导航栏页面
 - (void)presentMenuController:(UIViewController *)viewController
            transiteAnimation:(UDTransiteAnimationType)animationType
@@ -231,7 +148,7 @@
                   completion:(void (^)(void))completion {
     
     //查看是否有导航栏
-    [UdeskManager getAgentNavigationMenu:^(id responseObject, NSError *error) {
+    [UdeskManager fetchAgentMenu:^(id responseObject, NSError *error) {
         
         @try {
             
@@ -267,6 +184,26 @@
         } @finally {
         }
     }];
+}
+
+//推到留言页面
+- (void)presentTicketInViewController:(UIViewController *)viewController completion:(void (^)(void))completion {
+    
+    if (!ticket) {
+        ticket = [[UdeskTicketViewController alloc] initWithSDKConfig:_sdkConfig setting:nil];
+        ticket.modalPresentationStyle = UIModalPresentationFullScreen;
+    }
+    [viewController presentViewController:ticket animated:YES completion:nil];
+}
+
+//推到帮助中心页面
+- (void)showFAQInViewController:(UIViewController *)viewController transiteAnimation:(UDTransiteAnimationType)animationType completion:(void (^)(void))completion {
+    
+    if (!faq) {
+        faq = [[UdeskFAQViewController alloc] initWithSDKConfig:_sdkConfig];
+    }
+    
+    [_show presentOnViewController:viewController udeskViewController:faq transiteAnimation:animationType completion:completion];
 }
 
 @end

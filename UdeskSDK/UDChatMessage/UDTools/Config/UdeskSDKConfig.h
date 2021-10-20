@@ -13,6 +13,7 @@
 #import "UdeskEmojiPanelModel.h"
 
 @class UdeskMessage;
+@class UdeskGoodsModel;
 @class UdeskChatViewController;
 @class UdeskLocationModel;
 
@@ -34,14 +35,6 @@ typedef NS_ENUM(NSUInteger, UDSmallVideoResolutionType) {
 typedef NS_ENUM(NSUInteger, UDLanguageType) {
     UDLanguageTypeCN,
     UDLanguageTypeEN
-};
-
-// 排队放弃类型枚举
-typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
-    /** 直接从排列中清除 */
-    UDQuitQueueTypeForce,
-    /** 标记放弃 */
-    UDQuitQueueTypeForceMark
 };
 
 @interface UdeskSDKActionConfig : NSObject
@@ -71,7 +64,7 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, copy) void(^linkClickBlock)(UIViewController *viewController,NSURL *URL);
 
 /** 商品消息回调 */
-@property (nonatomic, copy) void(^goodsMessageClickBlock)(UdeskChatViewController *viewController,NSString *goodsURL,NSString *goodsId);
+@property (nonatomic, copy) void(^goodsMessageClickBlock)(UdeskChatViewController *viewController,UdeskGoodsModel *goodsModel);
 
 /** 咨询对象发送按钮回调 */
 @property (nonatomic, copy) void(^productMessageSendLinkClickBlock)(UdeskChatViewController *viewController,NSDictionary *productMessage);
@@ -86,10 +79,12 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, copy) NSString *agentId;
 /** 指定客服组id */
 @property (nonatomic, copy) NSString *groupId;
+/** 导航栏客服组id（注意：不需要传这个参数，这个是本地记录用的） */
+@property (nonatomic, copy) NSString *menuId;
 
 /*  ----------- 自动消息 ------------  */
 
-/** 进入聊天界面自动发送给客服的消息, 可以包括图片和文字 */
+/** 进入聊天界面自动发送给客服的消息, 可以包括图片、文字、商品消息（传UdeskGoodsModel） */
 @property (nonatomic, strong) NSArray *preSendMessages;
 
 /*  ----------- 图片选择器 ------------  */
@@ -136,11 +131,6 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 /** 是否隐藏发送视频（开启小视频默认允许发送视频） */
 @property (nonatomic, assign, getter=isAllowShootingVideo) BOOL allowShootingVideo;
 
-
-/** 放弃排队方式 */
-@property (nonatomic, assign) UDQuitQueueType quitQueueType;
-/** 语言类型 (不推荐使用此方法)*/
-@property (nonatomic, assign) UDLanguageType languageType;
 /*
  语言类型,推荐此方法.
  
@@ -163,8 +153,9 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
  ru:俄语;
  zh-cn:中文简体; // 注意:App端对应zh-Hans.proj !!!!!!!!!
  */
-@property (nonatomic, strong) NSString *language;
-
+@property (nonatomic, copy  ) NSString *language;
+/** 放弃排队模式：mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃) */
+@property (nonatomic, copy  ) NSString *quitQueueMode;
 /** 页面弹出方式 */
 @property (nonatomic, assign) UDTransiteAnimationType presentingAnimation;
 
@@ -172,10 +163,6 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, strong) NSDictionary *productDictionary;
 /** sdk方向(默认只支持竖屏) */
 @property (nonatomic, assign) UIInterfaceOrientationMask orientationMask;
-/** 机器人推荐问题（后台配置获取key） */
-@property (nonatomic, copy  ) NSString  *robotModelKey;
-/** 机器人客户信息 */
-@property (nonatomic, copy  ) NSString  *robotCustomerInfo;
 /** 自定义表情 */
 @property (nonatomic, strong) NSArray<UdeskEmojiPanelModel *> *customEmojis;
 
@@ -191,10 +178,12 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 @property (nonatomic, copy) NSString *ticketTitle;
 /** 客服导航栏菜单标题 */
 @property (nonatomic, copy) NSString *agentMenuTitle;
-/** 返回按钮文字 */
+/** 导航栏返回按钮文字 */
 @property (nonatomic, copy) NSString *backText;
 /** 咨询对象按钮文字 */
 @property (nonatomic, copy) NSString *productSendText;
+/** 机器人会话欢迎语 */
+@property (nonatomic, copy) NSString *robotWelcomeMessage;
 
 /** SDK事件 */
 @property (nonatomic, strong) UdeskSDKActionConfig *actionConfig;
@@ -206,6 +195,5 @@ typedef NS_ENUM(NSUInteger, UDQuitQueueType) {
 + (instancetype)customConfig;
 
 - (void)setConfigToDefault;
-- (NSString *)quitQueueString;
 
 @end

@@ -10,7 +10,6 @@
 #import "UdeskSDKMacro.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "UdeskSDKUtil.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskImageUtil.h"
 
@@ -144,7 +143,7 @@
             NSString *videoPath = [[info objectForKey:UIImagePickerControllerMediaURL] path];
             
             if (self.didFinishTakeMediaVideoCompled) {
-                self.didFinishTakeMediaVideoCompled(videoPath,[NSString stringWithFormat:@"%@.mp4",[UdeskSDKUtil soleString]]);
+                self.didFinishTakeMediaVideoCompled(videoPath,[NSString stringWithFormat:@"%@.mp4",[[NSUUID UUID] UUIDString]]);
             }
         }
         else {

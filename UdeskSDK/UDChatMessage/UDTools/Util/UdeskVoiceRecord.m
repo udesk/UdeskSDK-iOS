@@ -7,7 +7,6 @@
 //
 
 #import "UdeskVoiceRecord.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskSDKMacro.h"
 
 @interface UdeskVoiceRecord () <AVAudioRecorderDelegate> {
@@ -75,7 +74,7 @@
 //获取地址
 - (NSString *)getRecorderPath {
     
-    NSString *indetWAV = [NSString stringWithFormat:@"%@.wav",[UdeskSDKUtil soleString]];
+    NSString *indetWAV = [NSString stringWithFormat:@"%@.wav",[[NSUUID UUID] UUIDString]];
     
     NSString *recorderPath = [NSTemporaryDirectory() stringByAppendingPathComponent:indetWAV];
     

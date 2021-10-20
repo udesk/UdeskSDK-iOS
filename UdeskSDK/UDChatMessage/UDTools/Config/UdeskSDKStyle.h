@@ -12,21 +12,20 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskSDKMacro.h"
 
-typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
-    UDChatViewStyleTypeDefault,
-    UDChatViewStyleTypeBlue
-};
-
 @interface UdeskSDKStyle : NSObject
 
 /** 用户的消息颜色 */
 @property (nonatomic, strong) UIColor  *customerTextColor;
-
 /** 客户的气泡颜色 */
 @property (nonatomic, strong) UIColor  *customerBubbleColor;
-
 /** 客户的气泡图片 */
 @property (nonatomic, strong) UIImage  *customerBubbleImage;
+/** 客户的头像图片 */
+@property (nonatomic, strong) UIImage  *customerAvatarImage;
+/** 客户的头像URL */
+@property (nonatomic, copy  ) NSString *customerAvatarURL;
+/** 客户昵称 */
+@property (nonatomic, copy  ) NSString *customerNickname;
 
 /** 客服的消息颜色 */
 @property (nonatomic, strong) UIColor  *agentTextColor;
@@ -40,9 +39,6 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 /** 时间颜色（默认灰色）*/
 @property (nonatomic, strong) UIColor  *chatTimeColor;
 
-/** IM页面底部功能栏背景颜色(默认白色) */
-@property (nonatomic, strong) UIColor  *inputViewColor;
-
 /** IM页面底部输入栏背景颜色(默认白色) */
 @property (nonatomic, strong) UIColor  *textViewColor;
 
@@ -52,10 +48,10 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 /** 消息内容（时间）字体大小 */
 @property (nonatomic, strong) UIFont   *messageTimeFont;
 
-/** 导航栏返回按钮颜色（默认蓝色）*/
+/** 导航栏返回按钮颜色 */
 @property (nonatomic, strong) UIColor  *navBackButtonColor;
 
-/** 导航栏右侧按钮颜色（默认蓝色）*/
+/** 导航栏右侧按钮颜色 */
 @property (nonatomic, strong) UIColor  *navRightButtonColor;
 
 /** 导航栏返回按钮图片 */
@@ -118,13 +114,14 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 /** 咨询对象发送按钮颜色 */
 @property (nonatomic, strong) UIColor  *productSendTitleColor;
 
+/** 相册导航栏背景颜色 */
+@property (nonatomic, strong) UIColor  *albumNavBgColor;
+/** 相册标题颜色 */
+@property (nonatomic, strong) UIColor  *albumTitleColor;
+/** 相册返回按钮颜色 */
+@property (nonatomic, strong) UIColor  *albumBackColor;
 /** 相册取消按钮颜色 */
 @property (nonatomic, strong) UIColor  *albumCancelColor;
-
-/** 客户头像 */
-@property (nonatomic, strong) UIImage  *customerImage;
-/** 客户头像URL */
-@property (nonatomic, copy  ) NSString *customerImageURL;
 
 /** 超链接点击颜色 */
 @property (nonatomic, strong) UIColor *activeLinkColor;
@@ -138,11 +135,18 @@ typedef NS_ENUM(NSUInteger, UDChatViewStyleType) {
 
 /** 商品消息名称字体 */
 @property (nonatomic, strong) UIFont *goodsNameFont;
-/** 商品消息名称颜色 */
-@property (nonatomic, strong) UIColor *goodsNameTextColor;
+/** 客户商品消息名称颜色 */
+@property (nonatomic, strong) UIColor *customerGoodsNameTextColor;
+/** 客服商品消息名称颜色 */
+@property (nonatomic, strong) UIColor *agentGoodsNameTextColor;
+/** 商品消息名称行数 */
+@property (nonatomic, assign) NSInteger goodsNameNumberOfLines;
 
-+ (instancetype)defaultStyle;
-+ (instancetype)blueStyle;
+/** wkWebView进度条中未填充部分的颜色（仅支持iOS8以上） */
+@property (nonatomic, strong) UIColor *webViewProgressTrackTintColor;
+/** wkWebView进度条颜色（仅支持iOS8以上） */
+@property (nonatomic, strong) UIColor *webViewProgressTintColor;
+
 + (instancetype)customStyle;
 
 @end

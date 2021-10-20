@@ -13,11 +13,6 @@
 #import "UdeskGoodsModel.h"
 #import "UdeskMessage+UdeskSDK.h"
 
-typedef enum : NSUInteger {
-    UdeskFAQ,
-    UdeskTicket
-} UdeskType;
-
 @interface UdeskSDKManager : NSObject
 
 /**
@@ -57,37 +52,28 @@ typedef enum : NSUInteger {
  * 在一个ViewController中Push出一个客服聊天界面
  * @param viewController 在这个viewController中push出客服聊天界面
  */
-- (void)pushUdeskInViewController:(UIViewController *)viewController
-                       completion:(void (^)(void))completion;
+- (void)pushUdeskInViewController:(UIViewController *)viewController completion:(void (^)(void))completion;
 
 /**
  * 根据后台配置进入UdeskSDK IM相关页面
  * 在一个ViewController中Present出一个客服聊天界面的Modal视图
  * @param viewController 在这个viewController中push出客服聊天界面
  */
-- (void)presentUdeskInViewController:(UIViewController *)viewController
-                          completion:(void (^)(void))completion;
+- (void)presentUdeskInViewController:(UIViewController *)viewController completion:(void (^)(void))completion;
 
 /**
- 进入Udesk 帮助中心/工单 页面
-
- @param viewController 在一个ViewController中Push出一个客服聊天界面
- @param udeskType 视图类型
- @param completion 完成回调
- */
-- (void)pushUdeskInViewController:(UIViewController *)viewController
-                        udeskType:(UdeskType)udeskType
-                       completion:(void (^)(void))completion;
+* present工单留言界面
+* 在一个ViewController中Present出一个工单留言界面的Modal视图
+* @param viewController 在这个viewController中present工单留言界面
+*/
+- (void)presentTicketInViewController:(UIViewController *)viewController completion:(void (^)(void))completion;
 
 /**
- 进入Udesk 帮助中心/工单 页面
- 
- @param viewController 在一个ViewController中Push出一个客服聊天界面
- @param udeskType 视图类型
- @param completion 完成回调
- */
-- (void)presentUdeskInViewController:(UIViewController *)viewController
-                           udeskType:(UdeskType)udeskType
-                          completion:(void (^)(void))completion;
+* 显示帮助中心界面
+* 在一个ViewController中Present出一个帮助中心界面的Modal视图
+* @param viewController 在这个viewController中present帮助中心界面
+* @param animationType 弹出类型，push/present
+*/
+- (void)showFAQInViewController:(UIViewController *)viewController transiteAnimation:(UDTransiteAnimationType)animationType completion:(void (^)(void))completion;
 
 @end

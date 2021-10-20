@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "UdeskAgent.h"
 #import "UdeskHPGrowingTextView.h"
+#import "UdeskCustomToolBar.h"
 #import "UdeskButton.h"
 
 @class UdeskCustomButtonConfig;
@@ -25,8 +26,8 @@ typedef NS_ENUM(NSUInteger, UdeskChatInputType) {
 
 @protocol UdeskChatInputToolBarDelegate <NSObject>
 
-/** 输入框将要开始编辑 */
-//- (void)chatTextViewShouldBeginEditing:(UdeskHPGrowingTextView *)chatTextView;
+/** 文本发生改变 */
+- (void)chatTextViewShouldChangeText:(NSString *)text;
 /** 发送文本消息，包括系统的表情 */
 - (void)didSendText:(NSString *)text;
 /** 点击语音 */
@@ -69,7 +70,10 @@ typedef NS_ENUM(NSUInteger, UdeskChatInputType) {
 
 @property (nonatomic, strong) NSArray<UdeskCustomButtonConfig *> *customButtonConfigs;
 @property (nonatomic, assign) BOOL enableSurvey;
-@property (nonatomic, assign) BOOL isPreSessionMessage;
+@property (nonatomic, assign) BOOL isAgentSession;
+@property (nonatomic, assign) BOOL isPreSession;
+@property (nonatomic, assign) BOOL isRobotSession;
+@property (nonatomic, assign) BOOL networkDisconnect;
 
 - (instancetype)initWithFrame:(CGRect)frame tableView:(UdeskMessageTableView *)tabelView;
 

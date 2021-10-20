@@ -145,7 +145,7 @@
 }
 
 //获取压缩Video
-- (void)fetchCompressVideoWithAssets:(NSArray<PHAsset *> *)assets completion:(void (^)(NSArray<NSString *> *paths))completion {
+- (void)fetchCompressVideoWithAssets:(NSArray<PHAsset *> *)assets completion:(void (^)(NSArray<NSString *> *paths,NSString *errorMessage))completion {
     
     if (!assets || assets == (id)kCFNull) return ;
     if (![assets isKindOfClass:[NSArray class]]) return ;
@@ -159,12 +159,12 @@
             }
             
             if (pathArray.count == assets.count) {
-                if (completion) completion(pathArray);
+                if (completion) completion(pathArray,nil);
             }
             
         } failure:^(NSString *errorMessage, NSError *error) {
             NSLog(@"%@",error);
-            if (completion) completion(nil);
+            if (completion) completion(nil,errorMessage);
         }];
     }
 }
@@ -350,14 +350,10 @@
     
     if (!asset || asset == (id)kCFNull) return ;
     if (![asset isKindOfClass:[PHAsset class]]) return ;
-    
-    __block UIImage *image;
+
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
     [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage *result, NSDictionary *info) {
-        if (result) {
-            image = result;
-        }
         BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
         if (downloadFinined && result) {
             result = [UdeskImageUtil fixOrientation:result];

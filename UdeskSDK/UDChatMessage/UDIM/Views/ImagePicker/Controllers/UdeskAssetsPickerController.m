@@ -13,7 +13,6 @@
 #import "UdeskPhotoToolBar.h"
 #import "UdeskAssetPreviewController.h"
 #import "UdeskImagePickerController.h"
-#import "UdeskSDKUtil.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKMacro.h"
 #import "UdeskAlbumsViewManager.h"
@@ -21,7 +20,7 @@
 #import "UIImage+UdeskSDK.h"
 #import "UdeskPopAnimation.h"
 #import "UdeskAlbumsViewController.h"
-#import "UdeskLoadingView.h"
+#import "UdeskSDKConfig.h"
 
 static CGFloat udItemMargin = 5;
 static CGFloat udColumnNumber = 4;
@@ -33,7 +32,7 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
 @property (nonatomic, strong) UICollectionViewFlowLayout *assetFlowLayout;
 @property (nonatomic, strong) UICollectionView *assetCollectionView;
 @property (nonatomic, strong) UdeskPhotoToolBar *toolBar;
-@property (nonatomic, strong) UdeskLoadingView *loadingView;
+@property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 
 @end
 
@@ -50,11 +49,26 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
 - (void)setupUI {
     
     self.view.backgroundColor = [UIColor whiteColor];
+    //适配ios15
+    if (@available(iOS 15.0, *)) {
+        if(self.navigationController){
+            UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+            // 背景色
+            appearance.backgroundColor = [UIColor whiteColor];
+            // 去掉半透明效果
+            appearance.backgroundEffect = nil;
+            // 去除导航栏阴影（如果不设置clear，导航栏底下会有一条阴影线）
+            //        appearance.shadowColor = [UIColor clearColor];
+            appearance.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+            self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+            self.navigationController.navigationBar.standardAppearance = appearance;
+        }
+    }
     
-    UIBarButtonItem *leftBarButtonItem = [UIBarButtonItem udItemWithTitle:getUDLocalizedString(@"udesk_back") image:[UIImage udDefaultWhiteBackImage] target:self action:@selector(backSelectImageAction)];
+    UIBarButtonItem *leftBarButtonItem = [UIBarButtonItem udItemWithTitle:getUDLocalizedString(@"udesk_back") image:[UIImage udDefaultWhiteBackImage] color:[UdeskSDKConfig customConfig].sdkStyle.albumBackColor target:self action:@selector(backSelectImageAction)];
     UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     
-    if((FUDSystemVersion>=7.0)){
+    if(ud_isIOS7){
         negativeSpacer.width = -13;
         self.navigationItem.leftBarButtonItems = @[negativeSpacer,leftBarButtonItem];
     }
@@ -63,7 +77,7 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     }
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:getUDLocalizedString(@"udesk_cancel") style:UIBarButtonItemStylePlain target:self action:@selector(cancelSelectImageAction)];
-    self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
+    self.navigationItem.rightBarButtonItem.tintColor = [UdeskSDKConfig customConfig].sdkStyle.albumCancelColor;
     
     _assetFlowLayout = [[UICollectionViewFlowLayout alloc] init];
     _assetCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_assetFlowLayout];
@@ -258,7 +272,7 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     
     dispatch_group_t group = dispatch_group_create();
     
-    [self.loadingView start];
+    [self.loadingView startAnimating];
     //原图
     if (self.toolBar.originalPhotoButton.selected) {
 
@@ -274,7 +288,8 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     }
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        [self resetUI];
+        [self.loadingView stopAnimating];
+        [self.loadingView setHidesWhenStopped:YES];
         [self dismissViewControllerAnimated:YES completion:nil];
     });
 }
@@ -334,12 +349,15 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     if (selectedModels.count == 0) return;
     
     dispatch_group_enter(group);
-    [self.viewManager fetchCompressVideoWithAssets:[selectedModels valueForKey:@"asset"] completion:^(NSArray<NSString *> *paths) {
+    [self.viewManager fetchCompressVideoWithAssets:[selectedModels valueForKey:@"asset"] completion:^(NSArray<NSString *> *paths,NSString *errorMessage) {
         
         if (!paths) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self resetUI];
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:getUDLocalizedString(@"udesk_video_export_failed") preferredStyle:UIAlertControllerStyleAlert];
+                [self.loadingView stopAnimating];
+                [self.loadingView setHidesWhenStopped:YES];
+                self.toolBar.doneButton.enabled = YES;
+                self.toolBar.doneButton.alpha = 1;
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:getUDLocalizedString(@"udesk_video_export_failed") message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
                 [alert addAction:[UIAlertAction actionWithTitle:getUDLocalizedString(@"udesk_close") style:UIAlertActionStyleDefault handler:nil]];
                 [self presentViewController:alert animated:YES completion:nil];
             });
@@ -366,13 +384,6 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     }
     
     return YES;
-}
-
-- (void)resetUI {
-    
-    self.toolBar.doneButton.enabled = YES;
-    self.toolBar.doneButton.alpha = 1;
-    [self.loadingView stop];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -412,9 +423,9 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
     return _viewManager;
 }
 
-- (UdeskLoadingView *)loadingView {
+- (UIActivityIndicatorView *)loadingView {
     if (!_loadingView) {
-        _loadingView = [[UdeskLoadingView alloc] initWithFrame:CGRectMake(0, 0, 120, 120)];
+        _loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         _loadingView.center = self.view.center;
         [self.view addSubview:_loadingView];
     }
@@ -423,12 +434,10 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
         
-        UdeskImagePickerController *udImagePicker = (UdeskImagePickerController *)self.navigationController;
-        [udImagePicker.selectedModels removeAllObjects];
-        udImagePicker.selectedModels = nil;
-    }
+    UdeskImagePickerController *udImagePicker = (UdeskImagePickerController *)self.navigationController;
+    [udImagePicker.selectedModels removeAllObjects];
+    udImagePicker.selectedModels = nil;
 }
 
 - (void)viewDidAppear:(BOOL)animated{

@@ -6,9 +6,9 @@
 //  Copyright (c) 2015年 Udesk. All rights reserved.
 //
 
-#import "UdeskBaseModel.h"
+#import <Foundation/Foundation.h>
 
-@interface UdeskProblemModel : UdeskBaseModel
+@interface UdeskProblemModel : NSObject
 /**
  *  文章id
  */

@@ -14,12 +14,12 @@
 #import "UdeskSDKUtil.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskPrivacyUtil.h"
-#import "UdeskCustomToolBar.h"
 #import "UdeskMessageTableView.h"
-#import "UdeskSDKMacro.h"
 
 /** 按钮大小 */
-static CGFloat const kInputToolBarIconDiameter = 28.0;
+static CGFloat const kInputToolBarIconDiameter = 32.0;
+/** 表情按钮大小 */
+static CGFloat const kInputToolBarEmojiIconDiameter = 22.0;
 /** 输入框距垂直距离 */
 static CGFloat const kChatTextViewToVerticalEdgeSpacing = 8.0;
 /** 输入框距的横行距离 */
@@ -27,7 +27,9 @@ static CGFloat const kChatTextViewToHorizontalEdgeSpacing = 8.0;
 /** 输入框功能按钮横行的间距 */
 static CGFloat const kInputToolBarIconToHorizontalEdgeSpacing = 10.0;
 /** 输入框按钮距离顶部的垂直距离 */
-static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
+static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 11.0;
+/** 表情顶部的垂直距离 */
+static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
 
 @interface UdeskChatInputToolBar()<UITextViewDelegate,UdeskCustomToolBarDelegate>
 
@@ -68,13 +70,14 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     // 配置自适应
     self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin);
     self.opaque = YES;
-    self.backgroundColor = [UdeskSDKConfig customConfig].sdkStyle.inputViewColor;
     
     UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
     
+    self.backgroundColor = sdkConfig.sdkStyle.chatViewControllerBackGroundColor;
+    
     //默认toolbar
     _defaultToolBar = [[UIView alloc] init];
-    _defaultToolBar.backgroundColor = [UIColor whiteColor];
+    _defaultToolBar.backgroundColor = sdkConfig.sdkStyle.chatViewControllerBackGroundColor;
     [self addSubview:_defaultToolBar];
     
     //语音
@@ -92,15 +95,17 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     _chatTextView.placeholder = getUDLocalizedString(@"udesk_typing");
     _chatTextView.delegate = (id)self;
     _chatTextView.returnKeyType = UIReturnKeySend;
-    _chatTextView.font = [UIFont systemFontOfSize:16];
+    _chatTextView.internalTextView.textContainerInset = UIEdgeInsetsMake(10, 10, 10, kInputToolBarEmojiIconDiameter+kInputToolBarIconToHorizontalEdgeSpacing);
+    _chatTextView.font = [UIFont systemFontOfSize:15];
     _chatTextView.backgroundColor = [UdeskSDKConfig customConfig].sdkStyle.textViewColor;
     [_defaultToolBar addSubview:_chatTextView];
-    UDViewBorderRadius(_chatTextView, 5, 0.5, [UIColor colorWithRed:0.831f  green:0.835f  blue:0.843f alpha:1]);
+    UDViewRadius(_chatTextView, 19);
     
     _recordButton = [[UdeskButton alloc] init];
     _recordButton.alpha = _voiceButton.selected;
     _recordButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
-    [_recordButton setTitleColor:[UIColor colorWithRed:0.392f  green:0.392f  blue:0.396f alpha:1] forState:UIControlStateNormal];
+    _recordButton.backgroundColor = [UIColor whiteColor];
+    [_recordButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [_recordButton setTitle:getUDLocalizedString(@"udesk_hold_to_talk") forState:UIControlStateNormal];
     [_recordButton addTarget:self action:@selector(holdDownButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [_recordButton addTarget:self action:@selector(holdDownButtonTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
@@ -108,13 +113,13 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     [_recordButton addTarget:self action:@selector(holdDownDragOutside:) forControlEvents:UIControlEventTouchDragExit];
     [_recordButton addTarget:self action:@selector(holdDownDragInside:) forControlEvents:UIControlEventTouchDragEnter];
     [_defaultToolBar addSubview:_recordButton];
-    UDViewBorderRadius(_recordButton, 5, 0.5, [UIColor colorWithRed:0.831f  green:0.835f  blue:0.843f alpha:1]);
+    UDViewRadius(_recordButton, 19);
     
     //表情
     _emotionButton = [[UdeskButton alloc] init];
     _emotionButton.hidden = !sdkConfig.isShowEmotionEntry;
     [_emotionButton setImage:[UIImage udDefaultSmileImage] forState:UIControlStateNormal];
-    [_emotionButton setImage:[UIImage udDefaultKeyboardImage] forState:UIControlStateSelected];
+    [_emotionButton setImage:[UIImage udDefaultKeyboardSmallImage] forState:UIControlStateSelected];
     [_emotionButton addTarget:self action:@selector(emotionClick:) forControlEvents:UIControlEventTouchUpInside];
     if (sdkConfig.isShowEmotionEntry) {
         [_defaultToolBar addSubview:_emotionButton];
@@ -123,6 +128,7 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     //更多
     _moreButton = [[UdeskButton alloc] init];
     [_moreButton setImage:[UIImage udDefaultMoreImage] forState:UIControlStateNormal];
+    [_moreButton setImage:[UIImage udDefaultMoreCloseImage] forState:UIControlStateSelected];
     [_moreButton addTarget:self action:@selector(moreClick:) forControlEvents:UIControlEventTouchUpInside];
     [_defaultToolBar addSubview:_moreButton];
 }
@@ -151,18 +157,13 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
         textViewWidth -= kInputToolBarIconToHorizontalEdgeSpacing;
     }
     
-    if (sdkConfig.isShowEmotionEntry && !_emotionButton.hidden) {
-        textViewWidth -= kInputToolBarIconDiameter;
-        textViewWidth -= kInputToolBarIconToHorizontalEdgeSpacing;
-    }
-    
     if (!_moreButton.hidden) {
         textViewWidth -= kInputToolBarIconDiameter;
         textViewWidth -= kInputToolBarIconToHorizontalEdgeSpacing;
     }
     
     //当textview height发生改变时button位置不改变
-    if (_defaultToolBar.udHeight <= 52) {
+    if (_defaultToolBar.udHeight <= 55) {
      
         if (sdkConfig.isShowVoiceEntry && !_voiceButton.hidden) {
             _voiceButton.frame = CGRectMake(kInputToolBarIconToHorizontalEdgeSpacing, kInputToolBarIconToVerticalEdgeSpacing, kInputToolBarIconDiameter, kInputToolBarIconDiameter);
@@ -173,11 +174,11 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
         }
         
         if (sdkConfig.isShowEmotionEntry && !_emotionButton.hidden) {
-            _emotionButton.frame = CGRectMake(_moreButton.udLeft - kInputToolBarIconToHorizontalEdgeSpacing - kInputToolBarIconDiameter, kInputToolBarIconToVerticalEdgeSpacing, kInputToolBarIconDiameter, kInputToolBarIconDiameter);
+            _emotionButton.frame = CGRectMake(_moreButton.udLeft - (kInputToolBarIconToHorizontalEdgeSpacing*2) - kInputToolBarEmojiIconDiameter, kInputToolBarEmojiIconToVerticalEdgeSpacing, kInputToolBarEmojiIconDiameter, kInputToolBarEmojiIconDiameter);
         }
     }
     
-    _chatTextView.frame = CGRectMake((_voiceButton.hidden?0:_voiceButton.udRight) + kChatTextViewToHorizontalEdgeSpacing, kChatTextViewToVerticalEdgeSpacing, textViewWidth, _defaultToolBar.udHeight - kChatTextViewToVerticalEdgeSpacing - kChatTextViewToHorizontalEdgeSpacing);
+    _chatTextView.frame = CGRectMake((_voiceButton.hidden?0:_voiceButton.udRight) + kChatTextViewToHorizontalEdgeSpacing, kChatTextViewToVerticalEdgeSpacing, textViewWidth, _defaultToolBar.udHeight - (kChatTextViewToVerticalEdgeSpacing*2));
     _recordButton.frame = _chatTextView.frame;
 }
 
@@ -186,12 +187,15 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     
     [UdeskPrivacyUtil checkPermissionsOfMicrophone:^{
         if ([self checkAgentStatusValid]) {
-            button.selected = !button.selected;
+            if (!self.isRobotSession) {
+                button.selected = !button.selected;
+                self.recordButton.alpha = button.selected;
+                self.chatTextView.alpha = !button.selected;
+                self.emotionButton.selected = NO;
+                self.emotionButton.hidden = button.selected;
+            }
             self.chatInputType = UdeskChatInputTypeVoice;
-            self.emotionButton.selected = NO;
             self.moreButton.selected = NO;
-            self.recordButton.alpha = button.selected;
-            self.chatTextView.alpha = !button.selected;
             if ([self.delegate respondsToSelector:@selector(didSelectVoice:)]) {
                 [self.delegate didSelectVoice:button];
             }
@@ -232,7 +236,10 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
         button.selected = !button.selected;
         self.chatInputType = UdeskChatInputTypeMore;
         self.voiceButton.selected = NO;
-        self.emotionButton.selected = NO;
+        if (!self.isRobotSession) {
+            self.emotionButton.selected = NO;
+            self.emotionButton.hidden = NO;
+        }
         if (button.selected) {
             self.recordButton.alpha = 0;
             self.chatTextView.alpha = 1;
@@ -329,10 +336,19 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
 #pragma mark - Text view delegate
 - (void)growingTextViewDidChange:(UdeskHPGrowingTextView *)growingTextView {
     
+    if (self.delegate && [self.delegate respondsToSelector:@selector(chatTextViewShouldChangeText:)]) {
+        [self.delegate chatTextViewShouldChangeText:growingTextView.text];
+    }
+    
+    //机器人会话
+    if (self.isRobotSession) {
+        return;
+    }
+    
     //输入预知
     NSDate *nowDate = [NSDate date];
     NSTimeInterval time = [nowDate timeIntervalSinceDate:self.sendDate];
-    if (time>0.5 && self.agent.code == UDAgentStatusResultOnline && ![UdeskSDKUtil isBlankString:growingTextView.text]) {
+    if (time>0.5 && self.agent.statusType == UDAgentStatusResultOnline && ![UdeskSDKUtil isBlankString:growingTextView.text]) {
         self.sendDate = nowDate;
         [UdeskManager sendClientInputtingWithContent:growingTextView.text];
     }
@@ -347,8 +363,7 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
         self.chatTextView.textColor = [UIColor blackColor];
     }
     
-    self.emotionButton.selected = NO;
-    self.voiceButton.selected = NO;
+    [self resetAllButtonSelectedStatus];
     
     return YES;
 }
@@ -405,11 +420,13 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
 - (void)setAgent:(UdeskAgent *)agent {
     _agent = agent;
     
-    if (agent.code == UDAgentStatusResultOnline) {
+    if (agent.statusType == UDAgentStatusResultOnline) {
         [self resetAllButton];
     }
-    else if(agent.code == UDAgentStatusResultLeaveMessage) {
-        [self updateInputBarForLeaveMessage];
+    else if (agent.statusType == UDAgentStatusResultOffline) {
+        if (agent.sessionType == UDAgentSessionTypeNotCreate) {
+            [self updateInputBarForLeaveMessage];
+        }
     }
     
     [self setNeedsLayout];
@@ -424,12 +441,7 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     self.recordButton.alpha = 0;
     self.chatTextView.alpha = 1;
     self.chatInputType = UdeskChatInputTypeText;
-    
-    if (self.customToolBar) {
-        self.customToolBar.hidden = YES;
-        self.frame = CGRectMake(0, self.frame.origin.y + 44, self.frame.size.width, self.frame.size.height - 44);
-        [self.messageTableView setTableViewInsetsWithBottomValue:self.udHeight];
-    }
+    [self removeCustomToolbar];
 }
 
 //重置录音按钮
@@ -452,31 +464,60 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     self.voiceButton.hidden = !config.isShowVoiceEntry;
     self.emotionButton.hidden = (self.voiceButton.selected == YES)?YES:(!config.isShowEmotionEntry);
     self.moreButton.hidden = NO;
+    self.customButtonConfigs = [UdeskSDKConfig customConfig].customButtons;
     
-    if (self.customToolBar && self.customToolBar.hidden) {
-        self.customToolBar.hidden = NO;
-        self.frame = CGRectMake(0, self.frame.origin.y - 44, self.frame.size.width, self.frame.size.height + 44);
-        [self.messageTableView setTableViewInsetsWithBottomValue:self.udHeight];
-    }
+    [self resetAllButtonSelectedStatus];
 }
 
 - (BOOL)checkAgentStatusValid {
     
+    //网络断开
+    if (self.networkDisconnect) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didClickChatInputToolBar)]) {
+            [self.delegate didClickChatInputToolBar];
+        }
+        return NO;
+    }
+    
     //无消息对话过滤
-    if (self.isPreSessionMessage) {
+    if (self.isPreSession) {
         return YES;
     }
     
-    if (self.agent.code == UDAgentStatusResultQueue) {
+    //机器人
+    if (self.isRobotSession) {
         return YES;
     }
     
     if (!self.agent || self.agent == (id)kCFNull) return YES;
     
-    if (self.agent.code != UDAgentStatusResultOnline &&
-        self.agent.code != UDAgentStatusResultLeaveMessage) {
+    //会话中可以发送 消息/离线消息/留言消息
+    if (self.agent.sessionType == UDAgentSessionTypeInSession) {
+        return YES;
+    }
+    //会话未创建
+    else if (self.agent.sessionType == UDAgentSessionTypeNotCreate) {
         
-        if ([self.delegate respondsToSelector:@selector(didClickChatInputToolBar)]) {
+        //客服离线
+        if (self.agent.statusType == UDAgentStatusResultOffline) {
+            //表单留言
+            if (self.agent.leaveMessageType == UDAgentLeaveMessageTypeForm) {
+                if (self.delegate && [self.delegate respondsToSelector:@selector(didClickChatInputToolBar)]) {
+                    [self.delegate didClickChatInputToolBar];
+                }
+                return NO;
+            }
+            else {
+                return YES;
+            }
+        }
+        else {
+            return YES;
+        }
+    }
+    //会话已关闭
+    else if (self.agent.sessionType == UDAgentSessionTypeHasOver) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didClickChatInputToolBar)]) {
             [self.delegate didClickChatInputToolBar];
         }
         return NO;
@@ -486,6 +527,7 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
 }
 
 - (void)setCustomButtonConfigs:(NSArray<UdeskCustomButtonConfig *> *)customButtonConfigs {
+    if (![UdeskSDKConfig customConfig].showCustomButtons) return ;
     if (!customButtonConfigs || customButtonConfigs == (id)kCFNull) return ;
     if (![customButtonConfigs isKindOfClass:[NSArray class]]) return ;
     if (![customButtonConfigs.firstObject isKindOfClass:[UdeskCustomButtonConfig class]]) return ;
@@ -496,7 +538,29 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     
     _customButtonConfigs = customButtonConfigs;
     
-    _customToolBar = [[UdeskCustomToolBar alloc] initWithFrame:CGRectZero customButtonConfigs:customButtonConfigs enableSurvey:self.enableSurvey];
+    //先移除
+    [self removeCustomToolbar];
+
+    NSMutableArray *agentCustomButton = [NSMutableArray array];
+    NSMutableArray *robotCustomButton = [NSMutableArray array];
+    for (UdeskCustomButtonConfig *customButton in customButtonConfigs) {
+        switch (customButton.scenesType) {
+            case UdeskCustomButtonConfigScenesAgent:
+                [agentCustomButton addObject:customButton];
+                break;
+            case UdeskCustomButtonConfigScenesRobot:
+                [robotCustomButton addObject:customButton];
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
+    NSArray *customeButtonArray = self.isRobotSession?robotCustomButton:agentCustomButton;
+    if (!customeButtonArray || customeButtonArray == (id)kCFNull || !customeButtonArray.count) return ;
+    
+    _customToolBar = [[UdeskCustomToolBar alloc] initWithFrame:CGRectZero customButtonConfigs:customeButtonArray enableSurvey:self.enableSurvey];
     _customToolBar.delegate = self;
     [self addSubview:_customToolBar];
     
@@ -504,21 +568,46 @@ static CGFloat const kInputToolBarIconToVerticalEdgeSpacing = 12.0;
     [self.messageTableView setTableViewInsetsWithBottomValue:self.udHeight];
 }
 
-- (void)setIsPreSessionMessage:(BOOL)isPreSessionMessage {
-    _isPreSessionMessage = isPreSessionMessage;
+- (void)setIsAgentSession:(BOOL)isAgentSession {
+    _isAgentSession = isAgentSession;
     
-    if (isPreSessionMessage) {
-        if (self.customToolBar) {
-            [self.customToolBar removeFromSuperview];
-            self.customToolBar = nil;
-            self.frame = CGRectMake(0, self.frame.origin.y + 44, self.frame.size.width, self.frame.size.height - 44);
-            [self.messageTableView setTableViewInsetsWithBottomValue:self.udHeight];
-        }
+    [self resetAllButton];
+    [self setNeedsLayout];
+}
+
+- (void)setIsPreSession:(BOOL)isPreSession {
+    _isPreSession = isPreSession;
+    
+    if (isPreSession) {
+        [self resetAllButton];
+        [self setNeedsLayout];
     }
-    else {
-        if (!self.customToolBar) {
-            self.customButtonConfigs = self.customButtonConfigs;
-        }
+}
+
+- (void)setIsRobotSession:(BOOL)isRobotSession {
+    _isRobotSession = isRobotSession;
+    
+    if (isRobotSession) {
+        [self resetAllButton];
+        
+        self.voiceButton.hidden = YES;
+        self.emotionButton.hidden = YES;
+        
+#if __has_include("BDSEventManager.h")
+        self.voiceButton.hidden = NO;
+#endif
+        
+        [self setNeedsLayout];
+    }
+}
+
+- (void)removeCustomToolbar {
+    
+    if (self.customToolBar) {
+        [self.customToolBar removeFromSuperview];
+        self.customToolBar = nil;
+        self.frame = CGRectMake(0, self.frame.origin.y + 44, self.frame.size.width, self.frame.size.height - 44);
+        [self.messageTableView setTableViewInsetsWithBottomValue:self.udHeight];
     }
 }
 

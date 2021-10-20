@@ -14,6 +14,7 @@
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKMacro.h"
 #import "UdeskPushAnimation.h"
+#import "UdeskSDKConfig.h"
 
 static NSString *kUdeskAlbumCellIdentifier = @"kUdeskAlbumCellIdentifier";
 
@@ -36,10 +37,28 @@ static NSString *kUdeskAlbumCellIdentifier = @"kUdeskAlbumCellIdentifier";
 }
 
 - (void)setupUI {
+    //适配ios15
+    if (@available(iOS 15.0, *)) {
+        if(self.navigationController){
+            UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+            // 背景色
+            appearance.backgroundColor = [UIColor whiteColor];
+            // 去掉半透明效果
+            appearance.backgroundEffect = nil;
+            // 去除导航栏阴影（如果不设置clear，导航栏底下会有一条阴影线）
+            //        appearance.shadowColor = [UIColor clearColor];
+            appearance.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+            self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+            self.navigationController.navigationBar.standardAppearance = appearance;
+        }
+    }
     
     self.navigationItem.hidesBackButton = YES;
     self.title = getUDLocalizedString(@"udesk_photo");
+    NSDictionary *attr = @{NSForegroundColorAttributeName : [UdeskSDKConfig customConfig].sdkStyle.albumTitleColor};
+    self.navigationController.navigationBar.titleTextAttributes = attr;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:getUDLocalizedString(@"udesk_cancel") style:UIBarButtonItemStylePlain target:self action:@selector(cancelSelectImageAction)];
+    self.navigationItem.rightBarButtonItem.tintColor = [UdeskSDKConfig customConfig].sdkStyle.albumCancelColor;
     
     _albumsTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _albumsTableView.delegate = self;

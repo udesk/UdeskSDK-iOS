@@ -23,7 +23,7 @@
 - (instancetype)initWithFrame:(CGRect)frame videoUrl:(NSString *)url {
     if (self = [super initWithFrame:frame]) {
         
-        _playItem = [AVPlayerItem playerItemWithURL:[self urlValidation:url]];
+        _playItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:url]];
         _player = [[AVPlayer alloc] initWithPlayerItem:_playItem];
         _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
         _playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
@@ -37,22 +37,6 @@
         [self noticeAndKVO];
     }
     return self;
-}
-
-#pragma mark - URL 检查
-- (NSURL *)urlValidation:(NSString *)URLString {
-    NSURL *url;
-    if ([URLString hasPrefix:@"http"]) {
-        url = [NSURL URLWithString:URLString]; // 网络播放
-    }else {
-        if ([URLString hasPrefix:@"file://"]) {     // 本地播放
-            NSMutableString *mutableString = [URLString mutableCopy];
-            [mutableString replaceCharactersInRange:NSMakeRange(0, 7) withString:@""];
-            URLString = [mutableString copy];
-        }
-        url = [NSURL fileURLWithPath:URLString];
-    }
-    return url;
 }
 
 #pragma mark - noticeAndKVO

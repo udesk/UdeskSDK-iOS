@@ -10,8 +10,6 @@
 #import "UdeskSmallVideoPreviewViewController.h"
 #import "UdeskSmallVideoBottomView.h"
 #import "UdeskSmallVideoManager.h"
-#import <AssetsLibrary/ALAssetsLibrary.h>
-#import "UdeskBundleUtils.h"
 #import "UIImage+UdeskSDK.h"
 #import "UdeskImageUtil.h"
 #import "UdeskSDKConfig.h"
@@ -42,7 +40,21 @@
 - (void)setup {
     
     self.view.backgroundColor = [UIColor blackColor];
-    
+    //适配ios15
+    if (@available(iOS 15.0, *)) {
+        if(self.navigationController){
+            UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+            // 背景色
+            appearance.backgroundColor = [UIColor whiteColor];
+            // 去掉半透明效果
+            appearance.backgroundEffect = nil;
+            // 去除导航栏阴影（如果不设置clear，导航栏底下会有一条阴影线）
+            //        appearance.shadowColor = [UIColor clearColor];
+            appearance.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+            self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+            self.navigationController.navigationBar.standardAppearance = appearance;
+        }
+    }
     [self configVideoManager];
     
     [self.view addSubview:self.previewView];
@@ -98,9 +110,10 @@
 }
 
 - (void)previewVideoWithURL:(NSString *)sandboxURL videoInfo:(NSDictionary *)info {
+    if (!sandboxURL || sandboxURL == (id)kCFNull) return ;
+    if (![sandboxURL isKindOfClass:[NSString class]]) return ;
     
-    self.previewVC = [UdeskSmallVideoPreviewViewController new];
-    self.previewVC.url = sandboxURL;
+    self.previewVC = [[UdeskSmallVideoPreviewViewController alloc] initWithURL:sandboxURL];
     __weak typeof(self) weakSelf = self;
     self.previewVC.SubmitShootingBlock = ^{
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -236,9 +249,10 @@
 }
 
 - (void)previewPhoto:(UIImage *)image {
+    if (!image || image == (id)kCFNull) return ;
+    if (![image isKindOfClass:[UIImage class]]) return ;
     
-    self.previewVC = [UdeskSmallVideoPreviewViewController new];
-    self.previewVC.image = image;
+    self.previewVC = [[UdeskSmallVideoPreviewViewController alloc] initWithImage:image];
     __weak typeof(self) weakSelf = self;
     self.previewVC.SubmitShootingBlock = ^{
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -253,7 +267,7 @@
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.savingImage = NO;
     };
-
+    
     [self.view addSubview:self.previewVC.view];
 }
 

@@ -14,19 +14,25 @@
 + (UIImage *)udAnimatedGIFWithData:(NSData *)data;
 
 /** 发送消息气泡图片 */
-+ (UIImage *)udBubbleSendImage;
++ (UIImage *)udBubbleSend01Image;
++ (UIImage *)udBubbleSend02Image;
++ (UIImage *)udBubbleSend03Image;
++ (UIImage *)udBubbleSend04Image;
 /** 接收消息气泡图片 */
-+ (UIImage *)udBubbleReceiveImage;
++ (UIImage *)udBubbleReceive01Image;
++ (UIImage *)udBubbleReceive02Image;
++ (UIImage *)udBubbleReceive03Image;
++ (UIImage *)udBubbleReceive04Image;
 /** 重发图片 */
 + (UIImage *)udDefaultRefreshImage;
 /** 语音图片 */
 + (UIImage *)udDefaultVoiceImage;
 /** 表情图片 */
 + (UIImage *)udDefaultSmileImage;
-/** 用户头像图片 */
-+ (UIImage *)udDefaultCustomerImage;
 /** 客服头像图片 */
 + (UIImage *)udDefaultAgentImage;
+/** 客户头像图片 */
++ (UIImage *)udDefaultCustomerAvatarImage;
 /** 导航栏左侧返回图片 */
 + (UIImage *)udDefaultBackImage;
 /** 导航栏左侧返回图片 */
@@ -75,8 +81,12 @@
 + (UIImage *)udDefaultVideoPlay;
 /** 聊天键盘 */
 + (UIImage *)udDefaultKeyboardImage;
+/** 聊天小键盘 */
++ (UIImage *)udDefaultKeyboardSmallImage;
 /** 聊天输入框更多 */
 + (UIImage *)udDefaultMoreImage;
+/** 聊天输入框更多 */
++ (UIImage *)udDefaultMoreCloseImage;
 /** 更多-相册 */
 + (UIImage *)udDefaultChatBarMorePhotoImage;
 /** 更多-相机 */
@@ -122,5 +132,26 @@
 
 /** 满意度评价表情 实星 */
 + (UIImage *)udDefaultSurveyStarFilledImage;
+
+/** 向上箭头 */
++ (UIImage *)udDefaultUpArrow;
+
+/** 向下箭头 */
++ (UIImage *)udDefaultDownArrow;
+
+/** 列表标签（。） */
++ (UIImage *)udDefaultListTag;
+
+/** 机器人答案有用 */
++ (UIImage *)udDefaultUseful;
+
+/** 机器人答案有用已选择 */
++ (UIImage *)udDefaultUsefulSelected;
+
+/** 机器人答案无用 */
++ (UIImage *)udDefaultUseless;
+
+/** 机器人答案无用已选择 */
++ (UIImage *)udDefaultUselessSelected;
 
 @end

@@ -1,52 +1,49 @@
 //
 //  UdeskAlertController.h
-//  UdeskSDK
+//  Udesk
 //
-//  Created by 许晨 on 17/1/18.
-//  Copyright © 2017年 bestdew. All rights reserved.
+//  Created by xuchen on 2019/1/28.
+//  Copyright © 2019 Udesk. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-/**
- 跟系统的UIAlertController使用方法完全一样...
- */
-NS_ASSUME_NONNULL_BEGIN
-
-typedef NS_ENUM(NSInteger, UDAlertActionStyle) {
-    UDAlertActionStyleDefault = 0,
-    UDAlertActionStyleCancel,
-    UDAlertActionStyleDestructive
+typedef NS_ENUM(NSInteger, UdeskAlertActionStyle) {
+    UdeskAlertActionStyleDefault = 0,
+    UdeskAlertActionStyleCancel,
+    UdeskAlertActionStyleDestructive
 };
 
-typedef NS_ENUM(NSInteger, UDAlertControllerStyle) {
-    UDAlertControllerStyleActionSheet = 0, // 暂未实现😂，有待后续开发...
-    UDAlertControllerStyleAlert
+typedef NS_ENUM(NSInteger, UdeskAlertControllerStyle) {
+    UdeskAlertControllerStyleActionSheet = 0,
+    UdeskAlertControllerStyleAlert
 };
 
 @interface UdeskAlertAction : NSObject
 
-+ (instancetype)actionWithTitle:(nullable NSString *)title style:(UDAlertActionStyle)style handler:(void (^ __nullable)(UdeskAlertAction *action))handler;
++ (instancetype)actionWithTitle:(NSString *)title style:(UdeskAlertActionStyle)style handler:(void (^)(UdeskAlertAction *action))handler;
 
-@property (nullable, nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) UDAlertActionStyle udStyle;
+@property (nonatomic, readonly) NSString *title;
+@property (nonatomic, readonly) UdeskAlertActionStyle style;
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
 @end
 
 @interface UdeskAlertController : UIViewController
 
-@property (nonatomic, readonly) NSArray<UdeskAlertAction *> *actions;
-@property (nullable, nonatomic, readonly) NSArray<UITextField *> *textFields;
-@property (nonatomic, readonly) UDAlertControllerStyle preferredStyle;
-@property (nullable, nonatomic, copy) NSString *title;
-@property (nullable, nonatomic, copy) NSAttributedString *attributedMessage;
-@property (nonatomic, assign) NSTextAlignment messageAlignment;
++ (instancetype)alertControllerWithTitle:(NSString *)title message:(NSString *)message preferredStyle:(UdeskAlertControllerStyle)preferredStyle;
++ (instancetype)alertControllerWithTitle:(NSString *)title attributedMessage:(NSAttributedString *)attributedMessage preferredStyle:(UdeskAlertControllerStyle)preferredStyle;
 
-+ (instancetype)alertControllerWithTitle:(nullable NSString *)title attributedMessage:(nullable NSAttributedString *)attributedMessage preferredStyle:(UDAlertControllerStyle)preferredStyle;
 - (void)addAction:(UdeskAlertAction *)action;
-- (void)addTextFieldWithConfigurationHandler:(void (^ __nullable)(UITextField *textField))configurationHandler;
+@property (nonatomic, readonly) NSArray<UdeskAlertAction *> *actions;
+
+- (void)addTextFieldWithConfigurationHandler:(void (^)(UITextField *textField))configurationHandler;
+@property (nonatomic, readonly) NSArray<UITextField *> *textFields;
+
+@property (nonatomic, copy) NSString *alertTitle;
+@property (nonatomic, copy) NSString *message;
+@property (nonatomic, copy) NSAttributedString *attributedMessage;
+
+@property (nonatomic, readonly) UdeskAlertControllerStyle preferredStyle;
 
 @end
-
-NS_ASSUME_NONNULL_END

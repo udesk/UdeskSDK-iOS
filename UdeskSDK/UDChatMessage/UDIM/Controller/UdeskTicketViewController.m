@@ -10,10 +10,10 @@
 #import "UdeskManager.h"
 #import "UdeskBundleUtils.h"
 #import "UdeskSDKUtil.h"
-#import "UdeskSDKMacro.h"
 #import "UdeskCustomNavigation.h"
 #import "UIView+UdeskSDK.h"
 #import <WebKit/WebKit.h>
+#import "UdeskSDKShow.h"
 
 @interface UdeskTicketViewController ()<WKUIDelegate,WKNavigationDelegate>
 
@@ -108,7 +108,7 @@
     
     decisionHandler(WKNavigationActionPolicyAllow);
     if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
-        [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+        [UdeskSDKShow pushWebViewOnViewController:self URL:navigationAction.request.URL];
     }
 }
 

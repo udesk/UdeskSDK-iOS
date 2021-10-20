@@ -9,7 +9,6 @@
 #import "UdeskAssetCell.h"
 #import "UdeskAssetModel.h"
 #import "UdeskAssetsPickerManager.h"
-#import "UdeskBundleUtils.h"
 #import "UIImage+UdeskSDK.h"
 
 @interface UdeskAssetCell()

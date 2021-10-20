@@ -8,21 +8,11 @@
 
 #import "UdeskSDKUtil.h"
 #import "UdeskReachability.h"
-#import <sys/utsname.h>
 
 static NSString *kUdeskGroupId = @"kUdeskGroupId";
+static NSString *kUdeskMenuId = @"kUdeskMenuId";
 
 @implementation UdeskSDKUtil
-
-+ (NSAttributedString *)attributedStringWithHTML:(NSString *)html {
-    
-    NSDictionary *dic = @{
-                          NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType,
-                          NSCharacterEncodingDocumentAttribute:@(NSUTF8StringEncoding)
-                          };
-    NSAttributedString *attri = [[NSAttributedString alloc] initWithData:[html dataUsingEncoding:NSUTF8StringEncoding] options:dic documentAttributes:nil error:nil];
-    return attri;
-}
 
 //字符串转字典
 + (id)dictionaryWithJSON:(NSString *)json {
@@ -60,19 +50,7 @@ static NSString *kUdeskGroupId = @"kUdeskGroupId";
             jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
         }
         
-        NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
-        
-        NSRange range = {0,jsonString.length};
-        
-        //去掉字符串中的空格
-        [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
-        
-        NSRange range2 = {0,mutStr.length};
-        
-        //去掉字符串中的换行符
-        [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
-        
-        return mutStr;
+        return jsonString;
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -81,7 +59,7 @@ static NSString *kUdeskGroupId = @"kUdeskGroupId";
 }
 
 //同步获取网络状态
-+ (NSString *)internetStatus {
++ (NSString *)networkStatus {
     
     UdeskReachability *reachability   = [UdeskReachability reachabilityWithHostName:@"www.apple.com"];
     UDNetworkStatus internetStatus = [reachability currentReachabilityStatus];
@@ -149,16 +127,6 @@ static NSString *kUdeskGroupId = @"kUdeskGroupId";
         return YES;
     }
     return NO;
-}
-
-//随机生成唯一标示
-+ (NSString *)soleString {
-
-    CFUUIDRef identifier = CFUUIDCreate(NULL);
-    NSString* identifierString = (NSString*)CFBridgingRelease(CFUUIDCreateString(NULL, identifier));
-    CFRelease(identifier);
-    
-    return identifierString;
 }
 
 + (BOOL)stringContainsEmoji:(NSString *)string
@@ -234,6 +202,34 @@ static NSString *kUdeskGroupId = @"kUdeskGroupId";
     }
 }
 
++ (void)storeMenuId:(NSString *)menuId {
+    @try {
+        //用户传入GroupId
+        if ([UdeskSDKUtil isBlankString:menuId]) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUdeskMenuId];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        else {
+            menuId = [NSString stringWithFormat:@"%@",menuId];
+            [[NSUserDefaults standardUserDefaults] setObject:menuId forKey:kUdeskMenuId];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
++ (NSString *)getMenuId {
+    
+    @try {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:kUdeskMenuId];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
+    }
+}
+
 + (NSArray *)numberRegexs {
     
     return @[@"0?(13|14|15|18)[0-9]{9}",
@@ -258,6 +254,84 @@ static NSString *kUdeskGroupId = @"kUdeskGroupId";
     }
     
     return NSMakeRange(NSNotFound, 0);
+}
+
++ (NSString *)stringByURLEncode:(NSString *)string {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    
+    NSString *encoded = CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, (CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]", NULL, kCFStringEncodingUTF8));
+    
+    return encoded;
+#pragma clang diagnostic pop
+}
+
++ (NSString *)urlEncode:(NSString *)url {
+    if ([UdeskSDKUtil isBlankString:url]) return url;
+    
+    NSString *urlCopy = [url copy];
+    NSString *params = @"";
+    if ([url rangeOfString:@"?"].location != NSNotFound) {
+        NSArray *linkArray = [url componentsSeparatedByString:@"?"];
+        NSArray *paramsArray = [linkArray.lastObject componentsSeparatedByString:@"&"];
+        for (NSString *paramsStr in paramsArray) {
+            NSArray *keyValues = [paramsStr componentsSeparatedByString:@"="];
+            NSString *key = [UdeskSDKUtil percentEscapedStringFromString:keyValues.firstObject];
+            NSString *value = [UdeskSDKUtil percentEscapedStringFromString:keyValues.lastObject];
+            NSString *connectorsA = @"=";
+            if ((!key || key.length == 0) && (!value || value.length == 0)) {
+                connectorsA = @"";
+            }
+            
+            NSString *connectorsB = @"&";
+            if (!params || params.length == 0) {
+                connectorsB = @"";
+            }
+            
+            params = [NSString stringWithFormat:@"%@%@%@",params,connectorsB,[key stringByAppendingFormat:@"%@%@",connectorsA,value]];
+        }
+        urlCopy = linkArray.firstObject;
+    }
+    
+    NSString *urlTmp = [urlCopy stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@""].invertedSet];
+    NSString *connectors = @"?";
+    if (!params || params.length == 0) {
+        connectors = @"";
+    }
+    return [NSString stringWithFormat:@"%@%@%@",urlTmp,connectors,params];
+}
+
++ (NSString *)percentEscapedStringFromString:(NSString *)string {
+    
+    NSString *kCharactersGeneralDelimitersToEncode = @":#[]@"; // does not include "?" or "/" due to RFC 3986 - Section 3.4
+    NSString *kCharactersSubDelimitersToEncode = @"!$&'()*+,;=";
+    
+    NSMutableCharacterSet * allowedCharacterSet = [[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
+    [allowedCharacterSet removeCharactersInString:[kCharactersGeneralDelimitersToEncode stringByAppendingString:kCharactersSubDelimitersToEncode]];
+    
+    // FIXME: https://github.com/AFNetworking/AFNetworking/pull/3028
+    // return [string stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
+    
+    static NSUInteger const batchSize = 50;
+    
+    NSUInteger index = 0;
+    NSMutableString *escaped = @"".mutableCopy;
+    
+    while (index < string.length) {
+        NSUInteger length = MIN(string.length - index, batchSize);
+        NSRange range = NSMakeRange(index, length);
+        
+        // To avoid breaking up character sequences such as 👴🏻👮🏽
+        range = [string rangeOfComposedCharacterSequencesForRange:range];
+        
+        NSString *substring = [string substringWithRange:range];
+        NSString *encoded = [substring stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
+        [escaped appendString:encoded];
+        
+        index += range.length;
+    }
+    
+    return escaped;
 }
 
 @end

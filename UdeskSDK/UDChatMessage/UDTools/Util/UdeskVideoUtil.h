@@ -14,10 +14,11 @@
 
 //获取优化后的视频转向信息
 + (AVMutableVideoComposition *)fixedCompositionWithAsset:(AVAsset *)videoAsset;
-//视频时间
+//视频时间格式
 + (NSString *)videoTimeFromDurationSecond:(NSInteger)duration;
-
+//视频时间
 + (NSInteger)videoDurationWithURL:(NSString *)url;
+//视频首帧
 + (UIImage *)videoPreViewImageWithURL:(NSString *)url;
 + (AVCaptureVideoOrientation)avOrientationForDeviceOrientation:(UIDeviceOrientation)deviceOrientation;
 + (UIImage *)convertSampleBufferRefToUIImage:(CMSampleBufferRef)sampleBufferRef;

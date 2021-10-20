@@ -189,7 +189,7 @@ static NSString *kUDSurveyTagsCollectionViewCellReuseIdentifier = @"kUDSurveyTag
         }
         else {
             if (!self.remarkTextView.text.length) {
-                CGFloat remarkPlaceholderHeight = [UdeskStringSizeUtil textSize:self.remarkTextView.placeholder withFont:self.remarkTextView.font withSize:CGSizeMake(self.udWidth-(kUDSurveyContentSpacing*3), MAXFLOAT)].height + 15;
+                CGFloat remarkPlaceholderHeight = [UdeskStringSizeUtil sizeWithText:self.remarkTextView.placeholder font:self.remarkTextView.font size:CGSizeMake(self.udWidth-(kUDSurveyContentSpacing*3), MAXFLOAT)].height + 15;
                 remarkHeight = MAX(kUDSurveyRemarkTextViewHeight, remarkPlaceholderHeight);
             }
             else {
@@ -357,7 +357,7 @@ static NSString *kUDSurveyTagsCollectionViewCellReuseIdentifier = @"kUDSurveyTag
     }
     else {
         if (!_remarkTextView.text.length) {
-            CGFloat remarkPlaceholderHeight = [UdeskStringSizeUtil textSize:self.remarkTextView.placeholder withFont:self.remarkTextView.font withSize:CGSizeMake(self.udWidth-(kUDSurveyContentSpacing*3), MAXFLOAT)].height + 15;
+            CGFloat remarkPlaceholderHeight = [UdeskStringSizeUtil sizeWithText:self.remarkTextView.placeholder font:self.remarkTextView.font size:CGSizeMake(self.udWidth-(kUDSurveyContentSpacing*3), MAXFLOAT)].height + 15;
             if ([UdeskSDKUtil isBlankString:self.remarkTextView.placeholder]) {
                 remarkPlaceholderHeight = 0;
             }

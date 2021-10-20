@@ -7,7 +7,6 @@
 //
 
 #import "UdeskToast.h"
-#import <UIKit/UIKit.h>
 
 static const float kUDToastMaxWidth = 0.8; //window宽度的80%
 static const float kUDToastFontSize = 14;

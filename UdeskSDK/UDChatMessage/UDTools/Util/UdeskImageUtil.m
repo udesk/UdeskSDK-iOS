@@ -10,88 +10,7 @@
 
 @implementation UdeskImageUtil
 
-/**  压缩图片*/
-+ (UIImage *)imageWithOriginalImage:(UIImage *)image {
-    
-    if (!image || image == (id)kCFNull) return nil;
-    if (![image isKindOfClass:[UIImage class]]) return nil;
-    
-    // 宽高比
-    CGFloat ratio = image.size.width/image.size.height;
-    
-    // 目标大小
-    CGFloat targetW = 1280;
-    CGFloat targetH = 1280;
-    
-    // 宽高均 <= 1280，图片尺寸大小保持不变
-    if (image.size.width<1280 && image.size.height<1280) {
-        return image;
-    }
-    // 宽高均 > 1280 && 宽高比 > 2，
-    else if (image.size.width>1280 && image.size.height>1280){
-        
-        // 宽大于高 取较小值(高)等于1280，较大值等比例压缩
-        if (ratio>1) {
-            targetH = 1280;
-            targetW = targetH * ratio;
-        }
-        // 高大于宽 取较小值(宽)等于1280，较大值等比例压缩 (宽高比在0.5到2之间 )
-        else{
-            targetW = 1280;
-            targetH = targetW / ratio;
-        }
-        
-    }
-    // 宽或高 > 1280
-    else{
-        // 宽图 图片尺寸大小保持不变
-        if (ratio>2) {
-            targetW = image.size.width;
-            targetH = image.size.height;
-        }
-        // 长图 图片尺寸大小保持不变
-        else if (ratio<0.5){
-            targetW = image.size.width;
-            targetH = image.size.height;
-        }
-        // 宽大于高 取较大值(宽)等于1280，较小值等比例压缩
-        else if (ratio>1){
-            targetW = 1280;
-            targetH = targetW / ratio;
-        }
-        // 高大于宽 取较大值(高)等于1280，较小值等比例压缩
-        else{
-            targetH = 1280;
-            targetW = targetH * ratio;
-        }
-    }
-    // 注：这些方法是NSUtil这个工具类里的
-    image = [UdeskImageUtil imageCompressWithImage:image targetHeight:targetH targetWidth:targetW];
-    
-    return image;
-}
-
-/**  重绘*/
-+ (UIImage *)imageCompressWithImage:(UIImage *)sourceImage targetHeight:(CGFloat)targetHeight targetWidth:(CGFloat)targetWidth {
-    //    CGFloat targetHeight = (targetWidth / sourceImage.size.width) * sourceImage.size.height;
-    UIGraphicsBeginImageContext(CGSizeMake(targetWidth, targetHeight));
-    [sourceImage drawInRect:CGRectMake(0,0,targetWidth, targetHeight)];
-    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return newImage;
-}
-
-/**  压缩图片 压缩质量 0 -- 1*/
-+ (UIImage *)imageWithOriginalImage:(UIImage *)image quality:(CGFloat)quality {
-    
-    if (!image || image == (id)kCFNull) return nil;
-    if (![image isKindOfClass:[UIImage class]]) return nil;
-    
-    UIImage *newImage = [self imageWithOriginalImage:image];
-    NSData *imageData = UIImageJPEGRepresentation(newImage, quality);
-    return [UIImage imageWithData:imageData];
-}
-
+//修改图片转向
 + (UIImage *)fixOrientation:(UIImage *)image {
     if (image.imageOrientation == UIImageOrientationUp) return image;
     CGAffineTransform transform = CGAffineTransformIdentity;
@@ -168,6 +87,98 @@
     
 }
 
+/**  压缩图片*/
++ (UIImage *)imageWithOriginalImage:(UIImage *)image maxWidth:(CGFloat)maxWidth maxHeight:(CGFloat)maxHeight {
+    
+    if (!image || image == (id)kCFNull) return nil;
+    if (![image isKindOfClass:[UIImage class]]) return nil;
+    
+    // 宽高比
+    CGFloat ratio = image.size.width/image.size.height;
+    
+    // 目标大小
+    CGFloat targetW = maxWidth;
+    CGFloat targetH = maxHeight;
+    
+    // 宽高均 <= 1280，图片尺寸大小保持不变
+    if (image.size.width<maxWidth && image.size.height<maxHeight) {
+        return image;
+    }
+    // 宽高均 > 1280 && 宽高比 > 2，
+    else if (image.size.width>maxWidth && image.size.height>maxHeight){
+        
+        // 宽大于高 取较小值(高)等于1280，较大值等比例压缩
+        if (ratio>1) {
+            targetH = maxHeight;
+            targetW = targetH * ratio;
+        }
+        // 高大于宽 取较小值(宽)等于1280，较大值等比例压缩 (宽高比在0.5到2之间 )
+        else{
+            targetW = maxWidth;
+            targetH = targetW / ratio;
+        }
+        
+    }
+    // 宽或高 > 1280
+    else{
+        // 宽图 图片尺寸大小保持不变
+        if (ratio>2) {
+            targetW = image.size.width;
+            targetH = image.size.height;
+        }
+        // 长图 图片尺寸大小保持不变
+        else if (ratio<0.5){
+            targetW = image.size.width;
+            targetH = image.size.height;
+        }
+        // 宽大于高 取较大值(宽)等于1280，较小值等比例压缩
+        else if (ratio>1){
+            targetW = maxWidth;
+            targetH = targetW / ratio;
+        }
+        // 高大于宽 取较大值(高)等于1280，较小值等比例压缩
+        else{
+            targetH = maxHeight;
+            targetW = targetH * ratio;
+        }
+    }
+    // 注：这些方法是NSUtil这个工具类里的
+    image = [UdeskImageUtil imageCompressWithImage:image targetHeight:targetH targetWidth:targetW];
+    
+    return image;
+}
+
+/**  压缩图片*/
++ (UIImage *)imageWithOriginalImage:(UIImage *)image {
+    
+    if (!image || image == (id)kCFNull) return nil;
+    if (![image isKindOfClass:[UIImage class]]) return nil;
+    
+    return [UdeskImageUtil imageWithOriginalImage:image maxWidth:1280 maxHeight:1280];
+}
+
+/**  重绘*/
++ (UIImage *)imageCompressWithImage:(UIImage *)sourceImage targetHeight:(CGFloat)targetHeight targetWidth:(CGFloat)targetWidth {
+    //    CGFloat targetHeight = (targetWidth / sourceImage.size.width) * sourceImage.size.height;
+    UIGraphicsBeginImageContext(CGSizeMake(targetWidth, targetHeight));
+    [sourceImage drawInRect:CGRectMake(0,0,targetWidth, targetHeight)];
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+/**  压缩图片 压缩质量 0 -- 1*/
++ (UIImage *)imageWithOriginalImage:(UIImage *)image quality:(CGFloat)quality {
+    
+    if (!image || image == (id)kCFNull) return nil;
+    if (![image isKindOfClass:[UIImage class]]) return nil;
+    
+    UIImage *newImage = [self imageWithOriginalImage:image];
+    NSData *imageData = UIImageJPEGRepresentation(newImage, quality);
+    return [UIImage imageWithData:imageData];
+}
+
+//压缩图片到指定size
 + (UIImage *)imageResize:(UIImage *)image toSize:(CGSize)toSize {
     
     if (!image || image == (id)kCFNull) return image;
@@ -228,18 +239,16 @@
 }
 
 // 计算图片实际大小
-+ (CGSize)udImageSize:(UIImage *)image {
++ (CGSize)richImageSize:(UIImage *)image {
+    
+    CGFloat fixedSize = ((310.0/375.0) * [[UIScreen mainScreen] bounds].size.width)-30;
+    return [UdeskImageUtil udeskImageSize:image fixedSize:fixedSize];
+}
+
++ (CGSize)udeskImageSize:(UIImage *)image fixedSize:(CGFloat)fixedSize {
     
     @try {
-        
-        CGFloat fixedSize;
-        if ([[UIScreen mainScreen] bounds].size.width>320) {
-            fixedSize = 140;
-        }
-        else {
-            fixedSize = 115;
-        }
-        
+
         CGSize imageSize = CGSizeMake(fixedSize, fixedSize);
         
         if (image.size.height > image.size.width) {
@@ -254,7 +263,6 @@
             
         }
         else if (image.size.height < image.size.width) {
-            
             CGFloat scale = image.size.width/fixedSize;
             
             if (scale!=0) {
@@ -275,6 +283,20 @@
         NSLog(@"%@",exception);
     } @finally {
     }
+}
+
+// 计算图片实际大小
++ (CGSize)udImageSize:(UIImage *)image {
+    
+    CGFloat fixedSize;
+    if ([[UIScreen mainScreen] bounds].size.width>320) {
+        fixedSize = 140;
+    }
+    else {
+        fixedSize = 115;
+    }
+    
+    return [UdeskImageUtil udeskImageSize:image fixedSize:fixedSize];
 }
 
 //通过图片Data数据第一个字节 来获取图片扩展名

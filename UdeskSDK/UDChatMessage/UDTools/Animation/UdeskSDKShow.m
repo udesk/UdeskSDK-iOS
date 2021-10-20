@@ -8,15 +8,12 @@
 
 #import "UdeskSDKShow.h"
 #import "UdeskTransitioningAnimation.h"
-#import "UIImage+UdeskSDK.h"
-#import "UdeskSDKMacro.h"
 #import "UdeskFAQViewController.h"
-#import "UdeskRobotViewController.h"
 #import "UdeskChatViewController.h"
 #import "UdeskBundleUtils.h"
-#import "UdeskStringSizeUtil.h"
 #import "UIBarButtonItem+UdeskSDK.h"
 #import "UdeskBaseNavigationViewController.h"
+#import "UdeskWebViewController.h"
 
 @interface UdeskSDKShow()
 
@@ -51,7 +48,7 @@
     
     UIViewController *viewController = nil;
     if (animation == UDTransiteAnimationTypePush) {
-        viewController = [self createNavigationControllerWithWithAnimationSupport:udeskViewController presentedViewController:rootViewController];
+        viewController = [self createNavigationControllerWithAnimationSupport:udeskViewController];
         BOOL shouldUseUIKitAnimation = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7;
         
         if (ud_isIOS8) {
@@ -75,7 +72,7 @@
     } else {
         viewController = [[UdeskBaseNavigationViewController alloc] initWithRootViewController:udeskViewController];
         viewController.modalPresentationStyle = UIModalPresentationFullScreen;
-        [self updateNavAttributesWithViewController:udeskViewController navigationController:(UdeskBaseNavigationViewController *)viewController defaultNavigationController:rootViewController.navigationController isPresentModalView:true];
+        [self updateNavAttributesWithViewController:udeskViewController navigationController:(UdeskBaseNavigationViewController *)viewController defaultNavigationController:rootViewController.navigationController];
         
         if (ud_isIOS8) {
             //防止多次点击崩溃
@@ -97,14 +94,14 @@
     }
 }
 
-- (UdeskBaseNavigationViewController *)createNavigationControllerWithWithAnimationSupport:(UIViewController *)rootViewController presentedViewController:(UIViewController *)presentedViewController{
+- (UdeskBaseNavigationViewController *)createNavigationControllerWithAnimationSupport:(UIViewController *)rootViewController {
     UdeskBaseNavigationViewController *navigationController = [[UdeskBaseNavigationViewController alloc] initWithRootViewController:rootViewController];
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-        [self updateNavAttributesWithViewController:rootViewController navigationController:(UdeskBaseNavigationViewController *)navigationController defaultNavigationController:rootViewController.navigationController isPresentModalView:true];
+        [self updateNavAttributesWithViewController:rootViewController navigationController:(UdeskBaseNavigationViewController *)navigationController defaultNavigationController:rootViewController.navigationController];
         [navigationController setTransitioningDelegate:[UdeskTransitioningAnimation transitioningDelegateImpl]];
         [navigationController setModalPresentationStyle:UIModalPresentationCustom];
     } else {
-        [self updateNavAttributesWithViewController:rootViewController navigationController:(UdeskBaseNavigationViewController *)navigationController defaultNavigationController:rootViewController.navigationController isPresentModalView:true];
+        [self updateNavAttributesWithViewController:rootViewController navigationController:(UdeskBaseNavigationViewController *)navigationController defaultNavigationController:rootViewController.navigationController];
         [rootViewController.view.window.layer addAnimation:[UdeskTransitioningAnimation createPresentingTransiteAnimation:_sdkConfig.presentingAnimation] forKey:nil];
     }
     return navigationController;
@@ -113,8 +110,7 @@
 //修改导航栏属性
 - (void)updateNavAttributesWithViewController:(UIViewController *)viewController
                          navigationController:(UINavigationController *)navigationController
-                  defaultNavigationController:(UINavigationController *)defaultNavigationController
-                           isPresentModalView:(BOOL)isPresentModalView {
+                  defaultNavigationController:(UINavigationController *)defaultNavigationController {
     if (_sdkConfig.sdkStyle.navBackButtonColor) {
         navigationController.navigationBar.tintColor = _sdkConfig.sdkStyle.navBackButtonColor;
     } else if (defaultNavigationController && defaultNavigationController.navigationBar.tintColor) {
@@ -126,8 +122,10 @@
     } else {
         UIColor *color = _sdkConfig.sdkStyle.titleColor;
         UIFont *font = _sdkConfig.sdkStyle.titleFont;
-        NSDictionary *attr = @{NSForegroundColorAttributeName : color, NSFontAttributeName : font};
-        navigationController.navigationBar.titleTextAttributes = attr;
+        if (color && font) {
+            NSDictionary *attr = @{NSForegroundColorAttributeName : color, NSFontAttributeName : font};
+            navigationController.navigationBar.titleTextAttributes = attr;
+        }
     }
     
     if (_sdkConfig.sdkStyle.navBarBackgroundImage) {
@@ -139,69 +137,16 @@
     }
     
     //导航栏左键
-    UIBarButtonItem *customizedBackItem = nil;
-    if (_sdkConfig.sdkStyle.navBackButtonImage) {
-        customizedBackItem = [UIBarButtonItem udItemWithIcon:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] target:viewController action:@selector(dismissChatViewController)];
-    }
+    UIBarButtonItem *customizedBackItem = [UIBarButtonItem udLeftItemWithIcon:[_sdkConfig.sdkStyle.navBackButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] target:viewController action:@selector(dismissChatViewController)];
     
-    NSString *backText = _sdkConfig.backText ? : getUDLocalizedString(@"udesk_back");
-    if (_sdkConfig.presentingAnimation == UDTransiteAnimationTypePresent) {
-       viewController.navigationItem.leftBarButtonItem = customizedBackItem ?: [[UIBarButtonItem alloc] initWithTitle:backText style:UIBarButtonItemStylePlain target:viewController action:@selector(dismissChatViewController)];
-    } else {
-
-        UIBarButtonItem *leftBarButtonItem = [UIBarButtonItem udItemWithTitle:backText target:viewController action:@selector(dismissChatViewController)];
-        UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
-                                           initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                           target:nil action:nil];
-
-        // 调整 leftBarButtonItem 在 iOS7 下面的位置
-        if((FUDSystemVersion>=7.0)){
-
-            negativeSpacer.width = -13;
-            if (customizedBackItem) {
-                viewController.navigationItem.leftBarButtonItem = customizedBackItem;
-            }
-            else {
-                viewController.navigationItem.leftBarButtonItems = @[negativeSpacer,leftBarButtonItem];
-            }
-        }
-        else {
-            viewController.navigationItem.leftBarButtonItem = customizedBackItem ?: leftBarButtonItem;
-        }
+    //配置了文字
+    if (_sdkConfig.backText) {
+        customizedBackItem = [UIBarButtonItem udLeftItemWithTitle:_sdkConfig.backText target:viewController action:@selector(dismissChatViewController)];
     }
+
+    viewController.navigationItem.leftBarButtonItem = customizedBackItem;
     
-    if ([viewController isKindOfClass:[UdeskRobotViewController class]]) {
-        
-        NSString *transferText = getUDLocalizedString(@"udesk_redirect");
-        
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
-        UIBarButtonItem *rightBarButtonItem = [UIBarButtonItem udRightItemWithTitle:transferText target:viewController action:@selector(didSelectNavigationRightButton)];
-#pragma clang diagnostic pop
-
-        UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
-                                           initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                           target:nil action:nil];
-        
-        // 调整 leftBarButtonItem 在 iOS7 下面的位置
-        if((FUDSystemVersion>=7.0)){
-            
-            negativeSpacer.width = -10;
-            viewController.navigationItem.rightBarButtonItems = @[negativeSpacer,rightBarButtonItem];
-            
-        }else
-            viewController.navigationItem.rightBarButtonItem = rightBarButtonItem;
-        
-        //导航栏标题
-        if (_sdkConfig.robotTtile) {
-            viewController.navigationItem.title = _sdkConfig.robotTtile;
-        }
-        else {
-            viewController.navigationItem.title = getUDLocalizedString(@"udesk_robot_title");
-        }
-        
-    }
-    else if ([viewController isKindOfClass:[UdeskFAQViewController class]]) {
+    if ([viewController isKindOfClass:[UdeskFAQViewController class]]) {
         
         //导航栏标题
         if (_sdkConfig.faqTitle) {
@@ -219,6 +164,13 @@
         }
     }
     
+}
+
++ (void)pushWebViewOnViewController:(UIViewController *)viewController URL:(NSURL *)URL {
+    
+    UdeskWebViewController *webVC = [[UdeskWebViewController alloc] initWithURL:URL];
+    UdeskSDKShow *show = [[UdeskSDKShow alloc] initWithConfig:[UdeskSDKConfig customConfig]];
+    [show presentOnViewController:viewController udeskViewController:webVC transiteAnimation:UDTransiteAnimationTypePush completion:nil];
 }
 
 @end

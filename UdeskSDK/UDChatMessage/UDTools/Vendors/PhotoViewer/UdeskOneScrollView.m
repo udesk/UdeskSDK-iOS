@@ -8,6 +8,7 @@
 
 #import "UdeskOneScrollView.h"
 #import "Udesk_YYWebImage.h"
+#import "UdeskImageUtil.h"
 
 #define AnimationTime 0.25
 
@@ -96,8 +97,8 @@
 -(void)setFrameAndZoom:(UIImageView *)imageView withMessageURL:(NSString *)url
 {
     //ImageView.image的大小
-    CGFloat   imageH;
-    CGFloat   imageW;
+    __block CGFloat   imageH;
+    __block CGFloat   imageW;
 
     //设置空image时的情况
     if(imageView.image == nil || imageView.image.size.width == 0 || imageView.image.size.height ==0)
@@ -107,15 +108,33 @@
         imageW = [[UIScreen mainScreen] bounds].size.width;
         self.mainImageView.image = [UIImage imageNamed:@"none"];
         
-    }else//不空
-    {
+        if (url && url != (id)kCFNull && url.length > 0) {
+            [self.mainImageView udesk_yy_setImageWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:imageView.image];
+        }
+    }
+    else {
         //设置主图片
         imageW  = imageView.image.size.width;
         imageH = imageView.image.size.height;
         //放大的图片 显示原图片 不缩小
         self.mainImageView.image = imageView.image;
-        [self.mainImageView udesk_yy_setImageWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:imageView.image];
+        [self.mainImageView udesk_yy_setImageWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:imageView.image options:Udesk_YYWebImageOptionShowNetworkActivity completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, Udesk_YYWebImageFromType from, Udesk_YYWebImageStage stage, NSError * _Nullable error) {
+            
+            if (!image) {
+                return ;
+            }
+            UIImage *newImage = [UdeskImageUtil fixOrientation:image];
+            imageW = newImage.size.width;
+            imageH = newImage.size.height;
+            self.mainImageView.image = newImage;
+            [self updateImageViewWidth:newImage.size.width height:newImage.size.height];
+        }];
     }
+    
+    [self updateImageViewWidth:imageW height:imageH];
+}
+
+- (void)updateImageViewWidth:(CGFloat)imageW height:(CGFloat)imageH {
     
     //设置主图片Frame 与缩小比例
     if(imageW >= (imageH * ([[UIScreen mainScreen] bounds].size.width/[[UIScreen mainScreen] bounds].size.height)))//横着
@@ -134,11 +153,11 @@
         //判断原图是小图还是大图来判断,是可以缩放,还是可以放大
         if (imageW >  myW_) {
             self.maximumZoomScale = 2*(imageW/myW_ ) ;//放大比例
-
+            
         }else
         {
             self.minimumZoomScale = (imageW/myW_);//缩小比例
-   
+            
         }
         
         
@@ -157,13 +176,12 @@
         
         if (imageH >  myH_) {
             self.maximumZoomScale =  2*(imageH/myH_ ) ;//放大比例
-         
+            
         }else
         {
             self.minimumZoomScale = (imageH/myH_);//缩小比例
         }
     }
-    
 }
 
 //开始缩放,一开始会自动调用几次,并且要返回告来诉scroll我要缩放哪一个控件.
