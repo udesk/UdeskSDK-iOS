@@ -4,11 +4,11 @@
 
 **接入sdk编译报错误请升级Xcode到最新版本**
 
-**“master” 分支对应的sdk版本是5.0+ **
+**“master” 分支对应的sdk版本是5.0+**
 
 **“4.x_back” 分支对应的sdk版本是4.3.4**
 
-**“如发现问题建议先升级到最新版本SDK，或者下载demo做一下验证 **
+**如发现问题建议先升级到最新版本SDK，或者下载demo做一下验证**
 
 
 
@@ -17,8 +17,6 @@
 <https://github.com/udesk/UdeskSDK-iOS>
 
 master 代码使用Xcode13、iPhone12 iOS15 编译。
-
-**5.x版本目前不支持Cocoapods导入**
 
 ## 目录
 - [一、集成SDK](#%E4%B8%80%e9%9b%86%e6%88%90sdk)
