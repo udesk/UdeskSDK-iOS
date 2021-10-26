@@ -49,21 +49,6 @@ static NSString *kUdeskAssetCellIdentifier  = @"kUdeskAssetCellIdentifier";
 - (void)setupUI {
     
     self.view.backgroundColor = [UIColor whiteColor];
-    //适配ios15
-    if (@available(iOS 15.0, *)) {
-        if(self.navigationController){
-            UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
-            // 背景色
-            appearance.backgroundColor = [UIColor whiteColor];
-            // 去掉半透明效果
-            appearance.backgroundEffect = nil;
-            // 去除导航栏阴影（如果不设置clear，导航栏底下会有一条阴影线）
-            //        appearance.shadowColor = [UIColor clearColor];
-            appearance.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
-            self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
-            self.navigationController.navigationBar.standardAppearance = appearance;
-        }
-    }
     
     UIBarButtonItem *leftBarButtonItem = [UIBarButtonItem udItemWithTitle:getUDLocalizedString(@"udesk_back") image:[UIImage udDefaultWhiteBackImage] color:[UdeskSDKConfig customConfig].sdkStyle.albumBackColor target:self action:@selector(backSelectImageAction)];
     UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];

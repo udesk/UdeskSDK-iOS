@@ -111,6 +111,21 @@
 - (void)updateNavAttributesWithViewController:(UIViewController *)viewController
                          navigationController:(UINavigationController *)navigationController
                   defaultNavigationController:(UINavigationController *)defaultNavigationController {
+
+    if (@available(iOS 15.0, *)) {
+        UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+        [appearance setBackgroundColor:[UIColor whiteColor]];
+        if (_sdkConfig.sdkStyle.navBarBackgroundImage) {
+            appearance.backgroundImage = _sdkConfig.sdkStyle.navBarBackgroundImage;
+        } else {
+            if (_sdkConfig.sdkStyle.navigationColor) {
+                appearance.backgroundColor = _sdkConfig.sdkStyle.navigationColor;
+            }
+        }
+        navigationController.navigationBar.scrollEdgeAppearance = appearance;
+        navigationController.navigationBar.standardAppearance = appearance;
+    }
+    
     if (_sdkConfig.sdkStyle.navBackButtonColor) {
         navigationController.navigationBar.tintColor = _sdkConfig.sdkStyle.navBackButtonColor;
     } else if (defaultNavigationController && defaultNavigationController.navigationBar.tintColor) {

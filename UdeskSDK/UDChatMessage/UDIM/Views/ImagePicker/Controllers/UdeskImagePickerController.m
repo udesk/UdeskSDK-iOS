@@ -37,6 +37,14 @@
     self.navigationBar.titleTextAttributes = attr;
     self.navigationBar.barTintColor = [UdeskSDKConfig customConfig].sdkStyle.albumNavBgColor;
 //    self.navigationBar.tintColor = [UdeskSDKConfig customConfig].sdkStyle.albumBackColor;
+    if (@available(iOS 15.0, *)) {
+        UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+        appearance.backgroundColor = [UdeskSDKConfig customConfig].sdkStyle.albumNavBgColor;
+        appearance.backgroundEffect = nil;
+        appearance.titleTextAttributes = @{NSForegroundColorAttributeName:[UdeskSDKConfig customConfig].sdkStyle.albumTitleColor};
+        self.navigationBar.scrollEdgeAppearance = appearance;
+        self.navigationBar.standardAppearance = appearance;
+    }
     
     self.quality = [UdeskSDKConfig customConfig].quality;
     self.maxImagesCount = [UdeskSDKConfig customConfig].maxImagesCount;

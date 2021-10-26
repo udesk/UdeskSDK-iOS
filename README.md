@@ -11,7 +11,6 @@
 **如发现问题建议先升级到最新版本SDK，或者下载demo做一下验证**
 
 
-
 ### SDK下载地址
 
 <https://github.com/udesk/UdeskSDK-iOS>
@@ -1039,6 +1038,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+
+sdk v5.2.4版本更新功能：
+
+1.iOS15 适配
+ 
+-----
 
 sdk v5.2.3版本更新功能：
 

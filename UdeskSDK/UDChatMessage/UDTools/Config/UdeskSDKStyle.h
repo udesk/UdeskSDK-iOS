@@ -51,7 +51,7 @@
 /** 导航栏返回按钮颜色 */
 @property (nonatomic, strong) UIColor  *navBackButtonColor;
 
-/** 导航栏右侧按钮颜色 */
+/** 导航栏右侧按钮颜色（目前仅特定页面支持，后续版本会完善） */
 @property (nonatomic, strong) UIColor  *navRightButtonColor;
 
 /** 导航栏返回按钮图片 */
@@ -69,7 +69,7 @@
 /** 标题大小 */
 @property (nonatomic, strong) UIFont   *titleFont;
 
-/** 机器人转人工按钮颜色 */
+/** 机器人转人工按钮 文案颜色 */
 @property (nonatomic, strong) UIColor  *transferButtonColor;
 
 /** 录音颜色 */

@@ -432,12 +432,5 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
     [self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
-        [self.navigationController setNavigationBarHidden:YES animated:NO];
-    }
-}
 
 @end
