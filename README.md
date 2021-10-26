@@ -2,6 +2,9 @@
 
 ### 公告
 
+**“5.x” 分支不再单独更新，最新版本 移步master分支 https://github.com/udesk/UdeskSDK-iOS/ **
+
+
 **接入sdk编译报错误请升级Xcode到最新版本**
 
 **“master” 分支对应的sdk版本是5.0+**
