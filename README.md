@@ -1039,6 +1039,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.2.5版本更新功能：
+
+1.xmpp重连优化
+ 
+-----
+
 sdk v5.2.4版本更新功能：
 
 1.iOS15 适配
