@@ -90,7 +90,9 @@
         //加粗标签
         if (strncmp("strong", (const char *)xmlNode->name, strlen((const char *)xmlNode->name)) == 0) {
             if (customFont) {
-                UIFont *boldFont = [UIFont boldSystemFontOfSize:customFont.pointSize];
+                UIFontDescriptor *fontDescriptor = [customFont fontDescriptor];
+                UIFontDescriptor *bodlDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:fontDescriptor.symbolicTraits | UIFontDescriptorTraitBold];
+                UIFont *boldFont = [UIFont fontWithDescriptor:bodlDescriptor size:customFont.pointSize];
                 [nodeAttributedString addAttribute:NSFontAttributeName value:boldFont range:nodeAttributedStringRange];
             }
         }
@@ -351,6 +353,15 @@
     }
     
     return nodeAttributedString;
+}
+
+
+- (UIFont *)bodyFont:(UIFont *)baseFont
+{
+    UIFontDescriptor *fontDescriptor = [baseFont fontDescriptor];
+    UIFontDescriptor *bodlDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:fontDescriptor.symbolicTraits | UIFontDescriptorTraitBold];
+    UIFont *boldFont = [UIFont fontWithDescriptor:bodlDescriptor size:baseFont.pointSize];
+    return boldFont;
 }
 
 @end

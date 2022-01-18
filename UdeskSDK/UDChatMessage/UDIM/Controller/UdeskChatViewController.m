@@ -182,8 +182,7 @@ static CGFloat udInputBarHeight = 54.0f;
 
 //收到客服发送的满意度调查
 - (void)didReceiveSurveyWithAgentId:(NSString *)agentId {
-
-    [self servicesFeedbackSurveyWithAgentId:agentId];
+    [self showSurveyViewWithAgentId:agentId];
 }
 
 //无消息会话标题

@@ -44,7 +44,8 @@ static CGFloat const kUDBubbleToRichVerticalSpacing = 10.0;
         
         CGFloat spacing = ud_isIOS11 ? 0 : kUDRichMendSpacingOne;
         
-        self.attributedString = [self getAttributedStringWithText:self.message.content font:[UdeskSDKConfig customConfig].sdkStyle.messageContentFont];
+        UIFont *textFont = [self preferredRichTextFont];
+        self.attributedString = [self getAttributedStringWithText:self.message.content font:textFont];
         CGSize richSize = [self getAttributedStringSizeWithAttr:self.attributedString size:CGSizeMake([self textMaxWidth], CGFLOAT_MAX)];
         switch (self.message.messageFrom) {
             case UDMessageTypeSending:{
@@ -105,4 +106,56 @@ static CGFloat const kUDBubbleToRichVerticalSpacing = 10.0;
     return [[UdeskRichCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifer];
 }
 
+- (UIFont *)preferredRichTextFont
+{
+    UIFont *messageFont =[UdeskSDKConfig customConfig].sdkStyle.messageContentFont;
+    if (!messageFont) {
+        return nil;
+    }
+    UIFont *preferredFont = messageFont;
+    
+    BOOL fontFix = ![self isLocaleChineseLanguage];
+    static NSString *systemFontFamilyName;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        UIFont *sysFont = [UIFont systemFontOfSize:1];
+        systemFontFamilyName = sysFont.familyName;
+    });
+    
+    //非中文环境下默认消息字体强制 苹方
+    if (fontFix && systemFontFamilyName && [systemFontFamilyName isEqualToString:messageFont.familyName]) {
+        UIFontDescriptor *fontDescriptor = [messageFont fontDescriptor];
+        NSMutableDictionary<UIFontDescriptorAttributeName, id>  *atts = [[fontDescriptor fontAttributes] mutableCopy];
+        [atts setValue:nil forKey:UIFontDescriptorTextStyleAttribute];
+        [atts setValue:@"PingFang SC" forKey:UIFontDescriptorFamilyAttribute];
+        [atts setValue:@"PingFangSC-Regular" forKey:UIFontDescriptorNameAttribute];
+        UIFontDescriptorSymbolicTraits traits = fontDescriptor.symbolicTraits;
+        UIFontDescriptor *preferrDescriptor = [UIFontDescriptor fontDescriptorWithFontAttributes:atts];
+        preferrDescriptor = [preferrDescriptor fontDescriptorWithSymbolicTraits:traits];
+        
+        preferredFont = [UIFont fontWithDescriptor:preferrDescriptor size:messageFont.pointSize];
+    }
+
+    return preferredFont;
+}
+
+- (BOOL)isLocaleChineseLanguage
+{
+    NSArray *languages = [NSLocale preferredLanguages];
+    NSString *pfLanguageCode = [languages objectAtIndex:0];
+    if ([pfLanguageCode isEqualToString:@"zh-Hant"] ||
+        [pfLanguageCode hasPrefix:@"zh-Hant"] ||
+        [pfLanguageCode hasPrefix:@"yue-Hant"] ||
+        [pfLanguageCode isEqualToString:@"zh-HK"] ||
+        [pfLanguageCode isEqualToString:@"zh-TW"]||
+        [pfLanguageCode isEqualToString:@"zh-Hans"] ||
+        [pfLanguageCode hasPrefix:@"yue-Hans"] ||
+        [pfLanguageCode hasPrefix:@"zh-Hans"]
+        )
+    {
+        return YES;
+    }
+    return NO;
+}
+ 
 @end
