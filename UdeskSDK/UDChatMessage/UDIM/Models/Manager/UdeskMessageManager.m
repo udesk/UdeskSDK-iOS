@@ -33,7 +33,8 @@
 @property (nonatomic, strong) NSMutableArray *robotTempArray;
 /** 线程 */
 @property (nonatomic, strong) dispatch_queue_t messagesArrayModificationQueue;
-
+/** “以下为最新消息” 消息*/
+@property (nonatomic, strong) UdeskMessage *messageAlertMsg;
 @end
 
 @implementation UdeskMessageManager
@@ -43,6 +44,7 @@
     self = [super init];
     if (self) {
         _sdkSetting = setting;
+        self.messageAlertMsg = [[UdeskMessage alloc] initWithChatNew:@"以下是新消息"];
         self.messagesArrayModificationQueue = dispatch_queue_create("com.udesk.sdk.message.array", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
@@ -82,9 +84,9 @@
             }
             
             //极端情况下，读取数据库失败，把服务器上拉取的记录做一次处理
-            if (serverMsgList.count > 0) {
+            if (!messagesArray.count && serverMsgList.count > 0) {
                 //重新排序
-                NSArray *sortedMsgArray = [self mergeMessagesFromServers:serverMsgList dbMessages:messagesArray];
+                NSArray *sortedMsgArray = [self mergeMessagesFromServers:serverMsgList dbMessages:@[serverMsgList.firstObject]];
                 if (sortedMsgArray && sortedMsgArray.count > 0) {
                     [self updateMessagesArrayWithMessages:sortedMsgArray];
                 }
@@ -104,7 +106,17 @@
     //添加临时消息
     NSMutableArray *array = [NSMutableArray arrayWithArray:messagesArray];
     [array addObjectsFromArray:[self temporaryMessages]];
-    self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:array lastMessage:nil];
+    //重新排序
+    NSArray *sortedMsgArray = array;
+    if (array.count > 0) {
+        sortedMsgArray = [array sortedArrayUsingComparator:^NSComparisonResult(UdeskMessage * obj1, UdeskMessage * obj2) {
+            if (obj2.timestamp && obj1.timestamp) {
+                return [obj1.timestamp compare:obj2.timestamp];
+            }
+            return NSOrderedSame;
+        }];
+    }
+    self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:sortedMsgArray lastMessage:nil];
 }
 
 //合并消息
@@ -156,9 +168,10 @@
 - (void)fetchNextPageDatebaseMessage:(NSDate *)date {
     
     @udWeakify(self);
-    [UdeskManager fetchDatabaseMessagesWithDate:date result:^(NSArray *messagesArray,BOOL hasMore) {
-        @udStrongify(self);
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [UdeskManager fetchDatabaseMessagesWithDate:date result:^(NSArray *messagesArray,BOOL hasMore) {
+            @udStrongify(self);
+            
             self.isShowRefresh = hasMore;
             if (messagesArray.count) {
                 
@@ -166,10 +179,16 @@
                 if (moreMessagesArray) {
                     self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:moreMessagesArray lastMessage:nil];
                 }
+                [self updateCallbackMoreMessages];
+            } else {
+                //没有记录更新的时候，停0.5s再刷新
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [self updateCallbackMoreMessages];
+                });
             }
-            [self updateCallbackMoreMessages];
-        });
-    }];
+            
+        }];
+    });
 }
 
 //添加临时消息
@@ -186,6 +205,10 @@
     UdeskMessage *leaveGuideMsg = [self leaveGuideMessage];
     if (leaveGuideMsg) {
         [array addObject:leaveGuideMsg];
+    }
+    
+    if (self.messageAlertMsg) {
+        [array addObject:self.messageAlertMsg];
     }
     
     return array;

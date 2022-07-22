@@ -207,4 +207,23 @@
     }
 }
 
+//仅检查音频权限状态
++ (BOOL)hasPermissionsOfAudio{
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+    BOOL isOK = NO;
+    switch (authStatus) {
+        case AVAuthorizationStatusNotDetermined://没有询问是否开启麦克风
+        case AVAuthorizationStatusRestricted://未授权，家长限制
+        case AVAuthorizationStatusDenied://玩家未授权
+            isOK = NO;
+        break;
+        case AVAuthorizationStatusAuthorized:
+            isOK = YES;
+        break;
+        default:
+        break;
+    }
+    return isOK;
+}
+
 @end

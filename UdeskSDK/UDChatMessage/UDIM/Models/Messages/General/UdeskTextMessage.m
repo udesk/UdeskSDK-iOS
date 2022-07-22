@@ -99,7 +99,6 @@ static CGFloat const kUDTextMendSpacing = 1.0;
 }
 
 - (void)setSendFrameWithSize:(CGSize)textSize spacing:(CGFloat)spacing {
-    
     CGFloat bubbleWidth = textSize.width+(kUDBubbleToTextHorizontalSpacing*2);
     CGFloat bubbleHeight = textSize.height+(kUDBubbleToTextVerticalSpacing*2);
     CGFloat bubbleX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-bubbleWidth;

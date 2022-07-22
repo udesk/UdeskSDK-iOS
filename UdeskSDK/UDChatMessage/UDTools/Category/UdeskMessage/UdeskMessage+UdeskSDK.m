@@ -320,4 +320,20 @@
     return self;
 }
 
+- (instancetype)initWithChatNew:(NSString *)text {
+    
+    self = [super init];
+    if (self) {
+        
+        self.messageId = [[NSUUID UUID] UUIDString];
+        self.messageType = UDMessageContentTypeNewMessage;
+        self.messageFrom = UDMessageTypeCenter;
+        self.messageStatus = UDMessageSendStatusSuccess;
+        self.timestamp = [NSDate date];
+        self.content = text;
+    }
+    
+    return self;
+}
+
 @end

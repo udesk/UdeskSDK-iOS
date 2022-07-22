@@ -39,6 +39,13 @@
     // Do any additional setup after loading the view.
     
     [self setupUI];
+    [self setupData];
+}
+
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+    self.agentMenuScrollView.frame = self.view.bounds;
 }
 
 #pragma mark - 设置MenuScrollView
@@ -60,6 +67,16 @@
 }
 
 #pragma mark - 请求客服组选择菜单
+
+- (void)setupData {
+    if (self.menuDataSource) {
+        while (self.agentMenuScrollView.subviews.count) {
+            [self.agentMenuScrollView.subviews.lastObject removeFromSuperview];
+        }
+        [self requestAgentMenu:self.menuDataSource];
+    }
+}
+
 - (void)requestAgentMenu:(NSArray *)result {
     
     @try {
@@ -342,17 +359,6 @@
     return spacing;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    _agentMenuScrollView.frame = self.view.bounds;
-    if (self.menuDataSource) {
-        while (self.agentMenuScrollView.subviews.count) {
-            [self.agentMenuScrollView.subviews.lastObject removeFromSuperview];
-        }
-        [self requestAgentMenu:self.menuDataSource];
-    }
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

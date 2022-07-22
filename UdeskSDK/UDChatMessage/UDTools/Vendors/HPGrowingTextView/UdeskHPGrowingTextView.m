@@ -402,19 +402,28 @@
 
 - (BOOL)becomeFirstResponder
 {
-    [super becomeFirstResponder];
-    return [self.internalTextView becomeFirstResponder];
+    if ([self canBecomeFirstResponder]) {
+        return [self.internalTextView becomeFirstResponder];
+    }
+    return NO;
 }
 
 -(BOOL)resignFirstResponder
 {
-	[super resignFirstResponder];
-	return [internalTextView resignFirstResponder];
+    if ([self canResignFirstResponder]) {
+        return [self.internalTextView resignFirstResponder];
+    }
+	return NO;
 }
 
--(BOOL)isFirstResponder
+-(BOOL)canBecomeFirstResponder
 {
-  return [self.internalTextView isFirstResponder];
+  return ![self.internalTextView isFirstResponder] && [self.internalTextView canBecomeFirstResponder];
+}
+
+-(BOOL)canResignFirstResponder
+{
+  return [self.internalTextView isFirstResponder] && [self.internalTextView canResignFirstResponder];
 }
 
 

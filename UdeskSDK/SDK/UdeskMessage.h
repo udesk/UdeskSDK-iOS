@@ -42,6 +42,7 @@ typedef NS_ENUM(NSInteger, UDMessageContentType) {
     UDMessageContentTypeReplyProduct      = 23,//商品回复消息（机器人）
     UDMessageContentTypeTemplate      = 24,//模版消息
     UDMessageContentTypeSurveyEvent   = 25,//评价事件消息
+    UDMessageContentTypeNewMessage   = 26,//以下是新消息
 };
 
 typedef NS_ENUM(NSInteger,UDMessageSendStatus) {

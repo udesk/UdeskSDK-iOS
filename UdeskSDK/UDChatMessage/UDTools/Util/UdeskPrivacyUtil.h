@@ -18,4 +18,7 @@
 //检查麦克风权限
 + (void)checkPermissionsOfMicrophone:(void(^)(void))completion;
 
+//仅检查音频权限状态
++ (BOOL)hasPermissionsOfAudio;
+
 @end

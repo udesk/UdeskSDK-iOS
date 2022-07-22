@@ -44,6 +44,9 @@ typedef void (^UdeskFinishRecordingBlock)(NSDictionary *info, UdeskRecorderFinis
 /** 关闭摄像头 */
 - (void)stopSession;
 
+/** 配置音频输入 */
+- (void)configSessionAudio;
+
 /** 开始视频捕捉 */
 - (void)startCapture;
 /** 结束视频捕捉 */

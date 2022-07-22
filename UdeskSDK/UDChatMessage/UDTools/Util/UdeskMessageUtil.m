@@ -32,6 +32,7 @@
 #import "UdeskProductMessage.h"
 #import "UdeskProductListMessage.h"
 #import "UdeskTemplateMessage.h"
+#import "UdeskNewMessageTag.h"
 
 @implementation UdeskMessageUtil
 
@@ -113,9 +114,13 @@
                 case UDMessageContentTypeRobotTransfer:
                 case UDMessageContentTypeLeaveEvent:
                 case UDMessageContentTypeSurveyEvent:{
-                    
                     UdeskEventMessage *eventMessage = [[UdeskEventMessage alloc] initWithMessage:message displayTimestamp:isDisplayTimestamp];
                     [msgLayout addObject:eventMessage];
+                    break;
+                }
+                case UDMessageContentTypeNewMessage:{
+                    UdeskNewMessageTag *newMessage = [[UdeskNewMessageTag alloc] initWithMessage:message displayTimestamp:NO];
+                    [msgLayout addObject:newMessage];
                     break;
                 }
                 case UDMessageContentTypeRollback: {

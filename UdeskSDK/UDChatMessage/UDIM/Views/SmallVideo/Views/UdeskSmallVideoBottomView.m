@@ -109,6 +109,14 @@
     _timeLabel.text = [NSString stringWithFormat:@"%.f%@ / %ld%@",recordDuration,getUDLocalizedString(@"udesk_second"),(long)_duration,getUDLocalizedString(@"udesk_second")];
 }
 
+- (BOOL)smallVideoRecordViewWillStart:(UdeskSmallVideoRecordView *)recordView
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(udSmallVideoWillStart:)]) {
+        return [self.delegate udSmallVideoWillStart:self];
+    }
+    return NO;
+}
+
 - (void)setDuration:(NSInteger)duration {
     _duration = duration;
     _recordView.duration = duration;

@@ -17,6 +17,8 @@
 
 - (void)udSmallVideo:(UdeskSmallVideoBottomView *)smallVideoView captureCurrentFrame:(BOOL)capture;
 
+- (BOOL)udSmallVideoWillStart:(UdeskSmallVideoBottomView *)smallVideoView;
+
 @end
 
 @interface UdeskSmallVideoBottomView : UIView

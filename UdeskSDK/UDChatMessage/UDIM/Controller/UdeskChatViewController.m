@@ -71,7 +71,7 @@ static CGFloat udInputBarHeight = 54.0f;
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-
+    [UdeskAgentManager udAgentId];
     //进入sdk页面
     [UdeskManager enterSDKPage];
     //初始化viewModel
@@ -477,13 +477,12 @@ static CGFloat udInputBarHeight = 54.0f;
 //录音完成
 - (void)finishRecorded {
     @udWeakify(self);
-    [self.voiceRecordView stopRecordCompled:^(BOOL fnished) {
-        @udStrongify(self);
-        self.voiceRecordView = nil;
-    }];
-    
     [self.voiceRecordHelper stopRecordingWithStopRecorderCompletion:^{
         @udStrongify(self);
+        [self.voiceRecordView stopRecordCompled:^(BOOL fnished) {
+            @udStrongify(self);
+            self.voiceRecordView = nil;
+        }];
         [self sendVoiceMessageWithVoicePath:self.voiceRecordHelper.recordPath voiceDuration:self.voiceRecordHelper.recordDuration completion:nil];
     }];
 }
@@ -638,16 +637,12 @@ static CGFloat udInputBarHeight = 54.0f;
                 return ;
             }
             
-            [UdeskPrivacyUtil checkPermissionsOfAudio:^{
-                
-                UdeskSmallVideoViewController *smallVideoVC = [[UdeskSmallVideoViewController alloc] init];
-                smallVideoVC.delegate = self;
-                
-                UdeskSmallVideoNavigationController *nav = [[UdeskSmallVideoNavigationController alloc] initWithRootViewController:smallVideoVC];
-                nav.modalPresentationStyle = UIModalPresentationFullScreen;
-                [self presentViewController:nav animated:YES completion:nil];
-            }];
+            UdeskSmallVideoViewController *smallVideoVC = [[UdeskSmallVideoViewController alloc] init];
+            smallVideoVC.delegate = self;
             
+            UdeskSmallVideoNavigationController *nav = [[UdeskSmallVideoNavigationController alloc] initWithRootViewController:smallVideoVC];
+            nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            [self presentViewController:nav animated:YES completion:nil];
             return;
         }
         
@@ -809,15 +804,17 @@ static CGFloat udInputBarHeight = 54.0f;
 //下拉加载更多数据
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    if (scrollView.contentOffset.y<0 && self.messageTableView.isRefresh) {
+    if (scrollView.contentOffset.y<=0 && self.messageTableView.isRefresh) {
         //开始刷新
         [self.messageTableView startLoadingMoreMessages];
         //获取更多数据
         [self.chatViewModel fetchNextPageMessages];
         //延迟1.5，提高用户体验
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            //关闭刷新、刷新数据
-            [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
+            if (!self.chatViewModel.isShowRefresh) {
+                //关闭刷新、刷新数据
+                [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
+            }
         });
     }
 }
@@ -914,7 +911,14 @@ static CGFloat udInputBarHeight = 54.0f;
 //刷新
 - (void)reloadTableViewAtCell:(UITableViewCell *)cell {
     
-    [self reloadChatTableView];
+    @udWeakify(self);
+    //更新消息内容
+    dispatch_async(dispatch_get_main_queue(), ^{
+        @udStrongify(self);
+        //是否需要下拉刷新
+        [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
+        [self.messageTableView reloadData];
+    });
 }
 
 #pragma mark - @protocol UIGestureRecognizerDelegate
@@ -1376,7 +1380,9 @@ static CGFloat udInputBarHeight = 54.0f;
                 self.emojiKeyboard.alpha = 0.0;
                 self.moreView.alpha = 0.0;
             } else {
-                [self.chatInputToolBar.chatTextView resignFirstResponder];
+                if([self.chatInputToolBar.chatTextView isFirstResponder]){
+                    [self.chatInputToolBar.chatTextView resignFirstResponder];
+                }
             }
         }
         
@@ -1389,36 +1395,36 @@ static CGFloat udInputBarHeight = 54.0f;
     //根据textViewInputViewType切换功能面板
     self.robotTipsView.alpha = 0;
     [self.chatInputToolBar.chatTextView resignFirstResponder];
+    __block CGRect inputViewFrame = self.chatInputToolBar.frame;
+    __block CGRect otherMenuViewFrame = CGRectMake(0, 0, 0, 0);
+    
+    CGFloat spacing = 0;
+    if (udIsIPhoneXSeries) {
+        spacing = 34;
+    }
+    
+    void (^InputViewAnimation)(BOOL hide) = ^(BOOL hide) {
+        inputViewFrame.origin.y = (hide ? (CGRectGetHeight(self.view.bounds) - CGRectGetHeight(inputViewFrame)) : (CGRectGetMinY(otherMenuViewFrame) - CGRectGetHeight(inputViewFrame)) + spacing);
+        self.chatInputToolBar.frame = inputViewFrame;
+    };
+    
+    void (^EmotionManagerViewAnimation)(BOOL hide) = ^(BOOL hide) {
+        otherMenuViewFrame = self.emojiKeyboard.frame;
+        otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
+        self.emojiKeyboard.alpha = !hide;
+        self.emojiKeyboard.frame = otherMenuViewFrame;
+        [self.view bringSubviewToFront:self.emojiKeyboard];
+    };
+    
+    void (^MoreViewAnimation)(BOOL hide) = ^(BOOL hide) {
+        otherMenuViewFrame = self.moreView.frame;
+        otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
+        self.moreView.alpha = !hide;
+        self.moreView.frame = otherMenuViewFrame;
+        [self.view bringSubviewToFront:self.moreView];
+    };
+    
     [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        __block CGRect inputViewFrame = self.chatInputToolBar.frame;
-        __block CGRect otherMenuViewFrame = CGRectMake(0, 0, 0, 0);
-        
-        CGFloat spacing = 0;
-        if (udIsIPhoneXSeries) {
-            spacing = 34;
-        }
-        
-        void (^InputViewAnimation)(BOOL hide) = ^(BOOL hide) {
-            inputViewFrame.origin.y = (hide ? (CGRectGetHeight(self.view.bounds) - CGRectGetHeight(inputViewFrame)) : (CGRectGetMinY(otherMenuViewFrame) - CGRectGetHeight(inputViewFrame)) + spacing);
-            self.chatInputToolBar.frame = inputViewFrame;
-        };
-        
-        void (^EmotionManagerViewAnimation)(BOOL hide) = ^(BOOL hide) {
-            otherMenuViewFrame = self.emojiKeyboard.frame;
-            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
-            self.emojiKeyboard.alpha = !hide;
-            self.emojiKeyboard.frame = otherMenuViewFrame;
-            [self.view bringSubviewToFront:self.emojiKeyboard];
-        };
-        
-        void (^MoreViewAnimation)(BOOL hide) = ^(BOOL hide) {
-            otherMenuViewFrame = self.moreView.frame;
-            otherMenuViewFrame.origin.y = (hide ? CGRectGetHeight(self.view.frame) : (CGRectGetHeight(self.view.frame) - CGRectGetHeight(otherMenuViewFrame)));
-            self.moreView.alpha = !hide;
-            self.moreView.frame = otherMenuViewFrame;
-            [self.view bringSubviewToFront:self.moreView];
-        };
-        
         if (hide) {
             switch (self.chatInputToolBar.chatInputType) {
                 case UdeskChatInputTypeEmotion: {
@@ -1443,7 +1449,6 @@ static CGFloat udInputBarHeight = 54.0f;
                     break;
             }
         } else {
-            
             switch (self.chatInputToolBar.chatInputType) {
                 case UdeskChatInputTypeEmotion: {
                     MoreViewAnimation(!hide);
@@ -1605,6 +1610,12 @@ static CGFloat udInputBarHeight = 54.0f;
         _voiceRecordHelper.tooShortRecorderFailue = ^{
             @udStrongify(self);
             [self.voiceRecordView speakDurationTooShort];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.voiceRecordView stopRecordCompled:^(BOOL fnished) {
+                    @udStrongify(self);
+                    self.voiceRecordView = nil;
+                }];
+            });
         };
         
         _voiceRecordHelper.maxRecordTime = kUdeskVoiceRecorderTotalTime;

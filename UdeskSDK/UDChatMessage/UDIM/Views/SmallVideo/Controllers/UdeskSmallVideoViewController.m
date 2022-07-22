@@ -14,6 +14,7 @@
 #import "UdeskImageUtil.h"
 #import "UdeskSDKConfig.h"
 #import "UdeskButton.h"
+#import "UdeskPrivacyUtil.h"
 
 @interface UdeskSmallVideoViewController ()<UdeskSmallVideoBottomViewDelegate>
 
@@ -204,6 +205,17 @@
     if (capture && !_savingImage) {
         [self smallVideoCurrentFrame];
     }
+}
+
+- (BOOL)udSmallVideoWillStart:(UdeskSmallVideoBottomView *)smallVideoView
+{
+    if ([UdeskPrivacyUtil hasPermissionsOfAudio]) {
+        return YES;
+    }
+    
+    NSLog(@"UdeskSDK：没有音频权限");
+    [self.videoManager configSessionAudio];
+    return NO;
 }
 
 - (void)smallVideoCurrentFrame {

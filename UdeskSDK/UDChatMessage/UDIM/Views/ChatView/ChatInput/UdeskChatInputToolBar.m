@@ -108,6 +108,7 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     [_recordButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [_recordButton setTitle:getUDLocalizedString(@"udesk_hold_to_talk") forState:UIControlStateNormal];
     [_recordButton addTarget:self action:@selector(holdDownButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
+    [_recordButton addTarget:self action:@selector(holdDownButtonTouchCancel:) forControlEvents:UIControlEventTouchCancel];
     [_recordButton addTarget:self action:@selector(holdDownButtonTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
     [_recordButton addTarget:self action:@selector(holdDownButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
     [_recordButton addTarget:self action:@selector(holdDownDragOutside:) forControlEvents:UIControlEventTouchDragExit];
@@ -184,26 +185,23 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
 
 //点击语音
 - (void)voiceClick:(UdeskButton *)button {
-    
-    [UdeskPrivacyUtil checkPermissionsOfMicrophone:^{
-        if ([self checkAgentStatusValid]) {
-            if (!self.isRobotSession) {
-                button.selected = !button.selected;
-                self.recordButton.alpha = button.selected;
-                self.chatTextView.alpha = !button.selected;
-                self.emotionButton.selected = NO;
-                self.emotionButton.hidden = button.selected;
-            }
-            self.chatInputType = UdeskChatInputTypeVoice;
-            self.moreButton.selected = NO;
-            if ([self.delegate respondsToSelector:@selector(didSelectVoice:)]) {
-                [self.delegate didSelectVoice:button];
-            }
+    if ([self checkAgentStatusValid]) {
+        if (!self.isRobotSession) {
+            button.selected = !button.selected;
+            self.recordButton.alpha = button.selected;
+            self.chatTextView.alpha = !button.selected;
+            self.emotionButton.selected = NO;
+            self.emotionButton.hidden = button.selected;
         }
-        else {
-            self.chatInputType = UdeskChatInputTypeNormal;
+        self.chatInputType = UdeskChatInputTypeVoice;
+        self.moreButton.selected = NO;
+        if ([self.delegate respondsToSelector:@selector(didSelectVoice:)]) {
+            [self.delegate didSelectVoice:button];
         }
-    }];
+    }
+    else {
+        self.chatInputType = UdeskChatInputTypeNormal;
+    }
 }
 
 //点击表情按钮
@@ -261,19 +259,25 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     
     self.isCancelled = NO;
     self.isRecording = NO;
-    if ([self.delegate respondsToSelector:@selector(prepareRecordingVoiceActionWithCompletion:)]) {
-        @udWeakify(self);
-        [self.delegate prepareRecordingVoiceActionWithCompletion:^BOOL{
-            @udStrongify(self);
-            if (self && !self.isCancelled) {
-                self.isRecording = YES;
-                [self.delegate didStartRecordingVoiceAction];
-                return YES;
-            } else {
-                return NO;
-            }
-        }];
-    }
+
+    [UdeskPrivacyUtil checkPermissionsOfMicrophone:^{
+        if ([self.delegate respondsToSelector:@selector(prepareRecordingVoiceActionWithCompletion:)]) {
+            @udWeakify(self);
+            [self.delegate prepareRecordingVoiceActionWithCompletion:^BOOL{
+                @udStrongify(self);
+                if (self && !self.isCancelled) {
+                    self.isRecording = YES;
+                    [self.delegate didStartRecordingVoiceAction];
+                    return YES;
+                } else {
+                    return NO;
+                }
+            }];
+        }
+    }];
+    
+    
+    
 }
 
 //在按钮边界外松开
@@ -304,6 +308,15 @@ static CGFloat const kInputToolBarEmojiIconToVerticalEdgeSpacing = 16.0;
     } else {
         self.isCancelled = YES;
     }
+}
+
+//被中断
+- (void)holdDownButtonTouchCancel:(UdeskButton *)button {
+    
+    [button setTitle:getUDLocalizedString(@"udesk_hold_to_talk") forState:UIControlStateNormal];
+    button.backgroundColor = [UIColor whiteColor];
+    self.isCancelled = YES;
+    self.isRecording = NO;
 }
 
 //离开按钮边界

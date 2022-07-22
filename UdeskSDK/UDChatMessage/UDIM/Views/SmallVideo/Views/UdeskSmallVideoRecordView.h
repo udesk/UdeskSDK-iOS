@@ -14,6 +14,7 @@
 @required
 - (void)smallVideoRecordView:(UdeskSmallVideoRecordView *)recordView gestureRecognizer:(UIGestureRecognizer *)gest;
 - (void)smallVideoRecordView:(UdeskSmallVideoRecordView *)recordView recordDuration:(CGFloat)recordDuration;
+- (BOOL)smallVideoRecordViewWillStart:(UdeskSmallVideoRecordView *)recordView;
 
 @end
 

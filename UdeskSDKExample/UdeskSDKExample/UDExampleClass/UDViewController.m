@@ -23,6 +23,8 @@
 /** 会话序号 */
 @property (nonatomic, strong) NSNumber             *seqNum;
 
+@property (nonatomic, strong) NSString             *sdk_token;
+
 @end
 
 @implementation UDViewController
@@ -102,7 +104,6 @@
     [loginButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [loginButton setBackgroundColor:[UIColor udColorWithHexString:@"#00CDFF"]];
     loginButton.frame = CGRectMake(20, appIdTextFieldBackGroundView.udBottom+40, (UD_SCREEN_WIDTH-40), 50);
-    loginButton.titleLabel.textAlignment = UITextFieldViewModeAlways;
     [loginButton addTarget:self action:@selector(openUdesk:) forControlEvents:UIControlEventTouchUpInside];
     UDViewRadius(loginButton, 5);
     [self.view addSubview:loginButton];
@@ -116,6 +117,12 @@
     [self.view endEditing:YES];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    _sdk_token = [NSString stringWithFormat:@"%u",arc4random()];
+}
+
 - (void)openUdesk:(id)sender {
     
     if ([self checkInputValid]) {
@@ -124,14 +131,12 @@
         [[NSUserDefaults standardUserDefaults] setObject:self.appKeyTextField.text forKey:@"key"];
         [[NSUserDefaults standardUserDefaults] setObject:self.appIdTextField.text forKey:@"appId"];
         
-        NSString *sdk_token = @"1212";//[NSString stringWithFormat:@"%u",arc4random()];
-       
         UdeskOrganization *organization = [[UdeskOrganization alloc] initWithDomain:self.domainTextField.text
                                                                              appKey:self.appKeyTextField.text
                                                                               appId:self.appIdTextField.text];
         
         UdeskCustomer *customer = [UdeskCustomer new];
-        customer.sdkToken = sdk_token;
+        customer.sdkToken = _sdk_token;
 //        customer.nickName = @"测试一下";
         
 //        UdeskCustomerCustomField *textField = [UdeskCustomerCustomField new];

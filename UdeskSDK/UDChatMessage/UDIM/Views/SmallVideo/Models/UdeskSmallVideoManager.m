@@ -9,6 +9,7 @@
 #import "UdeskSmallVideoManager.h"
 #import "UdeskSmallVideoWriter.h"
 #import "UdeskSDKConfig.h"
+#import "UdeskPrivacyUtil.h"
 
 @interface UdeskSmallVideoManager()<AVCaptureAudioDataOutputSampleBufferDelegate,AVCaptureVideoDataOutputSampleBufferDelegate,UdeskSmallVideoWriterDelegate> {
     
@@ -214,6 +215,40 @@
                 [self.session removeOutput:self.audioDataOutput];
             }
             
+            if ([UdeskPrivacyUtil hasPermissionsOfAudio]) {
+                // MARK :音频输出
+                self.audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+                self.audioDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:self.audioCaptureDevice error:&error];
+                if (!self.audioDeviceInput) {
+                    NSLog(@"UdeskSDK：不能创建音频 %@", error);
+                }
+
+                if ([self.session canAddInput:self.audioDeviceInput]) {
+                    [self.session addInput:self.audioDeviceInput];
+                }
+
+                self.audioDataOutput = [[AVCaptureAudioDataOutput alloc] init];
+                [self.audioDataOutput setSampleBufferDelegate:self queue:self.audioDataOutputQueue];
+
+                if ([self.session canAddOutput:self.audioDataOutput]) {
+                    [self.session addOutput:self.audioDataOutput];
+                }
+                self.audioConnection = [self.audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
+            }
+            
+            [self.session commitConfiguration];
+        }
+    });
+}
+
+- (void)configSessionAudio {
+    
+    [UdeskPrivacyUtil checkPermissionsOfAudio:^{
+       
+        dispatch_async(self.sessionQueue, ^{
+            NSError *error = nil;
+            [self.session beginConfiguration];
+            
             // MARK :音频输出
             self.audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
             self.audioDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:self.audioCaptureDevice error:&error];
@@ -233,8 +268,9 @@
             }
             self.audioConnection = [self.audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
             [self.session commitConfiguration];
-        }
-    });
+        });
+    }];
+    
 }
 
 - (void)configFrameDuration {

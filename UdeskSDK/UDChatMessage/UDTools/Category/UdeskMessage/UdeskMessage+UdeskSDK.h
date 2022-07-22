@@ -27,5 +27,6 @@
 - (instancetype)initWithGoods:(UdeskGoodsModel *)model;
 - (instancetype)initWithQueue:(NSString *)content showLeaveMsgBtn:(BOOL)showLeaveMsgBtn;
 - (instancetype)initWithChatEvent:(NSString *)text;
+- (instancetype)initWithChatNew:(NSString *)text;
 
 @end

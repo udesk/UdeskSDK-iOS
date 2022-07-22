@@ -8,6 +8,7 @@
 
 #import "UdeskSmallVideoRecordView.h"
 #import "UdeskThrottleUtil.h"
+#import "UdeskPrivacyUtil.h"
 
 @implementation UdeskSmallVideoRecordView {
     
@@ -21,6 +22,7 @@
     
     CGFloat _animationTime;// 动画调用间隔
     CGFloat _animationIncr;// 每次动画调用的增量
+    BOOL _isRecording;//是否在录制
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -61,6 +63,18 @@
 
 - (void)longPress:(UIGestureRecognizer *)longPress {
     
+    if (longPress.state == UIGestureRecognizerStateBegan && self.delegate && [self.delegate respondsToSelector:@selector(smallVideoRecordViewWillStart:)]) {
+        BOOL result = [self.delegate smallVideoRecordViewWillStart:self];
+        if (!result) {
+            [longPress cancelsTouchesInView];
+            return;
+        }
+        _isRecording = YES;
+    }
+    
+    if (!_isRecording) {
+        return;
+    }
     if (self.delegate && [self.delegate respondsToSelector:@selector(smallVideoRecordView:gestureRecognizer:)]) {
         [self.delegate smallVideoRecordView:self gestureRecognizer:longPress];
     }
@@ -77,6 +91,7 @@
             
         case UIGestureRecognizerStateCancelled:
             [self stop];
+            _isRecording = NO;
             break;
             
         case UIGestureRecognizerStateEnded:{
@@ -85,6 +100,7 @@
                 _outerView.transform = CGAffineTransformMakeScale(1, 1);
             }];
             [self stop];
+            _isRecording = NO;
         }
             break;
             
