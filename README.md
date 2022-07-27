@@ -1042,10 +1042,15 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 sdk v5.2.7版本更新功能：
 
 1、新增历史消息和最新消息分割
+
 2、模拟器键盘死锁问题修复
+
 3、富文本分组展开页面滚动问题修复
+
 4、个别机型客服组选择页面数据重复问题修复
+
 5、历史聊天记录部分丢失问题修复
+
 6、系统权限授权申请优化
  
 -----
