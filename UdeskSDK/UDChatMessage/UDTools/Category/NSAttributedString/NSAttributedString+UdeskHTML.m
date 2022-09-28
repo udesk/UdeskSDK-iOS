@@ -186,7 +186,7 @@
                         
                         NSString *dataContent = attributeDictionary[@"data-content"];
                         NSString *value = [NSString stringWithFormat:@"data-message-type:%@;data-content:%@",messageType,dataContent];
-                        value = [[value stringByRemovingPercentEncoding] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                        value = [[value stringByRemovingPercentEncoding] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
                         [nodeAttributedString addAttribute:NSLinkAttributeName value:value range:nodeAttributedStringRange];
                         [nodeAttributedString addAttribute:NSUnderlineStyleAttributeName value:@(NSUnderlineStyleSingle) range:nodeAttributedStringRange];
                     }
@@ -325,7 +325,7 @@
                 NSString *src = attributeDictionary[@"src"];
                 if (src != nil) {
                     
-                    src = [[src stringByRemovingPercentEncoding] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                    src = [[src stringByRemovingPercentEncoding] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
                     NSError *error = nil;
                     NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:src] options:0 error:&error];
                     UIImage *image = [UIImage imageWithData:data];

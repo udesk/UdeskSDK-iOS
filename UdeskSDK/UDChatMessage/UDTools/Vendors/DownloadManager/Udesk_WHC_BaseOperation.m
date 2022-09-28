@@ -37,11 +37,7 @@ NSString  * const  kUdeskWHCUploadCode = @"WHC";
 #pragma mark - 重写属性方法 -
 - (void)setStrUrl:(NSString *)strUrl {
     _strUrl = strUrl.copy;
-    NSString * newUrl = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-                                                                                              (CFStringRef)_strUrl,
-                                                                                              (CFStringRef)@"!$&'()*-,-./:;=?@_~%#[]",
-                                                                                              NULL,
-                                                                                              kCFStringEncodingUTF8));
+    NSString * newUrl = [_strUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     _urlRequest = [[NSMutableURLRequest alloc]initWithURL:[NSURL URLWithString:newUrl]];
 }
 

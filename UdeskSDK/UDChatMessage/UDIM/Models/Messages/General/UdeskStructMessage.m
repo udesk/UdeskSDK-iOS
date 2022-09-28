@@ -69,7 +69,7 @@
             
             self.title = title;
             self.udDescription = description;
-            self.imgURL = [img_url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            self.imgURL = [img_url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
             
             NSMutableArray *array = [NSMutableArray array];
             for (NSDictionary *buttonDic in buttonArray) {
@@ -81,7 +81,7 @@
             
             if (img_url && img_url.length>0) {
                 
-                NSString *newURL = [img_url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                NSString *newURL = [img_url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
                 UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:newURL]]];
                 
                 //限定图片的最大直径

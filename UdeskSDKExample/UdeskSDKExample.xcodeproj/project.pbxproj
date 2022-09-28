@@ -2505,13 +2505,13 @@
 					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = UdeskSDKExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				MARKETING_VERSION = 5.2.7;
+				MARKETING_VERSION = 5.2.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -2598,13 +2598,13 @@
 					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = UdeskSDKExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				MARKETING_VERSION = 5.2.7;
+				MARKETING_VERSION = 5.2.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",

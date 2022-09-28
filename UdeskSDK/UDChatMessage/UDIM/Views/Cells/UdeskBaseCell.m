@@ -176,7 +176,7 @@
     
     //头像图片
     if (![UdeskSDKUtil isBlankString:baseMessage.avatarURL]) {
-        [self.avatarImageView udesk_yy_setImageWithURL:[NSURL URLWithString:[baseMessage.avatarURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholder:baseMessage.avatarImage];
+        [self.avatarImageView udesk_yy_setImageWithURL:[NSURL URLWithString:[baseMessage.avatarURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]] placeholder:baseMessage.avatarImage];
     }
     else {
         self.avatarImageView.image = baseMessage.avatarImage;
@@ -415,8 +415,7 @@
         }
         
         NSString *url = [URL.absoluteString componentsSeparatedByString:@"img:"].lastObject;
-        url = [url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        
+        url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         UdeskPhotoManager *photoManeger = [UdeskPhotoManager maneger];
         [photoManeger showLocalPhoto:(UIImageView *)self.bubbleImageView withMessageURL:url];
         return NO;
@@ -443,6 +442,11 @@
             [self.delegate didSendRobotMessage:message];
         }
     }
+    else if ([URL.absoluteString hasPrefix:@"x-apple-data-detectors:"]) {
+        //点击日历等系统服务暂不支持跳转
+        return NO;
+    }
+    
     else {
         
         if (textView.text.length >= (characterRange.location+characterRange.length)) {

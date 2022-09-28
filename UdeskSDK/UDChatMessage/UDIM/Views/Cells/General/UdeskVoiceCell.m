@@ -157,7 +157,7 @@ static NSString *const kUdeskVoicePlayHasInterrupt = @"kUdeskVoicePlayHasInterru
         
         if (!voiceMessage.message.sourceData) {
             if (![[UdeskCacheUtil sharedManager] containsObjectForKey:voiceMessage.message.messageId]) {
-                NSString *content = [voiceMessage.message.content stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                NSString *content = [voiceMessage.message.content stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
                 NSURL *url = [[NSURL alloc]initWithString:content];
                 NSData *audioData = [NSData dataWithContentsOfURL:url];
                 voiceMessage.message.sourceData = audioData;

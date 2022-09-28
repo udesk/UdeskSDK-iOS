@@ -120,7 +120,7 @@ didRegisterUserNotificationSettings:
 - (void)application:(UIApplication *)application
 handleActionWithIdentifier:(NSString *)identifier
 forLocalNotification:(UILocalNotification *)notification
-  completionHandler:(void (^)())completionHandler {
+  completionHandler:(void (^)(void))completionHandler {
 }
 
 // Called when your app has been activated by the user selecting an action from
@@ -131,7 +131,7 @@ forLocalNotification:(UILocalNotification *)notification
 - (void)application:(UIApplication *)application
 handleActionWithIdentifier:(NSString *)identifier
 forRemoteNotification:(NSDictionary *)userInfo
-  completionHandler:(void (^)())completionHandler {
+  completionHandler:(void (^)(void))completionHandler {
 }
 #endif
 

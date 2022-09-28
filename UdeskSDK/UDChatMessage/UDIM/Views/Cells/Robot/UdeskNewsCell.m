@@ -197,7 +197,7 @@ static NSString *kUDNewsTopAskQuestionCellId = @"kUDNewsTopAskQuestionCellId";
     self.newsDescLabel.frame = newsMessage.descFrame;
     
     self.newsImageView.frame = newsMessage.imgFrame;
-    NSURL *url = [NSURL URLWithString:[newsMessage.imgURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSURL *url = [NSURL URLWithString:[newsMessage.imgURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
     [self.newsImageView udesk_yy_setImageWithURL:url placeholder:[UIImage udDefaultLoadingImage]];
     
     self.lineView.frame = newsMessage.lineFrame;

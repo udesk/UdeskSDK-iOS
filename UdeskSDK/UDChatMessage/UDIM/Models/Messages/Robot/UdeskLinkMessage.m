@@ -48,7 +48,7 @@ static CGFloat const kUDLinkMendSpacing = 1.0;
         [attString addAttribute:NSForegroundColorAttributeName value:[UdeskSDKConfig customConfig].sdkStyle.linkColor range:NSMakeRange(0, self.message.linkTitle.length)];
         [attString addAttribute:NSFontAttributeName value:[UdeskSDKConfig customConfig].sdkStyle.messageContentFont range:NSMakeRange(0, self.message.linkTitle.length)];
         
-        NSString *newURL = [self.message.linkIconUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *newURL = [self.message.linkIconUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         NSError *error = nil;
         NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:newURL] options:0 error:&error];
         if (!error) {

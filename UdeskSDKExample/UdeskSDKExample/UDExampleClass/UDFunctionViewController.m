@@ -114,6 +114,7 @@
     
     _faqLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _faqLabel.text = @"帮助中心";
+    _faqLabel.font = [UIFont systemFontOfSize:16];
     [self.functionBackGroundView addSubview:_faqLabel];
     
     _contactUsButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -121,6 +122,7 @@
     [self.functionBackGroundView addSubview:_contactUsButton];
     
     _contactUsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _contactUsLabel.font = [UIFont systemFontOfSize:16];
     _contactUsLabel.text = @"咨询客服";
     [self.functionBackGroundView addSubview:_contactUsLabel];
     
@@ -129,6 +131,7 @@
     [self.functionBackGroundView addSubview:_ticketButton];
     
     _ticketLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _ticketLabel.font = [UIFont systemFontOfSize:16];
     _ticketLabel.text = @"留言表单";
     [self.functionBackGroundView addSubview:_ticketLabel];
     
@@ -137,6 +140,7 @@
     [self.functionBackGroundView addSubview:_developerButton];
     
     _developerLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _developerLabel.font = [UIFont systemFontOfSize:16];
     _developerLabel.text = @"开发者功能";
     [self.functionBackGroundView addSubview:_developerLabel];
     

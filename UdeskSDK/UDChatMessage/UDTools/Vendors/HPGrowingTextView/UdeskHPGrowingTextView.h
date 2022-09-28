@@ -115,7 +115,6 @@
 //need others? use .internalTextView
 - (BOOL)becomeFirstResponder;
 - (BOOL)resignFirstResponder;
-- (BOOL)isFirstResponder;
 
 - (BOOL)hasText;
 - (void)scrollRangeToVisible:(NSRange)range;
