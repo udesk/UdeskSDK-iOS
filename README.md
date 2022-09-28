@@ -1039,6 +1039,18 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.2.8版本更新功能：
+
+1、iOS 16 crash修复
+
+2、富文本日期内容跳转问题修复
+
+3、NSMutableData 分类问题修复
+
+4、部分过期api升级
+ 
+-----
+
 sdk v5.2.7版本更新功能：
 
 1、新增历史消息和最新消息分割
@@ -1054,8 +1066,6 @@ sdk v5.2.7版本更新功能：
 6、系统权限授权申请优化
  
 -----
-
-#### 更新记录：
 
 sdk v5.2.5版本更新功能：
 
