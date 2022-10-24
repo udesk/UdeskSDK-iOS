@@ -1039,6 +1039,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.2.9版本更新功能：
+
+1、兼容armv7架构
+ 
+-----
+
 sdk v5.2.8版本更新功能：
 
 1、iOS 16 crash修复
