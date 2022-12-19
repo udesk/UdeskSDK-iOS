@@ -1039,6 +1039,14 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.2.10版本更新功能：
+
+1、修复 富文本嵌入图片打开
+2、修复 视频消息无发送状态
+3、修复 app被杀死时放弃排队
+ 
+-----
+
 sdk v5.2.9版本更新功能：
 
 1、兼容armv7架构

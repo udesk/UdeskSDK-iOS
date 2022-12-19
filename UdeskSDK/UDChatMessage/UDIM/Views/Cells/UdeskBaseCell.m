@@ -415,7 +415,7 @@
         }
         
         NSString *url = [URL.absoluteString componentsSeparatedByString:@"img:"].lastObject;
-        url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        url = [url stringByRemovingPercentEncoding];
         UdeskPhotoManager *photoManeger = [UdeskPhotoManager maneger];
         [photoManeger showLocalPhoto:(UIImageView *)self.bubbleImageView withMessageURL:url];
         return NO;

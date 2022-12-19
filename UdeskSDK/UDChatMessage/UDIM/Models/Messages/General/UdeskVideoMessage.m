@@ -38,7 +38,7 @@ static CGFloat const kUDVideoUploadProgressHeight = 48;
 @interface UdeskVideoMessage()
 
 /** 视频文件frame */
-@property (nonatomic, assign, readwrite) CGRect videoFrame;
+//@property (nonatomic, assign, readwrite) CGRect videoFrame;
 /** 视频文件名称frame */
 @property (nonatomic, assign, readwrite) CGRect videoNameFrame;
 /** 视频文件大小frame */
@@ -104,7 +104,7 @@ static CGFloat const kUDVideoUploadProgressHeight = 48;
             CGFloat previewX = UD_SCREEN_WIDTH-kUDBubbleToHorizontalEdgeSpacing-previewSize.width;
             self.previewFrame = CGRectMake(previewX, CGRectGetMaxY(self.avatarFrame)+kUDAvatarToBubbleSpacing, previewSize.width, previewSize.height);
             //发送中
-            self.loadingFrame = CGRectMake(self.videoFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.videoFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
+            self.loadingFrame = CGRectMake(self.previewFrame.origin.x-kUDBubbleToSendStatusSpacing-kUDSendStatusDiameter, self.previewFrame.origin.y+kUDCellBubbleToIndicatorSpacing, kUDSendStatusDiameter, kUDSendStatusDiameter);
             //发送失败
             self.failureFrame = self.loadingFrame;
             

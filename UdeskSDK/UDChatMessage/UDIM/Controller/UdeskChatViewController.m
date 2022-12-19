@@ -78,6 +78,8 @@ static CGFloat udInputBarHeight = 54.0f;
     [self setupViewModel];
     //初始化消息页面布局
     [self setupUI];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appWillBeTerminated:) name:UIApplicationWillTerminateNotification object:nil];
 }
 
 #pragma mark - 初始化ViewModel
@@ -1134,16 +1136,17 @@ static CGFloat udInputBarHeight = 54.0f;
                     [imageCell imageUploading];
                     imageCell.progressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
                 }
+                [imageCell updateMessageSendStatus:sendStatus];
             }
             else if ([cell isKindOfClass:[UdeskVideoCell class]]) {
                 UdeskVideoCell *videoCell = (UdeskVideoCell *)cell;
                 if (progress == 1.0f || sendStatus == UDMessageSendStatusSuccess) {
                     [videoCell uploadVideoSuccess];
-                    [videoCell updateMessageSendStatus:UDMessageSendStatusSuccess];
                 }
                 else {
                     videoCell.uploadProgressLabel.text = [NSString stringWithFormat:@"%.f%%",progress*100];
                 }
+                [videoCell updateMessageSendStatus:sendStatus];
             }
             
         } @catch (NSException *exception) {
@@ -1657,8 +1660,22 @@ static CGFloat udInputBarHeight = 54.0f;
     [[UdeskAudioPlayer shared] stopAudio];
 }
 
-- (void)dealloc {
+
+- (void)_appWillBeTerminated:(NSNotification *)ntf {
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [UdeskManager cancelAllOperations];
     
+    //正在会话/排队
+    if ([self.sdkSetting.status isEqualToString:@"chatting"] || [self.sdkSetting.status isEqualToString:@"queuing"]) {
+        [UdeskManager quitQueueWithType:@"force_quit"];
+    }
+    dispatch_semaphore_signal(semaphore);
+}
+
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     _messageTableView.delegate = nil;
     _messageTableView.dataSource = nil;
 }
