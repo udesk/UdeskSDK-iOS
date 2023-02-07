@@ -83,7 +83,7 @@ CoreText.framework
 - 搜索Other Linker Flags 加入 -lxml2 -ObjC
 - 搜索header search paths 加入/usr/include/libxml2
 
-### 1.2 CocoaPods 导入
+#### 1.2 CocoaPods 导入
 
 在 Podfile 中加入：
 
