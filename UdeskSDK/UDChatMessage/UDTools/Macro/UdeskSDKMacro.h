@@ -54,7 +54,17 @@ _Pragma("clang diagnostic pop")
 #endif
 
 // Size
-#define UD_SCREEN_WIDTH  [[UIScreen mainScreen] bounds].size.width
+#define UD_SCREEN_WIDTH  ({ \
+CGFloat udWidth = [[UIScreen mainScreen] bounds].size.width; \
+if (udIsLandScape) { \
+    if (udIsIPhoneXSeries) { \
+        udWidth = [[UIScreen mainScreen] bounds].size.width-44*2; \
+    } \
+} \
+udWidth; \
+})
+
+//#define UD_SCREEN_WIDTH  [[UIScreen mainScreen] bounds].size.width
 #define UD_SCREEN_HEIGHT [[UIScreen mainScreen] bounds].size.height
 
 // 是否IOS13
@@ -95,6 +105,16 @@ if (@available(iOS 11.0, *)) { \
     ipX = window.safeAreaInsets.bottom > 0; \
 } \
   ipX; \
+})
+
+// 判断当前屏幕是否是横屏
+#define udIsLandScape ({ \
+BOOL isL = NO; \
+if ([UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationLandscapeRight || \
+    [UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationLandscapeLeft) {  \
+    isL = YES; \
+} \
+isL; \
 })
 
 // View 圆角和加边框

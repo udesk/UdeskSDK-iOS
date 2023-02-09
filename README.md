@@ -1041,6 +1041,13 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.2.11版本更新功能：
+
+1、机器人转人工
+2、横屏聊天信息溢出屏幕外修复
+ 
+-----
+
 sdk v5.2.10版本更新功能：
 
 1、修复 富文本嵌入图片打开

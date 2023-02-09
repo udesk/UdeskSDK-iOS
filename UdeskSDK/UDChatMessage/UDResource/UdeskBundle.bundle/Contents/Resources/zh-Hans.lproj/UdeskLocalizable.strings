@@ -82,6 +82,7 @@
 "udesk_search" = "搜索";
 "udesk_video_export_failed" = "视频导出失败";
 "udesk_agent_transfer_tip" = "客服转接成功，@为您服务";
+"udesk_showTransfer_place_tip" = "推荐您进行转人工咨询～";
 
 "udesk_preview" = "预览";
 "udesk_full_image" = "原图";

@@ -129,7 +129,7 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
 //转人工
 - (void)layoutTransfer {
     
-    if ([self.message.switchStaffType isEqualToString:@"1"]) {
+    if ([self.message.switchStaffType isEqualToString:@"1"] || [self.message.switchStaffType isEqualToString:@"4"]) {
         _transferHeight = kUDTransferHeight + kUDTransferVerticalEdgeSpacing;
     }
 }

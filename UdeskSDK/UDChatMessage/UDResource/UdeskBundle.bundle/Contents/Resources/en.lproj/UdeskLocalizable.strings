@@ -82,6 +82,7 @@
 "udesk_search" = "Search";
 "udesk_video_export_failed" = "Video export failed";
 "udesk_agent_transfer_tip" = "Agent transferred successfully, @ is at your service";
+"udesk_showTransfer_place_tip" = "Recommend you to transfer to customer service~";
 
 "udesk_preview" = "Preview";
 "udesk_full_image" = "Full Image";
