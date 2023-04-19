@@ -9,7 +9,6 @@
 #import "UdeskPrivacyUtil.h"
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
-#import <AssetsLibrary/ALAssetsLibrary.h>
 #import "UdeskSDKMacro.h"
 #import "UdeskBundleUtils.h"
 #import <Photos/Photos.h>
@@ -23,74 +22,35 @@
         PHAccessLevel level = PHAccessLevelReadWrite;
         // 请求权限，需注意 limited 权限尽在 accessLevel 为 readAndWrite 时生效
         [PHPhotoLibrary requestAuthorizationForAccessLevel:level handler:^(PHAuthorizationStatus status) {
-            switch (status) {
-                case PHAuthorizationStatusLimited:
-                case PHAuthorizationStatusAuthorized:{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (completion) {
-                            completion();
-                        }
-                    });
-                    break;
-                }
-                case PHAuthorizationStatusDenied:
-                    NSLog(@"denied");
-                    dispatch_async(dispatch_get_main_queue(), ^{
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                        [[[UIAlertView alloc] initWithTitle:nil
-                                                    message:getUDLocalizedString(@"udesk_album_denied")
-                                                   delegate:nil
-                                          cancelButtonTitle:getUDLocalizedString(@"udesk_close")
-                                          otherButtonTitles:nil] show];
-#pragma clang diagnostic pop
-                    });
-                    break;
-                default:
-                    break;
-            }
+            [self reloadUI:status completion:completion];
         }];
     } else {
         // Fallback on earlier versions
-        if ([ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusNotDetermined) {
-            
-            ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
-            
-            [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                
-                if (*stop) {
-                    //点击“好”回调方法
-                    //检查客服状态
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (completion) {
-                            completion();
-                        }
-                    });
-                    return;
-                }
-                *stop = TRUE;
-                
-            } failureBlock:^(NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                    [[[UIAlertView alloc] initWithTitle:nil
-                                                message:getUDLocalizedString(@"udesk_album_denied")
-                                               delegate:nil
-                                      cancelButtonTitle:getUDLocalizedString(@"udesk_close")
-                                      otherButtonTitles:nil] show];
-#pragma clang diagnostic pop
-                });
+        PHAuthorizationStatus authStatus = [PHPhotoLibrary authorizationStatus];
+        if (authStatus == PHAuthorizationStatusNotDetermined) {
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                [self reloadUI:status completion:completion];
             }];
+        } else {
+            [self reloadUI:authStatus completion:completion];
         }
-        else if ([ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusAuthorized) {
-            
-            if (completion) {
-                completion();
-            }
+
+    }
+}
+
++ (void)reloadUI:(PHAuthorizationStatus)status completion:(void(^)(void))completion {
+    switch (status) {
+        case PHAuthorizationStatusLimited:
+        case PHAuthorizationStatusAuthorized:{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completion) {
+                    completion();
+                }
+            });
+            break;
         }
-        else if([ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusDenied){
-            
+        case PHAuthorizationStatusDenied:
+            NSLog(@"denied");
             dispatch_async(dispatch_get_main_queue(), ^{
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -101,7 +61,9 @@
                                   otherButtonTitles:nil] show];
 #pragma clang diagnostic pop
             });
-        }
+            break;
+        default:
+            break;
     }
 }
 

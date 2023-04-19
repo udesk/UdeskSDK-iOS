@@ -330,10 +330,11 @@ typedef NS_ENUM(NSUInteger, Udesk_YYImageBlendOperation) {
  as JPEG or PNG (based on the alpha information).
  
  @param completionBlock The block invoked (in main thread) after the save operation completes.
-    assetURL: An URL that identifies the saved image file. If the image is not saved, assetURL is nil.
+    albumName:Album name
+    localIdentifier: Unique identification, which can be used for image resource acquisition.
     error: If the image is not saved, an error object that describes the reason for failure, otherwise nil.
  */
-- (void)yy_saveToAlbumWithCompletionBlock:(nullable void(^)(NSURL * _Nullable assetURL, NSError * _Nullable error))completionBlock;
+- (void)yy_saveToAlbum:(NSString *)albumName completionBlock:(void(^)(NSString *localIdentifier, NSError *error))completionBlock;
 
 /**
  Return a 'best' data representation for this image.

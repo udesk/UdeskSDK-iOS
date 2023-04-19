@@ -16,7 +16,7 @@
 #import <Accelerate/Accelerate.h>
 #import <QuartzCore/QuartzCore.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import <AssetsLibrary/AssetsLibrary.h>
+#import <Photos/Photos.h>
 #import <objc/runtime.h>
 #import <pthread.h>
 #import <zlib.h>
@@ -2793,21 +2793,37 @@ CGImageRef Udesk_YYCGImageCreateWithWebPData(CFDataRef webpData,
     objc_setAssociatedObject(self, @selector(yy_isDecodedForDisplay), @(isDecodedForDisplay), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)yy_saveToAlbumWithCompletionBlock:(void(^)(NSURL *assetURL, NSError *error))completionBlock {
+- (void)yy_saveToAlbum:(NSString *)albumName completionBlock:(void(^)(NSString *localIdentifier, NSError * error))completionBlock {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSData *data = [self _yy_dataRepresentationForSystem:YES];
-        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-        [library writeImageDataToSavedPhotosAlbum:data metadata:nil completionBlock:^(NSURL *assetURL, NSError *error){
-            if (!completionBlock) return;
-            if (pthread_main_np()) {
-                completionBlock(assetURL, error);
+        PHPhotoLibrary *library = [PHPhotoLibrary sharedPhotoLibrary];
+        __block NSString *localIdentifier = @"";
+        
+        [library performChanges:^{
+            PHAssetCollectionChangeRequest *collectionRequest = [self getCurrentPhotoCollectionWithAlbumName:albumName];
+            PHAssetChangeRequest *assetRequest = [PHAssetChangeRequest creationRequestForAssetFromImage:self];
+            PHObjectPlaceholder *placeholder = [assetRequest placeholderForCreatedAsset];
+            localIdentifier = placeholder.localIdentifier;
+            [collectionRequest addAssets:@[placeholder]];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            if (error) {
+                completionBlock(nil, error);
             } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completionBlock(assetURL, error);
-                });
+                completionBlock(localIdentifier, nil);
             }
         }];
     });
+}
+
+- (PHAssetCollectionChangeRequest *)getCurrentPhotoCollectionWithAlbumName:(NSString *)albumName {
+    PHFetchResult *result = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
+    for (PHAssetCollection *assetCollection in result) {
+        if ([assetCollection.localizedTitle containsString:albumName]) {
+            PHAssetCollectionChangeRequest *collectionRuquest = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:assetCollection];
+            return collectionRuquest;
+        }
+    }
+    PHAssetCollectionChangeRequest *collectionRequest = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:albumName];
+    return collectionRequest;
 }
 
 - (NSData *)yy_imageDataRepresentation {

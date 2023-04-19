@@ -44,4 +44,7 @@
 //url编码
 + (NSString *)urlEncode:(NSString *)url;
 
+//url链接校准 - 可能不处理
++ (NSString *)urlQueryFix:(NSString *)urlString;
+
 @end

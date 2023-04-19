@@ -1041,6 +1041,13 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.2.12版本更新功能：
+
+1、兼容文件消息文件名特殊符号
+2、修复图片和视频中文名偶尔读取失败
+ 
+-----
+
 sdk v5.2.11版本更新功能：
 
 1、机器人转人工

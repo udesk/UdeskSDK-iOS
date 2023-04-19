@@ -275,6 +275,7 @@ const NSInteger kUdeskWHCDefaultDownloadNumber = 5;
     if (!saveFileName) {
         saveFileName = [[NSUUID UUID] UUIDString];
     }
+    strUrl = [strUrl stringByRemovingPercentEncoding];
     if (strUrl != nil && ![_failedUrls containsObject:strUrl]) {
         fileName = [self handleFileName:saveFileName url:strUrl];
         

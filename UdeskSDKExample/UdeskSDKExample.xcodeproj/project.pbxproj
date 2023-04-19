@@ -122,7 +122,6 @@
 		84D90354288A7A26009DD765 /* UdeskBundleUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D901D7288A7A26009DD765 /* UdeskBundleUtils.m */; };
 		84D90355288A7A26009DD765 /* UdeskMessageUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D901D8288A7A26009DD765 /* UdeskMessageUtil.m */; };
 		84D90356288A7A26009DD765 /* UdeskThrottleUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D901D9288A7A26009DD765 /* UdeskThrottleUtil.m */; };
-		84D90357288A7A26009DD765 /* UdeskImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D901DB288A7A26009DD765 /* UdeskImagePicker.m */; };
 		84D90358288A7A26009DD765 /* UdeskImageUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D901DC288A7A26009DD765 /* UdeskImageUtil.m */; };
 		84D90359288A7A26009DD765 /* UdeskAgentUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D901DD288A7A26009DD765 /* UdeskAgentUtil.m */; };
 		84D9035A288A7A26009DD765 /* UdeskSDKConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D901E3288A7A26009DD765 /* UdeskSDKConfig.m */; };
@@ -443,7 +442,6 @@
 		84D901CB288A7A26009DD765 /* UdeskAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAudioPlayer.m; sourceTree = "<group>"; };
 		84D901CC288A7A26009DD765 /* UdeskAgentUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAgentUtil.h; sourceTree = "<group>"; };
 		84D901CD288A7A26009DD765 /* UdeskImageUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskImageUtil.h; sourceTree = "<group>"; };
-		84D901CE288A7A26009DD765 /* UdeskImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskImagePicker.h; sourceTree = "<group>"; };
 		84D901CF288A7A26009DD765 /* UdeskDateUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskDateUtil.m; sourceTree = "<group>"; };
 		84D901D0288A7A26009DD765 /* UdeskVideoUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskVideoUtil.m; sourceTree = "<group>"; };
 		84D901D1288A7A26009DD765 /* UdeskStringSizeUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskStringSizeUtil.m; sourceTree = "<group>"; };
@@ -456,7 +454,6 @@
 		84D901D8288A7A26009DD765 /* UdeskMessageUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskMessageUtil.m; sourceTree = "<group>"; };
 		84D901D9288A7A26009DD765 /* UdeskThrottleUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskThrottleUtil.m; sourceTree = "<group>"; };
 		84D901DA288A7A26009DD765 /* UdeskDateUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskDateUtil.h; sourceTree = "<group>"; };
-		84D901DB288A7A26009DD765 /* UdeskImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskImagePicker.m; sourceTree = "<group>"; };
 		84D901DC288A7A26009DD765 /* UdeskImageUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskImageUtil.m; sourceTree = "<group>"; };
 		84D901DD288A7A26009DD765 /* UdeskAgentUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskAgentUtil.m; sourceTree = "<group>"; };
 		84D901DE288A7A26009DD765 /* UdeskAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskAudioPlayer.h; sourceTree = "<group>"; };
@@ -1007,11 +1004,11 @@
 		84D90155288A7A25009DD765 /* UDChatMessage */ = {
 			isa = PBXGroup;
 			children = (
-				84D90156288A7A25009DD765 /* UDTools */,
-				84D90208288A7A26009DD765 /* UDResource */,
 				84D9020A288A7A26009DD765 /* Udesk.h */,
-				84D9020B288A7A26009DD765 /* UDIM */,
 				84D9030F288A7A26009DD765 /* UDFAQ */,
+				84D9020B288A7A26009DD765 /* UDIM */,
+				84D90208288A7A26009DD765 /* UDResource */,
+				84D90156288A7A25009DD765 /* UDTools */,
 			);
 			path = UDChatMessage;
 			sourceTree = "<group>";
@@ -1036,8 +1033,8 @@
 		84D90157288A7A25009DD765 /* DataSource */ = {
 			isa = PBXGroup;
 			children = (
-				84D90158288A7A25009DD765 /* UdeskLocationResultDataSource.m */,
 				84D90159288A7A25009DD765 /* UdeskLocationResultDataSource.h */,
+				84D90158288A7A25009DD765 /* UdeskLocationResultDataSource.m */,
 			);
 			path = DataSource;
 			sourceTree = "<group>";
@@ -1207,14 +1204,14 @@
 		84D901A9288A7A25009DD765 /* Category */ = {
 			isa = PBXGroup;
 			children = (
-				84D901AA288A7A25009DD765 /* UIImage */,
-				84D901AD288A7A25009DD765 /* UIColor */,
-				84D901B0288A7A25009DD765 /* UIView */,
-				84D901B3288A7A25009DD765 /* UIBarButtonItem */,
-				84D901B6288A7A25009DD765 /* UIViewController */,
-				84D901B9288A7A25009DD765 /* UdeskMessage */,
-				84D901BC288A7A25009DD765 /* NSTimer */,
 				84D901BF288A7A26009DD765 /* NSAttributedString */,
+				84D901BC288A7A25009DD765 /* NSTimer */,
+				84D901B9288A7A25009DD765 /* UdeskMessage */,
+				84D901B3288A7A25009DD765 /* UIBarButtonItem */,
+				84D901AD288A7A25009DD765 /* UIColor */,
+				84D901AA288A7A25009DD765 /* UIImage */,
+				84D901B0288A7A25009DD765 /* UIView */,
+				84D901B6288A7A25009DD765 /* UIViewController */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -1276,8 +1273,8 @@
 		84D901BC288A7A25009DD765 /* NSTimer */ = {
 			isa = PBXGroup;
 			children = (
-				84D901BD288A7A25009DD765 /* NSTimer+UdeskSDK.m */,
 				84D901BE288A7A26009DD765 /* NSTimer+UdeskSDK.h */,
+				84D901BD288A7A25009DD765 /* NSTimer+UdeskSDK.m */,
 			);
 			path = NSTimer;
 			sourceTree = "<group>";
@@ -1294,36 +1291,34 @@
 		84D901C2288A7A26009DD765 /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				84D901C3288A7A26009DD765 /* UdeskVoiceRecord.m */,
-				84D901C4288A7A26009DD765 /* UdeskCacheUtil.m */,
-				84D901C5288A7A26009DD765 /* UdeskThrottleUtil.h */,
-				84D901C6288A7A26009DD765 /* UdeskMessageUtil.h */,
-				84D901C7288A7A26009DD765 /* UdeskBundleUtils.h */,
-				84D901C8288A7A26009DD765 /* UdeskSDKAlert.m */,
-				84D901C9288A7A26009DD765 /* UdeskPrivacyUtil.h */,
-				84D901CA288A7A26009DD765 /* UdeskSDKUtil.m */,
-				84D901CB288A7A26009DD765 /* UdeskAudioPlayer.m */,
 				84D901CC288A7A26009DD765 /* UdeskAgentUtil.h */,
-				84D901CD288A7A26009DD765 /* UdeskImageUtil.h */,
-				84D901CE288A7A26009DD765 /* UdeskImagePicker.h */,
-				84D901CF288A7A26009DD765 /* UdeskDateUtil.m */,
-				84D901D0288A7A26009DD765 /* UdeskVideoUtil.m */,
-				84D901D1288A7A26009DD765 /* UdeskStringSizeUtil.m */,
-				84D901D2288A7A26009DD765 /* UdeskCacheUtil.h */,
-				84D901D3288A7A26009DD765 /* UdeskVoiceRecord.h */,
-				84D901D4288A7A26009DD765 /* UdeskSDKUtil.h */,
-				84D901D5288A7A26009DD765 /* UdeskPrivacyUtil.m */,
-				84D901D6288A7A26009DD765 /* UdeskSDKAlert.h */,
-				84D901D7288A7A26009DD765 /* UdeskBundleUtils.m */,
-				84D901D8288A7A26009DD765 /* UdeskMessageUtil.m */,
-				84D901D9288A7A26009DD765 /* UdeskThrottleUtil.m */,
-				84D901DA288A7A26009DD765 /* UdeskDateUtil.h */,
-				84D901DB288A7A26009DD765 /* UdeskImagePicker.m */,
-				84D901DC288A7A26009DD765 /* UdeskImageUtil.m */,
 				84D901DD288A7A26009DD765 /* UdeskAgentUtil.m */,
 				84D901DE288A7A26009DD765 /* UdeskAudioPlayer.h */,
+				84D901CB288A7A26009DD765 /* UdeskAudioPlayer.m */,
+				84D901C7288A7A26009DD765 /* UdeskBundleUtils.h */,
+				84D901D7288A7A26009DD765 /* UdeskBundleUtils.m */,
+				84D901D2288A7A26009DD765 /* UdeskCacheUtil.h */,
+				84D901C4288A7A26009DD765 /* UdeskCacheUtil.m */,
+				84D901DA288A7A26009DD765 /* UdeskDateUtil.h */,
+				84D901CF288A7A26009DD765 /* UdeskDateUtil.m */,
+				84D901CD288A7A26009DD765 /* UdeskImageUtil.h */,
+				84D901DC288A7A26009DD765 /* UdeskImageUtil.m */,
+				84D901C6288A7A26009DD765 /* UdeskMessageUtil.h */,
+				84D901D8288A7A26009DD765 /* UdeskMessageUtil.m */,
+				84D901C9288A7A26009DD765 /* UdeskPrivacyUtil.h */,
+				84D901D5288A7A26009DD765 /* UdeskPrivacyUtil.m */,
+				84D901D6288A7A26009DD765 /* UdeskSDKAlert.h */,
+				84D901C8288A7A26009DD765 /* UdeskSDKAlert.m */,
+				84D901D4288A7A26009DD765 /* UdeskSDKUtil.h */,
+				84D901CA288A7A26009DD765 /* UdeskSDKUtil.m */,
 				84D901DF288A7A26009DD765 /* UdeskStringSizeUtil.h */,
+				84D901D1288A7A26009DD765 /* UdeskStringSizeUtil.m */,
+				84D901C5288A7A26009DD765 /* UdeskThrottleUtil.h */,
+				84D901D9288A7A26009DD765 /* UdeskThrottleUtil.m */,
 				84D901E0288A7A26009DD765 /* UdeskVideoUtil.h */,
+				84D901D0288A7A26009DD765 /* UdeskVideoUtil.m */,
+				84D901D3288A7A26009DD765 /* UdeskVoiceRecord.h */,
+				84D901C3288A7A26009DD765 /* UdeskVoiceRecord.m */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -1332,16 +1327,16 @@
 			isa = PBXGroup;
 			children = (
 				84D901E2288A7A26009DD765 /* UdeskCustomButtonConfig.h */,
-				84D901E3288A7A26009DD765 /* UdeskSDKConfig.m */,
-				84D901E4288A7A26009DD765 /* UdeskSDKManager.m */,
-				84D901E5288A7A26009DD765 /* UdeskLanguageConfig.m */,
-				84D901E6288A7A26009DD765 /* UdeskGoodsModel.h */,
-				84D901E7288A7A26009DD765 /* UdeskSDKStyle.h */,
 				84D901E8288A7A26009DD765 /* UdeskCustomButtonConfig.m */,
-				84D901E9288A7A26009DD765 /* UdeskSDKManager.h */,
-				84D901EA288A7A26009DD765 /* UdeskSDKConfig.h */,
+				84D901E6288A7A26009DD765 /* UdeskGoodsModel.h */,
 				84D901EB288A7A26009DD765 /* UdeskGoodsModel.m */,
 				84D901EC288A7A26009DD765 /* UdeskLanguageConfig.h */,
+				84D901E5288A7A26009DD765 /* UdeskLanguageConfig.m */,
+				84D901EA288A7A26009DD765 /* UdeskSDKConfig.h */,
+				84D901E3288A7A26009DD765 /* UdeskSDKConfig.m */,
+				84D901E9288A7A26009DD765 /* UdeskSDKManager.h */,
+				84D901E4288A7A26009DD765 /* UdeskSDKManager.m */,
+				84D901E7288A7A26009DD765 /* UdeskSDKStyle.h */,
 				84D901ED288A7A26009DD765 /* UdeskSDKStyle.m */,
 			);
 			path = Config;
@@ -1359,18 +1354,18 @@
 		84D901F1288A7A26009DD765 /* Animation */ = {
 			isa = PBXGroup;
 			children = (
-				84D901F2288A7A26009DD765 /* UdeskTransitioningAnimation.m */,
-				84D901F3288A7A26009DD765 /* UdeskSDKShow.m */,
+				84D901FA288A7A26009DD765 /* UdeskAnimatorPush.h */,
 				84D901F4288A7A26009DD765 /* UdeskAnimatorPush.m */,
 				84D901F5288A7A26009DD765 /* UdeskPopAnimation.h */,
-				84D901F6288A7A26009DD765 /* UdeskPushAnimation.m */,
-				84D901F7288A7A26009DD765 /* UdeskShareTransitioningDelegateImpl.h */,
-				84D901F8288A7A26009DD765 /* UdeskSDKShow.h */,
-				84D901F9288A7A26009DD765 /* UdeskTransitioningAnimation.h */,
-				84D901FA288A7A26009DD765 /* UdeskAnimatorPush.h */,
 				84D901FB288A7A26009DD765 /* UdeskPopAnimation.m */,
 				84D901FC288A7A26009DD765 /* UdeskPushAnimation.h */,
+				84D901F6288A7A26009DD765 /* UdeskPushAnimation.m */,
+				84D901F8288A7A26009DD765 /* UdeskSDKShow.h */,
+				84D901F3288A7A26009DD765 /* UdeskSDKShow.m */,
+				84D901F7288A7A26009DD765 /* UdeskShareTransitioningDelegateImpl.h */,
 				84D901FD288A7A26009DD765 /* UdeskShareTransitioningDelegateImpl.m */,
+				84D901F9288A7A26009DD765 /* UdeskTransitioningAnimation.h */,
+				84D901F2288A7A26009DD765 /* UdeskTransitioningAnimation.m */,
 			);
 			path = Animation;
 			sourceTree = "<group>";
@@ -1395,10 +1390,10 @@
 		84D90203288A7A26009DD765 /* AlertView */ = {
 			isa = PBXGroup;
 			children = (
-				84D90204288A7A26009DD765 /* UdeskTopAlertView.m */,
-				84D90205288A7A26009DD765 /* UdeskAlertController.m */,
 				84D90206288A7A26009DD765 /* UdeskAlertController.h */,
+				84D90205288A7A26009DD765 /* UdeskAlertController.m */,
 				84D90207288A7A26009DD765 /* UdeskTopAlertView.h */,
+				84D90204288A7A26009DD765 /* UdeskTopAlertView.m */,
 			);
 			path = AlertView;
 			sourceTree = "<group>";
@@ -1426,9 +1421,9 @@
 			isa = PBXGroup;
 			children = (
 				84D9020D288A7A26009DD765 /* UdeskChatViewModel.h */,
-				84D9020E288A7A26009DD765 /* UdeskLocationViewModel.m */,
 				84D9020F288A7A26009DD765 /* UdeskChatViewModel.m */,
 				84D90210288A7A26009DD765 /* UdeskLocationViewModel.h */,
+				84D9020E288A7A26009DD765 /* UdeskLocationViewModel.m */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -1448,8 +1443,8 @@
 			isa = PBXGroup;
 			children = (
 				84D90213288A7A26009DD765 /* General */,
-				84D9022C288A7A26009DD765 /* UdeskBaseMessage.h */,
 				84D9022D288A7A26009DD765 /* Robot */,
+				84D9022C288A7A26009DD765 /* UdeskBaseMessage.h */,
 				84D9023E288A7A26009DD765 /* UdeskBaseMessage.m */,
 			);
 			path = Messages;
@@ -1458,29 +1453,29 @@
 		84D90213288A7A26009DD765 /* General */ = {
 			isa = PBXGroup;
 			children = (
-				84D90214288A7A26009DD765 /* UdeskQueueMessage.h */,
-				84D90215288A7A26009DD765 /* UdeskTextMessage.h */,
-				84D90216288A7A26009DD765 /* UdeskImageMessage.h */,
-				84D90217288A7A26009DD765 /* UdeskStructMessage.h */,
 				84D90218288A7A26009DD765 /* UdeskEventMessage.h */,
-				84D90219288A7A26009DD765 /* UdeskTemplateMessage.h */,
-				84D9021A288A7A26009DD765 /* UdeskVideoMessage.h */,
-				84D9021B288A7A26009DD765 /* UdeskNewMessageTag.m */,
-				84D9021C288A7A26009DD765 /* UdeskVoiceMessage.h */,
-				84D9021D288A7A26009DD765 /* UdeskLocationMessage.h */,
-				84D9021E288A7A26009DD765 /* UdeskVideoCallMessage.h */,
-				84D9021F288A7A26009DD765 /* UdeskGoodsMessage.m */,
 				84D90220288A7A26009DD765 /* UdeskEventMessage.m */,
-				84D90221288A7A26009DD765 /* UdeskStructMessage.m */,
-				84D90222288A7A26009DD765 /* UdeskImageMessage.m */,
-				84D90223288A7A26009DD765 /* UdeskTextMessage.m */,
-				84D90224288A7A26009DD765 /* UdeskQueueMessage.m */,
-				84D90225288A7A26009DD765 /* UdeskNewMessageTag.h */,
-				84D90226288A7A26009DD765 /* UdeskVideoMessage.m */,
-				84D90227288A7A26009DD765 /* UdeskTemplateMessage.m */,
-				84D90228288A7A26009DD765 /* UdeskVideoCallMessage.m */,
 				84D90229288A7A26009DD765 /* UdeskGoodsMessage.h */,
+				84D9021F288A7A26009DD765 /* UdeskGoodsMessage.m */,
+				84D90216288A7A26009DD765 /* UdeskImageMessage.h */,
+				84D90222288A7A26009DD765 /* UdeskImageMessage.m */,
+				84D9021D288A7A26009DD765 /* UdeskLocationMessage.h */,
 				84D9022A288A7A26009DD765 /* UdeskLocationMessage.m */,
+				84D90225288A7A26009DD765 /* UdeskNewMessageTag.h */,
+				84D9021B288A7A26009DD765 /* UdeskNewMessageTag.m */,
+				84D90214288A7A26009DD765 /* UdeskQueueMessage.h */,
+				84D90224288A7A26009DD765 /* UdeskQueueMessage.m */,
+				84D90217288A7A26009DD765 /* UdeskStructMessage.h */,
+				84D90221288A7A26009DD765 /* UdeskStructMessage.m */,
+				84D90219288A7A26009DD765 /* UdeskTemplateMessage.h */,
+				84D90227288A7A26009DD765 /* UdeskTemplateMessage.m */,
+				84D90215288A7A26009DD765 /* UdeskTextMessage.h */,
+				84D90223288A7A26009DD765 /* UdeskTextMessage.m */,
+				84D9021E288A7A26009DD765 /* UdeskVideoCallMessage.h */,
+				84D90228288A7A26009DD765 /* UdeskVideoCallMessage.m */,
+				84D9021A288A7A26009DD765 /* UdeskVideoMessage.h */,
+				84D90226288A7A26009DD765 /* UdeskVideoMessage.m */,
+				84D9021C288A7A26009DD765 /* UdeskVoiceMessage.h */,
 				84D9022B288A7A26009DD765 /* UdeskVoiceMessage.m */,
 			);
 			path = General;
@@ -1489,22 +1484,22 @@
 		84D9022D288A7A26009DD765 /* Robot */ = {
 			isa = PBXGroup;
 			children = (
-				84D9022E288A7A26009DD765 /* UdeskTopAskMessage.m */,
-				84D9022F288A7A26009DD765 /* UdeskTableMessage.h */,
-				84D90230288A7A26009DD765 /* UdeskProductMessage.h */,
-				84D90231288A7A26009DD765 /* UdeskRichMessage.m */,
+				84D90239288A7A26009DD765 /* UdeskLinkMessage.h */,
 				84D90232288A7A26009DD765 /* UdeskLinkMessage.m */,
-				84D90233288A7A26009DD765 /* UdeskNewsMessage.m */,
 				84D90234288A7A26009DD765 /* UdeskListMessage.h */,
+				84D9023D288A7A26009DD765 /* UdeskListMessage.m */,
+				84D9023B288A7A26009DD765 /* UdeskNewsMessage.h */,
+				84D90233288A7A26009DD765 /* UdeskNewsMessage.m */,
+				84D9023C288A7A26009DD765 /* UdeskProductListMessage.h */,
 				84D90235288A7A26009DD765 /* UdeskProductListMessage.m */,
+				84D90230288A7A26009DD765 /* UdeskProductMessage.h */,
 				84D90236288A7A26009DD765 /* UdeskProductMessage.m */,
+				84D9023A288A7A26009DD765 /* UdeskRichMessage.h */,
+				84D90231288A7A26009DD765 /* UdeskRichMessage.m */,
+				84D9022F288A7A26009DD765 /* UdeskTableMessage.h */,
 				84D90237288A7A26009DD765 /* UdeskTableMessage.m */,
 				84D90238288A7A26009DD765 /* UdeskTopAskMessage.h */,
-				84D90239288A7A26009DD765 /* UdeskLinkMessage.h */,
-				84D9023A288A7A26009DD765 /* UdeskRichMessage.h */,
-				84D9023B288A7A26009DD765 /* UdeskNewsMessage.h */,
-				84D9023C288A7A26009DD765 /* UdeskProductListMessage.h */,
-				84D9023D288A7A26009DD765 /* UdeskListMessage.m */,
+				84D9022E288A7A26009DD765 /* UdeskTopAskMessage.m */,
 			);
 			path = Robot;
 			sourceTree = "<group>";
@@ -1512,10 +1507,10 @@
 		84D9023F288A7A26009DD765 /* Location */ = {
 			isa = PBXGroup;
 			children = (
-				84D90240288A7A26009DD765 /* UdeskNearbyModel.m */,
+				84D90243288A7A26009DD765 /* UdeskLocationModel.h */,
 				84D90241288A7A26009DD765 /* UdeskLocationModel.m */,
 				84D90242288A7A26009DD765 /* UdeskNearbyModel.h */,
-				84D90243288A7A26009DD765 /* UdeskLocationModel.h */,
+				84D90240288A7A26009DD765 /* UdeskNearbyModel.m */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -1524,13 +1519,13 @@
 			isa = PBXGroup;
 			children = (
 				84D90245288A7A26009DD765 /* UdeskAgentManager.h */,
-				84D90246288A7A26009DD765 /* UdeskNetworkManager.m */,
-				84D90247288A7A26009DD765 /* UdeskCallManager.h */,
-				84D90248288A7A26009DD765 /* UdeskMessageManager.h */,
-				84D90249288A7A26009DD765 /* UdeskCallManager.m */,
-				84D9024A288A7A26009DD765 /* UdeskNetworkManager.h */,
 				84D9024B288A7A26009DD765 /* UdeskAgentManager.m */,
+				84D90247288A7A26009DD765 /* UdeskCallManager.h */,
+				84D90249288A7A26009DD765 /* UdeskCallManager.m */,
+				84D90248288A7A26009DD765 /* UdeskMessageManager.h */,
 				84D9024C288A7A26009DD765 /* UdeskMessageManager.m */,
+				84D9024A288A7A26009DD765 /* UdeskNetworkManager.h */,
+				84D90246288A7A26009DD765 /* UdeskNetworkManager.m */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1547,20 +1542,20 @@
 		84D90250288A7A26009DD765 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				84D90251288A7A26009DD765 /* UdeskBaseNavigationViewController.h */,
-				84D90252288A7A26009DD765 /* UdeskTicketViewController.h */,
-				84D90253288A7A26009DD765 /* UdeskWebViewController.m */,
-				84D90254288A7A26009DD765 /* UdeskBaseViewController.h */,
-				84D90255288A7A26009DD765 /* UdeskLocationViewController.m */,
-				84D90256288A7A26009DD765 /* UdeskChatViewController.h */,
-				84D90257288A7A26009DD765 /* UdeskAgentMenuViewController.m */,
-				84D90258288A7A26009DD765 /* UdeskTicketViewController.m */,
-				84D90259288A7A26009DD765 /* UdeskBaseNavigationViewController.m */,
-				84D9025A288A7A26009DD765 /* UdeskLocationViewController.h */,
-				84D9025B288A7A26009DD765 /* UdeskBaseViewController.m */,
-				84D9025C288A7A26009DD765 /* UdeskWebViewController.h */,
 				84D9025D288A7A26009DD765 /* UdeskAgentMenuViewController.h */,
+				84D90257288A7A26009DD765 /* UdeskAgentMenuViewController.m */,
+				84D90251288A7A26009DD765 /* UdeskBaseNavigationViewController.h */,
+				84D90259288A7A26009DD765 /* UdeskBaseNavigationViewController.m */,
+				84D90254288A7A26009DD765 /* UdeskBaseViewController.h */,
+				84D9025B288A7A26009DD765 /* UdeskBaseViewController.m */,
+				84D90256288A7A26009DD765 /* UdeskChatViewController.h */,
 				84D9025E288A7A26009DD765 /* UdeskChatViewController.m */,
+				84D9025A288A7A26009DD765 /* UdeskLocationViewController.h */,
+				84D90255288A7A26009DD765 /* UdeskLocationViewController.m */,
+				84D90252288A7A26009DD765 /* UdeskTicketViewController.h */,
+				84D90258288A7A26009DD765 /* UdeskTicketViewController.m */,
+				84D9025C288A7A26009DD765 /* UdeskWebViewController.h */,
+				84D90253288A7A26009DD765 /* UdeskWebViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1598,8 +1593,8 @@
 		84D90261288A7A26009DD765 /* ChatTips */ = {
 			isa = PBXGroup;
 			children = (
-				84D90262288A7A26009DD765 /* UdeskRobotTipsView.m */,
 				84D90263288A7A26009DD765 /* UdeskRobotTipsView.h */,
+				84D90262288A7A26009DD765 /* UdeskRobotTipsView.m */,
 			);
 			path = ChatTips;
 			sourceTree = "<group>";
@@ -1607,20 +1602,20 @@
 		84D90264288A7A26009DD765 /* ChatEmotion */ = {
 			isa = PBXGroup;
 			children = (
-				84D90265288A7A26009DD765 /* UdeskEmojiCollectionViewCell.m */,
-				84D90266288A7A26009DD765 /* UdeskEmojiCollectionViewFlowLayout.m */,
-				84D90267288A7A26009DD765 /* UdeskEmojiPanelModel.h */,
-				84D90268288A7A26009DD765 /* UdeskEmojiKeyboardControl.h */,
 				84D90269288A7A26009DD765 /* UdeskEmojiCollectionView.h */,
+				84D90270288A7A26009DD765 /* UdeskEmojiCollectionView.m */,
+				84D9026C288A7A26009DD765 /* UdeskEmojiCollectionViewCell.h */,
+				84D90265288A7A26009DD765 /* UdeskEmojiCollectionViewCell.m */,
+				84D9026D288A7A26009DD765 /* UdeskEmojiCollectionViewFlowLayout.h */,
+				84D90266288A7A26009DD765 /* UdeskEmojiCollectionViewFlowLayout.m */,
+				84D90268288A7A26009DD765 /* UdeskEmojiKeyboardControl.h */,
+				84D90272288A7A26009DD765 /* UdeskEmojiKeyboardControl.m */,
+				84D90271288A7A26009DD765 /* UdeskEmojiManager.h */,
 				84D9026A288A7A26009DD765 /* UdeskEmojiManager.m */,
 				84D9026B288A7A26009DD765 /* UdeskEmojiPackagePanel.h */,
-				84D9026C288A7A26009DD765 /* UdeskEmojiCollectionViewCell.h */,
-				84D9026D288A7A26009DD765 /* UdeskEmojiCollectionViewFlowLayout.h */,
-				84D9026E288A7A26009DD765 /* UdeskEmojiPanelModel.m */,
 				84D9026F288A7A26009DD765 /* UdeskEmojiPackagePanel.m */,
-				84D90270288A7A26009DD765 /* UdeskEmojiCollectionView.m */,
-				84D90271288A7A26009DD765 /* UdeskEmojiManager.h */,
-				84D90272288A7A26009DD765 /* UdeskEmojiKeyboardControl.m */,
+				84D90267288A7A26009DD765 /* UdeskEmojiPanelModel.h */,
+				84D9026E288A7A26009DD765 /* UdeskEmojiPanelModel.m */,
 			);
 			path = ChatEmotion;
 			sourceTree = "<group>";
@@ -1628,8 +1623,8 @@
 		84D90273288A7A26009DD765 /* ChatTableView */ = {
 			isa = PBXGroup;
 			children = (
-				84D90274288A7A26009DD765 /* UdeskMessageTableView.m */,
 				84D90275288A7A26009DD765 /* UdeskMessageTableView.h */,
+				84D90274288A7A26009DD765 /* UdeskMessageTableView.m */,
 			);
 			path = ChatTableView;
 			sourceTree = "<group>";
@@ -1637,12 +1632,12 @@
 		84D90276288A7A26009DD765 /* ChatRecord */ = {
 			isa = PBXGroup;
 			children = (
-				84D90277288A7A26009DD765 /* UdeskVoiceRecordView.m */,
-				84D90278288A7A26009DD765 /* UdeskSpeechRecognizerViewController.m */,
 				84D90279288A7A26009DD765 /* UdeskSpeechRecognizerView.h */,
-				84D9027A288A7A26009DD765 /* UdeskSpeechRecognizerViewController.h */,
-				84D9027B288A7A26009DD765 /* UdeskVoiceRecordView.h */,
 				84D9027C288A7A26009DD765 /* UdeskSpeechRecognizerView.m */,
+				84D9027A288A7A26009DD765 /* UdeskSpeechRecognizerViewController.h */,
+				84D90278288A7A26009DD765 /* UdeskSpeechRecognizerViewController.m */,
+				84D9027B288A7A26009DD765 /* UdeskVoiceRecordView.h */,
+				84D90277288A7A26009DD765 /* UdeskVoiceRecordView.m */,
 			);
 			path = ChatRecord;
 			sourceTree = "<group>";
@@ -1677,8 +1672,8 @@
 		84D90286288A7A26009DD765 /* ChatMore */ = {
 			isa = PBXGroup;
 			children = (
-				84D90287288A7A26009DD765 /* UdeskChatToolBarMoreView.m */,
 				84D90288288A7A26009DD765 /* UdeskChatToolBarMoreView.h */,
+				84D90287288A7A26009DD765 /* UdeskChatToolBarMoreView.m */,
 			);
 			path = ChatMore;
 			sourceTree = "<group>";
@@ -1686,8 +1681,8 @@
 		84D90289288A7A26009DD765 /* ChatTitle */ = {
 			isa = PBXGroup;
 			children = (
-				84D9028A288A7A26009DD765 /* UdeskChatTitleView.m */,
 				84D9028B288A7A26009DD765 /* UdeskChatTitleView.h */,
+				84D9028A288A7A26009DD765 /* UdeskChatTitleView.m */,
 			);
 			path = ChatTitle;
 			sourceTree = "<group>";
@@ -1704,10 +1699,10 @@
 		84D9028F288A7A26009DD765 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				84D90290288A7A26009DD765 /* UdeskBaseCell.m */,
 				84D90291288A7A26009DD765 /* General */,
 				84D902AA288A7A26009DD765 /* Robot */,
 				84D902BB288A7A26009DD765 /* UdeskBaseCell.h */,
+				84D90290288A7A26009DD765 /* UdeskBaseCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1715,30 +1710,30 @@
 		84D90291288A7A26009DD765 /* General */ = {
 			isa = PBXGroup;
 			children = (
-				84D90292288A7A26009DD765 /* UdeskVideoCell.h */,
-				84D90293288A7A26009DD765 /* UdeskImageCell.m */,
-				84D90294288A7A26009DD765 /* UdeskLocationCell.m */,
-				84D90295288A7A26009DD765 /* UdeskVoiceCell.h */,
-				84D90296288A7A26009DD765 /* UdeskVideoCallCell.m */,
-				84D90297288A7A26009DD765 /* UdeskTextCell.m */,
-				84D90298288A7A26009DD765 /* UdeskTemplateCell.m */,
-				84D90299288A7A26009DD765 /* UdeskGoodsCell.h */,
-				84D9029A288A7A26009DD765 /* UdeskStructCell.h */,
-				84D9029B288A7A26009DD765 /* UdeskQueueCell.h */,
-				84D9029C288A7A26009DD765 /* UdeskEventCell.m */,
-				84D9029D288A7A26009DD765 /* UdeskNewMessageTagCell.h */,
-				84D9029E288A7A26009DD765 /* UdeskVideoCell.m */,
-				84D9029F288A7A26009DD765 /* UdeskVideoCallCell.h */,
-				84D902A0288A7A26009DD765 /* UdeskVoiceCell.m */,
-				84D902A1288A7A26009DD765 /* UdeskLocationCell.h */,
-				84D902A2288A7A26009DD765 /* UdeskImageCell.h */,
-				84D902A3288A7A26009DD765 /* UdeskGoodsCell.m */,
-				84D902A4288A7A26009DD765 /* UdeskTemplateCell.h */,
-				84D902A5288A7A26009DD765 /* UdeskTextCell.h */,
-				84D902A6288A7A26009DD765 /* UdeskNewMessageTagCell.m */,
 				84D902A7288A7A26009DD765 /* UdeskEventCell.h */,
+				84D9029C288A7A26009DD765 /* UdeskEventCell.m */,
+				84D90299288A7A26009DD765 /* UdeskGoodsCell.h */,
+				84D902A3288A7A26009DD765 /* UdeskGoodsCell.m */,
+				84D902A2288A7A26009DD765 /* UdeskImageCell.h */,
+				84D90293288A7A26009DD765 /* UdeskImageCell.m */,
+				84D902A1288A7A26009DD765 /* UdeskLocationCell.h */,
+				84D90294288A7A26009DD765 /* UdeskLocationCell.m */,
+				84D9029D288A7A26009DD765 /* UdeskNewMessageTagCell.h */,
+				84D902A6288A7A26009DD765 /* UdeskNewMessageTagCell.m */,
+				84D9029B288A7A26009DD765 /* UdeskQueueCell.h */,
 				84D902A8288A7A26009DD765 /* UdeskQueueCell.m */,
+				84D9029A288A7A26009DD765 /* UdeskStructCell.h */,
 				84D902A9288A7A26009DD765 /* UdeskStructCell.m */,
+				84D902A4288A7A26009DD765 /* UdeskTemplateCell.h */,
+				84D90298288A7A26009DD765 /* UdeskTemplateCell.m */,
+				84D902A5288A7A26009DD765 /* UdeskTextCell.h */,
+				84D90297288A7A26009DD765 /* UdeskTextCell.m */,
+				84D9029F288A7A26009DD765 /* UdeskVideoCallCell.h */,
+				84D90296288A7A26009DD765 /* UdeskVideoCallCell.m */,
+				84D90292288A7A26009DD765 /* UdeskVideoCell.h */,
+				84D9029E288A7A26009DD765 /* UdeskVideoCell.m */,
+				84D90295288A7A26009DD765 /* UdeskVoiceCell.h */,
+				84D902A0288A7A26009DD765 /* UdeskVoiceCell.m */,
 			);
 			path = General;
 			sourceTree = "<group>";
@@ -1746,22 +1741,22 @@
 		84D902AA288A7A26009DD765 /* Robot */ = {
 			isa = PBXGroup;
 			children = (
-				84D902AB288A7A26009DD765 /* UdeskProductListCell.h */,
-				84D902AC288A7A26009DD765 /* UdeskTopAskCell.h */,
-				84D902AD288A7A26009DD765 /* UdeskRichCell.m */,
-				84D902AE288A7A26009DD765 /* UdeskProductCell.h */,
-				84D902AF288A7A26009DD765 /* UdeskListCell.m */,
-				84D902B0288A7A26009DD765 /* UdeskTableCell.m */,
 				84D902B1288A7A26009DD765 /* UdeskLinkCell.h */,
-				84D902B2288A7A26009DD765 /* UdeskNewsCell.m */,
-				84D902B3288A7A26009DD765 /* UdeskRichCell.h */,
-				84D902B4288A7A26009DD765 /* UdeskTopAskCell.m */,
-				84D902B5288A7A26009DD765 /* UdeskProductListCell.m */,
-				84D902B6288A7A26009DD765 /* UdeskListCell.h */,
-				84D902B7288A7A26009DD765 /* UdeskTableCell.h */,
-				84D902B8288A7A26009DD765 /* UdeskProductCell.m */,
-				84D902B9288A7A26009DD765 /* UdeskNewsCell.h */,
 				84D902BA288A7A26009DD765 /* UdeskLinkCell.m */,
+				84D902B6288A7A26009DD765 /* UdeskListCell.h */,
+				84D902AF288A7A26009DD765 /* UdeskListCell.m */,
+				84D902B9288A7A26009DD765 /* UdeskNewsCell.h */,
+				84D902B2288A7A26009DD765 /* UdeskNewsCell.m */,
+				84D902AE288A7A26009DD765 /* UdeskProductCell.h */,
+				84D902B8288A7A26009DD765 /* UdeskProductCell.m */,
+				84D902AB288A7A26009DD765 /* UdeskProductListCell.h */,
+				84D902B5288A7A26009DD765 /* UdeskProductListCell.m */,
+				84D902B3288A7A26009DD765 /* UdeskRichCell.h */,
+				84D902AD288A7A26009DD765 /* UdeskRichCell.m */,
+				84D902B7288A7A26009DD765 /* UdeskTableCell.h */,
+				84D902B0288A7A26009DD765 /* UdeskTableCell.m */,
+				84D902AC288A7A26009DD765 /* UdeskTopAskCell.h */,
+				84D902B4288A7A26009DD765 /* UdeskTopAskCell.m */,
 			);
 			path = Robot;
 			sourceTree = "<group>";
@@ -1769,9 +1764,9 @@
 		84D902BC288A7A26009DD765 /* ImagePicker */ = {
 			isa = PBXGroup;
 			children = (
-				84D902BD288A7A26009DD765 /* Models */,
-				84D902C2288A7A26009DD765 /* Manager */,
 				84D902C7288A7A26009DD765 /* Controllers */,
+				84D902C2288A7A26009DD765 /* Manager */,
+				84D902BD288A7A26009DD765 /* Models */,
 				84D902D0288A7A26009DD765 /* Views */,
 			);
 			path = ImagePicker;
@@ -1780,9 +1775,9 @@
 		84D902BD288A7A26009DD765 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				84D902C0288A7A26009DD765 /* UdeskAlbumModel.h */,
 				84D902BE288A7A26009DD765 /* UdeskAlbumModel.m */,
 				84D902BF288A7A26009DD765 /* UdeskAssetModel.h */,
-				84D902C0288A7A26009DD765 /* UdeskAlbumModel.h */,
 				84D902C1288A7A26009DD765 /* UdeskAssetModel.m */,
 			);
 			path = Models;
@@ -1792,8 +1787,8 @@
 			isa = PBXGroup;
 			children = (
 				84D902C3288A7A26009DD765 /* UdeskAlbumsViewManager.h */,
-				84D902C4288A7A26009DD765 /* UdeskAssetsPickerManager.h */,
 				84D902C5288A7A26009DD765 /* UdeskAlbumsViewManager.m */,
+				84D902C4288A7A26009DD765 /* UdeskAssetsPickerManager.h */,
 				84D902C6288A7A26009DD765 /* UdeskAssetsPickerManager.m */,
 			);
 			path = Manager;
@@ -1802,14 +1797,14 @@
 		84D902C7288A7A26009DD765 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				84D902C8288A7A26009DD765 /* UdeskAssetPreviewController.h */,
-				84D902C9288A7A26009DD765 /* UdeskImagePickerController.h */,
 				84D902CA288A7A26009DD765 /* UdeskAlbumsViewController.h */,
-				84D902CB288A7A26009DD765 /* UdeskAssetsPickerController.h */,
-				84D902CC288A7A26009DD765 /* UdeskAssetPreviewController.m */,
-				84D902CD288A7A26009DD765 /* UdeskImagePickerController.m */,
-				84D902CE288A7A26009DD765 /* UdeskAssetsPickerController.m */,
 				84D902CF288A7A26009DD765 /* UdeskAlbumsViewController.m */,
+				84D902C8288A7A26009DD765 /* UdeskAssetPreviewController.h */,
+				84D902CC288A7A26009DD765 /* UdeskAssetPreviewController.m */,
+				84D902CB288A7A26009DD765 /* UdeskAssetsPickerController.h */,
+				84D902CE288A7A26009DD765 /* UdeskAssetsPickerController.m */,
+				84D902C9288A7A26009DD765 /* UdeskImagePickerController.h */,
+				84D902CD288A7A26009DD765 /* UdeskImagePickerController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1828,12 +1823,12 @@
 		84D902D1288A7A26009DD765 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				84D902D2288A7A26009DD765 /* UdeskAssetCell.h */,
-				84D902D3288A7A26009DD765 /* UdeskAlbumCell.m */,
-				84D902D4288A7A26009DD765 /* UdeskAssetPreviewCell.m */,
 				84D902D5288A7A26009DD765 /* UdeskAlbumCell.h */,
+				84D902D3288A7A26009DD765 /* UdeskAlbumCell.m */,
+				84D902D2288A7A26009DD765 /* UdeskAssetCell.h */,
 				84D902D6288A7A26009DD765 /* UdeskAssetCell.m */,
 				84D902D7288A7A26009DD765 /* UdeskAssetPreviewCell.h */,
+				84D902D4288A7A26009DD765 /* UdeskAssetPreviewCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1850,8 +1845,8 @@
 		84D902DB288A7A26009DD765 /* Preview */ = {
 			isa = PBXGroup;
 			children = (
-				84D902DC288A7A26009DD765 /* UdeskPhotoPreviewView.m */,
 				84D902DD288A7A26009DD765 /* UdeskPhotoPreviewView.h */,
+				84D902DC288A7A26009DD765 /* UdeskPhotoPreviewView.m */,
 			);
 			path = Preview;
 			sourceTree = "<group>";
@@ -1859,8 +1854,8 @@
 		84D902DE288A7A26009DD765 /* Nav */ = {
 			isa = PBXGroup;
 			children = (
-				84D902DF288A7A26009DD765 /* UdeskPreviewNavBar.m */,
 				84D902E0288A7A26009DD765 /* UdeskPreviewNavBar.h */,
+				84D902DF288A7A26009DD765 /* UdeskPreviewNavBar.m */,
 			);
 			path = Nav;
 			sourceTree = "<group>";
@@ -1887,10 +1882,10 @@
 		84D902E5288A7A26009DD765 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				84D902E6288A7A26009DD765 /* UdeskSmallVideoManager.m */,
-				84D902E7288A7A26009DD765 /* UdeskSmallVideoWriter.m */,
 				84D902E8288A7A26009DD765 /* UdeskSmallVideoManager.h */,
+				84D902E6288A7A26009DD765 /* UdeskSmallVideoManager.m */,
 				84D902E9288A7A26009DD765 /* UdeskSmallVideoWriter.h */,
+				84D902E7288A7A26009DD765 /* UdeskSmallVideoWriter.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1898,12 +1893,12 @@
 		84D902EA288A7A26009DD765 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				84D902EB288A7A26009DD765 /* UdeskSmallVideoNavigationController.m */,
-				84D902EC288A7A26009DD765 /* UdeskSmallVideoViewController.m */,
-				84D902ED288A7A26009DD765 /* UdeskSmallVideoPreviewViewController.h */,
 				84D902EE288A7A26009DD765 /* UdeskSmallVideoNavigationController.h */,
+				84D902EB288A7A26009DD765 /* UdeskSmallVideoNavigationController.m */,
+				84D902ED288A7A26009DD765 /* UdeskSmallVideoPreviewViewController.h */,
 				84D902EF288A7A26009DD765 /* UdeskSmallVideoPreviewViewController.m */,
 				84D902F0288A7A26009DD765 /* UdeskSmallVideoViewController.h */,
+				84D902EC288A7A26009DD765 /* UdeskSmallVideoViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1911,12 +1906,12 @@
 		84D902F1288A7A26009DD765 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				84D902F2288A7A26009DD765 /* UdeskVideoPlayerView.m */,
-				84D902F3288A7A26009DD765 /* UdeskSmallVideoRecordView.h */,
-				84D902F4288A7A26009DD765 /* UdeskSmallVideoBottomView.m */,
-				84D902F5288A7A26009DD765 /* UdeskVideoPlayerView.h */,
-				84D902F6288A7A26009DD765 /* UdeskSmallVideoRecordView.m */,
 				84D902F7288A7A26009DD765 /* UdeskSmallVideoBottomView.h */,
+				84D902F4288A7A26009DD765 /* UdeskSmallVideoBottomView.m */,
+				84D902F3288A7A26009DD765 /* UdeskSmallVideoRecordView.h */,
+				84D902F6288A7A26009DD765 /* UdeskSmallVideoRecordView.m */,
+				84D902F5288A7A26009DD765 /* UdeskVideoPlayerView.h */,
+				84D902F2288A7A26009DD765 /* UdeskVideoPlayerView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1943,10 +1938,10 @@
 		84D902FC288A7A26009DD765 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				84D902FD288A7A26009DD765 /* UdeskSurveyManager.m */,
-				84D902FE288A7A26009DD765 /* UdeskSurveyModel.m */,
 				84D902FF288A7A26009DD765 /* UdeskSurveyManager.h */,
+				84D902FD288A7A26009DD765 /* UdeskSurveyManager.m */,
 				84D90300288A7A26009DD765 /* UdeskSurveyModel.h */,
+				84D902FE288A7A26009DD765 /* UdeskSurveyModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1954,19 +1949,19 @@
 		84D90301288A7A26009DD765 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				84D90302288A7A26009DD765 /* UdeskStarSurveyView.m */,
 				84D90303288A7A26009DD765 /* UdeskExpressionSurveyView.h */,
-				84D90304288A7A26009DD765 /* UdeskSurveyView.m */,
-				84D90305288A7A26009DD765 /* UdeskSurveyContentView.h */,
-				84D90306288A7A26009DD765 /* UdeskSurveyTitleView.h */,
-				84D90307288A7A26009DD765 /* UdeskTextSurveyView.m */,
 				84D90308288A7A26009DD765 /* UdeskExpressionSurveyView.m */,
 				84D90309288A7A26009DD765 /* UdeskStarSurveyView.h */,
-				84D9030A288A7A26009DD765 /* UdeskSurveyProtocol.h */,
+				84D90302288A7A26009DD765 /* UdeskStarSurveyView.m */,
+				84D90305288A7A26009DD765 /* UdeskSurveyContentView.h */,
 				84D9030B288A7A26009DD765 /* UdeskSurveyContentView.m */,
-				84D9030C288A7A26009DD765 /* UdeskSurveyView.h */,
-				84D9030D288A7A26009DD765 /* UdeskTextSurveyView.h */,
+				84D9030A288A7A26009DD765 /* UdeskSurveyProtocol.h */,
+				84D90306288A7A26009DD765 /* UdeskSurveyTitleView.h */,
 				84D9030E288A7A26009DD765 /* UdeskSurveyTitleView.m */,
+				84D9030C288A7A26009DD765 /* UdeskSurveyView.h */,
+				84D90304288A7A26009DD765 /* UdeskSurveyView.m */,
+				84D9030D288A7A26009DD765 /* UdeskTextSurveyView.h */,
+				84D90307288A7A26009DD765 /* UdeskTextSurveyView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1983,8 +1978,8 @@
 		84D90310288A7A26009DD765 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				84D90311288A7A26009DD765 /* UdeskProblemModel.m */,
 				84D90312288A7A26009DD765 /* UdeskProblemModel.h */,
+				84D90311288A7A26009DD765 /* UdeskProblemModel.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1992,10 +1987,10 @@
 		84D90313288A7A26009DD765 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				84D90314288A7A26009DD765 /* UdeskFAQViewController.h */,
 				84D90315288A7A26009DD765 /* UdeskContentController.h */,
-				84D90316288A7A26009DD765 /* UdeskFAQViewController.m */,
 				84D90317288A7A26009DD765 /* UdeskContentController.m */,
+				84D90314288A7A26009DD765 /* UdeskFAQViewController.h */,
+				84D90316288A7A26009DD765 /* UdeskFAQViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -2003,14 +1998,14 @@
 		84D90318288A7A26009DD765 /* SDK */ = {
 			isa = PBXGroup;
 			children = (
-				84D90319288A7A26009DD765 /* UdeskTrack.h */,
-				84D9031A288A7A26009DD765 /* UdeskAgent.h */,
-				84D9031B288A7A26009DD765 /* UdeskMessage.h */,
-				84D9031C288A7A26009DD765 /* UdeskManager.h */,
-				84D9031D288A7A26009DD765 /* UdeskOrganization.h */,
-				84D9031E288A7A26009DD765 /* UdeskCustomer.h */,
 				84D9031F288A7A26009DD765 /* libUdesk.a */,
+				84D9031A288A7A26009DD765 /* UdeskAgent.h */,
+				84D9031E288A7A26009DD765 /* UdeskCustomer.h */,
+				84D9031C288A7A26009DD765 /* UdeskManager.h */,
+				84D9031B288A7A26009DD765 /* UdeskMessage.h */,
+				84D9031D288A7A26009DD765 /* UdeskOrganization.h */,
 				84D90320288A7A26009DD765 /* UdeskSetting.h */,
+				84D90319288A7A26009DD765 /* UdeskTrack.h */,
 			);
 			path = SDK;
 			sourceTree = "<group>";
@@ -2339,7 +2334,6 @@
 				84D90396288A7A26009DD765 /* UdeskEmojiCollectionView.m in Sources */,
 				84D90395288A7A26009DD765 /* UdeskEmojiPackagePanel.m in Sources */,
 				84D903D3288A7A27009DD765 /* UdeskTextSurveyView.m in Sources */,
-				84D90357288A7A26009DD765 /* UdeskImagePicker.m in Sources */,
 				44B1A2EC20F488C30031913A /* UdeskGoodsMessageTestViewController.m in Sources */,
 				84D9032B288A7A26009DD765 /* UdeskPhotoView.m in Sources */,
 				84D903A9288A7A26009DD765 /* UdeskVideoCell.m in Sources */,
@@ -2511,7 +2505,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				MARKETING_VERSION = 5.2.11;
+				MARKETING_VERSION = 5.2.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -2604,7 +2598,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				MARKETING_VERSION = 5.2.11;
+				MARKETING_VERSION = 5.2.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",

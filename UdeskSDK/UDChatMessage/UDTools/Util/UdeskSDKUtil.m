@@ -334,4 +334,14 @@ static NSString *kUdeskMenuId = @"kUdeskMenuId";
     return escaped;
 }
 
+//url链接校准 - 可能不处理
++ (NSString *)urlQueryFix:(NSString *)urlString
+{
+    NSURL *url = [NSURL URLWithString:urlString];
+    if(url){
+        return urlString;
+    }
+    return [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+   
+}
 @end

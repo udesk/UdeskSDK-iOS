@@ -10,7 +10,6 @@
 #import "UdeskChatViewController.h"
 #import "UdeskTopAlertView.h"
 #import "UdeskMessageTableView.h"
-#import "UdeskImagePicker.h"
 #import "UIViewController+UdeskSDK.h"
 #import "UIView+UdeskSDK.h"
 #import "UdeskImageUtil.h"
@@ -57,7 +56,6 @@ static CGFloat udInputBarHeight = 54.0f;
 @property (nonatomic, strong) UdeskSpeechRecognizerView *recognizerView;
 @property (nonatomic, strong) UdeskProductView          *productView;
 
-@property (nonatomic, strong) UdeskImagePicker    *photographyHelper;//
 @property (nonatomic, strong) UdeskVoiceRecord    *voiceRecordHelper;//
 
 @property (nonatomic, assign) BOOL                      isMaxTimeStop;//判断是不是超出了录音最大时长
@@ -611,7 +609,7 @@ static CGFloat udInputBarHeight = 54.0f;
     [UdeskPrivacyUtil checkPermissionsOfAlbum:^{
         
         UdeskSDKConfig *sdkConfig = [UdeskSDKConfig customConfig];
-        if (ud_isIOS8 && sdkConfig.isImagePickerEnabled) {
+        if (sdkConfig.isImagePickerEnabled) {
             
             UdeskImagePickerController *imagePicker = [[UdeskImagePickerController alloc] init];
             imagePicker.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -620,10 +618,7 @@ static CGFloat udInputBarHeight = 54.0f;
             imagePicker.quality = sdkConfig.quality;
             imagePicker.pickerDelegate = self;
             [self presentViewController:imagePicker animated:YES completion:nil];
-            return;
         }
-        
-        [self sendImageWithSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     }];
 }
 
@@ -633,8 +628,7 @@ static CGFloat udInputBarHeight = 54.0f;
     //检查权限
     [UdeskPrivacyUtil checkPermissionsOfCamera:^{
         
-        if ([UdeskSDKConfig customConfig].smallVideoEnabled && ud_isIOS8) {
-            
+        if ([UdeskSDKConfig customConfig].smallVideoEnabled) {
             if ([[UdeskSDKUtil currentViewController] isKindOfClass:[UdeskSmallVideoViewController class]]) {
                 return ;
             }
@@ -647,8 +641,6 @@ static CGFloat udInputBarHeight = 54.0f;
             [self presentViewController:nav animated:YES completion:nil];
             return;
         }
-        
-        [self sendImageWithSourceType:UIImagePickerControllerSourceTypeCamera];
     }];
 }
 
@@ -692,37 +684,6 @@ static CGFloat udInputBarHeight = 54.0f;
 - (void)didFinishCaptureImage:(UIImage *)image {
     
     [self sendImageMessageWithImage:image completion:nil];
-}
-
-//ios8以下的选择图片和拍照方式
-- (void)sendImageWithSourceType:(UIImagePickerControllerSourceType)sourceType {
-    
-    //打开图片选择器
-    void (^PickerMediaBlock)(UIImage *image) = ^(UIImage *image) {
-        if (image) {
-            [self sendImageMessageWithImage:[UdeskImageUtil fixOrientation:image] completion:nil];
-        }
-    };
-    
-    //打开图片选择器(gif)
-    void (^PickerMediaGIFBlock)(NSData *gifData) = ^(NSData *gifData) {
-        if (gifData) {
-            [self sendGIFMessageWithGIFData:gifData completion:nil];
-        }
-    };
-    
-    //打开视频选择器
-    void (^PickerMediaVideoBlock)(NSString *filePath,NSString *videoName) = ^(NSString *filePath,NSString *videoName) {
-        if (filePath) {
-            [self sendVideoMessageWithVideoFile:filePath completion:nil];
-        }
-    };
-    
-    [self.photographyHelper showImagePickerControllerSourceType:sourceType
-                                               onViewController:self
-                                                        compled:PickerMediaBlock
-                                                     compledGif:PickerMediaGIFBlock
-                                                   compledVideo:PickerMediaVideoBlock];
 }
 
 
@@ -1545,14 +1506,6 @@ static CGFloat udInputBarHeight = 54.0f;
         [self.view addSubview:_robotTipsView];
     }
     return _robotTipsView;
-}
-
-//图片选择器
-- (UdeskImagePicker *)photographyHelper {
-    if (!_photographyHelper) {
-        _photographyHelper = [[UdeskImagePicker alloc] init];
-    }
-    return _photographyHelper;
 }
 
 //机器人录音
