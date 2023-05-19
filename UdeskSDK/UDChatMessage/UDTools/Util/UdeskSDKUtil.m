@@ -11,8 +11,30 @@
 
 static NSString *kUdeskGroupId = @"kUdeskGroupId";
 static NSString *kUdeskMenuId = @"kUdeskMenuId";
-
+static BOOL udSDKIsLandScape = NO;
 @implementation UdeskSDKUtil
+
++ (instancetype)instanceUtil {
+    
+    static UdeskSDKUtil *instanceUtil = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        instanceUtil = [[self alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver:instanceUtil selector:@selector(statusBarOrientationChanged:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    });
+    
+    return instanceUtil;
+}
+
+- (void)statusBarOrientationChanged:(NSNotification* )notf
+{
+    udSDKIsLandScape = NO;
+    if ([UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationLandscapeRight ||
+        [UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationLandscapeLeft) {
+        udSDKIsLandScape = YES;
+    }
+}
 
 //字符串转字典
 + (id)dictionaryWithJSON:(NSString *)json {
@@ -344,4 +366,16 @@ static NSString *kUdeskMenuId = @"kUdeskMenuId";
     return [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
    
 }
+
+//监听屏幕旋转
++ (void)listenScreenRotate
+{
+    [UdeskSDKUtil instanceUtil];
+}
+//是否横屏
++ (BOOL)isLandScape
+{
+    return udSDKIsLandScape;
+}
+
 @end

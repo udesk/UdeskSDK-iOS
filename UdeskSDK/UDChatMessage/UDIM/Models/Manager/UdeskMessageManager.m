@@ -44,7 +44,7 @@
     self = [super init];
     if (self) {
         _sdkSetting = setting;
-        self.messageAlertMsg = [[UdeskMessage alloc] initWithChatNew:@"以下是新消息"];
+        self.messageAlertMsg = [[UdeskMessage alloc] initWithChatNew:getUDLocalizedString(@"udesk_here_new_messages")];
         self.messagesArrayModificationQueue = dispatch_queue_create("com.udesk.sdk.message.array", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
@@ -64,7 +64,7 @@
     [UdeskManager fetchServersMessage:^(NSArray *msgList,NSError *error){
         @udStrongify(self);
         if (!error) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.89 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self fetchDatabaseMessage:msgList];
             });
         }
@@ -74,30 +74,33 @@
 //获取本地消息数据
 - (void)fetchDatabaseMessage:(NSArray *)serverMsgList {
     
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
     @udWeakify(self);
     [UdeskManager fetchDatabaseMessagesWithDate:[NSDate date] result:^(NSArray *messagesArray,BOOL hasMore) {
         @udStrongify(self);
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
             self.isShowRefresh = hasMore;
-            if (messagesArray.count) {
-                [self updateMessagesArrayWithMessages:messagesArray];
-            }
-            
+        
             //极端情况下，读取数据库失败，把服务器上拉取的记录做一次处理
             if (!messagesArray.count && serverMsgList.count > 0) {
                 //重新排序
-                NSArray *sortedMsgArray = [self mergeMessagesFromServers:serverMsgList dbMessages:@[serverMsgList.firstObject]];
-                if (sortedMsgArray && sortedMsgArray.count > 0) {
-                    [self updateMessagesArrayWithMessages:sortedMsgArray];
-                }
+                messagesArray = [serverMsgList sortedArrayUsingComparator:^NSComparisonResult(UdeskMessage * obj1, UdeskMessage * obj2) {
+                    if (obj2.timestamp && obj1.timestamp) {
+                        return [obj1.timestamp compare:obj2.timestamp];
+                    }
+                    return NSOrderedSame;
+                }];
+                
+            }
+            if (messagesArray && messagesArray.count > 0) {
+                [self updateMessagesArrayWithMessages:messagesArray];
             }
             
             //更新排队文案
             [self updateQueueMessageInArray];
             //更新UI
             [self updateCallbackMessages];
-        });
-    }];
+        }];
+    });
 }
 
 //更新消息数组
@@ -120,15 +123,17 @@
 }
 
 //合并消息
-- (NSArray *)mergeMessagesFromServers:(NSArray *)serversMessages dbMessages:(NSArray *)dbMessages {
-    if (!serversMessages || serversMessages == (id)kCFNull || !serversMessages.count) return nil;
-    if (!dbMessages || dbMessages == (id)kCFNull || !dbMessages.count) return nil;
-    if (![serversMessages.firstObject isKindOfClass:[UdeskMessage class]]) return nil;
-    if (![dbMessages.firstObject isKindOfClass:[UdeskMessage class]]) return nil;
+//无新消息返回nil
+//有新消息返回新array
+- (NSArray *)mergeMessages:(NSArray *)newMessages toMessages:(NSArray *)currentMessages {
+    if (!newMessages || newMessages == (id)kCFNull || !newMessages.count) return nil;
+    if (!currentMessages || currentMessages == (id)kCFNull || !currentMessages.count) return nil;
+    if (![newMessages.firstObject isKindOfClass:[UdeskMessage class]]) return nil;
+    if (![currentMessages.firstObject isKindOfClass:[UdeskMessage class]]) return nil;
     
-    NSMutableArray *tmpArray = [NSMutableArray arrayWithArray:dbMessages];
+    NSMutableArray *tmpArray = [NSMutableArray arrayWithArray:currentMessages];
     BOOL somethingWrong = NO;
-    for (UdeskMessage *msg in serversMessages) {
+    for (UdeskMessage *msg in newMessages) {
         if (![self checkMessage:msg existInList:tmpArray]) {
             [tmpArray addObject:msg];
             //有数据不一致
@@ -154,10 +159,15 @@
 //加载更多DB消息
 - (void)fetchNextPageMessages {
     
+    if(!self.messagesArray.count){
+        [self fetchMessages];
+        return;
+    }
+    
     UdeskBaseMessage *lastMessage = self.messagesArray.firstObject;
     
     @udWeakify(self);
-    [UdeskManager fetchServersMessage:^(NSArray *msgList, NSError *error) {
+    [UdeskManager fetchMoreServersMessage:^(NSArray *msgList, NSError *error) {
         @udStrongify(self);
         [self fetchNextPageDatebaseMessage:lastMessage.message.timestamp];
     }];
@@ -174,19 +184,12 @@
             
             self.isShowRefresh = hasMore;
             if (messagesArray.count) {
-                
-                NSArray *moreMessagesArray = [self mergeMessagesFromServers:messagesArray dbMessages:[self.messagesArray valueForKey:@"message"]];
+                NSArray *moreMessagesArray = [self mergeMessages:messagesArray toMessages:[self.messagesArray valueForKey:@"message"]];
                 if (moreMessagesArray) {
                     self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:moreMessagesArray lastMessage:nil];
                 }
-                [self updateCallbackMoreMessages];
-            } else {
-                //没有记录更新的时候，停0.5s再刷新
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [self updateCallbackMoreMessages];
-                });
             }
-            
+            [self updateCallbackMoreMessages];
         }];
     });
 }
@@ -411,7 +414,7 @@
     }
 }
 
-//去重
+//去重 & 排序
 - (void)filterRepeatMessages {
     
     @try {
@@ -423,7 +426,14 @@
             }
         }
         
-        self.messagesArray = [empty copy];
+        NSArray *sortedArray = [empty sortedArrayUsingComparator:^NSComparisonResult(UdeskBaseMessage * obj1, UdeskBaseMessage * obj2) {
+            if (obj2.message.timestamp && obj1.message.timestamp) {
+                return [obj1.message.timestamp compare:obj2.message.timestamp];
+            }
+            return NSOrderedSame;
+        }];
+
+        self.messagesArray = sortedArray;
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);

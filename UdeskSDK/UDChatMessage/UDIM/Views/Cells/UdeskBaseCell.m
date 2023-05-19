@@ -301,10 +301,7 @@
 #pragma mark - 机器人转人工
 - (void)setupAnswerTransfer {
     
-    if ([self.baseMessage.message.switchStaffType isKindOfClass:[NSString class]] && ([self.baseMessage.message.switchStaffType isEqualToString:@"1"] ||
-        [self.baseMessage.message.switchStaffType isEqualToString:@"4"])
-        ) {
-        
+    if (self.baseMessage.message.showTransfer) {
         if (![UdeskSDKUtil isBlankString:self.baseMessage.message.switchStaffTips]) {
             CGSize size = [UdeskStringSizeUtil sizeWithText:self.baseMessage.message.switchStaffTips font:[UIFont systemFontOfSize:14] size:CGSizeMake(UD_SCREEN_WIDTH-(kUDBubbleToHorizontalEdgeSpacing*2), kUDTransferHeight)];
             CGFloat transferWidth = size.width + (kUDBubbleToHorizontalEdgeSpacing*4);

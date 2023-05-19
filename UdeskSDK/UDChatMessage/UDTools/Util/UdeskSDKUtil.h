@@ -47,4 +47,9 @@
 //url链接校准 - 可能不处理
 + (NSString *)urlQueryFix:(NSString *)urlString;
 
+//监听屏幕旋转
++ (void)listenScreenRotate;
+//是否横屏
++ (BOOL)isLandScape;
+
 @end

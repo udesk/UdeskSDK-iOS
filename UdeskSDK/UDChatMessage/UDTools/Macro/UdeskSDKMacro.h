@@ -8,6 +8,7 @@
 
 #ifndef UdeskSDKMacro_h
 #define UdeskSDKMacro_h
+#import "UdeskSDKUtil.h"
 
 #define LANGUAGE_SET @"udLangeuageset"
 
@@ -108,15 +109,7 @@ if (@available(iOS 11.0, *)) { \
 })
 
 // 判断当前屏幕是否是横屏
-#define udIsLandScape ({ \
-BOOL isL = NO; \
-if ([UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationLandscapeRight || \
-    [UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationLandscapeLeft) {  \
-    isL = YES; \
-} \
-isL; \
-})
-
+#define udIsLandScape [UdeskSDKUtil isLandScape]
 // View 圆角和加边框
 #define UDViewBorderRadius(View, Radius, Width, Color)\
 \

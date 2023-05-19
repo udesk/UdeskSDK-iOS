@@ -72,6 +72,8 @@ static CGFloat udInputBarHeight = 54.0f;
     [UdeskAgentManager udAgentId];
     //进入sdk页面
     [UdeskManager enterSDKPage];
+    //监听屏幕旋转
+    [UdeskSDKUtil listenScreenRotate];
     //初始化viewModel
     [self setupViewModel];
     //初始化消息页面布局
@@ -766,18 +768,23 @@ static CGFloat udInputBarHeight = 54.0f;
 
 //下拉加载更多数据
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    if (scrollView.contentOffset.y<=0 && self.messageTableView.isRefresh) {
-        //开始刷新
+    if (scrollView.contentOffset.y<0 && self.messageTableView.canRefresh) {
+        
+        //避免动画时连续触发
+        static NSTimeInterval lastRefresh = 0;
+        NSTimeInterval nowTime = [NSDate timeIntervalSinceReferenceDate];
+        if(nowTime - lastRefresh < 1){
+            return;
+        }
+        lastRefresh = nowTime;
+        
         [self.messageTableView startLoadingMoreMessages];
         //获取更多数据
         [self.chatViewModel fetchNextPageMessages];
-        //延迟1.5，提高用户体验
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (!self.chatViewModel.isShowRefresh) {
-                //关闭刷新、刷新数据
-                [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
-            }
+        //延迟10s超时， 提供再次下拉机会
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //关闭刷新、刷新数据
+            [self.messageTableView finishLoadingMoreMessages:self.chatViewModel.isShowRefresh];
         });
     }
 }

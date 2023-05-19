@@ -21,7 +21,7 @@
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.separatorColor = [UIColor clearColor];
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
-        
+        self.scrollsToTop = NO;
         if (ud_isIOS11) {
             self.estimatedRowHeight = 0;
             self.estimatedSectionHeaderHeight = 0;
@@ -38,7 +38,7 @@
         
         self.tableHeaderView = _headView;
         
-        _isRefresh = YES;
+        self.canRefresh = YES;
     }
     return self;
 }
@@ -70,28 +70,22 @@
 
     self.headView.hidden = NO;
     [self.loading startAnimating];
-    _isRefresh = NO;
+    self.canRefresh = NO;
 }
 
 //下拉结束
 - (void)finishLoadingMoreMessages:(BOOL)isShowRefresh {
-
-    //消息小于20条移除菊花
+    //没有更多，移除菊花
     if (!isShowRefresh) {
-        
         //没有更多消息停止刷新
         [self.loading stopAnimating];
         self.headView.hidden = YES;
         [self.headView removeFromSuperview];
         [self.loading removeFromSuperview];
         self.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];;
-        
-        _isRefresh = NO;
-        
-    }else {
-    
-        _isRefresh = YES;
     }
+    
+    self.canRefresh = isShowRefresh;
 }
 
 //设置TabelView bottom

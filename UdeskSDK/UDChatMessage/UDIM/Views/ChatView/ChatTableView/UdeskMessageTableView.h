@@ -15,7 +15,7 @@
 /** loading */
 @property (nonatomic, strong) UIActivityIndicatorView *loading;
 /** 记录刷新状态 */
-@property (nonatomic, assign) BOOL                    isRefresh;
+@property (nonatomic, assign) BOOL                    canRefresh;
 
 /** 开始加载更多消息 */
 - (void)startLoadingMoreMessages;

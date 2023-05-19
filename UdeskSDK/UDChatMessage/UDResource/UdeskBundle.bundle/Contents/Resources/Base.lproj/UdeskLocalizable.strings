@@ -139,3 +139,5 @@
 //customer
 "udesk_video_call_customer_cancel" = "对方已取消";
 "udesk_video_call_customer_decline" = "已拒绝";
+
+"udesk_here_new_messages" = "以下是新消息";

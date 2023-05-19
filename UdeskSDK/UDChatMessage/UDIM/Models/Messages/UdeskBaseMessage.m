@@ -9,6 +9,7 @@
 #import "UdeskBaseMessage.h"
 #import "UdeskDateUtil.h"
 #import "NSAttributedString+UdeskHTML.h"
+#import "UdeskBundleUtils.h"
 
 /** 头像距离屏幕水平边沿距离 */
 const CGFloat kUDAvatarToHorizontalEdgeSpacing = 12.0;
@@ -129,8 +130,12 @@ static CGFloat const kUDRichMendSpacingTwo = 5.0;
 //转人工
 - (void)layoutTransfer {
     
-    if ([self.message.switchStaffType isEqualToString:@"1"] || [self.message.switchStaffType isEqualToString:@"4"]) {
+    if (self.message.showTransfer) {
         _transferHeight = kUDTransferHeight + kUDTransferVerticalEdgeSpacing;
+        //显示转人工 但是没内容给个占位内容
+        if(!self.message.content.length){
+            self.message.content = getUDLocalizedString(@"udesk_showTransfer_place_tip");
+        }
     }
 }
 

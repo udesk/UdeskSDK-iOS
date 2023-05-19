@@ -170,6 +170,13 @@
 + (void)fetchServersMessage:(void(^)(NSArray *msgList,NSError *error))completion;
 
 /**
+ 获取更多会话消息记录
+ 
+ @param completion 完成回调
+ */
++ (void)fetchMoreServersMessage:(void(^)(NSArray *msgList,NSError *error))completion;
+
+/**
  *  发送消息
  *
  *  @param message    UDMessage类型消息体

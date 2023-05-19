@@ -139,3 +139,5 @@
 //customer
 "udesk_video_call_customer_cancel" = "Other user cancelled";
 "udesk_video_call_customer_decline" = "Declined";
+
+"udesk_here_new_messages" = "Here are the new messages";
