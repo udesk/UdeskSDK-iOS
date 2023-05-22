@@ -1041,6 +1041,13 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.2.13版本更新功能：
+
+1、优化历史消息加载
+2、优化IM消息发送稳定性
+ 
+-----
+
 sdk v5.2.12版本更新功能：
 
 1、兼容文件消息文件名特殊符号
