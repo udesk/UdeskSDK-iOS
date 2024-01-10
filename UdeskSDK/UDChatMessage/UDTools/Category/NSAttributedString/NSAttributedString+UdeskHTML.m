@@ -334,7 +334,20 @@
                         NSTextAttachment *imageAttachment = [[NSTextAttachment alloc] init];
                         imageAttachment.image = image;
                         
-                        CGSize imageSize = [UdeskImageUtil richImageSize:image];
+                        CGSize imageSize;
+                        NSString *imageW;
+                        NSString *imageH;
+                        if ([attributeDictionary.allKeys containsObject:@"width"]) {
+                            imageW = attributeDictionary[@"width"];
+                        }
+                        if ([attributeDictionary.allKeys containsObject:@"height"]) {
+                            imageH = attributeDictionary[@"height"];
+                        }
+                        if (![UdeskSDKUtil isBlankString:imageW] && ![UdeskSDKUtil isBlankString:imageH]) {
+                            imageSize = CGSizeMake(imageW.floatValue, imageH.floatValue);
+                        } else {
+                            imageSize = [UdeskImageUtil richImageSize:image];
+                        }
                         imageAttachment.bounds = CGRectMake(0, 0, imageSize.width, imageSize.height);
                         
                         NSAttributedString *imageAttributeString = [NSAttributedString attributedStringWithAttachment:imageAttachment];

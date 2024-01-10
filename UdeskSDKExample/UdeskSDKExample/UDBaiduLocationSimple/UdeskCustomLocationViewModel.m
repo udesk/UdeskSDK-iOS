@@ -79,33 +79,23 @@
 - (void)beginReverseGeoCodeSearch:(CLLocationCoordinate2D)pt
 {
     //发起反向地理编码检索
-    BMKReverseGeoCodeOption *reverseGeoCodeSearchOption = [[BMKReverseGeoCodeOption alloc]init];
-    reverseGeoCodeSearchOption.reverseGeoPoint = pt;
-    BOOL flag = [_codeSearch reverseGeoCode:reverseGeoCodeSearchOption];
-    if(flag)
-    {
-        NSLog(@"反geo检索发送成功");
-    }
-    else
-    {
-        NSLog(@"反geo检索发送失败");
-    }
+    BMKReverseGeoCodeSearchOption *reverseGeoCodeSearchOption = [[BMKReverseGeoCodeSearchOption alloc]init];
+    reverseGeoCodeSearchOption.location = pt;
+    [_codeSearch reverseGeoCode:reverseGeoCodeSearchOption];
 }
 
 #pragma mark - BMKGeoCodeSearchDelegate
 /** 接收反向地理编码结果 */
-- (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
+- (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeSearchResult *)result errorCode:(BMKSearchErrorCode)error
 {
     //检索结果正常返回
     if (error == BMK_SEARCH_NO_ERROR)
     {
         [self addNerbyModel:result];
-    } else {
-        NSLog(@"抱歉，未找到结果");
     }
 }
 
-- (void)addNerbyModel:(BMKReverseGeoCodeResult *)result {
+- (void)addNerbyModel:(BMKReverseGeoCodeSearchResult *)result {
     
     NSMutableArray *array = [NSMutableArray arrayWithArray:_locationArray];
     [array removeAllObjects];
@@ -171,38 +161,29 @@
 - (void)search:(NSString *)text {
     
     //初始化一个周边云检索对象
-    BMKCitySearchOption *option = [[BMKCitySearchOption alloc] init];
+    BMKPOICitySearchOption *option = [[BMKPOICitySearchOption alloc] init];
     //索引 默认为0
     option.pageIndex = 0;
     //页数默认为10
-    option.pageCapacity = 50;
+    option.pageSize = 50;
     //搜索的关键字
     option.keyword = text;
     option.city = @"北京";
     
     //根据中心点、半径和检索词发起周边检索
-    BOOL flag = [self.poiSearch poiSearchInCity:option];
-    if (flag) {
-        NSLog(@"搜索成功");
-    }
-    else {
-        
-        NSLog(@"搜索失败");
-    }
+    [self.poiSearch poiSearchInCity:option];
 }
 
-- (void)onGetPoiResult:(BMKPoiSearch*)searcher result:(BMKPoiResult *)poiResult errorCode:(BMKSearchErrorCode)errorCode {
+- (void)onGetPoiResult:(BMKPoiSearch*)searcher result:(BMKPOISearchResult*)poiResult errorCode:(BMKSearchErrorCode)errorCode {
     
     //检索结果正常返回
     if (errorCode == BMK_SEARCH_NO_ERROR)
     {
         [self addPoiResult:poiResult];
-    } else {
-        NSLog(@"抱歉，未找到结果");
     }
 }
 
-- (void)addPoiResult:(BMKPoiResult *)result {
+- (void)addPoiResult:(BMKPOISearchResult *)result {
     
     NSMutableArray *array = [NSMutableArray arrayWithArray:_resultArray];
     [array removeAllObjects];

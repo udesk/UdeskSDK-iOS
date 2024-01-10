@@ -10,6 +10,8 @@
 
 **如发现问题建议先升级到最新版本SDK，或者下载demo做一下验证**
 
+**如需兼容armv7架构 推荐使用 v5.2.9 或联系售后客服**
+
 
 ### SDK下载地址
 
@@ -1040,6 +1042,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+
+sdk v5.2.15版本更新功能：
+
+1、优化富文本中图片尺寸解析能力
+ 
+-----
 
 sdk v5.2.14版本更新功能：
 

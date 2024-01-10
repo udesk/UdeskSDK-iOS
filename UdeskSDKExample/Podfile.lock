@@ -1,6 +1,6 @@
 PODS:
   - AgoraRtcEngine_iOS (2.0.2)
-  - BaiduMapKit (3.4.4)
+  - BaiduMapKit (4.1.1)
   - JCore (1.2.6)
   - JPush (3.0.9):
     - JCore (~> 1.2.0)
@@ -8,7 +8,7 @@ PODS:
 
 DEPENDENCIES:
   - AgoraRtcEngine_iOS (~> 2.0.2)
-  - BaiduMapKit (~> 3.4.4)
+  - BaiduMapKit (~> 4.1.1)
   - JPush (~> 3.0.9)
   - Masonry (~> 1.1.0)
 
@@ -22,11 +22,11 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   AgoraRtcEngine_iOS: 67884f8bbe46aae8ed9af4195b0683562f083fde
-  BaiduMapKit: 4ac88f5a363500760392825b69709f4a0125f81e
+  BaiduMapKit: 51bba432a28316680676b4d453a70e5031f3a7eb
   JCore: cae516dd2bf1a73b578ce6e1065abd49e709e0f7
   JPush: 48041e8c5ad2ef9b48709eb0888af9640b36e9b0
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
 
-PODFILE CHECKSUM: fd6399e78d5874cb9db6fd044bc057c93b3b4377
+PODFILE CHECKSUM: ba68235e3c948161ed0c96f205e04b7d0e95a6f6
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.12.1
