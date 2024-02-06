@@ -21,7 +21,7 @@
 
 
 /// Returns nil in App Extension.
-static UIApplication *_UdeskYYSharedApplication() {
+static UIApplication *_UdeskYYSharedApplication(void) {
     static BOOL isAppExtension = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -51,7 +51,7 @@ static BOOL UdeskYYCGImageLastPixelFilled(CGImageRef image) {
 }
 
 /// Returns JPEG SOS (Start Of Scan) Marker
-static NSData *UdeskJPEGSOSMarker() {
+static NSData *UdeskJPEGSOSMarker(void) {
     // "Start Of Scan" Marker
     static NSData *marker = nil;
     static dispatch_once_t onceToken;
@@ -66,7 +66,7 @@ static NSData *UdeskJPEGSOSMarker() {
 static NSMutableSet *UdeskURLBlacklist;
 static dispatch_semaphore_t UdeskURLBlacklistLock;
 
-static void UdeskURLBlacklistInit() {
+static void UdeskURLBlacklistInit(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         UdeskURLBlacklist = [NSMutableSet new];

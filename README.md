@@ -1043,6 +1043,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+sdk v5.2.16版本更新功能：
+
+1、xcode15 编译
+2、部分过期api兼容和警告消除
+ 
+ 
 sdk v5.2.15版本更新功能：
 
 1、优化富文本中图片尺寸解析能力

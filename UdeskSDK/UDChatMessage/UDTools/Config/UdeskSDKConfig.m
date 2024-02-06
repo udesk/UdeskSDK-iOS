@@ -75,6 +75,7 @@
     self.orientationMask = UIInterfaceOrientationMaskPortrait;
     self.robotWelcomeMessage = getUDLocalizedString(@"udesk_robot_welcome_message");
     self.quitQueueMode = @"mark";
+    self.isInitUdeskCall = NO;
 }
 
 @end

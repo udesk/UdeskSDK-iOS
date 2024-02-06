@@ -170,8 +170,9 @@ static NSString *kUdeskDeveloperCellId = @"kUdeskDeveloperCellId";
             [chatViewManager pushUdeskInViewController:self completion:nil];
         }
         else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请输入ID" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-            [alertView show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"请输入ID" preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
         }
     }]];
     

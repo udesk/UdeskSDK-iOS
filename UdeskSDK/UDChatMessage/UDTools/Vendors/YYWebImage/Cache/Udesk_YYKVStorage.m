@@ -57,7 +57,7 @@ static NSString *const kUdeskTrashDirectoryName = @"trash";
  */
 
 /// Returns nil in App Extension.
-static UIApplication *_UdeskYYSharedApplication() {
+static UIApplication *_UdeskYYSharedApplication(void) {
     static BOOL isAppExtension = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

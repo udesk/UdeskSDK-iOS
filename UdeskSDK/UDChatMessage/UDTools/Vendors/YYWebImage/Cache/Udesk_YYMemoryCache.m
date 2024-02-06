@@ -16,7 +16,7 @@
 #import <pthread.h>
 
 
-static inline dispatch_queue_t UdeskYYMemoryCacheGetReleaseQueue() {
+static inline dispatch_queue_t UdeskYYMemoryCacheGetReleaseQueue(void) {
     return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
 }
 

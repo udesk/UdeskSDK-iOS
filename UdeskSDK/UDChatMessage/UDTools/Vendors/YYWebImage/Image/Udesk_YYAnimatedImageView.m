@@ -26,13 +26,13 @@ __VA_ARGS__; \
 dispatch_semaphore_signal(view->_lock);
 
 
-static int64_t _UdeskYYDeviceMemoryTotal() {
+static int64_t _UdeskYYDeviceMemoryTotal(void) {
     int64_t mem = [[NSProcessInfo processInfo] physicalMemory];
     if (mem < -1) mem = -1;
         return mem;
 }
 
-static int64_t _UdeskYYDeviceMemoryFree() {
+static int64_t _UdeskYYDeviceMemoryFree(void) {
     mach_port_t host_port = mach_host_self();
     mach_msg_type_number_t host_size = sizeof(vm_statistics_data_t) / sizeof(integer_t);
     vm_size_t page_size;

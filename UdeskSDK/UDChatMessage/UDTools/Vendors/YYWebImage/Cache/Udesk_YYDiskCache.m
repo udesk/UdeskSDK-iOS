@@ -22,7 +22,7 @@
 static const int extended_data_key;
 
 /// Free disk space in bytes.
-static int64_t _UdeskYYDiskSpaceFree() {
+static int64_t _UdeskYYDiskSpaceFree(void) {
     NSError *error = nil;
     NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfFileSystemForPath:NSHomeDirectory() error:&error];
     if (error) return -1;
@@ -50,7 +50,7 @@ static NSString *_UdeskYYNSStringMD5(NSString *string) {
 static NSMapTable *_udeskGlobalInstances;
 static dispatch_semaphore_t _udeskGlobalInstancesLock;
 
-static void _UdeskYYDiskCacheInitGlobal() {
+static void _UdeskYYDiskCacheInitGlobal(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _udeskGlobalInstancesLock = dispatch_semaphore_create(1);

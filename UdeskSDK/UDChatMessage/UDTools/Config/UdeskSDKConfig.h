@@ -107,6 +107,11 @@ typedef NS_ENUM(NSUInteger, UDLanguageType) {
 /** 小视频录制时长（默认15s） */
 @property (nonatomic, assign) CGFloat   smallVideoDuration;
 
+/*  ----------- 视频通话 ------------  */
+
+/** 是否初始化UdeskCall组件（默认false），需要引入UdeskCall共同使用 */
+@property (nonatomic, assign) BOOL isInitUdeskCall;
+
 /*  ----------- 自定义工具栏 ------------  */
 
 /** 是否隐藏（默认隐藏，此参数只控制输入框上方的自定义按钮，不控制更多里的自定义按钮）*/

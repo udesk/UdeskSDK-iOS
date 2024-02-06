@@ -2481,7 +2481,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = DVNW3ZM7G9;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2505,7 +2505,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				MARKETING_VERSION = 5.2.15;
+				MARKETING_VERSION = 5.2.16;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -2574,7 +2574,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = DVNW3ZM7G9;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2598,7 +2598,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				MARKETING_VERSION = 5.2.15;
+				MARKETING_VERSION = 5.2.16;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",

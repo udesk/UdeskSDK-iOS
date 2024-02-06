@@ -15,7 +15,7 @@
  An array of NSNumber objects, shows the best order for path scale search.
  e.g. iPhone3GS:@[@1,@2,@3] iPhone5:@[@2,@3,@1]  iPhone6 Plus:@[@3,@2,@1]
  */
-static NSArray *_UdeskNSBundlePreferredScales() {
+static NSArray *_UdeskNSBundlePreferredScales(void) {
     static NSArray *scales;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

@@ -17,6 +17,7 @@
 #import "UdeskMessageUtil.h"
 #import "UdeskManager.h"
 #import "UdeskThrottleUtil.h"
+#import "UdeskSDKConfig.h"
 //#import "Udesk_YYWebImage.h"
 
 @interface UdeskChatViewModel()<UDManagerDelegate>
@@ -840,7 +841,9 @@
 
 //配置视频通话
 - (void)configUdeskCallWithAgent:(UdeskAgent *)agentModel {
-    
+    if(![UdeskSDKConfig customConfig].isInitUdeskCall){
+        return;
+    }
 #if __has_include(<UdeskCall/UdeskCall.h>)
     [self.callManager configUdeskCallWithCustomerJID:[UdeskManager customerJID] agentModel:agentModel];
 #endif

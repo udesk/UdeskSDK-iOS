@@ -14,11 +14,11 @@
 #import "UIImage+Udesk_YYWebImage.h"
 #import "Udesk_YYCache.h"
 
-static inline dispatch_queue_t UdeskYYImageCacheIOQueue() {
+static inline dispatch_queue_t UdeskYYImageCacheIOQueue(void) {
     return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 }
 
-static inline dispatch_queue_t UdeskYYImageCacheDecodeQueue() {
+static inline dispatch_queue_t UdeskYYImageCacheDecodeQueue(void) {
     return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
 }
 
