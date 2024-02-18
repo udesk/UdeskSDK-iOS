@@ -12,6 +12,7 @@
 
 **如需兼容armv7架构 推荐使用 v5.2.9 或联系售后客服**
 
+**Xcode15编译，提示文件缺失参见【常见问题】**
 
 ### SDK下载地址
 
@@ -948,6 +949,42 @@ track.params = @[params1,params2];
 
 # 六、常见问题
 
+### xcode15编译："SDK does not contain 'libarclite' at the path..."
+xcode15编译提示缺少文件，可参考如下操作：
+
+一、仔细查看报错代码:
+
+```
+SDK does not contain 'libarclite' at the path 
+'/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/
+lib/arc/libarclite_iphonesimulator.a'; try increasing the minimum deployment target
+```
+这个路径: 缺少文件, 那么进入这个路径进行查看
+```
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/
+lib/
+```
+没有arc文件夹,也没有libarclite_iphonesimulator.a文件,
+
+1、新建arc文件夹
+
+2、下载:https://github.com/kamyarelyasi/Libarclite-Files中的libarclite_iphonesimulator.a
+
+3、将下载下来的文件粘贴到/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/arc下
+
+二、重新运行后将修复这个问题
+
+三、如果是真机调试运行会出现iPhone.a文件丢失，libarclite_iphoneos.a
+
+1、新建arc文件夹
+
+2、下载:https://github.com/kamyarelyasi/Libarclite-Files中的libarclite_iphoneos.a
+
+3、将下载下来的文件粘贴到/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/arc下
+
+四、重新运行后将修复这个问题
+
+
 ### 键盘弹起后输入框和键盘之间有偏移
 
 请检查是否使用了第三方开源库[IQKeyboardManager](https://github.com/hackiftekhar/IQKeyboardManager)，该开源库会和判断输入框的逻辑冲突。
@@ -1046,9 +1083,11 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 sdk v5.2.16版本更新功能：
 
 1、xcode15 编译
+
 2、部分过期api兼容和警告消除
  
- 
+-----
+
 sdk v5.2.15版本更新功能：
 
 1、优化富文本中图片尺寸解析能力
@@ -1064,6 +1103,7 @@ sdk v5.2.14版本更新功能：
 sdk v5.2.13版本更新功能：
 
 1、优化历史消息加载
+
 2、优化IM消息发送稳定性
  
 -----
@@ -1071,6 +1111,7 @@ sdk v5.2.13版本更新功能：
 sdk v5.2.12版本更新功能：
 
 1、兼容文件消息文件名特殊符号
+
 2、修复图片和视频中文名偶尔读取失败
  
 -----
@@ -1078,6 +1119,7 @@ sdk v5.2.12版本更新功能：
 sdk v5.2.11版本更新功能：
 
 1、机器人转人工
+
 2、横屏聊天信息溢出屏幕外修复
  
 -----
@@ -1085,7 +1127,9 @@ sdk v5.2.11版本更新功能：
 sdk v5.2.10版本更新功能：
 
 1、修复 富文本嵌入图片打开
+
 2、修复 视频消息无发送状态
+
 3、修复 app被杀死时放弃排队
  
 -----
