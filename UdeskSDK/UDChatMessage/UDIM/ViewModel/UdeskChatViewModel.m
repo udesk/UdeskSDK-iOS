@@ -18,6 +18,7 @@
 #import "UdeskManager.h"
 #import "UdeskThrottleUtil.h"
 #import "UdeskSDKConfig.h"
+#import "UdeskAgentUtil.h"
 //#import "Udesk_YYWebImage.h"
 
 @interface UdeskChatViewModel()<UDManagerDelegate>
@@ -34,6 +35,8 @@
 @property (nonatomic, strong) NSMutableArray           *preSessionMessages;
 /** 机器人消息个数 */
 @property (nonatomic, assign) NSInteger robotMessageCount;
+
+@property (nonatomic, assign)BOOL app_willActive;//记录一次app由后台变为活跃
 
 @end
 
@@ -57,6 +60,15 @@
         if (!self.sdkSetting || self.sdkSetting == (id)kCFNull || ![self.sdkSetting isKindOfClass:[UdeskSetting class]]) {
             [self fetchSDKSetting];
         }
+        
+        //监听进入后台
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        
+        //将要进入前台
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+        
+        //进入前台
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     }
     return self;
 }
@@ -855,6 +867,29 @@
 #if __has_include(<UdeskCall/UdeskCall.h>)
     [self.callManager startUdeskVideoCall];
 #endif
+}
+
+- (void)appDidEnterBackground:(NSNotification *)ntf {
+    //放弃排队
+    if (self.agentManager.agentModel.statusType == UDAgentStatusResultQueue) {   
+        [UdeskAgentUtil setUdeskQuitQueue:YES];
+        [UdeskManager quitQueueWithType:[UdeskSDKConfig customConfig].quitQueueMode];
+    }
+}
+
+- (void)appWillEnterForeground:(NSNotification *)ntf {
+    self.app_willActive = YES;
+}
+
+- (void)appDidBecomeActive:(NSNotification *)ntf {
+    if(self.app_willActive){
+        //前后台切换时刷新排队状态
+        if (self.agentManager.agentModel.statusType == UDAgentStatusResultQueue) {
+            [UdeskAgentUtil setUdeskQuitQueue:NO];
+            [self requestAgentDataWithPreSessionMessage:nil completion:nil];
+        }
+        self.app_willActive = NO;
+    }
 }
 
 - (void)dealloc

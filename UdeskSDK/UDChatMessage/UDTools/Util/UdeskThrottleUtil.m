@@ -49,4 +49,21 @@ void ud_dispatch_throttle(NSTimeInterval threshold, UdeskThrottleBlock block) {
     scheduledSources[key] = source;
 }
 
++ (void)throttle:(NSTimeInterval)threshold queue:(dispatch_queue_t)queue key:(NSString *)key block:(UdeskThrottleBlock)block
+{
+    [UdeskThrottleUtil _throttle:threshold queue:queue key:key block:block];
+}
+
++ (void)cancelKey:(NSString *)key
+{
+    NSMutableDictionary *scheduledSources = self.scheduledSources;
+    
+    dispatch_source_t source = scheduledSources[key];
+    
+    if (source) {
+        dispatch_source_cancel(source);
+        [scheduledSources removeObjectForKey:key];
+    }
+}
+
 @end

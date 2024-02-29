@@ -160,6 +160,10 @@ typedef NS_ENUM(NSUInteger, UDLanguageType) {
  */
 @property (nonatomic, copy  ) NSString *language;
 /** 放弃排队模式：mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃) */
+/**
+ 若设置 mark ，放弃后仍有机会被客服拉入会话，可配合离线排队超时一起使用
+ 若设置 force_quit 则离开sdk页面或者app进入后台xmpp断连后会立即放弃排队
+ */
 @property (nonatomic, copy  ) NSString *quitQueueMode;
 /** 页面弹出方式 */
 @property (nonatomic, assign) UDTransiteAnimationType presentingAnimation;

@@ -16,5 +16,6 @@ typedef void (^UdeskThrottleBlock) (void);
 @interface UdeskThrottleUtil : NSObject
 
 void ud_dispatch_throttle(NSTimeInterval threshold, UdeskThrottleBlock block);
-
++ (void)throttle:(NSTimeInterval)threshold queue:(dispatch_queue_t)queue key:(NSString *)key block:(UdeskThrottleBlock)block;
++ (void)cancelKey:(NSString *)key;
 @end

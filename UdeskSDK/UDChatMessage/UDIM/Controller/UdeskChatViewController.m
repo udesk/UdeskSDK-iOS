@@ -79,7 +79,6 @@ static CGFloat udInputBarHeight = 54.0f;
     //初始化消息页面布局
     [self setupUI];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appWillBeTerminated:) name:UIApplicationWillTerminateNotification object:nil];
 }
 
 #pragma mark - 初始化ViewModel
@@ -1619,20 +1618,6 @@ static CGFloat udInputBarHeight = 54.0f;
     // 停止播放语音
     [[UdeskAudioPlayer shared] stopAudio];
 }
-
-
-- (void)_appWillBeTerminated:(NSNotification *)ntf {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    [UdeskManager cancelAllOperations];
-    
-    //正在会话/排队
-    if ([self.sdkSetting.status isEqualToString:@"chatting"] || [self.sdkSetting.status isEqualToString:@"queuing"]) {
-        [UdeskManager quitQueueWithType:@"force_quit"];
-    }
-    dispatch_semaphore_signal(semaphore);
-}
-
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
