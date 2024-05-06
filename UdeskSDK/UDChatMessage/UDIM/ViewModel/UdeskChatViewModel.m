@@ -170,6 +170,9 @@
 - (void)didReceiveMessages:(UdeskMessage *)message {
         
     if (!message || message == (id)kCFNull) return ;
+    if ([UdeskSDKUtil isBlankString:message.content] && message.showTransfer) {
+        message.content = getUDLocalizedString(@"udesk_showTransfer_place_tip");
+    }
     if ([UdeskSDKUtil isBlankString:message.content]) return;
     
     //收到消息时当前客服状态不在线 请求客服验证

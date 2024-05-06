@@ -2,6 +2,8 @@
 
 ### 公告
 
+**直达[隐私文件](#PrivacyInfo)**
+
 **接入sdk编译报错误请升级Xcode到最新版本**
 
 **“master” 分支对应的sdk版本是5.0+**
@@ -85,6 +87,66 @@ CoreText.framework
 - 点击的你工程targets->Build Settings 
 - 搜索Other Linker Flags 加入 -lxml2 -ObjC
 - 搜索header search paths 加入/usr/include/libxml2
+
+
+<a id="PrivacyInfo"></a>
+** 隐私文件配置 **
+
+pod接入会自带PrivacyInfo.xcprivacy, 无需额外处理
+
+手动接入的需要配置 PrivacyInfo.xcprivacy，
+
+UdeskSDK 隐私项配置如下，你的工程未如包含其中某项，需自行复制添加到工程
+
+比对和粘贴方式：【右键】你工程的【PrivacyInfo.xcprivacy】文件【Open as】【Source code】即可展示plist文件的编码视图
+```
+<dict>
+    <key>NSPrivacyTracking</key>
+    <false/>
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>C617.1</string>
+            </array>
+        </dict>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryDiskSpace</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>E174.1</string>
+            </array>
+        </dict>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>CA92.1</string>
+            </array>
+        </dict>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>35F9.1</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+```
+
+
+
 
 #### 1.2 CocoaPods 导入
 
@@ -1079,6 +1141,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+
+sdk v5.2.19版本更新功能：
+
+1、隐私文件及相关说明
+ 
+-----
 
 sdk v5.2.18版本更新功能：
 

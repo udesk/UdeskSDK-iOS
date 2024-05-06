@@ -68,6 +68,8 @@
 		44D3A3DD1F66307E001145EA /* UdeskCustomLocationViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 44D3A3DA1F66307E001145EA /* UdeskCustomLocationViewModel.m */; };
 		44D3A3F01F66372B001145EA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44D3A3EF1F66372B001145EA /* MapKit.framework */; };
 		44E6F4181F34BBF400FEDCBB /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44E6F4171F34BBF400FEDCBB /* WebKit.framework */; };
+		84748AF62BDFBEE300CBD45C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 84748AF52BDFBEE300CBD45C /* PrivacyInfo.xcprivacy */; };
+		84748AF82BE0F6BF00CBD45C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 84748AF72BE0F6BF00CBD45C /* README.md */; };
 		84D90321288A7A26009DD765 /* UdeskLocationResultDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D90158288A7A25009DD765 /* UdeskLocationResultDataSource.m */; };
 		84D90322288A7A26009DD765 /* Udesk_HCSStarRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D9015C288A7A25009DD765 /* Udesk_HCSStarRatingView.m */; };
 		84D90323288A7A26009DD765 /* UdeskHPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D9015F288A7A25009DD765 /* UdeskHPTextViewInternal.m */; };
@@ -346,6 +348,8 @@
 		44D3A3DA1F66307E001145EA /* UdeskCustomLocationViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCustomLocationViewModel.m; sourceTree = "<group>"; };
 		44D3A3EF1F66372B001145EA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		44E6F4171F34BBF400FEDCBB /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		84748AF52BDFBEE300CBD45C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		84748AF72BE0F6BF00CBD45C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		84D90158288A7A25009DD765 /* UdeskLocationResultDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskLocationResultDataSource.m; sourceTree = "<group>"; };
 		84D90159288A7A25009DD765 /* UdeskLocationResultDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdeskLocationResultDataSource.h; sourceTree = "<group>"; };
 		84D9015C288A7A25009DD765 /* Udesk_HCSStarRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Udesk_HCSStarRatingView.m; sourceTree = "<group>"; };
@@ -935,6 +939,8 @@
 				448CD8911C979EE40049DE3F /* libxml2.tbd */,
 				44C3A0781C93AE05004BDB2B /* libresolv.tbd */,
 				44C3A0761C93ADFF004BDB2B /* libsqlite3.tbd */,
+				84748AF52BDFBEE300CBD45C /* PrivacyInfo.xcprivacy */,
+				84748AF72BE0F6BF00CBD45C /* README.md */,
 				441AAA1020FD8EF3003528F3 /* UdeskCall */,
 				84D90154288A7A25009DD765 /* UdeskSDK */,
 				44C3A05E1C93ADCE004BDB2B /* UdeskSDKExample */,
@@ -2087,11 +2093,13 @@
 				44210B0B1D7D6CAA003386F5 /* LaunchScreen.storyboard in Resources */,
 				441AAA2F20FD8EF3003528F3 /* UdeskCallInviteView.xib in Resources */,
 				4420BA9520D8FC06005E1D18 /* UdeskPreMessageViewController.xib in Resources */,
+				84748AF62BDFBEE300CBD45C /* PrivacyInfo.xcprivacy in Resources */,
 				84D9036A288A7A26009DD765 /* UdeskBundle.bundle in Resources */,
 				443E8D4921D4D4DA0034AC49 /* joy.png in Resources */,
 				44210B0A1D7D6CAA003386F5 /* Images.xcassets in Resources */,
 				443E8D4221D4D4D90034AC49 /* angry.png in Resources */,
 				443E8D4521D4D4DA0034AC49 /* shy.png in Resources */,
+				84748AF82BE0F6BF00CBD45C /* README.md in Resources */,
 				4420BA9620D8FC06005E1D18 /* UdeskButtonConfigViewController.xib in Resources */,
 				4420BA8B20D8FC06005E1D18 /* UdeskSmallViewTestViewController.xib in Resources */,
 				441AAA2B20FD8EF3003528F3 /* UdeskVideoBundle.bundle in Resources */,
