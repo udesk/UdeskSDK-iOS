@@ -1142,6 +1142,14 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 
 #### 更新记录：
 
+-----
+
+sdk v5.3.0版本更新功能：
+
+1、机器人转人工消息优化
+ 
+-----
+
 sdk v5.2.19版本更新功能：
 
 1、隐私文件及相关说明
