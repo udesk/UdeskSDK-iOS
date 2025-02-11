@@ -46,7 +46,7 @@ master 代码使用Xcode13、iPhone12 iOS15 编译。
 
 ##### **注意：UdeskSDK并不依赖UdeskCall，如果不需要此功能则不要导入该SDK。**
 
-### 兼容性
+### 兼容性 
 
 | 类别      | 兼容范围                      |
 | --------- | ----------------------------- |
@@ -1141,6 +1141,12 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 # 七、更新记录
 
 #### 更新记录：
+-----
+
+sdk v5.4.0版本更新功能：
+
+1、支持 xcode-16和 iOS-18
+ 
 -----
 
 sdk v5.3.1版本更新功能：
