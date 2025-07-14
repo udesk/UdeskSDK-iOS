@@ -99,7 +99,7 @@
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
         [self updateNavAttributesWithViewController:rootViewController navigationController:(UdeskBaseNavigationViewController *)navigationController defaultNavigationController:rootViewController.navigationController];
         [navigationController setTransitioningDelegate:[UdeskTransitioningAnimation transitioningDelegateImpl]];
-        [navigationController setModalPresentationStyle:UIModalPresentationCustom];
+        [navigationController setModalPresentationStyle:UIModalPresentationFullScreen];
     } else {
         [self updateNavAttributesWithViewController:rootViewController navigationController:(UdeskBaseNavigationViewController *)navigationController defaultNavigationController:rootViewController.navigationController];
         [rootViewController.view.window.layer addAnimation:[UdeskTransitioningAnimation createPresentingTransiteAnimation:_sdkConfig.presentingAnimation] forKey:nil];

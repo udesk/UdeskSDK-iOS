@@ -1143,6 +1143,13 @@ chatViewManager.orientationMask = UIInterfaceOrientationMaskPortrait;
 #### 更新记录：
 -----
 
+sdk v5.4.1版本更新功能：
+
+1、修复某些环境下的push异常
+2、修复语音消息播放异常
+ 
+-----
+
 sdk v5.4.0版本更新功能：
 
 1、支持 xcode-16和 iOS-18
