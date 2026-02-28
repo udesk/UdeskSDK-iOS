@@ -18,6 +18,7 @@
 #import "UdeskCacheUtil.h"
 #import "UdeskLocationModel.h"
 #import "UdeskGoodsModel.h"
+#import "UdeskBaseMessage.h"
 
 @interface UdeskMessageManager()
 
@@ -101,6 +102,21 @@
             [self updateCallbackMessages];
         }];
     });
+}
+
+- (void)reloadMessagesLayout {
+    NSMutableArray *rawMessages = [NSMutableArray array];
+    for (id baseMsg in self.messagesArray) {
+        if ([baseMsg isKindOfClass:[UdeskBaseMessage class]]) {
+            UdeskMessage *msg = [(UdeskBaseMessage *)baseMsg message];
+            if (msg && [msg isKindOfClass:[UdeskMessage class]]) {
+                [rawMessages addObject:msg];
+            }
+        }
+    }
+    if (rawMessages.count == 0) return;
+    self.messagesArray = [UdeskMessageUtil chatMessageWithMsgModel:rawMessages lastMessage:nil];
+    [self updateCallbackMessages];
 }
 
 //更新消息数组

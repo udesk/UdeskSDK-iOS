@@ -40,6 +40,8 @@
 
 //获取db消息
 - (void)fetchMessages;
+/** 屏幕旋转后重新生成消息布局（重建 messagesArray） */
+- (void)reloadMessagesLayout;
 //加载更多DB消息
 - (void)fetchNextPageMessages;
 //获取servers消息

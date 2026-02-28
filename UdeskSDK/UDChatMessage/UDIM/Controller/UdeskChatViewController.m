@@ -1236,6 +1236,18 @@ static CGFloat udInputBarHeight = 54.0f;
     [self disableAllMessageTransfer];
 }
 
+#pragma mark - 屏幕旋转
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self recalculateAllMessageLayouts];
+    }];
+}
+
+- (void)recalculateAllMessageLayouts {
+    [self.chatViewModel reloadMessagesLayout];
+}
+
 #pragma mark - 返回页面事件
 - (void)dismissChatViewController {
     

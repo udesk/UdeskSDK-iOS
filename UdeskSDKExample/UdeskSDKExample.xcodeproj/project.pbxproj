@@ -348,6 +348,7 @@
 		44D3A3DA1F66307E001145EA /* UdeskCustomLocationViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskCustomLocationViewModel.m; sourceTree = "<group>"; };
 		44D3A3EF1F66372B001145EA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		44E6F4171F34BBF400FEDCBB /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		845252D62F3C66C70091DF47 /* UdeskSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = UdeskSDK.podspec; path = ../UdeskSDK.podspec; sourceTree = SOURCE_ROOT; };
 		84748AF52BDFBEE300CBD45C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		84748AF72BE0F6BF00CBD45C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		84D90158288A7A25009DD765 /* UdeskLocationResultDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdeskLocationResultDataSource.m; sourceTree = "<group>"; };
@@ -941,6 +942,7 @@
 				44C3A0761C93ADFF004BDB2B /* libsqlite3.tbd */,
 				84748AF52BDFBEE300CBD45C /* PrivacyInfo.xcprivacy */,
 				84748AF72BE0F6BF00CBD45C /* README.md */,
+				845252D62F3C66C70091DF47 /* UdeskSDK.podspec */,
 				441AAA1020FD8EF3003528F3 /* UdeskCall */,
 				84D90154288A7A25009DD765 /* UdeskSDK */,
 				44C3A05E1C93ADCE004BDB2B /* UdeskSDKExample */,
@@ -2513,7 +2515,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				MARKETING_VERSION = 5.4.1;
+				MARKETING_VERSION = 5.4.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -2606,7 +2608,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../UdeskSDK/SDK\"",
 				);
-				MARKETING_VERSION = 5.4.1;
+				MARKETING_VERSION = 5.4.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",

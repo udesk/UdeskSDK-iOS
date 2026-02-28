@@ -231,7 +231,9 @@
 
     UdeskSDKStyle *style = [UdeskSDKStyle customStyle];
     UdeskSDKConfig *config = [UdeskSDKConfig customConfig];
-    
+    if (ud_isPad){
+        config.orientationMask = UIInterfaceOrientationMaskAll;
+    }
     //初始化sdk
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:style sdkConfig:config sdkActionConfig:nil];
     [chatViewManager pushUdeskInViewController:self completion:nil];

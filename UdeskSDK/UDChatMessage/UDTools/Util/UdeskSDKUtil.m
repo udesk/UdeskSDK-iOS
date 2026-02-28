@@ -22,6 +22,12 @@ static BOOL udSDKIsLandScape = NO;
     dispatch_once(&onceToken, ^{
         instanceUtil = [[self alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:instanceUtil selector:@selector(statusBarOrientationChanged:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+        // iPad 上 UIApplicationDidChangeStatusBarOrientationNotification 可能不触发，补充 UIDeviceOrientationDidChangeNotification
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+            [[NSNotificationCenter defaultCenter] addObserver:instanceUtil selector:@selector(deviceOrientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+            [instanceUtil updateLandscapeFromDeviceOrientation];
+        }
     });
     
     return instanceUtil;
@@ -34,6 +40,22 @@ static BOOL udSDKIsLandScape = NO;
         [UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationLandscapeLeft) {
         udSDKIsLandScape = YES;
     }
+}
+
+- (void)deviceOrientationChanged:(NSNotification *)notf
+{
+    [self updateLandscapeFromDeviceOrientation];
+}
+
+- (void)updateLandscapeFromDeviceOrientation
+{
+    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    if (UIDeviceOrientationIsLandscape(orientation)) {
+        udSDKIsLandScape = YES;
+    } else if (UIDeviceOrientationIsPortrait(orientation)) {
+        udSDKIsLandScape = NO;
+    }
+    // FaceUp/FaceDown/Unknown 保持原值
 }
 
 //字符串转字典

@@ -57,10 +57,8 @@ _Pragma("clang diagnostic pop")
 // Size
 #define UD_SCREEN_WIDTH  ({ \
 CGFloat udWidth = [[UIScreen mainScreen] bounds].size.width; \
-if (udIsLandScape) { \
-    if (udIsIPhoneXSeries) { \
-        udWidth = [[UIScreen mainScreen] bounds].size.width-44*2; \
-    } \
+if (udIsLandScape && udIsIPhoneXSeries && !ud_isPad) { \
+    udWidth = [[UIScreen mainScreen] bounds].size.width-44*2; \
 } \
 udWidth; \
 })

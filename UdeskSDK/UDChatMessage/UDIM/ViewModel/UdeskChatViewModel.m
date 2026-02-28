@@ -461,6 +461,10 @@
     }
 }
 
+- (void)reloadMessagesLayout {
+    [self.messageManager reloadMessagesLayout];
+}
+
 - (void)reloadChatWithMoreMessages:(NSArray *)messages {
     
     self.isShowRefresh = self.messageManager.isShowRefresh;

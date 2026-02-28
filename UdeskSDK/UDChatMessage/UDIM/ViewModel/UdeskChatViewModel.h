@@ -78,6 +78,8 @@
 
 /** 加载更多DB消息 */
 - (void)fetchNextPageMessages;
+/** 屏幕旋转后重新生成消息布局（重建 messagesArray） */
+- (void)reloadMessagesLayout;
 /** 转人工 */
 - (void)transferToAgentServer;
 
